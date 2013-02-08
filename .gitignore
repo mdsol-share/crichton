@@ -1,0 +1,9 @@
+.bundle
+
+Gemfile.lock
+
+coverage
+columbo
+tmp
+.yardoc
+yardoc
