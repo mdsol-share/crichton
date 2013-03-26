@@ -1,0 +1,189 @@
+# A resource descriptor is a configuration file that defines the semantic data, states, and 
+# state transitions associated with a particular resource independent of protocol and 
+# media-type. Further, it also defines protocol specific templates for links that can be 
+# included in the response and populated based on the associated state. By including optional 
+# routes related metadata in the configuration, routes.rb mappings can be managed DRYly in 
+# the resource descriptor file.
+#
+# The following sections facilitate a number of objectives including generating an ALPS profile 
+# of the resource, generating human readable documents including sample representations, 
+# decorating service responses, and scaffolding routes, controllers and models.
+
+# Metadata associated with the resource that is used to publish the entry point to a discovery 
+# service listing entry points for resources.
+name: drds
+version: v1.0.0
+entry_point:
+  http: drds
+links:
+  self:
+    href: http://alps.io/schema.org/DRDs
+  help:
+    href: http://schema.example.org/Things/DRDs
+doc: A list of DRDs.
+
+# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
+# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
+# to generate sample representations of the a resource in different media-types.
+semantic_descriptors:
+  total_count:
+    doc: The total count of DRDs.
+    href: http://schema.example.com/Lists/TotalCount
+    rt: http://alps.io/schema.org/Integer
+    sample: 1    
+  items:
+    doc: An array of embedded DRD resources
+    href: http://schema.example.com/Lists/Items
+    rt: http://alps.io/schema.org/ItemList
+    $ref: file/drd.yml # Dereference
+      
+# This section associates a simple state-machine DSL with the particular resource. It shows
+# the state name and lists the data and application affordances available in that state. 
+states: 
+  collection:
+    transitions:
+      - self
+      - search
+      - create
+    semantics: 
+      items:
+        drd:
+          state: item
+  navigation:
+    transitions:
+      - self
+      - search
+  error:
+    semantics: errors
+       
+# Transition descriptors represent application affordances and in the context of ALPS represent 
+# type='safe,unsafe,idempotent' descriptors. 
+transition_descriptors: 
+  list: 
+    href: http://descriptions.example.com/rel/list
+    type: safe
+  self:
+    href: http://tools.ietf.org/html/rfc4287
+    type: safe
+  search:
+    href:
+    type: safe
+    template:
+      search_term:
+        doc: The terms to search.
+        href: http://schema.example.com/Lists/SearchTerm
+        rt: http://alps.io/schema.org/Text           
+  create:
+    href: http://descriptions.example.com/rel/create
+    type: unsafe
+    template:
+      _links:
+        profile:
+          href: http://example.com/Forms/create-drd
+      name:
+        doc: The name of the DRD.
+        href: http://schema.org/Thing#name
+        rt: http://alps.io/schema.org/Text
+        field_type: input
+        validators:
+          - presence
+      status:
+        doc: How is the DRD.
+        href: http://schema.example.com/DRD#status
+        rt: http://alps.io/schema.org/Text
+        field_type: selector
+        enum:
+          - working
+          - renegade
+          - broken
+        validators:
+          - presence
+      kind:
+        doc: What kind is it.
+        href: http://schema.example.com/DRD#kind
+        rt: http://alps.io/schema.org/Text
+        field_type: radio
+        enum:
+          - standard
+          - sentinel
+        validators:
+          - presence
+      leviathan_uuid:
+        doc: The UUID of the creator Leviathan.
+        href: http://example.schema.com/Entities#uuid
+        rt: http://alps.io/schema.org/Text
+        field_type: input
+        validators:
+          - properties:
+            name:
+              type: string
+              description: The validation name.
+            rule:
+              type: object
+              description:
+            message:
+              type: string
+              description: Optional message template.
+              required: false
+            message_code: 
+              type: string
+              description: Optional message code that can be used to internationalize messages.
+     
+# The protocol descriptors section defines the protocol affordances associated with the 
+# application affordances. This decouples protocol specific information from the 
+# semantic description of a resource and its affordances.
+protocol_descriptors:
+  http:
+    list: &list
+      uri: drds
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+    self: 
+      <<: *list 
+    search: 
+      uri: drds{?search_term}
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+    create:
+      uri: drds
+      method: POST
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 250ms
+        std_dev: 50ms
+        requests_per_second: 25
+   
+# This optional section defines the route mapping for the resource that can be used in 
+# lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
+# application. It has nothing to do with the resource semantics per se, but is rather
+# a convenience for DRYing out routing in a service.
+routes:
+  list: 
+    controller: drds_controller
+    action: index
+  search: 
+    controller: drds_controller
+    action: index
+  create: 
+    controller: drds_controller
+    action: create

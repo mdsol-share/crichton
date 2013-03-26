@@ -1,0 +1,191 @@
+# A resource descriptor is a configuration file that defines the semantic data, states, and 
+# state transitions associated with a particular resource independent of protocol and 
+# media-type. Further, it also defines protocol specific templates for links that can be 
+# included in the response and populated based on the associated state. By including optional 
+# routes related metadata in the configuration, routes.rb mappings can be managed DRYly in 
+# the resource descriptor file.
+#
+# The following sections facilitate a number of objectives including generating an ALPS profile 
+# of the resource, generating human readable documents including sample representations, 
+# decorating service responses, and scaffolding routes, controllers and models.
+
+# Metadata associated with the resource that is used to publish the entry point to a discovery 
+# service listing entry points for resources.
+resource_name: drd
+entry_point: /drds
+links:
+  self:
+    href: http://alps.io/schema.org/DRD
+  help:
+    href: http://schema.example.org/Things/DRD
+doc: |
+  Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
+  built by a Leviathan as it grows.
+
+# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
+# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
+# to generate sample representations of the a resource in different media-types.
+semantic_descriptors:
+  uuid:
+    doc: The UUID of the DRD.
+    href: http://example.schema.com/Entities#uuid
+    rt: http://alps.io/schema.org/Text
+    sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
+  name:
+    doc: The name of the DRD.
+    href: http://schema.org/Thing#name 
+    rt: http://alps.io/schema.org/Text
+    sample: 1812
+  status:
+    doc: How is the DRD.
+    href: http://schema.example.com/Entities#status
+    rt: http://alps.io/schema.org/Text
+    sample: renegade
+  kind:
+    doc: What kind is it.
+    href: http://schema.example.com/Entities#kind
+    rt: http://alps.io/schema.org/Text
+    sample: standard
+  leviathan_uuid:
+    doc: The UUID of the creator Leviathan.
+    href: http://example.schema.com/Entities#uuid
+    rt: http://alps.io/schema.org/Text
+    sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
+  built_at:
+    doc: When the DRD was constructed.
+    href: http://example.schema.com/Robots#BuiltAt
+    rt: http://alps.io/schema.org/DateTime
+    sample: 2013-03-20T00:00:00+00:00
+  leviathan:
+    doc: The associated Leviathan resource.
+    href: http://schema.example.com/Things/Leviathan
+    rt: http://alps.io/schema.org/Thing/Leviathan
+    embed: optional
+
+# This section associates a simple state-machine DSL with the particular resource. It shows
+# the state name and lists the data and application affordances available in that state. 
+states: 
+  item: &item
+    transistions:
+      - self
+      - update
+      - delete
+      - leviathan
+  created:
+    <<: *item
+    embed:
+      - leviathan
+  updated:
+    <<: *item 
+  deleted:
+  error:
+    semantics: errors
+       
+# Transition descriptors represent application affordances and in the context of ALPS represent 
+# type='safe,unsafe,idempotent' descriptors. 
+transition_descriptors: 
+  show: 
+    href: http://descriptions.example.com/rel/show
+    type: safe
+  self: 
+    href: http://tools.ietf.org/html/rfc4287
+    type: safe
+  leviathan:
+    href: http://descriptions.example.com/rel/leviathan
+    type: safe
+    associated: true # Indicates this link is to associated data to differentiate from the resource itself.
+  update:
+    href: http://descriptions.example.com/rel/update
+    type: idempotent
+    template:
+      _links:
+        profile:
+          href: http://example.com/Forms/update-drd
+      name:
+        doc: The name of the DRD.
+        href: http://schema.org/Thing#name
+        rt: http://alps.io/schema.org/Text
+        field_type: input
+        validators:
+          - presence
+      status:
+        doc: How is the DRD.
+        href: http://schema.example.com/DRD#status
+        field_type: selector
+        enum:
+          - working
+          - renegade
+          - broken
+        validators:
+          - presence
+      kind:
+        doc: What kind is it.
+        href: http://schema.example.com/DRD#kind
+        field_type: radio
+        enum:
+          - standard
+          - sentinel
+        validators:
+          - presence
+  delete:
+    href: http://descriptions.example.com/rel/delete
+    type: idempotent
+     
+# The protocol descriptors section defines the protocol affordances associated with the 
+# application affordances. This decouples protocol specific information from the 
+# semantic description of a resource and its affordances.
+protocol_descriptors:
+  http:
+    show: &show
+      uri: drd/{uuid}
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+    self: 
+      <<: *show       
+    update:
+      uri: drd/{uuid}
+      method: PUT
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 250ms
+        std_dev: 50ms
+        requests_per_second: 25
+    delete:
+      uri: drds/{uuid}
+      method: DELETE
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: 
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+   
+# This optional section defines the route mapping for the resource that can be used in 
+# lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
+# application. It has nothing to do with the resource semantics per se, but is rather
+# a convenience for DRYing out routing in a service.
+routes:
+  show: 
+    controller: drds_controller
+    action: show
+  update: 
+    controller: drds_controller
+    action: update
+  delete: 
+    controller: drds_controller
+    action: update
