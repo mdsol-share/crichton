@@ -2,6 +2,10 @@ require 'spec_helper'
 
 module Crichton
   describe '.clear_resource_descriptors' do
+    before do
+      Crichton.clear_resource_descriptors
+    end
+
     it 'clears any registered resource descriptors' do
       Descriptors::Resource.register(drds_descriptor)
       Crichton.clear_resource_descriptors
