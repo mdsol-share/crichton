@@ -150,7 +150,7 @@ module Crichton
     describe '#inspect' do
       it 'converts a resource descriptor to string, but does not include the underlying resource descriptor document' do
         descriptor = Resource.new(drds_descriptor)
-        descriptor.inspect.should_not =~ /.*doc => A list of DRDs.*/
+        descriptor.inspect.should_not =~ /.*A list of DRDs.*/
       end
     end
   end
