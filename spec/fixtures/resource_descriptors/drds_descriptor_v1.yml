@@ -13,6 +13,7 @@
 # service listing entry points for resources.
 name: drds
 version: v1.0.0
+doc: A list of DRDs.
 entry_point:
   http: drds
 links:
@@ -20,7 +21,6 @@ links:
     href: http://alps.io/schema.org/DRDs
   help:
     href: http://schema.example.org/Things/DRDs
-doc: A list of DRDs.
 
 # Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
 # represent type='semantic' descriptors. Elements MAY include a sample value that can be used 

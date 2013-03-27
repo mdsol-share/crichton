@@ -107,6 +107,30 @@ module Crichton
       ##
       # The id of resource descriptor, which is the name:version of the underlying resource descriptor.
       attr_accessor :id
+
+      ##
+      # The description of the resource.
+      #
+      # @return [String] The description.
+      def doc
+        resource_descriptor['doc']
+      end
+
+      ##
+      # The name of the resource.
+      #
+      # @return [String] The name of the resource.
+      def name
+        resource_descriptor['name']
+      end
+
+      ##
+      # The version of the resource.
+      #
+      # @return [String] The version of the resource.
+      def version
+        resource_descriptor['version']
+      end
       
       private
       def descriptor_key(descriptor)
@@ -116,7 +140,7 @@ module Crichton
       # Used to reference the raw resource descriptor internally without polluting #inspect with
       # large hash objects associated with the underlying document.
       def resource_descriptor
-        self.class.instance_exec(@descriptor_key) { |key| raw_resources[key] }
+        self.class.instance_exec(@id) { |key| raw_resources[key] }
       end
 
       # TODO: Delegate to Lint when implemented.

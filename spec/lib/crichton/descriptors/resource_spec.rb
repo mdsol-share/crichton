@@ -153,5 +153,26 @@ module Crichton
         descriptor.inspect.should_not =~ /.*A list of DRDs.*/
       end
     end
+
+    describe '#doc' do
+      it 'returns the description specified in the resource descriptor' do
+        resource_descriptor = Resource.new(drds_descriptor)
+        resource_descriptor.doc.should == 'A list of DRDs.'
+      end
+    end
+
+    describe '#name' do
+      it 'returns the name specified in the resource descriptor' do
+        resource_descriptor = Resource.new(drds_descriptor)
+        resource_descriptor.name.should == 'drds'
+      end
+    end
+
+    describe '#version' do
+      it 'returns the verions specified in the resource descriptor' do
+        resource_descriptor = Resource.new(drds_descriptor)
+        resource_descriptor.version.should == 'v1.0.0'
+      end
+    end
   end
 end
