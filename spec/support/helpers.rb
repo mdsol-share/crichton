@@ -17,6 +17,10 @@ module Support
       fixture_path('resource_descriptors', 'drd_descriptor_v1.yml')
     end
     
+    def resource_descriptor_fixtures
+      fixture_path('resource_descriptors')
+    end
+    
     private
     def fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', args)

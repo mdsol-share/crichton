@@ -1,6 +1,45 @@
 require 'spec_helper'
 
 module Crichton
+  describe '.clear_resource_descriptors' do
+    it 'clears any registered resource descriptors' do
+      Descriptors::Resource.register(drds_descriptor)
+      Crichton.clear_resource_descriptors
+      Descriptors::Resource.registered_resources.should be_empty
+    end
+  end
+  
+  describe '.resource_descriptors' do
+    before do
+      Crichton.clear_resource_descriptors
+    end
+    
+    context 'with a directory of resource descriptors specified' do
+      before do
+        Crichton.stub_chain(:config, :resource_descriptors_location).and_return(resource_descriptor_fixtures)
+      end
+      
+      it 'load resource descriptors from a resource descriptor directory if configured' do
+        Crichton.resource_descriptors
+      end
+    end
+
+    context 'without a directory of resource descriptors specified' do
+      before do
+        Crichton.stub_chain(:config, :resource_descriptors_location).and_return(nil)
+      end
+      
+      it 'returns any registered resource descriptors' do
+        descriptor = Descriptors::Resource.register(drds_descriptor)
+        Crichton.resource_descriptors[descriptor.id].should == descriptor
+      end
+
+      it 'returns an empty hash if no resource descriptors are registered' do
+        Crichton.resource_descriptors.should be_empty
+      end
+    end
+  end
+  
   module Descriptors
     describe  Resource do
       before do
@@ -84,6 +123,17 @@ module Crichton
         it 'returns a hash of registered resource descriptors instances keyed by resource descriptor id' do
           resource_descriptor = Resource.register(drds_descriptor)
           Resource.registered_resources[resource_descriptor.id].should == resource_descriptor
+        end
+      end
+
+      describe '.registered_resources?' do
+        it 'returns false if no resource descriptors are registered' do
+          Resource.registered_resources?.should be_false
+        end
+
+        it 'returns true if resource descriptors are registered' do
+          Resource.register(drds_descriptor)
+          Resource.registered_resources?.should be_true
         end
       end
     end

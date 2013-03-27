@@ -11,8 +11,8 @@
 
 # Metadata associated with the resource that is used to publish the entry point to a discovery 
 # service listing entry points for resources.
-resource_name: drd
-entry_point: /drds
+name: drd
+version: v1.0.0
 links:
   self:
     href: http://alps.io/schema.org/DRD
