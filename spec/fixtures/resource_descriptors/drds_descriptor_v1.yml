@@ -14,120 +14,142 @@
 name: drds
 version: v1.0.0
 doc: A list of DRDs.
-entry_point:
-  http: drds
-links:
+_links:
   self:
     href: http://alps.io/schema.org/DRDs
   help:
     href: http://schema.example.org/Things/DRDs
-
-# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
-# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
-# to generate sample representations of the a resource in different media-types.
-semantic_descriptors:
-  total_count:
-    doc: The total count of DRDs.
-    href: http://schema.example.com/Lists/TotalCount
-    rt: http://alps.io/schema.org/Integer
-    sample: 1    
-  items:
-    doc: An array of embedded DRD resources
-    href: http://schema.example.com/Lists/Items
-    rt: http://alps.io/schema.org/ItemList
-    $ref: file/drd.yml # Dereference
+entry_point:
+  http: drds
       
 # This section associates a simple state-machine DSL with the particular resource. It shows
-# the state name and lists the data and application affordances available in that state. 
+# the state name and lists the data and application affordances available in that state and 
+# what states are exposed by following the transitions.
+#
+# TODO: Investigate adding metadata on states and transitions
 states: 
   collection:
+    start: true
     transitions:
-      - self
-      - search
-      - create
-    semantics: 
+      - self:
+        next:
+          - collection
+      - search:
+        next:
+          - navigation
+          - error
+      - create:
+        next:
+          - error
+          - created: drd
+    substate:
       items:
-        drd:
-          state: item
+        resource: drd
+        state: item    
   navigation:
     transitions:
-      - self
-      - search
+      - self:
+        next:
+          - navigation
+      - search:
+        next:
+          - navigation
+          - error
+    substate:
+      items:
+        resource: drd
+        state: item           
   error:
-    semantics: errors
+    resource: errors
+
+descriptors:
+  # Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
+  # represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
+  # to generate sample representations of the a resource in different media-types.
+  semantic:
+    total_count:
+      doc: The total count of DRDs.
+      href: http://schema.example.com/Lists/TotalCount
+      rt: http://alps.io/schema.org/Integer
+      sample: 1
+    items:
+      doc: An array of embedded DRD resources
+      href: http://schema.example.com/Lists/Items
+      rt: http://alps.io/schema.org/ItemList
+      semantic_descriptors:
+        $ref: file/drd.yml # Dereference 
+      transition_descriptors:
        
-# Transition descriptors represent application affordances and in the context of ALPS represent 
-# type='safe,unsafe,idempotent' descriptors. 
-transition_descriptors: 
-  list: 
-    href: http://descriptions.example.com/rel/list
-    type: safe
-  self:
-    href: http://tools.ietf.org/html/rfc4287
-    type: safe
-  search:
-    href:
-    type: safe
-    template:
-      search_term:
-        doc: The terms to search.
-        href: http://schema.example.com/Lists/SearchTerm
-        rt: http://alps.io/schema.org/Text           
-  create:
-    href: http://descriptions.example.com/rel/create
-    type: unsafe
-    template:
-      _links:
-        profile:
-          href: http://example.com/Forms/create-drd
-      name:
-        doc: The name of the DRD.
-        href: http://schema.org/Thing#name
-        rt: http://alps.io/schema.org/Text
-        field_type: input
-        validators:
-          - presence
-      status:
-        doc: How is the DRD.
-        href: http://schema.example.com/DRD#status
-        rt: http://alps.io/schema.org/Text
-        field_type: selector
-        enum:
-          - working
-          - renegade
-          - broken
-        validators:
-          - presence
-      kind:
-        doc: What kind is it.
-        href: http://schema.example.com/DRD#kind
-        rt: http://alps.io/schema.org/Text
-        field_type: radio
-        enum:
-          - standard
-          - sentinel
-        validators:
-          - presence
-      leviathan_uuid:
-        doc: The UUID of the creator Leviathan.
-        href: http://example.schema.com/Entities#uuid
-        rt: http://alps.io/schema.org/Text
-        field_type: input
-        validators:
-          - properties:
-            name:
-              type: string
-              description: The validation name.
-            rule:
-              type: object
-              description:
-            message:
-              type: string
-              description: Optional message template.
-              required: false
-            message_code: 
-              type: string
-              description: Optional message code that can be used to internationalize messages.
+  # Transition descriptors represent application affordances and in the context of ALPS 
+  # represent type='safe,unsafe,idempotent' descriptors. 
+  safe: 
+    list: 
+      href: http://descriptions.example.com/rel/list
+    self:
+      href: http://tools.ietf.org/html/rfc4287
+    search:
+      href:
+      template:
+        search_term:
+          doc: The terms to search.
+          href: http://schema.example.com/Lists/SearchTerm
+          rt: http://alps.io/schema.org/Text  
+  unsafe:
+    create:
+      href: http://descriptions.example.com/rel/create
+      type: unsafe
+      template:
+        _links:
+          profile:
+            href: http://example.com/Forms/create-drd
+        name:
+          doc: The name of the DRD.
+          href: http://schema.org/Thing#name
+          rt: http://alps.io/schema.org/Text
+          field_type: input
+          validators:
+            - presence
+        status:
+          doc: How is the DRD.
+          href: http://schema.example.com/DRD#status
+          rt: http://alps.io/schema.org/Text
+          field_type: selector
+          enum:
+            - working
+            - renegade
+            - broken
+          validators:
+            - presence
+        kind:
+          doc: What kind is it.
+          href: http://schema.example.com/DRD#kind
+          rt: http://alps.io/schema.org/Text
+          field_type: radio
+          enum:
+            - standard
+            - sentinel
+          validators:
+            - presence
+        leviathan_uuid:
+          doc: The UUID of the creator Leviathan.
+          href: http://example.schema.com/Entities#uuid
+          rt: http://alps.io/schema.org/Text
+          field_type: input
+          validators:
+            - properties:
+              name:
+                type: string
+                description: The validation name.
+              rule:
+                type: object
+                description:
+              message:
+                type: string
+                description: Optional message template.
+                required: false
+              message_code: 
+                type: string
+                description: Optional message code that can be used to internationalize messages.
      
 # The protocol descriptors section defines the protocol affordances associated with the 
 # application affordances. This decouples protocol specific information from the 
