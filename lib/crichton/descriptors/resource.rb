@@ -77,7 +77,7 @@ module Crichton
         ##
         # Lists the registered resources.
         #
-        # @@return [Hash]
+        # @return [Hash] The registered resource descriptors, if any.
         def registered_resources
           @registered_resources ||= {}
         end
@@ -97,7 +97,8 @@ module Crichton
         
         @id = descriptor_key(resource_descriptor)
         
-        # For this class to function, it must register its raw resource descriptor
+        # For this class to function, it must register its raw resource descriptor. See private method 
+        # #resource_descriptor below.
         self.class.instance_exec(@id, resource_descriptor) do |key, descriptor| 
           raw_resources[key] = descriptor unless raw_resources[key]
         end

@@ -112,6 +112,11 @@ module Crichton
             expect { Resource.register(descriptor) }.to raise_error(ArgumentError)
           end
         end
+
+        it 'raises an error when the resource descriptor is not a string or hash' do
+          resource_descriptor = mock('invalid_descriptor')
+          expect { Resource.register(resource_descriptor) }.to raise_error(ArgumentError)
+        end
         
         it 'raises an error when the resource descriptor is already registered' do
           Resource.register(drds_descriptor)
