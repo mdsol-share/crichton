@@ -24,13 +24,13 @@ module Crichton
 
       describe '.register' do
         it 'returns the registered resource descriptor instance' do
-          Resource.register(drds_descriptor).instance_of?(Resource).should be_true
+          Resource.register(drds_descriptor).should be_instance_of(Resource)
         end
         
         shared_examples_for 'a resource descriptor registration' do
           it 'registers a resource descriptor' do
             Resource.register(@descriptor)
-            Resource.registered_resources['drds:v1.0.0'].is_a?(Resource).should be_true
+            Resource.registered_resources['drds:v1.0.0'].should be_instance_of(Resource)
           end
         end
 
