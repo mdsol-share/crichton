@@ -64,7 +64,7 @@ module Crichton
       #
       # @param [Hash] resource_descriptor The resource descriptor hash.
       def initialize(resource_descriptor)
-        verify_descriptor!(resource_descriptor)
+        verify_descriptor(resource_descriptor)
         
         @id = descriptor_key(resource_descriptor)
         
@@ -115,7 +115,7 @@ module Crichton
       end
 
       # TODO: Delegate to Lint when implemented.
-      def verify_descriptor!(descriptor)
+      def verify_descriptor(descriptor)
         err_msg = ''
         err_msg << " missing name in #{descriptor.inspect}" unless descriptor['name']
         err_msg << " missing version for the resource #{descriptor['name']}." unless descriptor['version']
