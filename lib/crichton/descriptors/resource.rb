@@ -12,7 +12,7 @@ module Crichton
       end
       
       ##
-      # Whether any resource descriptors have been registers or not.
+      # Whether any resource descriptors have been registered or not.
       #
       # @return [Boolean] true, if any resource descriptors are registered.
       def self.registered_resources?
