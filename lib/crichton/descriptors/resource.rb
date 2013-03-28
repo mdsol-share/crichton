@@ -4,55 +4,55 @@ module Crichton
     # Manages Resource Descriptor parsing and consumption for use decorating service responses or interacting with
     # Hypermedia types.
     class Resource
+      ##
+      # Clears all registered resource descriptors
+      def self.clear
+        @registered_resources = nil
+        @raw_resources = nil
+      end
+      
+      ##
+      # Whether any resource descriptors have been registers or not.
+      #
+      # @return [Boolean] true, if any resource descriptors are registered.
+      def self.registered_resources?
+        !!(@registered_resources && !@registered_resources.empty?)
+      end
+      
+      ##
+      # Registers a resource descriptor document by name and version.
+      #
+      # @param [Hash, String] descriptor The hashified resource descriptor document or filename of a YAML resource 
+      # descriptor document.
+      def self.register(descriptor)
+        hash_descriptor = case descriptor
+        when String
+          raise ArgumentError, "Filename #{descriptor} is not valid." unless File.exists?(descriptor)
+          YAML.load_file(descriptor)
+        when Hash
+          descriptor
+        else
+          raise ArgumentError, "Document #{descriptor} must be a String or a Hash."  
+        end
+  
+        Resource.new(hash_descriptor).tap do |resource|
+          if registered_resources[resource.id]
+            raise ArgumentError, "Resource descriptor for #{resource.id} is already registered." 
+          end
+            
+          registered_resources[resource.id] = resource 
+        end
+      end
+  
+      ##
+      # Lists the registered resources.
+      #
+      # @return [Hash] The registered resource descriptors, if any.
+      def self.registered_resources
+        @registered_resources ||= {}
+      end
+
       class << self
-        
-        ##
-        # Clears all registered resource descriptors
-        def clear
-          @registered_resources = nil
-          @raw_resources = nil
-        end
-        
-        ##
-        # Whether any resource descriptors have been registers or not.
-        #
-        # @return [Boolean] true, if any resource descriptors are registered.
-        def registered_resources?
-          !!(@registered_resources && !@registered_resources.empty?)
-        end
-        
-        ##
-        # Registers a resource descriptor document by name and version.
-        #
-        # @param [Hash] descriptor The hashified resource descriptor document.
-        def register(descriptor)
-          hash_descriptor = case descriptor
-          when String
-            raise ArgumentError, "Filename #{descriptor} is not valid." unless File.exists?(descriptor)
-            YAML.load_file(descriptor)
-          when Hash
-            descriptor
-          else
-            raise ArgumentError, "Document #{descriptor} must be a String or a Hash."  
-          end
-
-          Resource.new(hash_descriptor).tap do |resource|
-            if registered_resources[resource.id]
-              raise ArgumentError, "Resource descriptor for #{resource.id} is already registered." 
-            end
-              
-            registered_resources[resource.id] = resource 
-          end
-        end
-
-        ##
-        # Lists the registered resources.
-        #
-        # @return [Hash] The registered resource descriptors, if any.
-        def registered_resources
-          @registered_resources ||= {}
-        end
-
         private
         def raw_resources
           @raw_resources ||= {}
