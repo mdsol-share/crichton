@@ -14,7 +14,7 @@ module Crichton
   # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
   # descriptors in that location.
   #
-  # @@return [Hash] The registered resource descriptors, if any?
+  # @return [Hash] The registered resource descriptors, if any?
   def self.resource_descriptors
     unless @registered_resource_descriptors
       unless Descriptors::Resource.registered_resources?
