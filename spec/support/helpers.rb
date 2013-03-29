@@ -1,5 +1,8 @@
 module Support
   module Helpers
+    def basic_descriptor
+      YAML.load_file(fixture_path('basic_descriptor.yml'))
+    end
     
     def drds_descriptor
       YAML.load_file(drds_filename)

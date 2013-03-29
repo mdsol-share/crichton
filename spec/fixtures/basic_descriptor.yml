@@ -1,0 +1,33 @@
+name: basic_descriptor
+version: v1.0.0
+href: http://example.org/basic
+rt: http://alps.io.example.org/basic
+doc: Description of basic descriptor.
+_links:
+  profile:
+    href: http://example.com/basic/profile
+descriptors:
+  semantic:
+    some_attribute:
+      _links:
+        profile:
+          href: http://example.com/attribute/profile
+      href: http://example.org/attribute
+      rt: http://alps.io.example.org/Text
+      doc: Description of attribute.
+      sample: sample_value
+  safe:
+    self:
+      href: http://example.org/basic
+      rt: http://alps.io.example.org/basic
+      doc: Description of self.
+  unsafe:
+    create:
+      href: http://example.org/rel/create
+      rt: http://alps.io.example.org/basic
+      doc: Description of create affordance.
+  idempotent:
+    update:
+      href: http://example.org/rel/update
+      rt: http://alps.io.example.org/basic
+      doc: Description of updated affordance.
