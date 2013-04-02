@@ -1,7 +1,7 @@
 module Crichton
   module Descriptors
     ## 
-    # The Descriptor class is an abstract base class for descriptors.
+    # The Base class is an abstract base class for descriptors.
     class Base
       ##
       # Constructs a new instance of base.

@@ -157,7 +157,7 @@ module Crichton
     describe '#doc' do
       it 'returns the description specified in the resource descriptor' do
         resource_descriptor = Resource.new(drds_descriptor)
-        resource_descriptor.doc.should == 'A list of DRDs.'
+        resource_descriptor.doc.should == 'Describes the semantics and transitions associated with DRDs.'
       end
     end
 

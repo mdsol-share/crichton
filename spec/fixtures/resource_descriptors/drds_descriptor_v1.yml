@@ -12,7 +12,7 @@
 id: drds:v1.0.0
 name: drds
 version: v1.0.0
-doc: A list of DRDs.
+doc: Describes the semantics and transitions associated with DRDs.
 links:
   self:
     href: http://alps.io.example.org/DRDs
@@ -23,30 +23,18 @@ links:
 # service listing entry points for resources.
 entry_point:
   http: drds
-      
-# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
-# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
-# to generate sample representations of the a resource in different media-types.
-semantics:
-  total_count:
-    doc: The total count of DRDs.
-    href: http://alps.io.example.org/schema.org/Integer
-    sample: 1
-  items:
-    doc: An array of embedded DRD resources.
-    href: http://alps.io.example.org/DRD
-    embed: multiple # Select non-ALPS values are treated as extensions in the profile.
-
+  
 # This section associates a simple state-machine DSL with the particular resource. It shows
 # the state name and lists the data and application affordances available in that state and 
 # what states are exposed by following the transitions.
 #
-# TODO: Investigate adding metadata on states and transitions
+# TODO: Investigate adding metadata on states and transitions and treat as descriptors
 states: 
   collection:
     start: true
     transitions:
       - self:
+        alias: list
         next:
           - collection
       - search:
@@ -74,17 +62,96 @@ states:
       items:
         resource: drd
         state: item           
+  item: &item
+    transistions:
+      - self:
+        alias: show
+        next:
+          - item
+      - update:
+        next:
+          - item
+      - delete:
+        next:
+          - collection: drds
+      - leviathan:
+        associated: true
+  created:
+    <<: *item
+    substate:
+      resource: leviathan
+      state: _cache
+  updated:
+    <<: *item 
+  deleted:
+    end: true
   error:
     resource: errors
+      
+# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
+# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
+# to generate sample representations of the a resource in different media-types.
+semantics:
+  drd:
+    doc: |
+      Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
+      built by a Leviathan as it grows.
+    links:
+      self:
+        href: http://alps.io.example.org/DRDs#drd
+    semantics:
+      uuid:
+        doc: The UUID of the DRD.
+        href: http://alps.io/schema.org/Text
+        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
+      name:
+        doc: The name of the DRD.
+        href: http://alps.io/schema.org/Text
+        sample: 1812
+      status:
+        doc: How is the DRD.
+        href: http://alps.io/schema.org/Text
+        sample: renegade
+      kind:
+        doc: What kind is it.
+        href: http://alps.io/schema.org/Text
+        sample: standard
+      leviathan_uuid:
+        doc: The UUID of the creator Leviathan.
+        href: http://alps.io/schema.org/Text
+        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
+      built_at:
+        doc: When the DRD was constructed.
+        href: http://alps.io/schema.org/DateTime
+        sample: 2013-03-20T00:00:00+00:00
+      leviathan:
+        doc: The associated Leviathan resource.
+        href: http://alps.io/schema.org/Thing/Leviathan
+        embed: optional
+  drds:
+    doc: A list of DRDs.
+    links:
+      self:
+        href: http://alps.io.example.org/DRDs#drds
+    semantics:
+      total_count:
+        doc: The total count of DRDs.
+        href: http://alps.io.example.org/schema.org/Integer
+        sample: 1
+      items:
+        doc: An array of embedded DRD resources.
+        href: http://alps.io.example.org/DRDs#drd
+        embed: multiple # Select non-ALPS values are treated as extensions in the profile.
        
 # Transition descriptors represent application affordances and in the context of ALPS 
 # represent type='safe,unsafe,idempotent' descriptors. 
 transitions:
-  self: 
+  list: 
+    doc: 
     links:
-      rel: http://tools.ietf.org/html/rfc4287
+      rel: http://descriptions.example.org/rel/create
     type: safe
-    rt: http://alps.io.example.org/DRDs
+    rt: http://alps.io.example.org/DRDs#drds
   search:
     links:
       rel: http://descriptions.example.com/rel/search
@@ -94,6 +161,17 @@ transitions:
       search_term:
         doc: The terms to search.
         href: http://alps.io/schema.org/Text 
+  show: 
+    links:
+      rel: http://descriptions.example.com/rel/show
+    type: safe
+    rt: http://alps.io/schema.org/DRDs#drd
+  leviathan:
+    links:
+      rel: http://descriptions.example.com/rel/leviathan
+    type: safe
+    rt: http://alps.io/schema.org/Leviathan
+    associated: true # Indicates this link is to associated data to differentiate from the resource itself.
   create:
     links:
       rel: http://descriptions.example.org/rel/create
@@ -153,13 +231,53 @@ transitions:
               href: http://alps.io.example.org/Leviathans#list
             validators:
               - presence
-     
+  update:
+    links:
+      rel: http://descriptions.example.com/rel/update
+    type: idempotent
+    template:
+      update-drd:
+        links:
+          profile:
+            href: http://example.com/Forms/update-drd
+        semantics:
+          name:
+            doc: The name of the DRD.
+            href: http://alps.io/schema.org/Text
+            field_type: input
+            validators:
+              - presence
+          status:
+            doc: How is the DRD.
+            href: http://alps.io/schema.org/Text
+            field_type: select
+            enum:
+              - working
+              - renegade
+              - broken
+            validators:
+              - presence
+          kind:
+            doc: What kind is it.
+            href: http://alps.io/schema.org/Text
+            field_type: multi-select
+            enum:
+              - standard
+              - sentinel
+            validators:
+              - presence
+  delete:
+    links:
+      rel: http://descriptions.example.com/rel/delete
+    type: idempotent
+
+
 # The protocol descriptors section defines the protocol affordances associated with the 
 # application affordances. This decouples protocol specific information from the 
 # semantic description of a resource and its affordances.
 protocols:
   http:
-    self: &list
+    list:
       uri: drds
       method: GET
       content_types:
@@ -183,9 +301,33 @@ protocols:
         99th_percentile: 100ms
         std_dev: 25ms
         requests_per_second: 50
+    show:
+      uri: drd/{uuid}
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50  
     create:
-      uri: drds
-      method: POST
+          uri: drds
+          method: POST
+          content_types:
+            - application/json
+            - application/hal+json
+          headers:
+          status_codes:
+          slt:
+            99th_percentile: 250ms
+            std_dev: 50ms
+            requests_per_second: 25
+    update:
+      uri: drd/{uuid}
+      method: PUT
       content_types:
         - application/json
         - application/hal+json
@@ -195,7 +337,19 @@ protocols:
         99th_percentile: 250ms
         std_dev: 50ms
         requests_per_second: 25
-   
+    delete:
+      uri: drds/{uuid}
+      method: DELETE
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: 
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50   
+        
 # This optional section defines the route mapping for the resource that can be used in 
 # lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
 # application. It has nothing to do with the resource semantics per se, but is rather
