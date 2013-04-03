@@ -361,6 +361,16 @@ routes:
   search: 
     controller: drds_controller
     action: index
+  show: 
+    controller: drds_controller
+    action: show
   create: 
     controller: drds_controller
     action: create
+  update: 
+    controller: drds_controller
+    action: update
+  delete: 
+    controller: drds_controller
+    action: update
+    

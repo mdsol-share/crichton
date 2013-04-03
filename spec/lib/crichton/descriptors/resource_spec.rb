@@ -15,9 +15,9 @@ module Crichton
     end
     
     describe '.new' do
-      it 'creates a resource descriptor whose id is the name:version of the resource_descriptor' do
+      it 'returns a subclass of BaseDescriptor' do
         descriptor = ResourceDescriptor.new(drds_descriptor)
-        descriptor.id.should == 'drds:v1.0.0'
+        descriptor.should be_a(BaseDescriptor)
       end
     end
 
@@ -57,7 +57,12 @@ module Crichton
 
       context 'with an invalid resource descriptor' do
         let(:descriptor) { drds_descriptor.dup }
-        
+
+        it 'raises an error if no id is specified in the resource descriptor' do
+          descriptor.delete('id')
+          expect { ResourceDescriptor.register(descriptor) }.to raise_error(ArgumentError)
+        end
+
         it 'raises an error if no name is specified in the resource descriptor' do
           descriptor.delete('name')
           expect { ResourceDescriptor.register(descriptor) }.to raise_error(ArgumentError)
@@ -102,28 +107,14 @@ module Crichton
       end
     end
   end
+
+  describe '#entry_point' do
+    it 'returns a hash of entry points keyed by protocol' do
+      resource_descriptor = ResourceDescriptor.new(drds_descriptor)
+      resource_descriptor.entry_point.should == {'http' => 'drds'}
+    end
+  end
   
-  describe '#inspect' do
-    it 'converts a resource descriptor to string, but does not include the underlying resource descriptor document' do
-      descriptor = ResourceDescriptor.new(drds_descriptor)
-      descriptor.inspect.should_not =~ /.*A list of DRDs.*/
-    end
-  end
-
-  describe '#doc' do
-    it 'returns the description specified in the resource descriptor' do
-      resource_descriptor = ResourceDescriptor.new(drds_descriptor)
-      resource_descriptor.doc.should == 'Describes the semantics and transitions associated with DRDs.'
-    end
-  end
-
-  describe '#name' do
-    it 'returns the name specified in the resource descriptor' do
-      resource_descriptor = ResourceDescriptor.new(drds_descriptor)
-      resource_descriptor.name.should == 'drds'
-    end
-  end
-
   describe '#version' do
     it 'returns the verions specified in the resource descriptor' do
       resource_descriptor = ResourceDescriptor.new(drds_descriptor)

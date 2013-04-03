@@ -2,20 +2,11 @@ module Crichton
   ##
   # Manages Resource Descriptor parsing and consumption for use decorating service responses or interacting with
   # Hypermedia types.
-  class ResourceDescriptor
+  class ResourceDescriptor < BaseDescriptor
     ##
     # Clears all registered resource descriptors
     def self.clear
       @registered_resources = nil
-      @raw_resources = nil
-    end
-    
-    ##
-    # Whether any resource descriptors have been registered or not.
-    #
-    # @return [Boolean] true, if any resource descriptors are registered.
-    def self.registered_resources?
-      !!(@registered_resources && !@registered_resources.empty?)
     end
     
     ##
@@ -51,71 +42,43 @@ module Crichton
       @registered_resources ||= {}
     end
 
-    class << self
-      private
-      def raw_resources
-        @raw_resources ||= {}
-      end
+    ##
+    # Whether any resource descriptors have been registered or not.
+    #
+    # @return [Boolean] true, if any resource descriptors are registered.
+    def self.registered_resources?
+      !!(@registered_resources && !@registered_resources.empty?)
     end
-    
+
     ##
     # Constructor
     #
     # @param [Hash] resource_descriptor The resource descriptor hash.
-    def initialize(resource_descriptor)
-      verify_descriptor(resource_descriptor)
-      
-      @id = descriptor_key(resource_descriptor)
-      
-      # For this class to function, it must register its raw resource descriptor. See private method 
-      # #resource_descriptor below.
-      self.class.instance_exec(@id, resource_descriptor) do |key, descriptor| 
-        raw_resources[key] = descriptor unless raw_resources[key]
-      end
+    def initialize(descriptor_document, options = {})
+      super
+      verify_descriptor(descriptor_document)
     end
-    
-    ##
-    # The id of resource descriptor, which is the name:version of the underlying resource descriptor.
-    attr_accessor :id
 
     ##
-    # The description of the resource.
+    # The entry_point, keyed by protocol, of the resource descriptor.
     #
-    # @return [String] The description.
-    def doc
-      resource_descriptor['doc']
+    # @return [Hash] The entry point objects.
+    def entry_point
+      descriptor_document['entry_point']
     end
 
     ##
-    # The name of the resource.
-    #
-    # @return [String] The name of the resource.
-    def name
-      resource_descriptor['name']
-    end
-
-    ##
-    # The version of the resource.
+    # The version of the resource descriptor.
     #
     # @return [String] The version of the resource.
     def version
-      resource_descriptor['version']
-    end
-    
-    private
-    def descriptor_key(descriptor)
-      "#{descriptor['name']}:#{descriptor['version']}"
-    end
-
-    # Used to reference the raw resource descriptor internally without polluting #inspect with
-    # large hash objects associated with the underlying document.
-    def resource_descriptor
-      self.class.instance_exec(@id) { |key| raw_resources[key] }
+      descriptor_document['version']
     end
 
     # TODO: Delegate to Lint when implemented.
     def verify_descriptor(descriptor)
       err_msg = ''
+      err_msg << " missing id in #{descriptor.inspect}" unless descriptor['id']
       err_msg << " missing name in #{descriptor.inspect}" unless descriptor['name']
       err_msg << " missing version for the resource #{descriptor['name']}." unless descriptor['version']
       

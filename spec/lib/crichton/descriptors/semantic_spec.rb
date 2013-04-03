@@ -6,7 +6,7 @@ module Crichton
     let(:descriptor) { SemanticDescriptor.new(descriptor_document) }
 
     describe '.new' do
-      it 'returns a subclass of Base' do
+      it 'returns a subclass of BaseDescriptor' do
         descriptor.should be_a(BaseDescriptor)
       end
     end
