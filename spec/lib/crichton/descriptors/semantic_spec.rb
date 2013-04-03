@@ -9,6 +9,8 @@ module Crichton
       it 'returns a subclass of BaseDescriptor' do
         descriptor.should be_a(BaseDescriptor)
       end
+
+      it_behaves_like 'a nested descriptor'
     end
 
     describe '#sample' do

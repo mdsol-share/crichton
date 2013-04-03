@@ -1,8 +1,12 @@
+require 'crichton/descriptors/nested'
+
 module Crichton
   ##
   # Manages Resource Descriptor parsing and consumption for use decorating service responses or interacting with
   # Hypermedia types.
   class ResourceDescriptor < BaseDescriptor
+    include NestedDescriptors
+    
     ##
     # Clears all registered resource descriptors
     def self.clear

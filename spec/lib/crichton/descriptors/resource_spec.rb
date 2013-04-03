@@ -15,10 +15,13 @@ module Crichton
     end
     
     describe '.new' do
+      let(:descriptor) { ResourceDescriptor.new(drds_descriptor) }
+
       it 'returns a subclass of BaseDescriptor' do
-        descriptor = ResourceDescriptor.new(drds_descriptor)
         descriptor.should be_a(BaseDescriptor)
       end
+      
+      it_behaves_like 'a nested descriptor'
     end
 
     describe '.register' do
