@@ -11,8 +11,20 @@ module Crichton
 
       attr_reader :descriptor_document
     end
+
+    shared_examples_for 'a nested descriptor' do
+      it 'responds to semantics' do
+        descriptor.should respond_to(:semantics)
+      end
+
+      it 'responds to transitions' do
+        descriptor.should respond_to(:transitions)
+      end
+    end
     
-    let(:top_level_descriptor) { SimpleTestClass.new(@descriptor) }
+    let(:descriptor) { SimpleTestClass.new(@descriptor) }
+    
+    it_behaves_like 'a nested descriptor'
     
     describe '#semantics' do
       context 'with nested semantic descriptors' do
@@ -21,18 +33,18 @@ module Crichton
         end
         
         it 'returns a populated hash' do
-          top_level_descriptor.semantics.should_not be_empty
+          descriptor.semantics.should_not be_empty
         end
         
         it 'returns a hash of semantic descriptors' do
-          top_level_descriptor.semantics.all? { |_, descriptor| descriptor.type == 'semantic'}.should be_true
+          descriptor.semantics.all? { |_, descriptor| descriptor.type == 'semantic'}.should be_true
         end
       end
       
       context 'without nested semantic descriptors' do
         it 'returns an empty hash if there are no nested semantic descriptors' do
           @descriptor = drds_descriptor.reject { |k, _| k == 'semantics' }
-          top_level_descriptor.semantics.should be_empty
+          descriptor.semantics.should be_empty
         end
       end
     end
@@ -44,19 +56,19 @@ module Crichton
         end
 
         it 'returns a populated hash' do
-          top_level_descriptor.transitions.should_not be_empty
+          descriptor.transitions.should_not be_empty
         end
 
         it 'returns a hash of transition descriptors' do
           types = %w(safe unsafe idempotent)
-          top_level_descriptor.transitions.all? { |_, descriptor| types.include?(descriptor.type) }.should be_true
+          descriptor.transitions.all? { |_, descriptor| types.include?(descriptor.type) }.should be_true
         end
       end
 
       context 'without nested semantic descriptors' do
         it 'returns an empty hash if there are no nested transition descriptors' do
           @descriptor = drds_descriptor.reject { |k, _| k == 'transitions' }
-          top_level_descriptor.transitions.should be_empty
+          descriptor.transitions.should be_empty
         end
       end
     end
