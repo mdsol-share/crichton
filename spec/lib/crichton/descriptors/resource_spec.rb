@@ -106,19 +106,19 @@ module Crichton
         ResourceDescriptor.registered_resources?.should be_true
       end
     end
-  end
 
-  describe '#entry_point' do
-    it 'returns a hash of entry points keyed by protocol' do
-      resource_descriptor = ResourceDescriptor.new(drds_descriptor)
-      resource_descriptor.entry_point.should == {'http' => 'drds'}
+    describe '#entry_point' do
+      it 'returns a hash of entry points keyed by protocol' do
+        resource_descriptor = ResourceDescriptor.new(drds_descriptor)
+        resource_descriptor.entry_point.should == {'http' => 'drds'}
+      end
     end
-  end
-  
-  describe '#version' do
-    it 'returns the verions specified in the resource descriptor' do
-      resource_descriptor = ResourceDescriptor.new(drds_descriptor)
-      resource_descriptor.version.should == 'v1.0.0'
+
+    describe '#version' do
+      it 'returns the verions specified in the resource descriptor' do
+        resource_descriptor = ResourceDescriptor.new(drds_descriptor)
+        resource_descriptor.version.should == 'v1.0.0'
+      end
     end
   end
 end

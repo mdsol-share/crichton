@@ -19,7 +19,7 @@ module Crichton
     end
 
     describe '#type' do
-      it 'returns the descriptor return type' do
+      it 'returns the descriptor type' do
         descriptor.type.should == descriptor_document['type']
       end
     end

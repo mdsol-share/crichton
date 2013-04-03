@@ -53,7 +53,7 @@ module Crichton
     ##
     # Constructor
     #
-    # @param [Hash] resource_descriptor The resource descriptor hash.
+    # @param [Hash] descriptor_document The resource descriptor hash.
     def initialize(descriptor_document, options = {})
       super
       verify_descriptor(descriptor_document)
