@@ -1,5 +1,5 @@
 # Used to prevent the class/module from being loaded more than once
-if !defined?(::Crichton::VERSION)
+unless defined?(::Crichton::VERSION)
   module Crichton
     module VERSION
       MAJOR = 0
