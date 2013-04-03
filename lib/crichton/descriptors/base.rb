@@ -43,6 +43,14 @@ module Crichton
     end
     
     ##
+    # The descriptor links.
+    #
+    # @return [Array] The LinkDescriptor objects.
+    def links
+      @links ||= (descriptor_document['links'] || {}).map { |rel, href| LinkDescriptor.new(rel, href) }
+    end
+    
+    ##
     # The href of the descriptor.
     #
     # @return [String] The reference.

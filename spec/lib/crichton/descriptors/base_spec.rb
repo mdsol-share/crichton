@@ -22,6 +22,12 @@ module Crichton
         descriptor.href.should == descriptor_document['href']
       end
     end
+    
+    describe '#links' do
+      it 'returns an array of descriptor links' do
+        descriptor.links.all? { |link| %(self help).include?(link.rel) }.should be_true
+      end
+    end
 
     describe '#id' do
       context 'with id in the descriptor document' do
