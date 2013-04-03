@@ -3,6 +3,9 @@ module Crichton
     ## 
     # The Base class is an abstract base class for descriptors.
     class Base
+      # @private
+      EXCLUDED_VARIABLES = %w(@descriptor_document).map(&:to_sym)
+          
       ##
       # Constructs a new instance of base.
       #
@@ -10,11 +13,12 @@ module Crichton
       #
       # @param [Hash] descriptor_document The underlying descriptor document.
       # @param [Hash] options Optional arguments.
-      # @option options [Symbol] :name Set or override the name of the descriptor.
+      # @option options [Symbol] :id Set or override the id of the descriptor.
       
       def initialize(descriptor_document, options = {})
-        @descriptor_document = descriptor_document.dup
+        @descriptor_document = descriptor_document && descriptor_document.dup || {}
         @options = options || {}
+        @id = @options[:id]
       end
       
       ##
@@ -22,13 +26,21 @@ module Crichton
       #
       # @return [Hash] The descriptor document.
       attr_reader :descriptor_document
+      
+      ##
+      # The id of the descriptor.
+      #
+      # @return [String] The id.
+      def id
+        @id ||= descriptor_document['id']
+      end
 
       ##
       # The description of the descriptor.
       #
       # @return [String] The description.
       def doc
-        @descriptor_document['doc']
+        descriptor_document['doc']
       end
       
       ##
@@ -36,7 +48,7 @@ module Crichton
       #
       # @return [String] The reference.
       def href
-        @descriptor_document['href']
+        descriptor_document['href']
       end
 
       ##
@@ -44,24 +56,7 @@ module Crichton
       #
       # @return [String] The name.
       def name
-        @options[:name] || @descriptor_document['name']
-      end
-      alias :id :name
-
-      ##
-      # A sample value for the descriptor.
-      #
-      # @return [Object] The sample value.
-      def sample
-        @descriptor_document['sample']
-      end
-
-      ##
-      # The return value of the descriptor.
-      #
-      # @return [String] The return value reference.
-      def rt
-        @descriptor_document['rt']
+        descriptor_document['name']
       end
 
       ##
@@ -72,18 +67,13 @@ module Crichton
         raise 'The method #type is an abstract method that must be overridden in subclasses.'
       end
 
-      ##
-      # The version of the descriptor.
-      #
-      # @return [String] The reference.
-      def version
-        @descriptor_document['version']
-      end
-
       # @private
       # Overrides inspect to remove the descriptor document for readability
       def inspect
-        super.gsub(/\s{,1}@descriptor_document=#{@descriptor_document.inspect}/, '')
+        ivars = (instance_variables - EXCLUDED_VARIABLES).map do |ivar|
+          "#{ivar}=#{instance_variable_get(ivar).inspect}"
+        end
+        '#<%s:0x%s %s>' % [self.class.name, self.hash.to_s(16), ivars.join(", ")]
       end
     end
   end
