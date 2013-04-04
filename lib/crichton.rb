@@ -5,6 +5,11 @@ require 'crichton/descriptors/semantic'
 require 'crichton/descriptors/transition'
 
 module Crichton
+  
+  ##
+  # References a semantic descriptor type.
+  SEMANTIC = 'semantic'
+  
   ##
   # Clears any registered resource descriptors.
   def self.clear_resource_descriptors

@@ -19,7 +19,7 @@ module Crichton
     #
     # @return [String] The type.
     def type
-      'semantic'
+      SEMANTIC
     end
   end
 end
