@@ -1,11 +1,20 @@
+require 'crichton/descriptors/base'
+require 'crichton/descriptors/link'
 require 'crichton/descriptors/resource'
+require 'crichton/descriptors/semantic'
+require 'crichton/descriptors/transition'
 
 module Crichton
+  
+  ##
+  # References a semantic descriptor type.
+  SEMANTIC = 'semantic'
+  
   ##
   # Clears any registered resource descriptors.
   def self.clear_resource_descriptors
     @registered_resource_descriptors = nil
-    Descriptors::Resource.clear
+    ResourceDescriptor.clear
   end
 
   ##
@@ -17,14 +26,14 @@ module Crichton
   # @return [Hash] The registered resource descriptors, if any?
   def self.resource_descriptors
     unless @registered_resource_descriptors
-      unless Descriptors::Resource.registered_resources?
+      unless ResourceDescriptor.registered_resources?
         if location = config.resource_descriptors_location
           Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f| 
-            Descriptors::Resource.register(YAML.load_file(f))
+            ResourceDescriptor.register(YAML.load_file(f))
           end
         end
       end
-      @registered_resource_descriptors = Descriptors::Resource.registered_resources
+      @registered_resource_descriptors = ResourceDescriptor.registered_resources
     end
     @registered_resource_descriptors
   end

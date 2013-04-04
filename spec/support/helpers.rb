@@ -1,20 +1,11 @@
 module Support
   module Helpers
-    
     def drds_descriptor
       YAML.load_file(drds_filename)
     end
 
-    def drd_descriptor
-      YAML.load_file(drd_filename)
-    end
-
     def drds_filename
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
-    end
-    
-    def drd_filename
-      fixture_path('resource_descriptors', 'drd_descriptor_v1.yml')
     end
     
     def resource_descriptor_fixtures
