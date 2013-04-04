@@ -2,7 +2,7 @@ require 'crichton/descriptors/nested'
 
 module Crichton
   ##
-  # Manages Resource Descriptor parsing and consumption for use decorating service responses or interacting with
+  # Manages Resource Descriptor parsing and consumption for decorating service responses or interacting with
   # Hypermedia types.
   class ResourceDescriptor < BaseDescriptor
     include NestedDescriptors
@@ -51,7 +51,7 @@ module Crichton
     #
     # @return [Boolean] true, if any resource descriptors are registered.
     def self.registered_resources?
-      !!(@registered_resources && !@registered_resources.empty?)
+      registered_resources.any?
     end
 
     ##
