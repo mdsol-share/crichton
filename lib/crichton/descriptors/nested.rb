@@ -10,7 +10,7 @@ module Crichton
     #
     # @return [Hash] The semantic descriptor instances.
     def semantics
-      @semantics ||= build_descriptors('semantics')
+      @semantics ||= build_descriptors(:semantics)
     end
 
     ##
@@ -18,13 +18,13 @@ module Crichton
     #
     # @return [Hash] The transition descriptor instances.
     def transitions
-      @transitions ||= build_descriptors('transitions')
+      @transitions ||= build_descriptors(:transitions)
     end
     
   private
     def build_descriptors(nesting)
-      klass = nesting == 'semantics' ? SemanticDescriptor : TransitionDescriptor
-      (descriptor_document[nesting] || {}).inject({}) do |h, (id, descriptor_hash)|
+      klass = nesting == :semantics ? SemanticDescriptor : TransitionDescriptor
+      (descriptor_document[nesting.to_s] || {}).inject({}) do |h, (id, descriptor_hash)|
         h[id] = klass.new(descriptor_hash, {id: id}); h
       end
     end
