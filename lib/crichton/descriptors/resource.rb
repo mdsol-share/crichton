@@ -26,15 +26,15 @@ module Crichton
       when Hash
         descriptor
       else
-        raise ArgumentError, "Document #{descriptor} must be a String or a Hash."  
+        raise ArgumentError, "Document #{descriptor} must be a String or a Hash."
       end
 
-      ResourceDescriptor.new(hash_descriptor).tap do |resource|
-        if registered_resources[resource.id]
-          raise ArgumentError, "Resource descriptor for #{resource.id} is already registered." 
+      ResourceDescriptor.new(hash_descriptor).tap do |descriptor|
+        if registered_resources[descriptor.to_key]
+          raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered." 
         end
           
-        registered_resources[resource.id] = resource 
+        registered_resources[descriptor.to_key] = descriptor 
       end
     end
 
@@ -70,6 +70,14 @@ module Crichton
     def entry_point
       descriptor_document['entry_point']
     end
+    
+    ##
+    # Converts the descriptor to a key for registration.
+    #
+    # @return [String] The key.
+    def to_key
+      "#{id}:#{version}"
+    end
 
     ##
     # The version of the resource descriptor.
@@ -83,7 +91,6 @@ module Crichton
     def verify_descriptor(descriptor)
       err_msg = ''
       err_msg << " missing id in #{descriptor.inspect}" unless descriptor['id']
-      err_msg << " missing name in #{descriptor.inspect}" unless descriptor['name']
       err_msg << " missing version for the resource #{descriptor['name']}." unless descriptor['version']
       
       raise ArgumentError, 'Resource descriptor:' << err_msg unless err_msg.empty?
