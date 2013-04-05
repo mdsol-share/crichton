@@ -1,104 +1,136 @@
-# A resource descriptor is a configuration file that defines the semantic data, states, and 
-# state transitions associated with a particular resource independent of protocol and 
+# A resource descriptor is a declarative configuration file that defines the semantic data,  
+# states, and state transitions associated with a particular resource independent of protocol 
 # media-type. Further, it also defines protocol specific templates for links that can be 
-# included in the response and populated based on the associated state. By including optional 
-# routes related metadata in the configuration, routes.rb mappings can be managed DRYly in 
-# the resource descriptor file.
+# and  included in the response and populated based on the associated state. By including  
+# optional routes related metadata in the configuration, routes.rb mappings can be managed  
+# DRYly in the resource descriptor file.
 #
 # The following sections facilitate a number of objectives including generating an ALPS profile 
 # of the resource, generating human readable documents including sample representations, 
 # decorating service responses, and scaffolding routes, controllers and models.
 
-id: drds:v1.0.0
-name: drds
+id: DRDs
 version: v1.0.0
-doc: Describes the semantics and transitions associated with DRDs.
+doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self:
-    href: http://alps.io.example.org/DRDs
+    href: {alps_base}/DRDs
   help:
-    href: http://schema.example.org/Things/DRDs
-    
-# Metadata associated with the resource that is used to publish the entry point to a discovery 
-# service listing entry points for resources.
-entry_point:
-  http: drds
-  
+    href: {documentation_base}/Things/DRDs
+ 
 # This section associates a simple state-machine DSL with the particular resource. It shows
 # the state name and lists the data and application affordances available in that state and 
 # what states are exposed by following the transitions.
 #
 # TODO: Investigate adding metadata on states and transitions and treat as descriptors
-states: 
-  collection:
-    start: true
-    transitions:
-      - self:
-        alias: list
-        next:
-          - collection
-      - search:
-        next:
-          - navigation
-          - error
-      - create:
-        next:
-          - error
-          - created: drd
-    substate:
-      items:
-        resource: drd
-        state: item    
-  navigation:
-    transitions:
-      - self:
-        next:
-          - navigation
-      - search:
-        next:
-          - navigation
-          - error
-    substate:
-      items:
-        resource: drd
-        state: item           
-  item: &item
-    transistions:
-      - self:
-        alias: show
-        next:
-          - item
-      - update:
-        next:
-          - item
-      - delete:
-        next:
-          - collection: drds
-      - leviathan:
-        associated: true
-  created:
-    <<: *item
-    substate:
-      resource: leviathan
-      state: _cache
-  updated:
-    <<: *item 
-  deleted:
-    end: true
-  error:
-    resource: errors
+states:
+  drds:
+    collection:
+      start: true
+      transitions:
+        - self:
+          alias: list
+          next:
+            - collection
+        - search:
+          next:
+            - navigation
+            - error
+        - create:
+          next:
+            - error
+            - created: drd
+      substate:
+        items:
+          resource: drd
+          state: item    
+    navigation:
+      transitions:
+        - self:
+          next:
+            - navigation
+        - search:
+          next:
+            - navigation
+            - error
+      substate:
+        items:
+          resource: drd
+          state: item           
+  drd:
+    item: &item
+      transistions:
+        - self:
+          alias: show
+          next:
+            - item
+        - deactivate:
+          next:
+           - deactivated
+        - update:
+          next:
+            - item
+        - delete:
+          next:
+            - collection: drds
+        - leviathan:
+          associated: true
+    activated:
+      <<: *item
+    deactivated:
+      transistions:
+        - self:
+          alias: show
+          next:
+            - item
+        - activate:
+          next:
+           - activated
+        - update:
+          next:
+            - item
+        - delete:
+          next:
+            - collection: drds
+        - leviathan:
+          associated: true
+    created:
+      <<: *item
+      substate:
+        resource: leviathan
+        state: _cache
+    updated:
+      <<: *item 
+    deleted:
+      end: true
+    error:
+      resource: errors
       
 # Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
 # represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
 # to generate sample representations of the a resource in different media-types.
 semantics:
+  drds:
+    doc: A list of DRDs.
+    links:
+      self:
+        href: {alps_base}/DRDs#drds
+    semantics:
+      total_count:
+        doc: The total count of DRDs.
+        href: http://alps.io/schema.org/Integer
+        sample: 1
+      items:
+        doc: An array of embedded DRD resources.
+        href: drd
+        embed: multiple # Select non-ALPS values are treated as extensions in the profile.
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
       built by a Leviathan as it grows.
     links:
       self:
-        href: http://alps.io.example.org/DRDs#drd
+        href: {alps_base}/DRDs#drd
     semantics:
       uuid:
         doc: The UUID of the DRD.
@@ -127,193 +159,138 @@ semantics:
       leviathan:
         doc: The associated Leviathan resource.
         href: http://alps.io/schema.org/Thing/Leviathan
+        name: embedded
         embed: optional
-  drds:
-    doc: A list of DRDs.
-    links:
-      self:
-        href: http://alps.io.example.org/DRDs#drds
-    semantics:
-      total_count:
-        doc: The total count of DRDs.
-        href: http://alps.io.example.org/schema.org/Integer
-        sample: 1
-      items:
-        doc: An array of embedded DRD resources.
-        href: http://alps.io.example.org/DRDs#drd
-        embed: multiple # Select non-ALPS values are treated as extensions in the profile.
-       
+   
 # Transition descriptors represent application affordances and in the context of ALPS 
 # represent type='safe,unsafe,idempotent' descriptors. 
 transitions:
-  list: 
-    doc: 
-    links:
-      rel: http://descriptions.example.org/rel/create
-    type: safe
-    rt: http://alps.io.example.org/DRDs#drds
-  search:
-    links:
-      rel: http://descriptions.example.com/rel/search
-    type: safe
-    rt: http://alps.io.example.org/DRDs
-    semantics:
-      search_term:
-        doc: The terms to search.
-        href: http://alps.io/schema.org/Text 
-  show: 
-    links:
-      rel: http://descriptions.example.com/rel/show
-    type: safe
-    rt: http://alps.io/schema.org/DRDs#drd
-  leviathan:
-    links:
-      rel: http://descriptions.example.com/rel/leviathan
-    type: safe
-    rt: http://alps.io/schema.org/Leviathan
-    associated: true # Indicates this link is to associated data to differentiate from the resource itself.
-  create:
-    links:
-      rel: http://descriptions.example.org/rel/create
-    type: unsafe
-    rt: http://alps.io.example.org/DRD
-    template:
-      create-drd:
-        links:
-          self:
-            href: http://alps.io.example.org/DRDs#create/create-drd
-          help:
-            href: http://example.org/Forms/create-drd
-        semantics:
-          name:
-            doc: The name of the DRD.
-            href: http://alps.io/schema.org/Text
-            field_type: input
-            validators:
-              - properties:
-                name:
-                  type: string
-                  description: The validation name.
-                rule:
-                  type: object
-                  description:
-                message:
-                  type: string
-                  description: Optional message template.
-                  required: false
-                message_code: 
-                  type: string
-                  description: Optional message code that can be used to internationalize messages.
-          status:
-            doc: How is the DRD.
-            href: http://alps.io/schema.org/Text
-            field_type: select
-            enum:
-              - working
-              - renegade
-              - broken
-            validators:
-              - presence
-          kind:
-            doc: What kind is it.
-            href: http://alps.io/schema.org/Text
-            field_type: multi-select
-            enum:
-              - standard
-              - sentinel
-            validators:
-              - presence
-          leviathan_uuid:
-            doc: The UUID of the creator Leviathan.
-            href: http://alps.io/schema.org/Text
-            field_type: select
-            enum:
-              href: http://alps.io.example.org/Leviathans#list
-            validators:
-              - presence
-  update:
-    links:
-      rel: http://descriptions.example.com/rel/update
-    type: idempotent
-    template:
-      update-drd:
-        links:
-          profile:
-            href: http://example.com/Forms/update-drd
-        semantics:
-          name:
-            doc: The name of the DRD.
-            href: http://alps.io/schema.org/Text
-            field_type: input
-            validators:
-              - presence
-          status:
-            doc: How is the DRD.
-            href: http://alps.io/schema.org/Text
-            field_type: select
-            enum:
-              - working
-              - renegade
-              - broken
-            validators:
-              - presence
-          kind:
-            doc: What kind is it.
-            href: http://alps.io/schema.org/Text
-            field_type: multi-select
-            enum:
-              - standard
-              - sentinel
-            validators:
-              - presence
-  delete:
-    links:
-      rel: http://descriptions.example.com/rel/delete
-    type: idempotent
-
+  drds:
+    list: 
+      doc: Returns a list of DRDs.
+      type: safe
+      rt: drds
+    search:
+      doc: Returns a list of DRDs that satisfy the search term.
+      type: safe
+      rt: drds
+      semantics:
+        search_term:
+          doc: The terms to search.
+          href: http://alps.io/schema.org/Text
+    create:
+      doc: Creates a DRD.
+      type: unsafe
+      rt: drd
+      semantics:
+        create-drd:
+          href: drd/update/update-drd # Indicates that this should dereference update-drd
+          links:
+            self: 
+              href: {alps_base}DRDs#drd/create/create-drd
+            help:
+              href: {documentation_base}/Forms/create-drd
+          semantics:
+            name:
+              doc: The name of the DRD.
+              href: http://alps.io/schema.org/Text
+              field_type: input
+              validators:
+                - presence
+            leviathan_uuid:
+              doc: The UUID of the creator Leviathan.
+              href: http://alps.io/schema.org/Text
+              field_type: select
+              enum:
+                href: http://alps.io.example.org/Leviathans#list
+              validators:
+                - presence
+  drd:
+    show:
+      doc: Shows a particular DRD.
+      type: safe
+      rt: drd
+    activate:
+      doc: Activates a DRD if it is deactivated.
+      type: idempotent
+      rt: drd
+    deactivate:
+      doc: Deactivates a DRD if it is activated.
+      type: idempotent
+      rt: drd
+    leviathan:
+      doc: A reference to the Leviathan the DRD works on.
+      type: safe
+      rt: http://alps.io/schema.org/Leviathan#leviathan
+      name: linked
+    update:
+      doc: Updates a DRD.
+      type: idempotent
+      semantics:
+        update-drd:
+          links:
+            self: 
+              href: {alps_base}/DRDs#drd/update/update-drd  
+            help:
+              href: {documentation_base}/Forms/update-drd
+          semantics:
+            status:
+              doc: How is the DRD.
+              href: http://alps.io/schema.org/Text
+              field_type: select
+              enum:
+                - working
+                - renegade
+                - broken
+              validators:
+                - presence
+            kind:
+              doc: What kind is it.
+              href: http://alps.io/schema.org/Text
+              field_type: multi-select
+              enum:
+                - standard
+                - sentinel
+              validators:
+                - presence 
+    delete:
+      doc: Drops a DRD out an air-lock.
+      type: idempotent
 
 # The protocol descriptors section defines the protocol affordances associated with the 
 # application affordances. This decouples protocol specific information from the 
 # semantic description of a resource and its affordances.
 protocols:
   http:
-    list:
-      uri: drds
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-      slt:
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50 
-    search: 
-      uri: drds{?search_term}
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-      slt:
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50
-    show:
-      uri: drd/{uuid}
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-      slt:
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50  
-    create:
+    drds:
+      list:
+        uri: drds
+        entry_point: true # Indicates this endpoint is a resource entry point for the protocol.
+        method: GET
+        content_types:
+          - application/json
+          - application/hal+json
+          - application/xhtml+xml
+        headers:
+        status_codes:
+        slt:
+          99th_percentile: 100ms
+          std_dev: 25ms
+          requests_per_second: 50 
+      search: 
+        uri: drds{?search_term}
+        method: GET
+        content_types:
+          - application/json
+          - application/hal+json
+        headers:
+        status_codes:
+        slt:
+          99th_percentile: 100ms
+          std_dev: 25ms
+          requests_per_second: 50
+      drd:
+        create:
           uri: drds
           method: POST
           content_types:
@@ -324,53 +301,89 @@ protocols:
           slt:
             99th_percentile: 250ms
             std_dev: 50ms
-            requests_per_second: 25
-    update:
-      uri: drd/{uuid}
-      method: PUT
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-      slt:
-        99th_percentile: 250ms
-        std_dev: 50ms
-        requests_per_second: 25
-    delete:
-      uri: drds/{uuid}
-      method: DELETE
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-      slt: 
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50   
+            requests_per_second: 25           
+    drd:
+      show:
+        uri: drd/{uuid}
+        method: GET
+        content_types:
+          - application/json
+          - application/hal+json
+        headers:
+        status_codes:
+        slt:
+          99th_percentile: 100ms
+          std_dev: 25ms
+          requests_per_second: 50 
+      activate:
+        uri: drd/{uuid}/activate
+        method: PUT
+        content_types:
+          - application/json
+          - application/hal+json
+        headers:
+        status_codes:
+        slt:
+          99th_percentile: 100ms
+          std_dev: 25ms
+          requests_per_second: 50
+      deactivate:
+        uri: drd/{uuid}/deactivate
+        method: PUT
+        content_types:
+          - application/json
+          - application/hal+json
+        headers:
+        status_codes:
+        slt:
+          99th_percentile: 100ms
+          std_dev: 25ms
+          requests_per_second: 50
+      update:
+        uri: drd/{uuid}
+        method: PUT
+        content_types:
+          - application/json
+          - application/hal+json
+        headers:
+        status_codes:
+        slt:
+          99th_percentile: 250ms
+          std_dev: 50ms
+          requests_per_second: 25
+      delete:
+        uri: drds/{uuid}
+        method: DELETE
+        content_types:
+          - application/json
+          - application/hal+json
+        headers:
+        status_codes:
+        slt: 
+          99th_percentile: 100ms
+          std_dev: 25ms
+          requests_per_second: 50   
         
 # This optional section defines the route mapping for the resource that can be used in 
 # lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
 # application. It has nothing to do with the resource semantics per se, but is rather
 # a convenience for DRYing out routing in a service.
 routes:
-  list: 
-    controller: drds_controller
-    action: index
-  search: 
-    controller: drds_controller
-    action: index
-  show: 
-    controller: drds_controller
-    action: show
-  create: 
-    controller: drds_controller
-    action: create
-  update: 
-    controller: drds_controller
-    action: update
-  delete: 
-    controller: drds_controller
-    action: update
-    
+  drds:
+    list: &list
+      controller: drds_controller
+      action: index
+    search: *list
+    create: 
+      controller: drds_controller
+      action: create
+  drd:
+    show: 
+      controller: drds_controller
+      action: show
+    update: 
+      controller: drds_controller
+      action: update
+    delete: 
+      controller: drds_controller
+      action: update

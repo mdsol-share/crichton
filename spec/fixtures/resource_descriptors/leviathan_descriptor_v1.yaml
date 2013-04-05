@@ -1,30 +1,11 @@
-# A resource descriptor is a configuration file that defines the semantic data, states, and 
-# state transitions associated with a particular resource independent of protocol and 
-# media-type. Further, it also defines protocol specific templates for links that can be 
-# included in the response and populated based on the associated state. By including optional 
-# routes related metadata in the configuration, routes.rb mappings can be managed DRYly in 
-# the resource descriptor file.
-#
-# The following sections facilitate a number of objectives including generating an ALPS profile 
-# of the resource, generating human readable documents including sample representations, 
-# decorating service responses, and scaffolding routes, controllers and models.
-
-# Metadata associated with the resource that is used to publish the entry point to a discovery 
-# service listing entry points for resources.
-id: leviathan:v1.0.0
-name: leviathan
+id: Leviathan
 version: v1.0.0
-_links:
+doc: Leviathans are bio-mechanoid ships that move freely among the stars.
+links:
   self:
-    href: http://alps.io/schema.org/Leviathan
+    href: {alps_base}/Leviathan
   help:
-    href: http://schema.example.org/Things/Leviathan
-doc: |
-  Leviathans are bio-mechanoid ships that move freely among the stars.
-
-# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
-# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
-# to generate sample representations of the a resource in different media-types.
+    href: {documentation_base}/Things/Leviathan
 semantics:
   uuid:
     doc: The UUID of the Leviathan.
