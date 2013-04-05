@@ -3,9 +3,9 @@ version: v1.0.0
 doc: Leviathans are bio-mechanoid ships that move freely among the stars.
 links:
   self:
-    href: {alps_base}/Leviathan
+    href: alps_base/Leviathan
   help:
-    href: {documentation_base}/Things/Leviathan
+    href: documentation_base/Things/Leviathan
 semantics:
   uuid:
     doc: The UUID of the Leviathan.

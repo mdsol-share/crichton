@@ -91,6 +91,9 @@ The top-level of a _Resource Descriptor_ contains metadata associated with the p
 * `id`- The ID of the profile as a upper camel-case name of the profile. Used to generate the profile URI:  REQUIRED.
 * `doc`- Documents the contents of the profile: REQUIRED.
 * `links` - Links related to the profile: RECOMMENDED. 
+
+  Note: In order to dereference URIs in the document to point to the base ALPS location, use `alps_base`. To
+  reference the human-readable documentation base, use `documentation_base`.
 * `version` - The version of the document(for internal use): REQUIRED.
 
 ## States
