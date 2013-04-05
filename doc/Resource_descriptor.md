@@ -129,6 +129,11 @@ individual semantic descriptors.
 * `enum` - Defines the options for select field types or references another profile associated with the enum: OPTIONAL.
 * `validators` - An array of validator objects associated with a field: OPTIONAL.
 
+Given that transitions have unique ids relative to the same block of transitions, it may be necessary to define
+transitions in the context of a semantic descriptor. This would only happen if for some reason, two different resources
+in a profile had the same transition name pointing to different endpoints. Ideally, profiles should be designed to
+avoid this situation.
+
 ## Protocols
 Defines the protocol specific implementation of the transitions defined semantically for the resource(s) in the 
 profile. Currently, only `http` is implemented. Each transitions must be defined in a protocol section, although 

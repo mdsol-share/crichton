@@ -165,204 +165,199 @@ semantics:
 # Transition descriptors represent application affordances and in the context of ALPS 
 # represent type='safe,unsafe,idempotent' descriptors. 
 transitions:
-  drds:
-    list: 
-      doc: Returns a list of DRDs.
-      type: safe
-      rt: drds
-    search:
-      doc: Returns a list of DRDs that satisfy the search term.
-      type: safe
-      rt: drds
-      semantics:
-        search_term:
-          doc: The terms to search.
-          href: http://alps.io/schema.org/Text
-    create:
-      doc: Creates a DRD.
-      type: unsafe
-      rt: drd
-      semantics:
-        create-drd:
-          href: drd/update/update-drd # Indicates that this should dereference update-drd
-          links:
-            self: 
-              href: {alps_base}DRDs#drd/create/create-drd
-            help:
-              href: {documentation_base}/Forms/create-drd
-          semantics:
-            name:
-              doc: The name of the DRD.
-              href: http://alps.io/schema.org/Text
-              field_type: input
-              validators:
-                - presence
-            leviathan_uuid:
-              doc: The UUID of the creator Leviathan.
-              href: http://alps.io/schema.org/Text
-              field_type: select
-              enum:
-                href: http://alps.io.example.org/Leviathans#list
-              validators:
-                - presence
-  drd:
-    show:
-      doc: Shows a particular DRD.
-      type: safe
-      rt: drd
-    activate:
-      doc: Activates a DRD if it is deactivated.
-      type: idempotent
-      rt: drd
-    deactivate:
-      doc: Deactivates a DRD if it is activated.
-      type: idempotent
-      rt: drd
-    leviathan:
-      doc: A reference to the Leviathan the DRD works on.
-      type: safe
-      rt: http://alps.io/schema.org/Leviathan#leviathan
-      name: linked
-    update:
-      doc: Updates a DRD.
-      type: idempotent
-      semantics:
-        update-drd:
-          links:
-            self: 
-              href: {alps_base}/DRDs#drd/update/update-drd  
-            help:
-              href: {documentation_base}/Forms/update-drd
-          semantics:
-            status:
-              doc: How is the DRD.
-              href: http://alps.io/schema.org/Text
-              field_type: select
-              enum:
-                - working
-                - renegade
-                - broken
-              validators:
-                - presence
-            kind:
-              doc: What kind is it.
-              href: http://alps.io/schema.org/Text
-              field_type: multi-select
-              enum:
-                - standard
-                - sentinel
-              validators:
-                - presence 
-    delete:
-      doc: Drops a DRD out an air-lock.
-      type: idempotent
+  list: 
+    doc: Returns a list of DRDs.
+    type: safe
+    rt: drds
+  search:
+    doc: Returns a list of DRDs that satisfy the search term.
+    type: safe
+    rt: drds
+    semantics:
+      search_term:
+        doc: The terms to search.
+        href: http://alps.io/schema.org/Text
+  create:
+    doc: Creates a DRD.
+    type: unsafe
+    rt: drd
+    semantics:
+      create-drd:
+        href: drd/update/update-drd # Indicates that this should dereference update-drd
+        links:
+          self: 
+            href: {alps_base}DRDs#drd/create/create-drd
+          help:
+            href: {documentation_base}/Forms/create-drd
+        semantics:
+          name:
+            doc: The name of the DRD.
+            href: http://alps.io/schema.org/Text
+            field_type: input
+            validators:
+              - presence
+          leviathan_uuid:
+            doc: The UUID of the creator Leviathan.
+            href: http://alps.io/schema.org/Text
+            field_type: select
+            enum:
+              href: http://alps.io.example.org/Leviathans#list
+            validators:
+              - presence
+  show:
+    doc: Shows a particular DRD.
+    type: safe
+    rt: drd
+  activate:
+    doc: Activates a DRD if it is deactivated.
+    type: idempotent
+    rt: drd
+  deactivate:
+    doc: Deactivates a DRD if it is activated.
+    type: idempotent
+    rt: drd
+  leviathan:
+    doc: A reference to the Leviathan the DRD works on.
+    type: safe
+    rt: http://alps.io/schema.org/Leviathan#leviathan
+    name: linked
+  update:
+    doc: Updates a DRD.
+    type: idempotent
+    semantics:
+      update-drd:
+        links:
+          self: 
+            href: {alps_base}/DRDs#drd/update/update-drd  
+          help:
+            href: {documentation_base}/Forms/update-drd
+        semantics:
+          status:
+            doc: How is the DRD.
+            href: http://alps.io/schema.org/Text
+            field_type: select
+            enum:
+              - working
+              - renegade
+              - broken
+            validators:
+              - presence
+          kind:
+            doc: What kind is it.
+            href: http://alps.io/schema.org/Text
+            field_type: multi-select
+            enum:
+              - standard
+              - sentinel
+            validators:
+              - presence 
+  delete:
+    doc: Drops a DRD out an air-lock.
+    type: idempotent
 
 # The protocol descriptors section defines the protocol affordances associated with the 
 # application affordances. This decouples protocol specific information from the 
 # semantic description of a resource and its affordances.
 protocols:
   http:
-    drds:
-      list:
-        uri: drds
-        entry_point: true # Indicates this endpoint is a resource entry point for the protocol.
-        method: GET
-        content_types:
-          - application/json
-          - application/hal+json
-          - application/xhtml+xml
-        headers:
-        status_codes:
-        slt:
-          99th_percentile: 100ms
-          std_dev: 25ms
-          requests_per_second: 50 
-      search: 
-        uri: drds{?search_term}
-        method: GET
-        content_types:
-          - application/json
-          - application/hal+json
-        headers:
-        status_codes:
-        slt:
-          99th_percentile: 100ms
-          std_dev: 25ms
-          requests_per_second: 50
-      drd:
-        create:
-          uri: drds
-          method: POST
-          content_types:
-            - application/json
-            - application/hal+json
-          headers:
-          status_codes:
-          slt:
-            99th_percentile: 250ms
-            std_dev: 50ms
-            requests_per_second: 25           
-    drd:
-      show:
-        uri: drd/{uuid}
-        method: GET
-        content_types:
-          - application/json
-          - application/hal+json
-        headers:
-        status_codes:
-        slt:
-          99th_percentile: 100ms
-          std_dev: 25ms
-          requests_per_second: 50 
-      activate:
-        uri: drd/{uuid}/activate
-        method: PUT
-        content_types:
-          - application/json
-          - application/hal+json
-        headers:
-        status_codes:
-        slt:
-          99th_percentile: 100ms
-          std_dev: 25ms
-          requests_per_second: 50
-      deactivate:
-        uri: drd/{uuid}/deactivate
-        method: PUT
-        content_types:
-          - application/json
-          - application/hal+json
-        headers:
-        status_codes:
-        slt:
-          99th_percentile: 100ms
-          std_dev: 25ms
-          requests_per_second: 50
-      update:
-        uri: drd/{uuid}
-        method: PUT
-        content_types:
-          - application/json
-          - application/hal+json
-        headers:
-        status_codes:
-        slt:
-          99th_percentile: 250ms
-          std_dev: 50ms
-          requests_per_second: 25
-      delete:
-        uri: drds/{uuid}
-        method: DELETE
-        content_types:
-          - application/json
-          - application/hal+json
-        headers:
-        status_codes:
-        slt: 
-          99th_percentile: 100ms
-          std_dev: 25ms
-          requests_per_second: 50   
+    list:
+      uri: drds
+      entry_point: true # Indicates this endpoint is a resource entry point for the protocol.
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+        - application/xhtml+xml
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50 
+    search: 
+      uri: drds{?search_term}
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+    create:
+      uri: drds
+      method: POST
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 250ms
+        std_dev: 50ms
+        requests_per_second: 25           
+    show:
+      uri: drd/{uuid}
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50 
+    activate:
+      uri: drd/{uuid}/activate
+      method: PUT
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+    deactivate:
+      uri: drd/{uuid}/deactivate
+      method: PUT
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+    update:
+      uri: drd/{uuid}
+      method: PUT
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt:
+        99th_percentile: 250ms
+        std_dev: 50ms
+        requests_per_second: 25
+    delete:
+      uri: drds/{uuid}
+      method: DELETE
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: 
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50   
         
 # This optional section defines the route mapping for the resource that can be used in 
 # lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
