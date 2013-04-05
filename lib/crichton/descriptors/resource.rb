@@ -10,7 +10,7 @@ module Crichton
     ##
     # Clears all registered resource descriptors
     def self.clear
-      @registered_resources = nil
+      @registry = nil
     end
     
     ##
@@ -30,28 +30,28 @@ module Crichton
       end
 
       ResourceDescriptor.new(hash_descriptor).tap do |descriptor|
-        if registered_resources[descriptor.to_key]
+        if registry[descriptor.to_key]
           raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered." 
         end
           
-        registered_resources[descriptor.to_key] = descriptor 
+        registry[descriptor.to_key] = descriptor 
       end
     end
 
     ##
-    # Lists the registered resources.
+    # Lists the registered resources descriptors.
     #
     # @return [Hash] The registered resource descriptors, if any.
-    def self.registered_resources
-      @registered_resources ||= {}
+    def self.registry
+      @registry ||= {}
     end
 
     ##
     # Whether any resource descriptors have been registered or not.
     #
     # @return [Boolean] true, if any resource descriptors are registered.
-    def self.registered_resources?
-      registered_resources.any?
+    def self.registrations?
+      registry.any?
     end
 
     ##

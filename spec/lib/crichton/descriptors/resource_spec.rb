@@ -10,7 +10,7 @@ module Crichton
       it 'clears all registered resource descriptors' do
         ResourceDescriptor.register(drds_descriptor)
         ResourceDescriptor.clear
-        ResourceDescriptor.registered_resources.should be_empty
+        ResourceDescriptor.registry.should be_empty
       end
     end
     
@@ -32,7 +32,7 @@ module Crichton
       shared_examples_for 'a resource descriptor registration' do
         it 'registers a resource descriptor' do
           ResourceDescriptor.register(@descriptor)
-          ResourceDescriptor.registered_resources['DRDs:v1.0.0'].should be_instance_of(ResourceDescriptor)
+          ResourceDescriptor.registry['DRDs:v1.0.0'].should be_instance_of(ResourceDescriptor)
         end
       end
 
@@ -83,25 +83,25 @@ module Crichton
       end
     end
     
-    describe '.registered_resources' do
+    describe '.registry' do
       it 'returns an empty hash hash if no resource descriptors are registered' do
-        ResourceDescriptor.registered_resources.should be_empty
+        ResourceDescriptor.registry.should be_empty
       end
       
       it 'returns a hash of registered resource descriptors instances keyed by resource descriptor id' do
         resource_descriptor = ResourceDescriptor.register(drds_descriptor)
-        ResourceDescriptor.registered_resources[resource_descriptor.to_key].should == resource_descriptor
+        ResourceDescriptor.registry[resource_descriptor.to_key].should == resource_descriptor
       end
     end
 
-    describe '.registered_resources?' do
+    describe '.registrations?' do
       it 'returns false if no resource descriptors are registered' do
-        ResourceDescriptor.registered_resources?.should be_false
+        ResourceDescriptor.registrations?.should be_false
       end
 
       it 'returns true if resource descriptors are registered' do
         ResourceDescriptor.register(drds_descriptor)
-        ResourceDescriptor.registered_resources?.should be_true
+        ResourceDescriptor.registrations?.should be_true
       end
     end
     

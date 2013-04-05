@@ -1,21 +1,21 @@
 require 'spec_helper'
 
 describe Crichton do
-  describe '.clear_resource_descriptors' do
+  describe '.clear_registry' do
     before do
-      Crichton.clear_resource_descriptors
+      Crichton.clear_registry
     end
   
     it 'clears any registered resource descriptors' do
       Crichton::ResourceDescriptor.register(drds_descriptor)
-      Crichton.clear_resource_descriptors
-      Crichton::ResourceDescriptor.registered_resources.should be_empty
+      Crichton.clear_registry
+      Crichton::ResourceDescriptor.registry.should be_empty
     end
   end
   
-  describe '.resource_descriptors' do
+  describe '.registry' do
     before do
-      Crichton.clear_resource_descriptors
+      Crichton.clear_registry
     end
   
     context 'with a directory of resource descriptors specified' do
@@ -24,7 +24,7 @@ describe Crichton do
       end
   
       it 'loads resource descriptors from a resource descriptor directory if configured' do
-        Crichton.resource_descriptors.count.should == 2
+        Crichton.registry.count.should == 2
       end
     end
   
@@ -35,11 +35,11 @@ describe Crichton do
   
       it 'returns any manually registered resource descriptors' do
         descriptor = Crichton::ResourceDescriptor.register(drds_descriptor)
-        Crichton.resource_descriptors[descriptor.to_key].should == descriptor
+        Crichton.registry[descriptor.to_key].should == descriptor
       end
   
       it 'returns an empty hash if no resource descriptors are registered' do
-        Crichton.resource_descriptors.should be_empty
+        Crichton.registry.should be_empty
       end
     end
   end
