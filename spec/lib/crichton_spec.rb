@@ -35,7 +35,7 @@ describe Crichton do
   
       it 'returns any manually registered resource descriptors' do
         descriptor = Crichton::ResourceDescriptor.register(drds_descriptor)
-        Crichton.resource_descriptors[descriptor.id].should == descriptor
+        Crichton.resource_descriptors[descriptor.to_key].should == descriptor
       end
   
       it 'returns an empty hash if no resource descriptors are registered' do

@@ -32,7 +32,7 @@ module Crichton
       shared_examples_for 'a resource descriptor registration' do
         it 'registers a resource descriptor' do
           ResourceDescriptor.register(@descriptor)
-          ResourceDescriptor.registered_resources['drds:v1.0.0'].should be_instance_of(ResourceDescriptor)
+          ResourceDescriptor.registered_resources['DRDs:v1.0.0'].should be_instance_of(ResourceDescriptor)
         end
       end
 
@@ -66,11 +66,6 @@ module Crichton
           expect { ResourceDescriptor.register(descriptor) }.to raise_error(ArgumentError)
         end
 
-        it 'raises an error if no name is specified in the resource descriptor' do
-          descriptor.delete('name')
-          expect { ResourceDescriptor.register(descriptor) }.to raise_error(ArgumentError)
-        end
-
         it 'raises an error if no version is specified in the resource descriptor' do
           descriptor.delete('version')
           expect { ResourceDescriptor.register(descriptor) }.to raise_error(ArgumentError)
@@ -95,7 +90,7 @@ module Crichton
       
       it 'returns a hash of registered resource descriptors instances keyed by resource descriptor id' do
         resource_descriptor = ResourceDescriptor.register(drds_descriptor)
-        ResourceDescriptor.registered_resources[resource_descriptor.id].should == resource_descriptor
+        ResourceDescriptor.registered_resources[resource_descriptor.to_key].should == resource_descriptor
       end
     end
 
@@ -109,17 +104,17 @@ module Crichton
         ResourceDescriptor.registered_resources?.should be_true
       end
     end
-
-    describe '#entry_point' do
-      it 'returns a hash of entry points keyed by protocol' do
-        resource_descriptor = ResourceDescriptor.new(drds_descriptor)
-        resource_descriptor.entry_point.should == {'http' => 'drds'}
+    
+    let(:resource_descriptor) { ResourceDescriptor.new(drds_descriptor) }
+    
+    describe '#to_key' do
+      it 'returns a key from the ID and version of the resource descriptor' do
+        resource_descriptor.to_key.should == 'DRDs:v1.0.0'
       end
     end
 
     describe '#version' do
       it 'returns the verions specified in the resource descriptor' do
-        resource_descriptor = ResourceDescriptor.new(drds_descriptor)
         resource_descriptor.version.should == 'v1.0.0'
       end
     end
