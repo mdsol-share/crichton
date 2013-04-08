@@ -64,14 +64,6 @@ module Crichton
     end
 
     ##
-    # The entry_point, keyed by protocol, of the resource descriptor.
-    #
-    # @return [Hash] The entry point objects.
-    def entry_point
-      descriptor_document['entry_point']
-    end
-    
-    ##
     # Converts the descriptor to a key for registration.
     #
     # @return [String] The key.
