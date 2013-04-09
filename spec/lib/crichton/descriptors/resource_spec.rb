@@ -107,6 +107,24 @@ module Crichton
     
     let(:resource_descriptor) { ResourceDescriptor.new(drds_descriptor) }
     
+    describe '#protocols' do
+      it 'returns a hash protocol-specific transition descriptors keyed by protocol' do
+        resource_descriptor.protocols['http'].should_not be_empty
+      end
+      
+      context 'with unknown protocol' do
+        it 'returns nil' do
+          resource_descriptor.protocols['unknown'].should be_nil
+        end
+      end
+    end
+    
+    describe '#protocol_transition' do
+      it 'returns a protocol specific transition descriptor' do
+        resource_descriptor.protocol_transition('http', 'list').should be_instance_of(HttpDescriptor)
+      end
+    end
+    
     describe '#to_key' do
       it 'returns a key from the ID and version of the resource descriptor' do
         resource_descriptor.to_key.should == 'DRDs:v1.0.0'
@@ -114,7 +132,7 @@ module Crichton
     end
 
     describe '#version' do
-      it 'returns the verions specified in the resource descriptor' do
+      it 'returns the versions specified in the resource descriptor' do
         resource_descriptor.version.should == 'v1.0.0'
       end
     end

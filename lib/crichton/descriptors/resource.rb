@@ -62,6 +62,35 @@ module Crichton
       super
       verify_descriptor(descriptor_document)
     end
+    
+    ##
+    # Returns the protocol transition descriptors specified in the resource descriptor document.
+    #
+    # @return [Hash] The protocol transition descriptors.
+    def protocols
+      @protocol_descriptors ||= begin
+        (descriptor_document['protocols'] || {}).inject({}) do |h, (protocol, protocol_transitions)|
+          klass = case protocol
+                  when 'http' then HttpDescriptor
+                  end
+          h[protocol] = (protocol_transitions || {}).inject({}) do |transitions, (transition, transition_descriptor)|
+            transitions[transition] = klass.new(self, transition_descriptor, id: transition); transitions
+          end
+          h
+        end
+      end
+    end
+    
+    ##
+    # Returns a protocol-specific transition descriptor.
+    #
+    # @param [String] protocol The protocol name.
+    # @param [String] transition_name The transition name.
+    #
+    # @return [Object] The descriptor instance.
+    def protocol_transition(protocol, transition_name)
+      protocols[protocol] && protocols[protocol][transition_name] 
+    end
 
     ##
     # Converts the descriptor to a key for registration.

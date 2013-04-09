@@ -3,7 +3,7 @@ module Crichton
   # The BaseDescriptor class is an abstract base class for descriptors.
   class BaseDescriptor
     # @private
-    EXCLUDED_VARIABLES = %w(@resource_descriptor @descriptor_document).map(&:to_sym)
+    EXCLUDED_VARIABLES = %w(@descriptor_document @protocol_descriptors @resource_descriptor).map(&:to_sym)
         
     ##
     # Constructs a new instance of base.
