@@ -2,7 +2,8 @@ module Crichton
   ##
   # Adds lazy-loaded nested descriptors to descriptor classes.
   #
-  # Requires the presence of a <tt>descriptor_document</tt> property on classes including this module that 
+  # Requires the presence of a <tt>resource_descriptor</tt> property on classes including this module that 
+  # returns a Crichton::ResourceDescriptor instance and the presence of a <tt>descriptor_document</tt> property on that 
   # returns a hash of descriptors keyed by the descriptor id.
   module NestedDescriptors
     ##
@@ -25,7 +26,7 @@ module Crichton
     def build_descriptors(nesting)
       klass = nesting == :semantics ? SemanticDescriptor : TransitionDescriptor
       (descriptor_document[nesting.to_s] || {}).inject({}) do |h, (id, descriptor_hash)|
-        h[id] = klass.new(descriptor_hash, {id: id}); h
+        h[id] = klass.new(resource_descriptor, descriptor_hash, {id: id}); h
       end
     end
   end

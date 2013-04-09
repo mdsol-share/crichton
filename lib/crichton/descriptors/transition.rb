@@ -3,9 +3,7 @@ require 'crichton/descriptors/nested'
 module Crichton
   ##
   # Manages state transition information associated with resource descriptors.
-  class TransitionDescriptor < BaseDescriptor
-    include NestedDescriptors
-    
+  class TransitionDescriptor < Descriptor
     ##
     # The return value of the descriptor.
     #

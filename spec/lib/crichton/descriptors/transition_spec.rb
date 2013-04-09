@@ -4,7 +4,7 @@ module Crichton
   describe TransitionDescriptor do
     let(:transitions) { drds_descriptor['transitions']}
     let(:descriptor_document) { transitions[@rel || 'list'] }
-    let(:descriptor) { TransitionDescriptor.new(descriptor_document, @options) }
+    let(:descriptor) { TransitionDescriptor.new(mock('resource_descriptor'), descriptor_document, @options) }
 
     describe '.new' do
       it 'returns a subclass of BaseDescriptor' do

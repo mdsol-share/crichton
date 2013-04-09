@@ -1,11 +1,7 @@
-require 'crichton/descriptors/nested'
-
 module Crichton
   ##
   # Manages semantic information associated with resource descriptors.
-  class SemanticDescriptor < BaseDescriptor
-    include NestedDescriptors
-    
+  class SemanticDescriptor < Descriptor
     ##
     # A sample value for the descriptor.
     #

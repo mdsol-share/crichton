@@ -78,6 +78,12 @@ module Crichton
     def version
       descriptor_document['version']
     end
+    
+    private
+    # Implements method for the module NestedDescriptors
+    def resource_descriptor
+      self
+    end
 
     # TODO: Delegate to Lint when implemented.
     def verify_descriptor(descriptor)

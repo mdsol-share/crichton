@@ -3,17 +3,16 @@ module Crichton
   # The BaseDescriptor class is an abstract base class for descriptors.
   class BaseDescriptor
     # @private
-    EXCLUDED_VARIABLES = %w(@descriptor_document).map(&:to_sym)
+    EXCLUDED_VARIABLES = %w(@resource_descriptor @descriptor_document).map(&:to_sym)
         
     ##
     # Constructs a new instance of base.
     #
     # Subclasses MUST call <tt>super</tt> in their constructors and override the <tt>type</tt> method.
     #
-    # @param [Hash] descriptor_document The underlying descriptor document.
+    # @param [Hash] descriptor_document The section of the descriptor document representing this instance.
     # @param [Hash] options Optional arguments.
     # @option options [Symbol] :id Set or override the id of the descriptor.
-    
     def initialize(descriptor_document, options = {})
       @descriptor_document = descriptor_document && descriptor_document.dup || {}
       @options = options || {}
