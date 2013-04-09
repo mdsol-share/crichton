@@ -12,9 +12,9 @@ module Crichton
   
   ##
   # Clears any registered resource descriptors.
-  def self.clear_resource_descriptors
-    @registered_resource_descriptors = nil
-    ResourceDescriptor.clear
+  def self.clear_registry
+    @registry = nil
+    ResourceDescriptor.clear_registry
   end
 
   ##
@@ -24,17 +24,17 @@ module Crichton
   # descriptors in that location.
   #
   # @return [Hash] The registered resource descriptors, if any?
-  def self.resource_descriptors
-    unless @registered_resource_descriptors
-      unless ResourceDescriptor.registered_resources?
+  def self.registry
+    unless @registry
+      unless ResourceDescriptor.registrations?
         if location = config.resource_descriptors_location
           Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f| 
             ResourceDescriptor.register(YAML.load_file(f))
           end
         end
       end
-      @registered_resource_descriptors = ResourceDescriptor.registered_resources
+      @registry = ResourceDescriptor.registry
     end
-    @registered_resource_descriptors
+    @registry
   end
 end
