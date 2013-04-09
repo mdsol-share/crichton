@@ -14,7 +14,7 @@ module Crichton
   # Clears any registered resource descriptors.
   def self.clear_registry
     @registry = nil
-    ResourceDescriptor.clear
+    ResourceDescriptor.clear_registry
   end
 
   ##

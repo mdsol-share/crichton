@@ -3,13 +3,13 @@ require 'spec_helper'
 module Crichton
   describe  ResourceDescriptor do
     before do
-      ResourceDescriptor.clear
+      ResourceDescriptor.clear_registry
     end
 
-    describe '.clear' do
+    describe '.clear_registry' do
       it 'clears all registered resource descriptors' do
         ResourceDescriptor.register(drds_descriptor)
-        ResourceDescriptor.clear
+        ResourceDescriptor.clear_registry
         ResourceDescriptor.registry.should be_empty
       end
     end
