@@ -4,7 +4,7 @@ module Crichton
   ##
   # Manages Resource Descriptor parsing and consumption for decorating service responses or interacting with
   # Hypermedia types.
-  class ResourceDescriptor < BaseDescriptor
+  class ResourceDescriptor < BaseSemanticDescriptor
     include NestedDescriptors
     
     ##

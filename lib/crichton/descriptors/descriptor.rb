@@ -1,7 +1,7 @@
 require 'crichton/descriptors/nested'
 
 module Crichton
-  class Descriptor < BaseDescriptor
+  class Descriptor < BaseSemanticDescriptor
     include NestedDescriptors
 
     ##

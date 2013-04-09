@@ -1,14 +1,14 @@
 module Crichton
-  ## 
-  # The BaseDescriptor class is an abstract base class for descriptors.
+  ##
+  # Manage base functionality for all descriptors.
   class BaseDescriptor
     # @private
     EXCLUDED_VARIABLES = %w(@descriptor_document @protocol_descriptors @resource_descriptor).map(&:to_sym)
-        
+
     ##
     # Constructs a new instance of base.
     #
-    # Subclasses MUST call <tt>super</tt> in their constructors and override the <tt>type</tt> method.
+    # Subclasses MUST call <tt>super</tt> in their constructors.
     #
     # @param [Hash] descriptor_document The section of the descriptor document representing this instance.
     # @param [Hash] options Optional arguments.
@@ -18,20 +18,12 @@ module Crichton
       @options = options || {}
       @id = @options[:id]
     end
-    
+
     ##
     # The underlying descriptor document.
     #
     # @return [Hash] The descriptor document.
     attr_reader :descriptor_document
-    
-    ##
-    # The id of the descriptor.
-    #
-    # @return [String] The id.
-    def id
-      @id ||= descriptor_document['id']
-    end
 
     ##
     # The description of the descriptor.
@@ -40,7 +32,30 @@ module Crichton
     def doc
       descriptor_document['doc']
     end
-    
+
+    ##
+    # The id of the descriptor.
+    #
+    # @return [String] The id.
+    def id
+      @id ||= descriptor_document['id']
+    end
+
+    # @private
+    # Overrides inspect to remove the descriptor document for readability
+    def inspect
+      ivars = (instance_variables - EXCLUDED_VARIABLES).map do |ivar|
+        "#{ivar}=#{instance_variable_get(ivar).inspect}"
+      end
+      '#<%s:0x%s %s>' % [self.class.name, self.hash.to_s(16), ivars.join(", ")]
+    end
+  end
+  
+  ## 
+  # The BaseSemanticDescriptor class is an abstract base class for semantic descriptors.
+  # 
+  # Subclasses MUST override the <tt>type</tt> method.
+  class BaseSemanticDescriptor < BaseDescriptor 
     ##
     # The descriptor links.
     #
@@ -71,15 +86,6 @@ module Crichton
     # @return [String] The type.
     def type
       raise 'The method #type is an abstract method that must be overridden in subclasses.'
-    end
-
-    # @private
-    # Overrides inspect to remove the descriptor document for readability
-    def inspect
-      ivars = (instance_variables - EXCLUDED_VARIABLES).map do |ivar|
-        "#{ivar}=#{instance_variable_get(ivar).inspect}"
-      end
-      '#<%s:0x%s %s>' % [self.class.name, self.hash.to_s(16), ivars.join(", ")]
     end
   end
 end

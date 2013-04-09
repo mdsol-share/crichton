@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 module Crichton
-  describe BaseDescriptor do
+  describe BaseSemanticDescriptor do
     let(:descriptor_document) { drds_descriptor }
-    let(:descriptor) { BaseDescriptor.new(descriptor_document, @options) }
+    let(:descriptor) { BaseSemanticDescriptor.new(descriptor_document, @options) }
 
     describe '#descriptor_document' do
       it 'returns the descriptor passed to the constructor' do
@@ -66,7 +66,7 @@ module Crichton
 
       context 'with no name specified' do
         it 'returns nil' do
-          descriptor = BaseDescriptor.new(drds_descriptor.reject { |k, _| k == 'name' })
+          descriptor = BaseSemanticDescriptor.new(drds_descriptor.reject { |k, _| k == 'name' })
           descriptor.name.should be_nil
         end
       end

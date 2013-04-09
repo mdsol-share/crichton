@@ -1,5 +1,3 @@
-require 'crichton/descriptors/nested'
-
 module Crichton
   ##
   # Manages state transition information associated with resource descriptors.

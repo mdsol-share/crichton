@@ -8,8 +8,8 @@ module Crichton
     let(:descriptor) { TransitionDescriptor.new(resource_descriptor, descriptor_document, id: 'list') }
 
     describe '.new' do
-      it 'returns a subclass of BaseDescriptor' do
-        descriptor.should be_a(BaseDescriptor)
+      it 'returns a subclass of BaseSemanticDescriptor' do
+        descriptor.should be_a(BaseSemanticDescriptor)
       end
 
       it_behaves_like 'a nested descriptor'
