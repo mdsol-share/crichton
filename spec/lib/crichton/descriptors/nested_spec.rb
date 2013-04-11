@@ -5,10 +5,12 @@ module Crichton
     class SimpleTestClass
       include NestedDescriptors
       
-      def initialize(descriptor_document)
+      def initialize(resource_descriptor, descriptor_document)
+        @resource_descriptor = resource_descriptor
         @descriptor_document = descriptor_document
       end
 
+      attr_reader :resource_descriptor
       attr_reader :descriptor_document
     end
 
@@ -22,7 +24,7 @@ module Crichton
       end
     end
     
-    let(:descriptor) { SimpleTestClass.new(@descriptor) }
+    let(:descriptor) { SimpleTestClass.new(mock('resource_descriptor'), @descriptor) }
     
     it_behaves_like 'a nested descriptor'
     

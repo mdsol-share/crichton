@@ -262,15 +262,21 @@ protocols:
   http:
     list:
       uri: drds
-      entry_point: true # Indicates this endpoint is a resource entry point for the protocol.
+      entry_point: drds # Indicates this endpoint is a resource entry point for the protocol.
       method: GET
       content_types:
         - application/json
         - application/hal+json
         - application/xhtml+xml
       headers:
+        - Content-Type
+        - ETag
       status_codes:
-      slt:
+        200:
+          status: OK
+          definitions:
+            - We have processed your request and returned the data you asked for.
+      slt: &slt1
         99th_percentile: 100ms
         std_dev: 25ms
         requests_per_second: 50 
@@ -282,10 +288,10 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt:
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50
+      slt: &slt2
+        99th_percentile: 250ms
+        std_dev: 50ms
+        requests_per_second: 25
     create:
       uri: drds
       method: POST
@@ -294,10 +300,7 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt:
-        99th_percentile: 250ms
-        std_dev: 50ms
-        requests_per_second: 25           
+      slt: *slt2  
     show:
       uri: drd/{uuid}
       method: GET
@@ -306,10 +309,7 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt:
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50 
+      slt: *slt1
     activate:
       uri: drd/{uuid}/activate
       method: PUT
@@ -318,10 +318,7 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt:
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50
+      slt: *slt1
     deactivate:
       uri: drd/{uuid}/deactivate
       method: PUT
@@ -330,10 +327,7 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt:
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50
+      slt: *slt1
     update:
       uri: drd/{uuid}
       method: PUT
@@ -342,10 +336,7 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt:
-        99th_percentile: 250ms
-        std_dev: 50ms
-        requests_per_second: 25
+      slt: *slt2
     delete:
       uri: drds/{uuid}
       method: DELETE
@@ -354,10 +345,7 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt: 
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50   
+      slt: *slt1
         
 # This optional section defines the route mapping for the resource that can be used in 
 # lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra

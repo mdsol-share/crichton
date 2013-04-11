@@ -17,8 +17,8 @@ module Crichton
     describe '.new' do
       let(:descriptor) { ResourceDescriptor.new(drds_descriptor) }
 
-      it 'returns a subclass of BaseDescriptor' do
-        descriptor.should be_a(BaseDescriptor)
+      it 'returns a subclass of BaseSemanticDescriptor' do
+        descriptor.should be_a(BaseSemanticDescriptor)
       end
       
       it_behaves_like 'a nested descriptor'
@@ -107,6 +107,36 @@ module Crichton
     
     let(:resource_descriptor) { ResourceDescriptor.new(drds_descriptor) }
     
+    describe '#semantics' do
+      it 'returns a hash of semantic descriptors' do
+        resource_descriptor.semantics.should_not be_empty
+      end
+    end
+    
+    describe '#protocols' do
+      it 'returns a hash protocol-specific transition descriptors keyed by protocol' do
+        resource_descriptor.protocols['http'].should_not be_empty
+      end
+      
+      context 'with unknown protocol' do
+        it 'returns nil' do
+          resource_descriptor.protocols['unknown'].should be_nil
+        end
+      end
+    end
+    
+    describe '#protocol_transition' do
+      it 'returns a protocol specific transition descriptor' do
+        resource_descriptor.protocol_transition('http', 'list').should be_instance_of(HttpDescriptor)
+      end
+    end
+
+    describe '#transitions' do
+      it 'returns a hash of transition descriptors' do
+        resource_descriptor.semantics.should_not be_empty
+      end
+    end
+    
     describe '#to_key' do
       it 'returns a key from the ID and version of the resource descriptor' do
         resource_descriptor.to_key.should == 'DRDs:v1.0.0'
@@ -114,7 +144,7 @@ module Crichton
     end
 
     describe '#version' do
-      it 'returns the verions specified in the resource descriptor' do
+      it 'returns the versions specified in the resource descriptor' do
         resource_descriptor.version.should == 'v1.0.0'
       end
     end

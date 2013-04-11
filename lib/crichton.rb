@@ -1,5 +1,7 @@
 require 'crichton/descriptors/base'
+require 'crichton/descriptors/descriptor'
 require 'crichton/descriptors/link'
+require 'crichton/descriptors/http'
 require 'crichton/descriptors/resource'
 require 'crichton/descriptors/semantic'
 require 'crichton/descriptors/transition'
