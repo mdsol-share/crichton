@@ -74,7 +74,8 @@ module Crichton
                   when 'http' then HttpDescriptor
                   end
           h[protocol] = (protocol_transitions || {}).inject({}) do |transitions, (transition, transition_descriptor)|
-            transitions[transition] = klass.new(self, transition_descriptor, id: transition); transitions
+            transitions[transition] = klass.new(self, transition_descriptor, id: transition)
+            transitions
           end
           h
         end
