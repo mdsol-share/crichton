@@ -13,247 +13,278 @@ id: DRDs
 version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
-  self:
+  - rel: self
     href: alps_base/DRDs
-  help:
+  - rel: help
     href: documentation_base/Things/DRDs
  
 # This section associates a simple state-machine DSL with the particular resource. It shows
-# the state name and lists the data and application affordances available in that state and 
-# what states are exposed by following the transitions.
-#
-# TODO: Investigate adding metadata on states and transitions and treat as descriptors
+# the state name and lists the data and application affordances available in that state, 
+# conditions for inclusion of a transition in a response and what states are exposed by 
+# following the transitions.
+
 states:
   drds:
     collection:
-      start: true
+      doc: The entry point state for interacting with DRDs.
+      location: entry
       transitions:
-        - self:
-          alias: list
+        self:
+          href: list
           next:
             - collection
-        - search:
+        search:
           next:
             - navigation
-            - error
-        - create:
+        create:
+          conditions:
+            - can_create 
+            - can_do_anything
           next:
-            - error
-            - created: drd
-      substate:
-        items:
-          resource: drd
-          state: item    
+            - activated
+            - error   
     navigation:
+      doc: Represents a filtered list of DRDs.
       transitions:
-        - self:
+        self:
+          href: search
           next:
             - navigation
-        - search:
+        search:
           next:
-            - navigation
-            - error
-      substate:
-        items:
-          resource: drd
-          state: item           
+            - navigation        
   drd:
-    item: &item
+    activated:  
+      doc: The default state of a DRD.
       transistions:
-        - self:
+        self:
           alias: show
           next:
             - item
-        - deactivate:
+        deactivate:
+          conditions:
+            - can_deactivate 
+            - can_update 
+            - can_do_anything
           next:
            - deactivated
-        - update:
+        delete:
+          conditions:
+            - airlock_open 
+            - can_delete 
+            - can_do_anything
           next:
-            - item
-        - delete:
+            - deleted
+        leviathan:
           next:
-            - collection: drds
-        - leviathan:
-          associated: true
-    activated:
-      <<: *item
+            - http://alps.io/schema.org/Leviathans#leviathan
     deactivated:
+      doc: The DRD is shut down.
       transistions:
-        - self:
+        self:
           alias: show
           next:
             - item
-        - activate:
+        activate:
+          conditions:
+            - can_activate 
+            - can_update 
+            - can_do_anything
           next:
            - activated
-        - update:
+        update:
+          conditions:
+            - can_update 
+            - can_do_anything
           next:
-            - item
-        - delete:
+            - deactivated
+        delete:
+          conditions:
+            - airlock_open 
+            - can_delete 
+            - can_do_anything
           next:
-            - collection: drds
-        - leviathan:
-          associated: true
-    created:
-      <<: *item
-      substate:
-        resource: leviathan
-        state: _cache
-    updated:
-      <<: *item 
+            - deleted
+        leviathan:
+          next:
+            - http://alps.io/schema.org/Leviathans#leviathan
     deleted:
-      end: true
+      location: exit
     error:
-      resource: errors
+      href: http://alps.io/schema.org/Error
       
 # Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
 # represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
 # to generate sample representations of the a resource in different media-types.
-semantics:
-  drds:
-    doc: A list of DRDs.
+#
+# Transition descriptors represent application affordances and in the context of ALPS 
+# represent type='safe,unsafe,idempotent' descriptors. 
+
+descriptors:
+  - id: drds
+    doc: 
+      html: <p>A list of DRDs.</p>
+    type: semantic
     links:
-      self:
+      - rel: self
         href: alps_base/DRDs#drds
-    semantics:
-      total_count:
+    descriptors:
+      # Semantics
+      - id: total_count
         doc: The total count of DRDs.
+        type: semantic
         href: http://alps.io/schema.org/Integer
         sample: 1
-      items:
+      - id: items
         doc: An array of embedded DRD resources.
+        type: semantic
         href: drd
         embed: multiple # Select non-ALPS values are treated as extensions in the profile.
-  drd:
+      # Transitions
+      - id: list
+        doc: Returns a list of DRDs.
+        type: safe
+        rt: drds
+      - id: search
+        doc: Returns a list of DRDs that satisfy the search term.
+        type: safe
+        rt: drds
+        descriptors:
+          - id: search_term
+            doc: The terms to search.
+            type: semantic
+            href: http://alps.io/schema.org/Text
+      - id: create
+        doc: Creates a DRD.
+        type: unsafe
+        rt: drd
+        descriptors:
+          create-drd:
+            type: semantic
+            href: drd/update/update-drd # Indicates that this should dereference update-drd
+            links:
+              - rel: self 
+                href: alps_base/DRDs#drd/create/create-drd
+              - rel: help
+                href: documentation_base/Forms/create-drd
+            descriptors:
+              - id: form-name
+                name: name
+                doc: The name of the DRD.
+                type: semantic
+                href: http://alps.io/schema.org/Text
+                field_type: input
+                validators:
+                  - presence
+              - id: form-leviathan_uuid
+                name: leviathan_uuid
+                doc: The UUID of the creator Leviathan.
+                type: semantic
+                href: http://alps.io/schema.org/Text
+                field_type: select
+                enum:
+                  href: http://alps.io.example.org/Leviathans#list
+                validators:
+                  - presence     
+  - id: drd
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
       built by a Leviathan as it grows.
+    type: semantic
     links:
-      self:
+      - rel: self
         href: alps_base/DRDs#drd
-    semantics:
-      uuid:
+    descriptors:
+      # Semantics
+      - id: uuid
         doc: The UUID of the DRD.
+        type: semantic
         href: http://alps.io/schema.org/Text
         sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
-      name:
+      - id: name
         doc: The name of the DRD.
+        type: semantic
         href: http://alps.io/schema.org/Text
         sample: 1812
-      status:
+      - id: status
         doc: How is the DRD.
+        type: semantic
         href: http://alps.io/schema.org/Text
         sample: renegade
-      kind:
+      - id: kind
         doc: What kind is it.
+        type: semantic
         href: http://alps.io/schema.org/Text
         sample: standard
-      leviathan_uuid:
+      - id: leviathan_uuid
         doc: The UUID of the creator Leviathan.
+        type: semantic
         href: http://alps.io/schema.org/Text
         sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
-      built_at:
+      - id: built_at
         doc: When the DRD was constructed.
+        type: semantic
         href: http://alps.io/schema.org/DateTime
         sample: 2013-03-20T00:00:00+00:00
-      leviathan:
+      - id: leviathan
         doc: The associated Leviathan resource.
+        type: semantic
         href: http://alps.io/schema.org/Thing/Leviathan
-        name: embedded
         embed: optional
-   
-# Transition descriptors represent application affordances and in the context of ALPS 
-# represent type='safe,unsafe,idempotent' descriptors. 
-transitions:
-  list: 
-    doc: Returns a list of DRDs.
-    type: safe
-    rt: drds
-  search:
-    doc: Returns a list of DRDs that satisfy the search term.
-    type: safe
-    rt: drds
-    semantics:
-      search_term:
-        doc: The terms to search.
-        href: http://alps.io/schema.org/Text
-  create:
-    doc: Creates a DRD.
-    type: unsafe
-    rt: drd
-    semantics:
-      create-drd:
-        href: drd/update/update-drd # Indicates that this should dereference update-drd
-        links:
-          self: 
-            href: alps_baseDRDs#drd/create/create-drd
-          help:
-            href: documentation_base/Forms/create-drd
-        semantics:
-          name:
-            doc: The name of the DRD.
-            href: http://alps.io/schema.org/Text
-            field_type: input
-            validators:
-              - presence
-          leviathan_uuid:
-            doc: The UUID of the creator Leviathan.
-            href: http://alps.io/schema.org/Text
-            field_type: select
-            enum:
-              href: http://alps.io.example.org/Leviathans#list
-            validators:
-              - presence
-  show:
-    doc: Shows a particular DRD.
-    type: safe
-    rt: drd
-  activate:
-    doc: Activates a DRD if it is deactivated.
-    type: idempotent
-    rt: drd
-  deactivate:
-    doc: Deactivates a DRD if it is activated.
-    type: idempotent
-    rt: drd
-  leviathan:
-    doc: A reference to the Leviathan the DRD works on.
-    type: safe
-    rt: http://alps.io/schema.org/Leviathan#leviathan
-    name: linked
-  update:
-    doc: Updates a DRD.
-    type: idempotent
-    semantics:
-      update-drd:
-        links:
-          self: 
-            href: alps_base/DRDs#drd/update/update-drd  
-          help:
-            href: documentation_base/Forms/update-drd
-        semantics:
-          status:
-            doc: How is the DRD.
-            href: http://alps.io/schema.org/Text
-            field_type: select
-            enum:
-              - working
-              - renegade
-              - broken
-            validators:
-              - presence
-          kind:
-            doc: What kind is it.
-            href: http://alps.io/schema.org/Text
-            field_type: multi-select
-            enum:
-              - standard
-              - sentinel
-            validators:
-              - presence 
-  delete:
-    doc: Drops a DRD out an air-lock.
-    type: idempotent
+      # Transitions
+      - id: show
+        doc: Shows a particular DRD.
+        type: safe
+        rt: drd
+      - id: activate
+        doc: Activates a DRD if it is deactivated.
+        type: idempotent
+        rt: drd
+      - id: deactivate
+        doc: Deactivates a DRD if it is activated.
+        type: idempotent
+        rt: drd
+      - id: leviathan-link
+        name: leviathan
+        doc: A reference to the Leviathan the DRD works on.
+        type: safe
+        rt: http://alps.io/schema.org/Leviathan#leviathan
+      - id: update
+        doc: Updates a DRD.
+        type: idempotent
+        descriptors:
+          - id: update-drd
+            type: semantic
+            links:
+              - rel: self 
+                href: alps_base/DRDs#drd/update/update-drd  
+              - rel: help
+                href: documentation_base/Forms/update-drd
+            descriptors:
+              - id: form-status
+                doc: How is the DRD.
+                href: http://alps.io/schema.org/Text
+                name: status
+                field_type: select
+                enum:
+                  - working
+                  - renegade
+                  - broken
+                validators:
+                  - presence
+              - id: form-kind
+                name: kind
+                doc: What kind is it.
+                href: http://alps.io/schema.org/Text
+                field_type: multi-select
+                enum:
+                  - standard
+                  - sentinel
+                validators:
+                  - presence 
+      - id: delete
+        doc: Drops a DRD out an air-lock.
+        type: idempotent    
 
 # The protocol descriptors section defines the protocol affordances associated with the 
 # application affordances. This decouples protocol specific information from the 
