@@ -21,12 +21,9 @@ module Crichton
       #
       # @return [Array] The descriptor instances.
       def descriptors
-        @descriptors[:all] ||= begin
-          (descriptor_document['descriptors'] || []).map do |descriptor_section|
-            klass = SEMANTIC_TYPES.include?(descriptor_section['type']) ? Semantic : Transition
-            klass.new(resource_descriptor, descriptor_section)
-          end.freeze
-        end
+        @descriptors[:all] ||= (descriptor_document['descriptors'] || []).map do |descriptor_section|
+          Detail.new(resource_descriptor, descriptor_section)
+        end.freeze
       end
     
       ##
@@ -62,6 +59,7 @@ module Crichton
       def transition?
         TRANSITION_TYPES.include?(type)
       end
+      
       ##
       # @!attribute transitions [r]
       # The nested transition descriptors keyed by descriptor name.

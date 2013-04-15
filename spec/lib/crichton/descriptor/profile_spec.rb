@@ -62,7 +62,7 @@ module Crichton
           end
   
           it 'returns an hash of semantic descriptors' do
-            descriptor.semantics.all? { |_, descriptor| descriptor.type == 'semantic' }.should be_true
+            descriptor.semantics.all? { |_, descriptor| descriptor.semantic? }.should be_true
           end
         end 
   
@@ -81,7 +81,7 @@ module Crichton
           end
   
           it 'returns a hash of transition descriptors' do
-            descriptor.transitions.all? { |_, descriptor| descriptor.type != 'semantic' }.should be_true
+            descriptor.transitions.all? { |_, descriptor| descriptor.transition? }.should be_true
           end
         end
   

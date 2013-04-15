@@ -74,8 +74,7 @@ module Crichton
                     when 'http' then Http
                     end
             h[protocol] = (protocol_transitions || {}).inject({}) do |transitions, (transition, transition_descriptor)|
-              transitions[transition] = klass.new(self, transition_descriptor)
-              transitions
+              transitions.tap { |hash| hash[transition] = klass.new(self, transition_descriptor) }
             end
             h
           end
