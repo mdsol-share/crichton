@@ -1,22 +1,16 @@
-require 'crichton/descriptors/base'
-require 'crichton/descriptors/descriptor'
-require 'crichton/descriptors/link'
-require 'crichton/descriptors/http'
-require 'crichton/descriptors/resource'
-require 'crichton/descriptors/semantic'
-require 'crichton/descriptors/transition'
+require 'crichton/descriptor/base'
+require 'crichton/descriptor/http'
+require 'crichton/descriptor/profile'
+require 'crichton/descriptor/resource'
+require 'crichton/descriptor/semantic'
+require 'crichton/descriptor/transition'
 
 module Crichton
-  
-  ##
-  # References a semantic descriptor type.
-  SEMANTIC = 'semantic'
-  
   ##
   # Clears any registered resource descriptors.
   def self.clear_registry
     @registry = nil
-    ResourceDescriptor.clear_registry
+    Descriptor::Resource.clear_registry
   end
 
   ##
@@ -28,15 +22,38 @@ module Crichton
   # @return [Hash] The registered resource descriptors, if any?
   def self.registry
     unless @registry
-      unless ResourceDescriptor.registrations?
+      unless Descriptor::Resource.registrations?
         if location = config.resource_descriptors_location
           Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f| 
-            ResourceDescriptor.register(YAML.load_file(f))
+            Descriptor::Resource.register(YAML.load_file(f))
           end
         end
       end
-      @registry = ResourceDescriptor.registry
+      @registry = Descriptor::Resource.registry
     end
     @registry
   end
 end
+
+# YARD macros definitions for re-use in different classes. These must defined in the first loaded class to
+# be available in other classes.
+#
+# @!macro array_reader
+#   @!attribute [r] $1
+#   Returns the $1 of the underlying descriptor document.
+#   @return [Array] The descriptor $1.
+#
+# @!macro string_reader
+#   @!attribute [r] $1
+#   Returns the $1 of the underlying descriptor document.
+#   @return [String] The descriptor $1.
+#
+# @!macro hash_reader
+#   @!attribute [r] $1
+#   Returns the $1 of the underlying descriptor document.
+#   @return [Hash] The descriptor $1.
+#
+# @!macro object_reader
+#   @!attribute [r] $1
+#   Returns the $1 of the underlying descriptor document.
+#   @return [Object] The descriptor $1.
