@@ -28,6 +28,7 @@ module Crichton
       def links
         @links ||= (descriptor_document['links'] || [])
       end
+      alias :link :links # ALPS expects a singular property name.
 
       ##
       # Whether the descriptor is a semantic descriptor.

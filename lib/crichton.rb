@@ -5,6 +5,7 @@ require 'crichton/descriptor/detail'
 require 'crichton/descriptor/resource'
 require 'crichton/descriptor/state'
 require 'crichton/descriptor/state_transition'
+require 'crichton/serialization/alps'
 
 module Crichton
   ##
