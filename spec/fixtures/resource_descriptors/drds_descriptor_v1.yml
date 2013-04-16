@@ -25,93 +25,95 @@ links:
 
 states:
   drds:
-    collection:
+    - id: collection
       doc: The entry point state for interacting with DRDs.
       location: entry
       transitions:
-        self:
-          href: list
+        - id: list
+          name: self
           next:
             - collection
-        search:
+        - id: search
           next:
             - navigation
-        create:
+        - id: create
           conditions:
             - can_create 
             - can_do_anything
           next:
             - activated
             - error   
-    navigation:
+    - id: navigation
       doc: Represents a filtered list of DRDs.
       transitions:
-        self:
-          href: search
+        - id: search
+          name: self
           next:
             - navigation
-        search:
+        - id: search
           next:
             - navigation        
   drd:
-    activated:  
+    - id: activated 
       doc: The default state of a DRD.
       transistions:
-        self:
-          alias: show
+        - id: show
+          name: self
           next:
             - item
-        deactivate:
+        - id: deactivate
           conditions:
             - can_deactivate 
             - can_update 
             - can_do_anything
           next:
            - deactivated
-        delete:
+        - id: delete
           conditions:
             - airlock_open 
             - can_delete 
             - can_do_anything
           next:
             - deleted
-        leviathan:
+        - id: leviathan
           next:
-            - http://alps.io/schema.org/Leviathans#leviathan
-    deactivated:
+            - location: http://alps.io/schema.org/Leviathans#leviathan
+    - id: deactivated
       doc: The DRD is shut down.
       transistions:
-        self:
+        - id: self
           alias: show
           next:
             - item
-        activate:
+        - id: activate
           conditions:
             - can_activate 
             - can_update 
             - can_do_anything
           next:
            - activated
-        update:
+        - id: update
           conditions:
             - can_update 
             - can_do_anything
           next:
             - deactivated
-        delete:
+        - id: delete
           conditions:
             - airlock_open 
             - can_delete 
             - can_do_anything
           next:
             - deleted
-        leviathan:
+        - id: leviathan
           next:
-            - http://alps.io/schema.org/Leviathans#leviathan
-    deleted:
+            - location: http://alps.io/schema.org/Leviathans#leviathan
+    - id: deleted
+      doc: The DRD is now free-floating in space.
       location: exit
-    error:
-      href: http://alps.io/schema.org/Error
+    - id: error
+      doc: An error has occured.
+      location: http://alps.io/schema.org/Error
       
 # Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
 # represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
