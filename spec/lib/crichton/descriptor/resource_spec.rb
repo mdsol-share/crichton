@@ -132,6 +132,12 @@ module Crichton
           resource_descriptor.protocol_transition('http', 'list').should be_instance_of(Http)
         end
       end
+
+      describe '#states' do
+        it 'returns as hash of state descriptors keyed by resource' do
+          resource_descriptor.states['drds'].should_not be_empty
+        end
+      end
   
       describe '#to_key' do
         it 'returns a key from the ID and version of the resource descriptor' do
