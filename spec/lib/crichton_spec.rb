@@ -7,9 +7,9 @@ describe Crichton do
     end
   
     it 'clears any registered resource descriptors' do
-      Crichton::ResourceDescriptor.register(drds_descriptor)
+      Crichton::Descriptor::Resource.register(drds_descriptor)
       Crichton.clear_registry
-      Crichton::ResourceDescriptor.registry.should be_empty
+      Crichton::Descriptor::Resource.registry.should be_empty
     end
   end
   
@@ -34,7 +34,7 @@ describe Crichton do
       end
   
       it 'returns any manually registered resource descriptors' do
-        descriptor = Crichton::ResourceDescriptor.register(drds_descriptor)
+        descriptor = Crichton::Descriptor::Resource.register(drds_descriptor)
         Crichton.registry[descriptor.to_key].should == descriptor
       end
   
