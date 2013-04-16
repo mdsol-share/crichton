@@ -120,9 +120,12 @@ module Crichton
           resource_descriptor.protocols['http'].should_not be_empty
         end
         
-        context 'with unknown protocol' do
-          it 'returns nil' do
-            resource_descriptor.protocols['unknown'].should be_nil
+        context 'with unknown protocol in descriptor document' do
+          it 'raises an error' do
+            resource_descriptor.descriptor_document['protocols'] = {'unknown' => {}}
+            expect { resource_descriptor.protocols }.to raise_error(
+              'Unknown protocol unknown defined in resource descriptor document DRDs.'
+            )
           end
         end
       end
