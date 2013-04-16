@@ -58,7 +58,6 @@ module Support
                               "descriptor" => [
                                   {
                                       "id" => "create-leviathan",
-                                      "type" => "semantic",
                                       "link" => [
                                           {
                                               "rel" => "self",
@@ -69,6 +68,7 @@ module Support
                                               "href" => "documentation_base/Forms/create-leviathan"
                                           }
                                       ],
+                                      "type" => "semantic",
                                       "descriptor" => [
                                           {
                                               "id" => "form_name",

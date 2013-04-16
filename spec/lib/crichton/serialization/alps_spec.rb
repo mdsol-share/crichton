@@ -70,6 +70,27 @@ module Crichton
           end
         end
       end
+
+      describe '#to_json' do
+        context 'without options' do
+          it 'returns a hash in an ALPS profile structure' do
+            descriptor.to_json.should == alps_profile.to_json
+          end
+        end
+
+        context 'with top_level option false' do
+          it 'returns a hash in an ALPS descriptor structure' do
+            descriptor.to_json(top_level: false)['alps'].should_not =~ /^\"alps\"/
+          end
+        end
+
+        context 'with pretty option true' do
+          it 'returns a json alps profile pretty-formatted' do
+            MultiJson.should_receive(:dump).with(anything, pretty: true)
+            descriptor.to_json(pretty: true)
+          end
+        end
+      end
     end
   end
 end
