@@ -12,13 +12,40 @@ module Crichton
           descriptor.descriptor_document.should == descriptor_document
         end
       end
+      
+      describe '#doc' do
+        it 'returns the descriptor return doc' do
+          descriptor.doc.should == descriptor_document['doc']
+        end
+      end
+
+      describe '#id' do
+        it 'returns the descriptor id' do
+          descriptor.id.should == descriptor_document['id']
+        end
+      end
 
       describe '#resource_descriptor' do
         it 'returns the parent resource_descriptor instance' do
           descriptor.resource_descriptor.should == resource_descriptor
         end
       end
-      
+
+      describe '#name' do
+        context 'without a name defined in the descriptor document' do
+          it 'returns the id of the descriptor as a string' do
+            descriptor.name.should == descriptor_document['id']
+          end
+        end
+
+        context 'without a name defined in the descriptor document' do
+          it 'returns the name of the descriptor as a string' do
+            descriptor_document['name'] = 'name'
+            descriptor.name.should == descriptor_document['name']
+          end
+        end
+      end
+
       describe '#inspect' do
         it 'excludes the @descriptors ivar for readability' do
           descriptor.inspect.should_not =~ /.*@descriptors=.*/
