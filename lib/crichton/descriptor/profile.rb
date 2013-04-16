@@ -1,3 +1,6 @@
+require 'crichton/descriptor/base'
+require 'crichton/serialization/alps'
+
 module Crichton
   module Descriptor
     # Manages core profile functionality for all descriptors.
