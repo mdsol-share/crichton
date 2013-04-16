@@ -36,7 +36,7 @@ module Crichton
       end
   
       ##
-      # Lists the registered resources descriptors.
+      # Lists the registered resource descriptors.
       #
       # @return [Hash] The registered resource descriptors, if any.
       def self.registry
@@ -72,6 +72,8 @@ module Crichton
           (descriptor_document['protocols'] || {}).inject({}) do |h, (protocol, protocol_transitions)|
             klass = case protocol
                     when 'http' then Http
+                    else
+                      raise "Unknown protocol #{protocol} defined in resource descriptor document #{id}."
                     end
             h[protocol] = (protocol_transitions || {}).inject({}) do |transitions, (transition, transition_descriptor)|
               transitions.tap { |hash| hash[transition] = klass.new(self, transition_descriptor) }
@@ -90,6 +92,19 @@ module Crichton
       # @return [Object] The descriptor instance.
       def protocol_transition(protocol, transition_name)
         protocols[protocol] && protocols[protocol][transition_name] 
+      end
+
+      ##
+      # Returns the states defined for the resource descriptor.
+      #
+      # @return [Hash] The state instances.
+      def states
+        @descriptors[:state] ||= (descriptor_document['states'] || {}).inject({}) do |h, (resource, resource_states)|
+          h[resource] = (resource_states || {}).inject({}) do |states, (state, state_descriptor)|
+            states.tap { |hash| hash[state] = State.new(self, state_descriptor) }
+          end
+          h
+        end.freeze
       end
   
       ##
