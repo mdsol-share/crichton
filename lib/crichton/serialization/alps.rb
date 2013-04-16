@@ -37,7 +37,7 @@ module Crichton
       #
       # @return [Array] The descriptors.
       def alps_descriptors
-        @alps_descriptors ||= descriptors.map { |descriptor| descriptor.alps_hash(top_level: false) }
+        @alps_descriptors ||= descriptors.map { |descriptor| descriptor.to_alps_hash(top_level: false) }
       end
 
       ##
@@ -48,20 +48,22 @@ module Crichton
         @alps_elements ||= ALPS_ELEMENTS.inject({}) do |h, element|
           alps_element = send(element) if respond_to?(element)
           
-          h.tap do |hash|
-            if alps_element
-              hash[element] = if element == 'doc'
-                if alps_element.is_a?(Hash)
-                  format = alps_element.keys.first
-                  {'format' => format, 'value' => alps_element[format]}
-                else
-                  {'value' => alps_element }
-                end
+          result = if alps_element
+            case element.to_sym
+            when :doc
+              if alps_element.is_a?(Hash)
+                format = alps_element.keys.first
+                {'format' => format, 'value' => alps_element[format]}
               else
-                alps_element
+                {'value' => alps_element }
               end
+            when :link
+              alps_element unless alps_element.empty?
+            else
+              alps_element
             end
           end
+          h.tap { |hash| hash[element] = result if result }
         end
       end
 
@@ -73,7 +75,7 @@ module Crichton
       #   element. Default is <tt>true</tt>.
       #
       # @return [Hash] The hash.
-      def alps_hash(options = {})
+      def to_alps_hash(options = {})
         hash = options && options[:top_level] != false ?  {} : {'id' => id}
         hash.merge!(alps_elements.dup)
         hash.merge!(alps_attributes(exlcude_id: true).dup)
@@ -98,7 +100,7 @@ module Crichton
       # @return [Hash] The JSON string.
       def to_json(options = {})
         pretty = !!options.delete(:pretty)
-        MultiJson.dump(alps_hash(options), :pretty => pretty)
+        MultiJson.dump(to_alps_hash(options), :pretty => pretty)
       end
       
       private

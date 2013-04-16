@@ -153,6 +153,13 @@ module Crichton
           resource_descriptor.version.should == 'v1.0.0'
         end
       end
+
+
+      context 'with serialization' do
+        let(:descriptor) { Resource.new(leviathans_descriptor) }
+
+        it_behaves_like 'it serializes to ALPS'
+      end
     end
   end
 end

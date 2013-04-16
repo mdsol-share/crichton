@@ -34,6 +34,47 @@ module Support
       end
     end
     
+    shared_examples_for 'it serializes to ALPS' do
+      context 'when hash' do
+        describe '#to_alps_hash' do
+          context 'without options' do
+            it 'returns a hash in an ALPS profile structure' do
+              descriptor.to_alps_hash.should == alps_profile
+            end
+          end
+  
+          context 'with top_level option false' do
+            it 'returns a hash in an ALPS descriptor structure' do
+              descriptor.to_alps_hash(top_level: false)['alps'].should be_nil
+            end
+          end
+        end
+      end
+      
+      context 'when JSON' do
+        describe '#to_json' do
+          context 'without options' do
+            it 'returns a hash in an ALPS profile structure' do
+              descriptor.to_json.should == alps_profile.to_json
+            end
+          end
+  
+          context 'with top_level option false' do
+            it 'returns a hash in an ALPS descriptor structure' do
+              descriptor.to_json(top_level: false)['alps'].should_not =~ /^\"alps\"/
+            end
+          end
+  
+          context 'with pretty option true' do
+            it 'returns a json alps profile pretty-formatted' do
+              MultiJson.should_receive(:dump).with(anything, pretty: true)
+              descriptor.to_json(pretty: true)
+            end
+          end
+        end
+      end
+    end
+    
     private
     def fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', args)

@@ -6,13 +6,16 @@ module Crichton
       class SimpleAlpsTestClass 
         include ALPS
 
-        (ALPS_ATTRIBUTES | ALPS_ELEMENTS | %w(id links)).each do |property|
+        (ALPS_ATTRIBUTES | ALPS_ELEMENTS | %w(id)).each do |property|
           next if property == 'link'
           define_method(property) do
             descriptor_document[property]
           end
         end
         
+        def links
+          @links ||= descriptor_document['links'] || []
+        end
         alias :link :links
 
         define_method('descriptors') do
@@ -56,41 +59,8 @@ module Crichton
           }
         end
       end
-    
-      describe '#alps_hash' do
-        context 'without options' do
-          it 'returns a hash in an ALPS profile structure' do
-            descriptor.alps_hash.should == alps_profile
-          end
-        end
-        
-        context 'with top_level option false' do
-          it 'returns a hash in an ALPS descriptor structure' do
-            descriptor.alps_hash(top_level: false)['alps'].should be_nil
-          end
-        end
-      end
 
-      describe '#to_json' do
-        context 'without options' do
-          it 'returns a hash in an ALPS profile structure' do
-            descriptor.to_json.should == alps_profile.to_json
-          end
-        end
-
-        context 'with top_level option false' do
-          it 'returns a hash in an ALPS descriptor structure' do
-            descriptor.to_json(top_level: false)['alps'].should_not =~ /^\"alps\"/
-          end
-        end
-
-        context 'with pretty option true' do
-          it 'returns a json alps profile pretty-formatted' do
-            MultiJson.should_receive(:dump).with(anything, pretty: true)
-            descriptor.to_json(pretty: true)
-          end
-        end
-      end
+      it_behaves_like 'it serializes to ALPS'
     end
   end
 end
