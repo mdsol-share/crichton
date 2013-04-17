@@ -16,6 +16,7 @@ descriptors:
     ext:
       - href: alps_base/Leviathans#leviathan/note
         value: A note.
+    type: semantic
     descriptors:
       # Semantics
       - id: uuid
