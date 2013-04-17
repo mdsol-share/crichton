@@ -33,4 +33,5 @@ RSpec.configure do |config|
   config.order = 'random' unless ENV['RANDOMIZE'] == 'false'
   
   config.include Support::Helpers
+  config.include Support::ALPS
 end

@@ -2,6 +2,7 @@ module Crichton
   module Descriptor
     # Manages core profile functionality for all descriptors.
     class Profile < Base
+      include Crichton::Serialization::ALPS
     
       # The types of semantic descriptors.
       SEMANTIC_TYPES = %w(semantic)
@@ -19,7 +20,9 @@ module Crichton
           Detail.new(resource_descriptor, descriptor_section)
         end.freeze
       end
-    
+
+      # @!macro string_reader
+      descriptor_reader :ext
       ##
       # @!attribute [r] links
       # Returns the descriptor links as hashes.
@@ -28,6 +31,7 @@ module Crichton
       def links
         @links ||= (descriptor_document['links'] || [])
       end
+      alias :link :links # ALPS expects a singular property name.
 
       ##
       # Whether the descriptor is a semantic descriptor.

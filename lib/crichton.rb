@@ -1,3 +1,4 @@
+require 'crichton/serialization/alps'
 require 'crichton/descriptor/base'
 require 'crichton/descriptor/http'
 require 'crichton/descriptor/profile'

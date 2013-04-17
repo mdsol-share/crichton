@@ -7,7 +7,15 @@ module Support
     def drds_filename
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
-    
+
+    def leviathans_descriptor
+      YAML.load_file(leviathans_filename)
+    end
+
+    def leviathans_filename
+      fixture_path('resource_descriptors', 'leviathans_descriptor_v1.yaml')
+    end
+
     def resource_descriptor_fixtures
       fixture_path('resource_descriptors')
     end
@@ -23,6 +31,47 @@ module Support
 
       it 'responds to transitions' do
         descriptor.should respond_to(:transitions)
+      end
+    end
+    
+    shared_examples_for 'it serializes to ALPS' do
+      context 'when hash' do
+        describe '#to_alps_hash' do
+          context 'without options' do
+            it 'returns a hash in an ALPS profile structure' do
+              descriptor.to_alps_hash.should == alps_profile
+            end
+          end
+  
+          context 'with top_level option false' do
+            it 'returns a hash in an ALPS descriptor structure' do
+              descriptor.to_alps_hash(top_level: false)['alps'].should be_nil
+            end
+          end
+        end
+      end
+      
+      context 'when JSON' do
+        describe '#to_json' do
+          context 'without options' do
+            it 'returns a hash in an ALPS profile structure' do
+              descriptor.to_json.should == alps_profile.to_json
+            end
+          end
+  
+          context 'with top_level option false' do
+            it 'returns a hash in an ALPS descriptor structure' do
+              descriptor.to_json(top_level: false)['alps'].should_not =~ /^\"alps\"/
+            end
+          end
+  
+          context 'with pretty option true' do
+            it 'returns a json alps profile pretty-formatted' do
+              MultiJson.should_receive(:dump).with(anything, pretty: true)
+              descriptor.to_json(pretty: true)
+            end
+          end
+        end
       end
     end
     
