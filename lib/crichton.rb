@@ -3,6 +3,8 @@ require 'crichton/descriptor/http'
 require 'crichton/descriptor/profile'
 require 'crichton/descriptor/detail'
 require 'crichton/descriptor/resource'
+require 'crichton/descriptor/state'
+require 'crichton/descriptor/state_transition'
 
 module Crichton
   ##

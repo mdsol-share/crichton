@@ -37,18 +37,6 @@ module Crichton
         end
       end
 
-      describe '#doc' do
-        it 'returns the descriptor return doc' do
-          descriptor.doc.should == @descriptor['doc']
-        end
-      end
-
-      describe '#id' do
-        it 'returns the descriptor id' do
-          descriptor.id.should == @descriptor['id']
-        end
-      end
-      
       describe '#links' do
         it 'returns the descriptor links' do
           descriptor.links.should == @descriptor['links']

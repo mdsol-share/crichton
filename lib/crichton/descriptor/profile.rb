@@ -9,12 +9,6 @@ module Crichton
       # The types of transition descriptors.
       TRANSITION_TYPES = %w(safe unsafe idempotent)
     
-      # @!macro string_reader
-      descriptor_reader :doc
-    
-      # @!macro string_reader
-      descriptor_reader :id
-    
       ##
       # @!attribute descriptors [r]
       # The nested descriptors.

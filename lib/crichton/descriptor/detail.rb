@@ -5,18 +5,6 @@ module Crichton
     class Detail < Profile
       # @!macro string_reader
       descriptor_reader :href
-  
-      ##
-      # @!attribute [r] name
-      # The name of the descriptor.
-      #
-      # Defaults to the id of the descriptor unless a <tt>name</tt> is explicitly specified. This is necessary when
-      # the associated id is modified to make it unique compared to an existing id for another descriptor.
-      #
-      # @return [String] The descriptor name.
-      def name
-        descriptor_document['name'] || id
-      end
 
       ##
       # Returns the protocol-specific descriptor of the transition.

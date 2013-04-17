@@ -120,9 +120,12 @@ module Crichton
           resource_descriptor.protocols['http'].should_not be_empty
         end
         
-        context 'with unknown protocol' do
-          it 'returns nil' do
-            resource_descriptor.protocols['unknown'].should be_nil
+        context 'with unknown protocol in descriptor document' do
+          it 'raises an error' do
+            resource_descriptor.descriptor_document['protocols'] = {'unknown' => {}}
+            expect { resource_descriptor.protocols }.to raise_error(
+              'Unknown protocol unknown defined in resource descriptor document DRDs.'
+            )
           end
         end
       end
@@ -130,6 +133,12 @@ module Crichton
       describe '#protocol_transition' do
         it 'returns a protocol specific transition descriptor' do
           resource_descriptor.protocol_transition('http', 'list').should be_instance_of(Http)
+        end
+      end
+
+      describe '#states' do
+        it 'returns as hash of state descriptors keyed by resource' do
+          resource_descriptor.states['drds'].should_not be_empty
         end
       end
   

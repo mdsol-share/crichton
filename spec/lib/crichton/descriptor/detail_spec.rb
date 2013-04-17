@@ -21,21 +21,6 @@ module Crichton
         end
       end
   
-      describe '#name' do
-        context 'without a name defined in the descriptor document' do
-          it 'returns the id of the descriptor as a string' do
-            descriptor.name.should == descriptor_document['id']
-          end
-        end
-
-        context 'without a name defined in the descriptor document' do
-          it 'returns the name of the descriptor as a string' do
-            descriptor_document['name'] = 'name'
-            descriptor.name.should == descriptor_document['name']
-          end
-        end
-      end
-
       describe '#protocol_descriptor' do
         it 'returns a protocol description for the specified protocol' do
           protocol_descriptor = mock('protocol_descriptor')
