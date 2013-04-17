@@ -21,7 +21,9 @@ module Crichton
       # state machine diagrams associated with resources.
       #
       # @return [Array] The next state(s).
-     descriptor_reader :next
+     def next
+       @descriptors[:next] ||= (descriptor_document['next'] || [])
+     end
     end
   end
 end

@@ -9,7 +9,7 @@ module Crichton
       # @!attribute [r] location
       # The location of the state in a state-machine. 
       #
-      # Used to indicate the entry and exit states.
+      # Used to indicate the entry and exit nodes in a state-machine graph.
       #
       # @return [String] The state location, if any.
       descriptor_reader :location
