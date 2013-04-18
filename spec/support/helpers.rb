@@ -55,7 +55,7 @@ module Support
         describe '#to_json' do
           context 'without options' do
             it 'returns a JSON ALPS profile structure' do
-              descriptor.to_json.should == alps_profile.to_json
+              JSON.parse(descriptor.to_json).should == alps_profile
             end
           end
   
