@@ -122,14 +122,14 @@ module Crichton
         options[:indent]  ||= 2
         options[:builder] ||= ::Builder::XmlMarkup.new(:indent => options[:indent])
         
-        @builder = options[:builder]
-        @builder.instruct! unless options[:skip_instruct]
+        builder = options[:builder]
+        builder.instruct! unless options[:skip_instruct]
 
         args = options[:top_level] != false ? ['alps'] : ['descriptor', alps_attributes]
 
-        @builder.tag!(*args) do
-          add_elements
-          add_descriptors   
+        builder.tag!(*args) do
+          add_elements(builder)
+          add_descriptors(builder)  
         end
       end
       
@@ -139,20 +139,20 @@ module Crichton
         descriptor_document['name']
       end
       
-      def add_elements
+      def add_elements(builder)
         alps_elements.each do |alps_element, properties|
           case alps_element
           when DOC_ELEMENT
             format = {'format' => properties['format']} if properties['format']
-            @builder.doc(format) { |doc| doc << properties['value'] }
+            builder.doc(format) { |doc| doc << properties['value'] }
           when EXT_ELEMENT, LINK_ELEMENT
-            properties.each { |element_attributes| @builder.tag!(alps_element, element_attributes) }
+            properties.each { |element_attributes| builder.tag!(alps_element, element_attributes) }
           end
         end
       end
       
-      def add_descriptors
-        descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: @builder, skip_instruct: true}) }
+      def add_descriptors(builder)
+        descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true}) }
       end
     end
   end
