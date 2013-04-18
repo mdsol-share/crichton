@@ -7,6 +7,7 @@ $LOAD_PATH.uniq!
 require 'rspec'
 require 'debugger'
 require 'bundler'
+require 'equivalent-xml'
 
 if ENV['COVERAGE']
   require 'simplecov'

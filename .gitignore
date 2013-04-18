@@ -1,9 +1,8 @@
 .bundle
 
 Gemfile.lock
-
 coverage
-columbo
+.rvmrc
 tmp
 .yardoc
 yardoc

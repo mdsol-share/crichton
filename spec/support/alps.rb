@@ -32,6 +32,7 @@ module Support
                   'value' => 'A note.'
                 }
               ],
+              'type' => 'semantic',
               'descriptor' => [
                 {
                   'id' => 'uuid',
@@ -89,6 +90,10 @@ module Support
           ]
         }
       }
+    end
+    
+    def alps_xml
+      @alps_xml ||= Nokogiri::XML(File.open(fixture_path('leviathans_alps.xml')))
     end
   end
 end

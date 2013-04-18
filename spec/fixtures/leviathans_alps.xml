@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps>
+  <doc>Describes Leviathans.</doc>
+  <ext href="alps_base/Leviathans#leviathan/alt" 
+       value="Alternate."/>
+  <link rel="self" 
+        href="alps_base/Leviathans"/>
+  <link rel="help" 
+        href="documentation_base/Things/Leviathans"/>
+  <descriptor id="leviathan" 
+              type="semantic">
+    <doc format="html">
+      <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
+    </doc>
+    <ext href="alps_base/Leviathans#leviathan/note" 
+         value="A note."/>
+    <descriptor id="uuid" 
+                type="semantic" 
+                href="http://alps.io/schema.org/Text">
+      <doc>The UUID of the Leviathan.</doc>
+    </descriptor>
+    <descriptor id="name" 
+                type="semantic" 
+                href="http://alps.io/schema.org/Text">
+      <doc>The name of the Leviathan.</doc>
+    </descriptor>
+    <descriptor id="create" 
+                type="unsafe" 
+                rt="leviathan">
+      <doc>Creates a Leviathan.</doc>
+      <descriptor id="create-leviathan" 
+                  type="semantic">
+        <link rel="self" 
+              href="alps_base/Leviathans#leviatahn/create/create-leviathan"/>
+        <link rel="help" 
+              href="documentation_base/Forms/create-leviathan"/>
+        <descriptor id="form_name" 
+                    name="name" 
+                    type="semantic" 
+                    href="http://alps.io/schema.org/Text">
+          <doc>The name of the Leviathan.</doc>
+        </descriptor>
+      </descriptor>
+    </descriptor>
+  </descriptor>
+</alps>
