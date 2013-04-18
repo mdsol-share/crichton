@@ -1,3 +1,5 @@
+require 'crichton/descriptor/profile'
+
 module Crichton
   module Descriptor
     ##
