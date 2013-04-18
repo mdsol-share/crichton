@@ -20,7 +20,6 @@ module Crichton
       # ALPS specification link element.
       LINK_ELEMENT = 'link'
 
-      
       ##
       # ALPS specification elements that can be serialized.
       ALPS_ELEMENTS = [DOC_ELEMENT, EXT_ELEMENT, LINK_ELEMENT]
