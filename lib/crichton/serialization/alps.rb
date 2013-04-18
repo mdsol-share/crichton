@@ -29,14 +29,14 @@ module Crichton
       #
       # @return [Hash] The attributes.
       def alps_attributes
-        @alps_attributes ||= ALPS_ATTRIBUTES.inject({}) do |h, attribute|
+        @alps_attributes ||= ALPS_ATTRIBUTES.inject({}) do |hash, attribute|
           alps_attribute = if attribute == 'name'
             alps_name 
           else
             send(attribute) if respond_to?(attribute)
           end
- 
-          h.tap { |hash| hash[attribute] = alps_attribute if alps_attribute }
+
+          hash.tap { |h| h[attribute] = alps_attribute if alps_attribute }
         end
       end
 
@@ -53,9 +53,9 @@ module Crichton
       #
       # @return [Hash] The elements.
       def alps_elements
-        @alps_elements ||= ALPS_ELEMENTS.inject({}) do |h, element|
+        @alps_elements ||= ALPS_ELEMENTS.inject({}) do |hash, element|
           alps_value = send(element) if respond_to?(element)
-          next h unless alps_value
+          next hash unless alps_value
 
           alps_element = case element
                          when DOC_ELEMENT
@@ -70,8 +70,8 @@ module Crichton
                          when LINK_ELEMENT
                            alps_value unless alps_value.empty?
                          end
-          
-          h.tap { |hash| hash[element] = alps_element if alps_element }
+
+          hash.tap { |h| h[element] = alps_element if alps_element }
         end
       end
 
@@ -127,8 +127,8 @@ module Crichton
         args = options[:top_level] != false ? ['alps'] : ['descriptor', alps_attributes]
 
         builder.tag!(*args) do
-          add_elements(builder)
-          add_descriptors(builder)  
+          add_xml_elements(builder)
+          add_xml_descriptors(builder)  
         end
       end
       
@@ -138,7 +138,7 @@ module Crichton
         descriptor_document['name']
       end
       
-      def add_elements(builder)
+      def add_xml_elements(builder)
         alps_elements.each do |alps_element, properties|
           case alps_element
           when DOC_ELEMENT
@@ -150,7 +150,7 @@ module Crichton
         end
       end
       
-      def add_descriptors(builder)
+      def add_xml_descriptors(builder)
         descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true}) }
       end
     end
