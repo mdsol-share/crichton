@@ -9,21 +9,27 @@ module Crichton
       ALPS_ATTRIBUTES = %w(id name type href rt)
       
       ##
-      # ALPS specification elements that can be serialized.
-      ALPS_ELEMENTS = %w(doc ext link)
+      # ALPS specification doc element.
+      DOC_ELEMENT = 'doc'
 
       ##
-      # ALPS specification element corresponding to documentation.
-      DOC_ELEMENT = 'doc'
+      # ALPS specification ext element.
+      EXT_ELEMENT = 'ext'
+      
+      ##
+      # ALPS specification link element.
+      LINK_ELEMENT = 'link'
+
+      
+      ##
+      # ALPS specification elements that can be serialized.
+      ALPS_ELEMENTS = [DOC_ELEMENT, EXT_ELEMENT, LINK_ELEMENT]
 
       ##
       # The ALPS attributes for the descriptor.
       #
-      # @param [Hash] options Conditional options.
-      # @option options [Hash] :exclude_id <tt>true</tt> to exclude the id from the list of attributes.
-      #
       # @return [Hash] The attributes.
-      def alps_attributes(options = {})
+      def alps_attributes
         @alps_attributes ||= ALPS_ATTRIBUTES.inject({}) do |h, attribute|
           alps_attribute = if attribute == 'name'
             alps_name 
@@ -31,8 +37,7 @@ module Crichton
             send(attribute) if respond_to?(attribute)
           end
  
-          h[attribute] = alps_attribute if alps_attribute
-          h
+          h.tap { |hash| hash[attribute] = alps_attribute if alps_attribute }
         end
       end
 
@@ -50,24 +55,24 @@ module Crichton
       # @return [Hash] The elements.
       def alps_elements
         @alps_elements ||= ALPS_ELEMENTS.inject({}) do |h, element|
-          alps_element = send(element) if respond_to?(element)
+          alps_value = send(element) if respond_to?(element)
+          next h unless alps_value
+
+          alps_element = case element
+                         when DOC_ELEMENT
+                           if alps_value.is_a?(Hash)
+                             format = alps_value.keys.first
+                             {'format' => format, 'value' => alps_value[format]}
+                           else
+                             {'value' => alps_value }
+                           end
+                         when EXT_ELEMENT
+                           alps_value
+                         when LINK_ELEMENT
+                           alps_value unless alps_value.empty?
+                         end
           
-          result = if alps_element
-            case element.to_sym
-            when :doc
-              if alps_element.is_a?(Hash)
-                format = alps_element.keys.first
-                {'format' => format, 'value' => alps_element[format]}
-              else
-                {'value' => alps_element }
-              end
-            when :link
-              alps_element unless alps_element.empty?
-            else
-              alps_element
-            end
-          end
-          h.tap { |hash| hash[element] = result if result }
+          h.tap { |hash| hash[element] = alps_element if alps_element }
         end
       end
 
@@ -80,12 +85,12 @@ module Crichton
       #
       # @return [Hash] The hash.
       def to_alps_hash(options = {})
-        hash = options && options[:top_level] != false ?  {} : {'id' => id}
+        hash = {}
         hash.merge!(alps_elements.dup)
-        hash.merge!(alps_attributes(exlcude_id: true).dup)
+        hash.merge!(alps_attributes.dup)
         hash['descriptor'] = alps_descriptors unless alps_descriptors.empty?
         
-        if options && options[:top_level] != false
+        if options[:top_level] != false
           hash.delete('id')
           {'alps' => hash}
         else
@@ -97,12 +102,11 @@ module Crichton
       # Returns an ALPS profile or descriptor as JSON.
       #
       # @param [Hash] options Optional configurations.
-      # @option options [Symbol] :pretty <tt>true</tt> to pretty-print the json.
+      # @option options [Boolean] :pretty <tt>true</tt> to pretty-print the json.
       #
       # @return [Hash] The JSON string.
       def to_json(options = {})
-        pretty = !!options.delete(:pretty)
-        MultiJson.dump(to_alps_hash(options), :pretty => pretty)
+        MultiJson.dump(to_alps_hash(options), :pretty => !!options.delete(:pretty))
       end
 
       ##
@@ -118,22 +122,14 @@ module Crichton
         options[:indent]  ||= 2
         options[:builder] ||= ::Builder::XmlMarkup.new(:indent => options[:indent])
         
-        builder = options[:builder]  
-        builder.instruct! unless options[:skip_instruct]
+        @builder = options[:builder]
+        @builder.instruct! unless options[:skip_instruct]
 
-        args = options[:top_level] != false ? ['alps'] : ['descriptor', alps_attributes] 
+        args = options[:top_level] != false ? ['alps'] : ['descriptor', alps_attributes]
 
-        builder.tag!(*args) do
-          alps_elements.each do |alps_element, properties|
-            if properties.is_a?(Array)
-              properties.each { |tag_attributes| builder.tag!(alps_element, tag_attributes) }
-            elsif alps_element == DOC_ELEMENT
-              format = {'format' => properties['format']} if properties['format']
-              builder.doc(format) { |doc| doc << properties['value'] }
-            end
-          end
-          
-          descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true}) }
+        @builder.tag!(*args) do
+          add_elements
+          add_descriptors   
         end
       end
       
@@ -141,6 +137,22 @@ module Crichton
       # Access specified name vs. id overloaded name.
       def alps_name
         descriptor_document['name']
+      end
+      
+      def add_elements
+        alps_elements.each do |alps_element, properties|
+          case alps_element
+          when DOC_ELEMENT
+            format = {'format' => properties['format']} if properties['format']
+            @builder.doc(format) { |doc| doc << properties['value'] }
+          when EXT_ELEMENT, LINK_ELEMENT
+            properties.each { |element_attributes| @builder.tag!(alps_element, element_attributes) }
+          end
+        end
+      end
+      
+      def add_descriptors
+        descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: @builder, skip_instruct: true}) }
       end
     end
   end

@@ -6,7 +6,7 @@ module Crichton
       class SimpleAlpsTestClass 
         include ALPS
 
-        (ALPS_ATTRIBUTES | ALPS_ELEMENTS | %w(id)).each do |property|
+        (ALPS_ATTRIBUTES | ALPS_ELEMENTS).each do |property|
           next if property == 'link'
           define_method(property) do
             descriptor_document[property]
