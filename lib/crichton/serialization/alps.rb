@@ -13,6 +13,10 @@ module Crichton
       ALPS_ELEMENTS = %w(doc ext link)
 
       ##
+      # ALPS specification element corresponding to documentation.
+      DOC_ELEMENT = 'doc'
+
+      ##
       # The ALPS attributes for the descriptor.
       #
       # @param [Hash] options Conditional options.
@@ -101,6 +105,40 @@ module Crichton
       def to_json(options = {})
         pretty = !!options.delete(:pretty)
         MultiJson.dump(to_alps_hash(options), :pretty => pretty)
+      end
+
+      ##
+      # Returns an ALPS profile or descriptor as XML.
+      #
+      # @param [Hash] options Optional configurations.
+      # @option options [Symbol] :top_level <tt>false</tt>, if the descriptor should not be wrapped in an 'alps' 
+      #   element. Default is <tt>true</tt>.
+      # @option options [Integer] :indent Sets indentation of the tags. Default is 2.
+
+      # @return [Hash] The JSON string.
+      def to_xml(options = {})
+        require 'builder' unless defined?(::Builder)
+        
+        options[:indent]  ||= 2
+        options[:builder] ||= ::Builder::XmlMarkup.new(:indent => options[:indent])
+        
+        builder = options[:builder]  
+        builder.instruct! unless options[:skip_instruct]
+
+        args = options[:top_level] != false ? ['alps'] : ['descriptor', alps_attributes] 
+
+        builder.tag!(*args) do
+          alps_elements.each do |alps_element, properties|
+            if properties.is_a?(Array)
+              properties.each { |tag_attributes| builder.tag!(alps_element, tag_attributes) }
+            elsif alps_element == DOC_ELEMENT
+              format = {'format' => properties['format']} if properties['format']
+              builder.doc(format) { |doc| doc << properties['value'] }
+            end
+          end
+          
+          descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true}) }
+        end
       end
       
       private

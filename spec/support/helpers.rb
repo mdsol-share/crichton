@@ -73,6 +73,12 @@ module Support
           end
         end
       end
+      
+      context 'when XML' do
+        it 'returns an XML ALPS profile structure' do
+          descriptor.to_xml.should be_equivalent_to(alps_xml)
+        end
+      end
     end
     
     private
