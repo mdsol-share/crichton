@@ -97,8 +97,6 @@ module Crichton
       # Returns an ALPS profile or descriptor as JSON.
       #
       # @param [Hash] options Optional configurations.
-      # @option options [Symbol] :top_level <tt>false</tt>, if the descriptor should not be wrapped in an 'alps' 
-      #   element. Default is <tt>true</tt>.
       # @option options [Symbol] :pretty <tt>true</tt> to pretty-print the json.
       #
       # @return [Hash] The JSON string.
@@ -111,10 +109,8 @@ module Crichton
       # Returns an ALPS profile or descriptor as XML.
       #
       # @param [Hash] options Optional configurations.
-      # @option options [Symbol] :top_level <tt>false</tt>, if the descriptor should not be wrapped in an 'alps' 
-      #   element. Default is <tt>true</tt>.
       # @option options [Integer] :indent Sets indentation of the tags. Default is 2.
-
+      #
       # @return [Hash] The JSON string.
       def to_xml(options = {})
         require 'builder' unless defined?(::Builder)
