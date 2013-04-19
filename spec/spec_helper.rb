@@ -18,6 +18,7 @@ Debugger.start
 Bundler.setup
 
 require 'crichton'
+load 'Rakefile'
 
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
 
@@ -35,4 +36,5 @@ RSpec.configure do |config|
   
   config.include Support::Helpers
   config.include Support::ALPS
+  config.include Support::DiceBagHelpers
 end

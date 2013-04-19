@@ -7,6 +7,12 @@ module Support
     def drds_filename
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
+    
+    def environment_config
+      %w(alps deployment discovery documentation).inject({}) do |h, attribute|
+        h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
+      end
+    end
 
     def leviathans_descriptor
       YAML.load_file(leviathans_filename)
