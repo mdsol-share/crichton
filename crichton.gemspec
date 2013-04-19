@@ -17,5 +17,6 @@ Gem::Specification.new do |s|
     Crichton is a library to simplify generating and consuming Hypermedia API responses.
   DESC
   
-  s.add_dependency('builder', '~>3.2.0')
+  s.add_dependency('builder',  '~>3.2.0')
+  s.add_dependency('dice_bag', '~>0.6.0')
 end
