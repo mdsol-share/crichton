@@ -1,4 +1,6 @@
+require 'crichton/configuration'
 require 'crichton/descriptor/resource'
+require 'crichton/dice_bag/template'
 
 module Crichton
   ##
@@ -6,6 +8,57 @@ module Crichton
   def self.clear_registry
     @registry = nil
     Descriptor::Resource.clear_registry
+  end
+  
+  ##
+  # Clears the config and config_directory so that they reset themselves.
+  def self.clear_config
+    @config = nil
+    @root = nil
+    self.config_directory = nil
+  end
+  
+  ##
+  # Returns the configuration specified in the crichton.yml file in the configuration directory.
+  #
+  # @return [Configuration] The configuration instance.
+  def self.config
+    @config ||= if File.exists?(config_file)
+      environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
+      Configuration.new(YAML.load_file(config_file)[environment])
+    else
+      raise "No crichton.yml file found in the configuration directory: #{config_directory}."
+    end
+  end
+  
+  ##
+  # @!attribute config_directory
+  # The directory where the crichton.yml configuration file is located. Modify this value in an initializer to
+  # set a different path to the configuration.
+  #
+  # @example
+  #   Crichton.config_directory #=> config
+  #
+  #   Crichton.config_directory = other_config
+  #   Crichton.config_directory #=> other_config
+  #
+  # @return [String] The configuration directory. Default is root/config.
+  def self.config_directory
+    @config_directory ||= 'config'
+  end
+
+  def self.config_directory=(directory)
+    @config_file = nil
+    @config_directory = directory
+  end
+
+  ##
+  # @!attribute config_file
+  # The fully-qualified path to crichton.yml configuration file.
+  #
+  # @return [String] The configuration file path.
+  def self.config_file
+    @config_file ||= File.join(root, config_directory, 'crichton.yml')
   end
 
   ##
@@ -27,6 +80,20 @@ module Crichton
       @registry = Descriptor::Resource.registry
     end
     @registry
+  end
+
+  ##
+  # The root directory of parent project.
+  #
+  # @return [String] The root directory.
+  def self.root
+    @root ||= if const_defined?('Rails')
+      Rails.root
+    elsif const_defined?('Sinatra')
+      Sinatra.settings.root
+    else
+      Dir.pwd
+    end
   end
 end
 
