@@ -24,7 +24,7 @@ module Crichton
   # @return [Configuration] The configuration instance.
   def self.config
     @config ||= if File.exists?(config_file)
-      environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || ENV['CRICHTON_ENV'] || 'development'
+      environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
       Configuration.new(YAML.load_file(config_file)[environment])
     else
       raise "No crichton.yml file found in the configuration directory: #{config_directory}."
