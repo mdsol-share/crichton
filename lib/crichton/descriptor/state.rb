@@ -1,3 +1,6 @@
+require 'crichton/descriptor/base'
+require 'crichton/descriptor/state_transition'
+
 module Crichton
   module Descriptor  
     # Manages states defined for described resources.

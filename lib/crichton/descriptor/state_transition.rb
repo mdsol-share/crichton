@@ -1,3 +1,5 @@
+require 'crichton/descriptor/base'
+
 module Crichton
   module Descriptor
     # Manages transitions defined for states. 
