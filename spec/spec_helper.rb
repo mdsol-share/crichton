@@ -36,5 +36,4 @@ RSpec.configure do |config|
   
   config.include Support::Helpers
   config.include Support::ALPS
-  config.include Support::DiceBagHelpers
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Crichton
   describe Configuration do
-    let(:configuration) { Configuration.new(environment_config) }
+    let(:configuration) { Configuration.new(example_environment_config) }
 
     %w(alps deployment discovery documentation).each do |attribute|
       describe "\##{attribute}_base_uri" do

@@ -1,5 +1,16 @@
 module Support
   module Helpers
+    def build_configuration_files(env_vars, template_path)
+      directory = File.join(DiceBag::Project.root, template_path)
+      Dir::mkdir(directory) unless Dir.exists?(directory)
+
+      # Remove existing crichton.yml from a previous run so overwrite confirmation doesn't appear.
+      system("rm #{template_path}/crichton.yml") if File.exists?(File.join(directory, 'crichton.yml'))
+
+      ::Rake::Task['config:generate_all'].invoke
+      system("bundle exec rake config:file[\"#{template_path}/crichton.yml.dice\"] #{environment_args(env_vars)}")
+    end
+
     def drds_descriptor
       YAML.load_file(drds_filename)
     end
@@ -8,7 +19,7 @@ module Support
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
     
-    def environment_config
+    def example_environment_config
       %w(alps deployment discovery documentation).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
       end
@@ -82,6 +93,10 @@ module Support
     end
     
     private
+    def environment_args(env_vars)
+      env_vars.inject('') { |s, (k, v)| s << "#{k.upcase}=#{v} " }
+    end
+
     def fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', args)
     end

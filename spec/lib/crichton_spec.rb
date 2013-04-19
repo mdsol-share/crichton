@@ -24,12 +24,12 @@ describe Crichton do
 
     it 'loads the crichton.yml file from the configuration directory' do
       Crichton.config_directory = 'tmp'
-      run_dice_bag_tasks(environment_config, 'tmp')
+      build_configuration_files(example_environment_config, 'tmp')
       
-      %w(alps deployment discovery documentation).all? do |type|
+      %w(alps deployment discovery documentation).each do |type|
         attribute = "#{type}_base_uri"
-        Crichton.config.send(attribute) == environment_config[attribute]
-      end.should be_true
+        Crichton.config.send(attribute).should == example_environment_config[attribute]
+      end
     end
   end
   
