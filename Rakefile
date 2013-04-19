@@ -5,5 +5,6 @@ $LOAD_PATH.uniq!
 require 'rubygems'
 require 'rake'
 require 'dice_bag/tasks'
+require 'crichton/dice_bag/template'
 
 Dir['tasks/**/*.rake'].each { |rake| load rake }
