@@ -23,7 +23,28 @@ module Crichton
       end
 
       # @!macro string_reader
+      descriptor_reader :embed
+      
+      ##
+      # Whether the descriptor is embeddable or not as intdicated by the presesenc of an embed key in the
+      # underlying resource.
+      #
+      # @return [Boolean] `true` if embeddable. `false` otherwise.
+      def embeddable?
+        !!embed
+      end
+      
+      # @!macro string_reader
       descriptor_reader :rt
+
+      ##
+      # The source of the descriptor. Used to specify the local attribute associated with the semantic descriptor
+      # name that is returned. Only set this value if the name is different than the source in the local object.
+      #
+      # @return [String] The source of the semantic descriptor.
+      def source
+        descriptor_document['source'] || name
+      end
   
       # @!macro object_reader
       descriptor_reader :sample
