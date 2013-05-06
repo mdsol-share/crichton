@@ -18,25 +18,27 @@ module Crichton
       ##
       # Registers a resource descriptor document by name and version.
       #
-      # @param [Hash, String] descriptor The hashified resource descriptor document or filename of a YAML resource 
-      # descriptor document.
-      def self.register(descriptor)
-        hash_descriptor = case descriptor
+      # @param [Hash, String] resource_descriptor The hashified resource descriptor document or filename of a YAML 
+      # resource descriptor document.
+      def self.register(resource_descriptor)
+        hash_descriptor = case resource_descriptor
         when String
-          raise ArgumentError, "Filename #{descriptor} is not valid." unless File.exists?(descriptor)
-          YAML.load_file(descriptor)
+          raise ArgumentError, "Filename #{resource_descriptor} is not valid." unless File.exists?(resource_descriptor)
+          YAML.load_file(resource_descriptor)
         when Hash
-          descriptor
+          resource_descriptor
         else
-          raise ArgumentError, "Document #{descriptor} must be a String or a Hash."
+          raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
         end
   
-        new(hash_descriptor).tap do |descriptor|
-          if registry[descriptor.to_key]
-            raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered." 
+        new(hash_descriptor).tap do |resource_descriptor|
+          resource_descriptor.descriptors.each do |descriptor|
+            if registry[descriptor.id]
+              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered." 
+            end
+              
+            registry[descriptor.id] = descriptor 
           end
-            
-          registry[descriptor.to_key] = descriptor 
         end
       end
   

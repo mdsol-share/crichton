@@ -32,6 +32,11 @@ module Support
     def leviathans_filename
       fixture_path('resource_descriptors', 'leviathans_descriptor_v1.yaml')
     end
+    
+    def register_descriptor(descriptor)
+      Crichton.clear_registry
+      Crichton::Descriptor::Resource.register(descriptor)
+    end
 
     def resource_descriptor_fixtures
       fixture_path('resource_descriptors')

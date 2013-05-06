@@ -1,6 +1,7 @@
 require 'crichton/configuration'
 require 'crichton/descriptor/resource'
 require 'crichton/dice_bag/template'
+require 'crichton/representor'
 
 module Crichton
   ##
