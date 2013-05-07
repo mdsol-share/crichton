@@ -26,8 +26,8 @@ module Crichton
       descriptor_reader :embed
       
       ##
-      # Whether the descriptor is embeddable or not as intdicated by the presesenc of an embed key in the
-      # underlying resource.
+      # Whether the descriptor is embeddable or not as indicated by the presence of an embed key in the
+      # underlying resource descriptor document.
       #
       # @return [Boolean] `true` if embeddable. `false` otherwise.
       def embeddable?
