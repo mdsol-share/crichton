@@ -14,6 +14,24 @@ module Crichton
   
         it_behaves_like 'a nested descriptor'
       end
+
+      describe '#embed' do
+        it 'returns the embed value for the descriptor' do
+          descriptor_document['embed'] = 'optional'
+          descriptor.embed.should == descriptor_document['embed']
+        end
+      end
+
+      describe '#embeddable?' do
+        it 'returns true if an embed value is set' do
+          descriptor_document['embed'] = 'optional'
+          descriptor.embeddable?.should be_true
+        end
+
+        it 'returns false if an embed value is not set' do
+          descriptor.embeddable?.should be_false
+        end
+      end
   
       describe '#href' do
         it 'returns the href in the descriptor document' do
@@ -29,6 +47,17 @@ module Crichton
           transition_descriptor = descriptor_document['descriptors'].detect { |descriptor| descriptor['id'] == 'list' }
           descriptor =  Detail.new(resource_descriptor, transition_descriptor)
           descriptor.protocol_descriptor('http').should == protocol_descriptor
+        end
+      end
+
+      describe '#source' do
+        it 'returns the name of the descriptor if the local source is not specified' do
+          descriptor.source.should == descriptor.name
+        end
+
+        it 'returns the local source if specified' do
+          descriptor_document['source'] = 'source'
+          descriptor.source.should == descriptor_document['source']
         end
       end
 

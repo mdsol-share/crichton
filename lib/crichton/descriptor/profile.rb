@@ -1,11 +1,11 @@
 require 'crichton/descriptor/base'
-require 'crichton/serialization/alps'
+require 'crichton/alps/serialization'
 
 module Crichton
   module Descriptor
     # Manages core profile functionality for all descriptors.
     class Profile < Base
-      include Crichton::Serialization::ALPS
+      include ALPS::Serialization
     
       # The types of semantic descriptors.
       SEMANTIC_TYPES = %w(semantic)

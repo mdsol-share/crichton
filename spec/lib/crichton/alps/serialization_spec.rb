@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 module Crichton
-  module Serialization
-    describe ALPS do
+  module ALPS 
+    describe Serialization do
       class SimpleAlpsTestClass 
-        include ALPS
+        include Serialization
 
         (ALPS_ATTRIBUTES | ALPS_ELEMENTS).each do |property|
           next if property == 'link'

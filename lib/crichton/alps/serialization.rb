@@ -2,10 +2,10 @@ require 'json'
 require 'multi_json'
 
 module Crichton
-  module Serialization
+  module ALPS
     ## 
     # Manages serialization to the Application-Level Profile Semantics (ALPS) specification JSON and XML formats.
-    module ALPS
+    module Serialization
       ##
       # ALPS specification attributes that can be serialized.
       ALPS_ATTRIBUTES = %w(id name type href rt)

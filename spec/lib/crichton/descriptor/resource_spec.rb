@@ -31,9 +31,12 @@ module Crichton
         end
         
         shared_examples_for 'a resource descriptor registration' do
-          it 'registers a resource descriptor' do
-            Resource.register(@descriptor)
-            Resource.registry['DRDs:v1.0.0'].should be_instance_of(Resource)
+          it 'registers a the child detail descriptors by id' do
+            resource_descriptor = Resource.register(@descriptor)
+
+            resource_descriptor.descriptors.each do |descriptor|
+              Resource.registry[descriptor.id].should == descriptor
+            end
           end
         end
   
@@ -89,9 +92,12 @@ module Crichton
           Resource.registry.should be_empty
         end
         
-        it 'returns a hash of registered resource descriptors instances keyed by resource descriptor id' do
+        it 'returns a hash of registered descriptor instances keyed by descriptor id' do
           resource_descriptor = Resource.register(drds_descriptor)
-          Resource.registry[resource_descriptor.to_key].should == resource_descriptor
+
+          resource_descriptor.descriptors.each do |descriptor|
+            Resource.registry[descriptor.id].should == descriptor
+          end
         end
       end
   

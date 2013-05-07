@@ -90,7 +90,7 @@ describe Crichton do
       end
   
       it 'loads resource descriptors from a resource descriptor directory if configured' do
-        Crichton.registry.count.should == 2
+        Crichton.registry.count.should == 3
       end
     end
   
@@ -100,8 +100,11 @@ describe Crichton do
       end
   
       it 'returns any manually registered resource descriptors' do
-        descriptor = Crichton::Descriptor::Resource.register(drds_descriptor)
-        Crichton.registry[descriptor.to_key].should == descriptor
+        resource_descriptor = Crichton::Descriptor::Resource.register(drds_descriptor)
+
+        resource_descriptor.descriptors.each do |descriptor|
+          Crichton.registry[descriptor.id].should == descriptor
+        end
       end
   
       it 'returns an empty hash if no resource descriptors are registered' do
