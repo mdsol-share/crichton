@@ -250,6 +250,7 @@ descriptors:
         name: leviathan
         doc: A reference to the Leviathan the DRD works on.
         type: safe
+        embed: true
         rt: http://alps.io/schema.org/Leviathan#leviathan
       - id: update
         doc: Updates a DRD.
