@@ -1,5 +1,5 @@
 require 'crichton/configuration'
-require 'crichton/descriptor/resource'
+require 'crichton/descriptor'
 require 'crichton/dice_bag/template'
 require 'crichton/representor'
 
