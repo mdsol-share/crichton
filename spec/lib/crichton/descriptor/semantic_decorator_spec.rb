@@ -6,19 +6,19 @@ module Crichton
       let(:descriptor) { Detail.new(mock('resource_descriptor'), @descriptor_document) }
       let(:decorator) { SemanticDecorator.new(@target, descriptor) }
       
-      describe '#present?' do
+      describe '#source_defined?' do
         context 'with hash target' do
           it 'returns true if the hash includes the descriptor value' do
             @descriptor_document = {'name' => 'uuid'}
             value = mock('value')
             @target = {'uuid' => value}
-            decorator.should be_present
+            decorator.source_defined?.should be_true
           end
 
           it 'returns false if the hash does not include the descriptor value' do
             @descriptor_document = {'name' => 'uuid'}
             @target = {}
-            decorator.should_not be_present
+            decorator.source_defined?.should be_false
           end
         end
 

@@ -111,6 +111,10 @@ module Crichton
           @attributes.each { |k, v| data_semantics[k].value.should == v }
         end
         
+        it 'excludes semantic descriptors that do not exist on the representor instance' do
+          data_semantics['status'].should be_nil
+        end
+        
         context 'with :only option' do
           it 'returns only the specified semantic descriptors' do
             @options = {only: :uuid}

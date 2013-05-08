@@ -4,6 +4,14 @@ module Crichton
   ##
   # Implements a generic ALPS-related interface that represents the semantics and transitions associated with 
   # the underlying resource data.
+  #
+  # @example
+  #   class DRD
+  #     include Crichton::Representor
+  #     
+  #     represents :drd
+  #   end
+  #
   module Representor
       
     # @private
@@ -50,7 +58,7 @@ module Crichton
       ##
       # Sets the resource name the object represents.
       #
-      # @params [String, Symbol] The resource name.
+      # @param [String, Symbol] resource_name The represented resource name.
       def represents(resource_name)
         @resource_name = resource_name.to_s if resource_name
       end
@@ -69,7 +77,7 @@ module Crichton
       # @return [String] The resource name.
       def resource_name
         @resource_name || raise("No resource name has been defined#{self.name ? ' for ' << self.name : ''}. Use " <<
-          "#set_resource_name in the class definition to set the associated resource name.")
+          "#represents method in the class definition to set the associated resource name.")
       end
 
       private
@@ -84,9 +92,13 @@ module Crichton
       # Returns a hash populated with the data related semantic keys and underlying descriptors for the represented
       # resource.
       # 
+      # @example
+      #  @drd_instance.data_semantics({except: :status})   
+      #  @drd_instance.data_semantics({only: [:uuid, 'name']})
+      # 
       # @param [Hash] options Optional conditions.
-      # @option options [String, Symbol] :except
-      # @option options [String, Symbol] :only
+      # @option options [String, Symbol, Array] :except The semantic data descriptor names to filter out.
+      # @option options [String, Symbol, Array] :only The semantic data descriptor names to limit.
       #
       # @return [Hash] The data.
       def data_semantics(options = nil)
@@ -96,9 +108,13 @@ module Crichton
       ##
       # Returns a hash populated with the related semantic keys and underlying descriptors for embedded resources.
       # 
+      # @example
+      #  @drds_instance.embedded_semantics({include: :items})   
+      #  @drds_instance.embedded_semantics({exclude: 'items'})
+      # 
       # @param [Hash] options Optional conditions.
-      # @option options [String, Symbol] :include
-      # @option options [String, Symbol] :exclude
+      # @option options [String, Symbol, Array] :include The embedded semantic descriptor names to include.
+      # @option options [String, Symbol, Array] :exclude The embedded semantic descriptor names to exclude.
       #
       # @return [Hash] The embedded resources.
       def embedded_semantics(options = nil)
@@ -137,7 +153,7 @@ module Crichton
         descriptors.inject([]) do |a, descriptor|
           decorated_descriptor = Crichton::Descriptor::SemanticDecorator.new(self, descriptor)
 
-          a.tap { |array| array << (yield decorated_descriptor) if decorated_descriptor.present? }
+          a.tap { |array| array << (yield decorated_descriptor) if decorated_descriptor.source_defined? }
         end
       end
       
