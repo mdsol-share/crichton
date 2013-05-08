@@ -7,7 +7,7 @@ module Crichton
       Class.new do
         include Representor
         
-        set_resource_name resource_name if resource_name
+        represents resource_name if resource_name
         
         def initialize(attributes)
           @attributes = attributes
@@ -57,7 +57,14 @@ module Crichton
         end
       end
     end
-      
+    
+    describe '.represents' do
+      it 'sets the resource name of the represented resource' do
+        simple_test_class.represents :some_resource
+        simple_test_class.resource_name.should == 'some_resource'
+      end
+    end
+    
     describe '.resource_descriptor' do
       it 'raises an error if no resource name has been defined for the class' do
         Crichton.stub(:registry).and_return({})

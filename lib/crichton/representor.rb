@@ -48,13 +48,21 @@ module Crichton
       end
 
       ##
+      # Sets the resource name the object represents.
+      #
+      # @params [String, Symbol] The resource name.
+      def represents(resource_name)
+        @resource_name = resource_name.to_s if resource_name
+      end
+
+      ##
       # The descriptor associated with resource being represented.
       #
       # @return [Crichton::Descriptor::Detail] The resource descriptor.
       def resource_descriptor
         Crichton.registry[resource_name]
       end
-      
+
       ##
       # The name of the resource to be represented.
       #
@@ -65,10 +73,6 @@ module Crichton
       end
 
       private
-      def set_resource_name(value)
-        @resource_name = value.to_s if value
-      end
-      
       def filter_descriptors(descriptors, embed = nil)
         filter = embed == :embedded ? :select : :reject
         resource_descriptor.send(descriptors).values.send(filter) { |descriptor| descriptor.embeddable? }
