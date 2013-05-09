@@ -38,17 +38,6 @@ module Crichton
           descriptor.href.should == descriptor_document['href']
         end
       end
-  
-      describe '#protocol_descriptor' do
-        it 'returns a protocol description for the specified protocol' do
-          protocol_descriptor = mock('protocol_descriptor')
-          resource_descriptor.stub(:protocol_transition).with('http', 'list').and_return(protocol_descriptor)
-          
-          transition_descriptor = descriptor_document['descriptors'].detect { |descriptor| descriptor['id'] == 'list' }
-          descriptor =  Detail.new(resource_descriptor, transition_descriptor)
-          descriptor.protocol_descriptor('http').should == protocol_descriptor
-        end
-      end
 
       describe '#source' do
         it 'returns the name of the descriptor if the local source is not specified' do
