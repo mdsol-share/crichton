@@ -9,7 +9,7 @@ module Crichton
         
         represents resource_name if resource_name
         
-        def initialize(attributes)
+        def initialize(attributes = {})
           @attributes = attributes
         end
         
@@ -68,7 +68,7 @@ module Crichton
     describe '.resource_descriptor' do
       it 'raises an error if no resource name has been defined for the class' do
         Crichton.stub(:registry).and_return({})
-        expect { simple_test_class.resource_descriptor }.to raise_error(RuntimeError, 
+        expect { simple_test_class.resource_descriptor }.to raise_error(Representor::Error, 
           /^No resource name has been defined.*/)
       end
       
@@ -83,7 +83,8 @@ module Crichton
     
     describe '.resource_name' do
       it 'raises an error if no resource name has been defined for the class' do
-        expect { simple_test_class.resource_name }.to raise_error(RuntimeError, /^No resource name has been defined.*/)
+        expect { simple_test_class.resource_name }.to raise_error(Representor::Error, 
+          /^No resource name has been defined.*/)
       end
       
       it 'returns the resource name set on the base class' do
@@ -97,14 +98,20 @@ module Crichton
         register_descriptor(drds_descriptor)
       end
 
-      describe '#data_semantics' do
+      describe '#each_data_semantic' do
         let(:data_semantics) do
-          simple_test_class.new(@attributes).data_semantics(@options)
+          simple_test_class.new(@attributes).each_data_semantic(@options).inject({}) do |h, descriptor| 
+            h.tap { |hash| hash[descriptor.name] = descriptor }
+          end
         end
         
         before do
           @resource_name = 'drd'
           @attributes = {'uuid' => 'representor_uuid', 'name' => 'representor'}
+        end
+        
+        it 'returns an enumerator' do
+          simple_test_class.new.each_data_semantic.should be_a(Enumerable)
         end
         
         it 'returns a hash of decorated semantic descriptors associated with the represented resource' do
@@ -132,9 +139,11 @@ module Crichton
         end
       end
       
-      describe '#embedded_semantics' do
+      describe '#each_embedded_semantic' do
         let(:embedded_semantics) do
-          simple_test_class.new(@attributes).embedded_semantics(@options)
+          simple_test_class.new(@attributes).each_embedded_semantic(@options).inject({}) do |h, descriptor|
+            h.tap { |hash| hash[descriptor.name] = descriptor }
+          end
         end
 
         before do
@@ -143,7 +152,10 @@ module Crichton
           @attributes = {'items' => [@item]}
         end
 
-
+        it 'returns an enumerator' do
+          simple_test_class.new.each_data_semantic.should be_a(Enumerable)
+        end
+        
         it 'returns a hash of purely semantic attributes associated with the represented resource' do
           embedded_semantics['items'].value.should == [@item]
         end
