@@ -10,6 +10,28 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :embed
+
+      # @!macro string_reader
+      descriptor_reader :rt
+
+      # @!macro object_reader
+      descriptor_reader :sample
+
+      # @!macro string_reader
+      descriptor_reader :type
+      
+      ##
+      # Constructs a new instance of BaseDocumentDescriptor.
+      #
+      # Subclasses MUST call <tt>super</tt> in their constructors.
+      #
+      # @param [Crichton::Descriptor::Resource] resource_descriptor The top-level resource descriptor instance.   
+      # @param [Crichton::Descriptor::Base] parent_descriptor The parent descriptor instance.                                                            # 
+      # @param [Hash] descriptor_document The section of the descriptor document representing this instance.
+      def initialize(resource_descriptor, parent_descriptor, descriptor_document)
+        super(resource_descriptor, descriptor_document)
+        @descriptors[:parent] = parent_descriptor
+      end
       
       ##
       # Whether the descriptor is embeddable or not as indicated by the presence of an embed key in the
@@ -20,8 +42,13 @@ module Crichton
         !!embed
       end
       
-      # @!macro string_reader
-      descriptor_reader :rt
+      ##
+      # Returns the parent descriptor of a nested-descriptor.
+      #
+      # @return [Crichton::Descriptor::Base] The parent descriptor.
+      def parent_descriptor
+        @descriptors[:parent]
+      end
 
       ##
       # The source of the descriptor. Used to specify the local attribute associated with the semantic descriptor
@@ -31,12 +58,6 @@ module Crichton
       def source
         descriptor_document['source'] || name
       end
-  
-      # @!macro object_reader
-      descriptor_reader :sample
-      
-      # @!macro string_reader
-      descriptor_reader :type
     end
   end
 end

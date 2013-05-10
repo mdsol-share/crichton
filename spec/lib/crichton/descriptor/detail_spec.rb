@@ -5,7 +5,8 @@ module Crichton
     describe Detail do
       let(:resource_descriptor) { mock('resource_descriptor') }
       let(:descriptor_document) { drds_descriptor['descriptors'].first }
-      let(:descriptor) { Detail.new(resource_descriptor, descriptor_document) }
+      let(:parent_descriptor) { mock('parent_descriptor') }
+      let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, descriptor_document) }
   
       describe '.new' do
         it 'returns a subclass of Profile' do
@@ -36,6 +37,12 @@ module Crichton
       describe '#href' do
         it 'returns the href in the descriptor document' do
           descriptor.href.should == descriptor_document['href']
+        end
+      end
+      
+      describe '#parent_descriptor' do
+        it 'returns the parent of the descriptor' do
+          descriptor.parent_descriptor.should == parent_descriptor
         end
       end
 
