@@ -56,7 +56,7 @@ states:
   drd:
     - id: activated 
       doc: The default state of a DRD.
-      transistions:
+      transitions:
         - id: show
           name: self
           next:
@@ -80,7 +80,7 @@ states:
             - location: http://alps.io/schema.org/Leviathans#leviathan
     - id: deactivated
       doc: The DRD is shut down.
-      transistions:
+      transitions:
         - id: self
           alias: show
           next:

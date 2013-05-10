@@ -180,6 +180,10 @@ module Crichton
         it 'returns as hash of state descriptors keyed by resource' do
           resource_descriptor.states['drds'].should_not be_empty
         end
+        
+        it 'returns a hash of a hash of State instances' do
+          resource_descriptor.states['drds']['collection'].should be_a(State)
+        end
       end
   
       describe '#to_key' do
