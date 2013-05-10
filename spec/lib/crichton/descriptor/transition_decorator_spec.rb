@@ -6,25 +6,114 @@ module Crichton
       let(:descriptor_document) { drds_descriptor }
       let(:resource_descriptor) { Resource.new(descriptor_document) }
       let(:descriptor) { resource_descriptor.semantics[@descriptor || 'drds'].transitions[@transition || 'list'] }
-      let(:decorator) { TransitionDecorator.new(@target, descriptor, @options) }
-
-      describe '#available?' do
-        it 'returns true if the transition is available' do
-          pending 'TODO'
-        end
-
-        it 'returns false if the transition is not available' do
-          pending 'TODO'
+      let(:options) do
+        {}.tap do |options|
+          options[:state] = @state unless @skip_state
+          options[:conditions] = @conditions
+          options[:protocol] = @protocol
         end
       end
-      
-      describe '#control?' do
-        it 'returns true if the transition includes the semantics of a control' do
-          pending 'TODO'
-        end
+      let(:target) { mock('target') }
+      let(:decorator) { TransitionDecorator.new(target, descriptor, options) }
 
-        it 'returns false if the transition is not a control' do
-          pending 'TODO'
+      describe '#available?' do
+        shared_examples_for 'a state transition without conditions' do
+          it 'always returns true for transitions without conditions' do
+            @state = 'collection'
+            decorator.should be_available
+          end
+          
+          it 'returns false for a transition that is not listed for the state' do
+            @descriptor = 'drd'
+            @state = 'activated'
+            @transition = 'activate'
+
+            decorator.should_not be_available
+          end
+        end
+        
+        shared_examples_for 'a state transition' do
+          context 'with a :conditions option' do
+            it_behaves_like 'a state transition without conditions' 
+            
+            it 'returns true if a single state condition is satisfied' do
+              @descriptor = 'drd'
+              @state = 'activated'
+              @transition = 'deactivate'
+              @conditions = :can_deactivate
+              
+              decorator.should be_available
+            end
+
+            it 'returns true if multiple state conditions are satisfied' do
+              @descriptor = 'drd'
+              @state = 'deactivated'
+              @transition = 'activate'
+              @conditions = [:can_activate, 'can_do_anything']
+              
+              decorator.should be_available
+            end
+
+            it 'returns false if at least one state condition is not satisfied' do
+              @descriptor = 'drd'
+              @state = 'deactivated'
+              @transition = 'activate'
+              @conditions = 'can_cook'
+              
+              decorator.should_not be_available
+            end
+          end
+
+          context 'without a :conditions option' do
+            it_behaves_like 'a state transition without conditions'
+
+            it 'always returns false if a state condition is not satisfied' do
+              @descriptor = 'drd'
+              @state = 'activated'
+              @transition = 'deactivate'
+              
+              decorator.should_not be_available
+            end
+          end
+        end
+        
+        context 'with target that does not implement a #state method' do
+          context 'without :state specified in the options' do
+            it 'always returns true' do
+              decorator.should be_available
+            end
+          end
+          
+          context 'with a :state option' do
+            it_behaves_like 'a state transition'
+          end
+        end
+        
+        context 'with target that implements the State module' do
+          before do
+            @skip_state = true
+          end
+          
+          let(:target) do
+            state = @state
+            target_class = Class.new do 
+              include Crichton::Representor::State
+              if state
+                state_method state 
+                define_method(state) { state }
+              end
+            end
+            target_class.new
+          end
+          
+          it_behaves_like 'a state transition'
+
+          context 'with a nil state' do
+            it 'it raises an error' do
+              expect { decorator.available? }.to raise_error(Crichton::Representor::Error, 
+                /^No state method has been defined in the class.*/)
+            end
+          end
         end
       end
       
@@ -42,13 +131,13 @@ module Crichton
 
         context 'with :protocol option' do
           it 'returns the specified protocol' do
-            @options = {protocol: 'option_protocol'}
-            resource_descriptor.stub(:protocol_exists?).with('option_protocol').and_return(true)
-            decorator.protocol.should == 'option_protocol'
+            @protocol = 'option_protocol'
+            resource_descriptor.stub(:protocol_exists?).with(@protocol).and_return(true)
+            decorator.protocol.should == @protocol
           end
           
           it 'raises an error if the protocol is not defined for the parent resource descriptor' do
-            @options = {protocol: 'bogus'}
+            @protocol = 'bogus'
             expect { decorator.protocol }.to raise_error(/^Unknown protocol bogus defined by options.*/)
           end
         end
@@ -62,26 +151,6 @@ module Crichton
         it 'returns nil if no protocol descriptor implements the transition for the transition protocol' do
           decorator.stub(:id).and_return('non-existent')
           decorator.protocol_descriptor.should be_nil
-        end
-      end
-
-      describe '#source_defined?' do
-        it 'returns true if the source of the transition details is defined' do
-          pending 'TODO'
-        end
-
-        it 'returns false if the source of the transition details is not defined' do
-          pending 'TODO'
-        end
-      end
-      
-      describe '#templated?' do
-        it 'returns true if the transition URL requires template parameters' do
-          pending 'TODO'
-        end
-
-        it 'returns false if the transition URL is not templated' do
-          pending 'TODO'
         end
       end
       

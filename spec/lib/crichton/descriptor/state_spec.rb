@@ -27,7 +27,7 @@ module Crichton
       
       describe '#transitions' do
         it 'returns a hash of state transition descriptors' do
-          descriptor.transitions['self'].should_not be_nil
+          descriptor.transitions['list'].should_not be_nil
         end
       end
     end
