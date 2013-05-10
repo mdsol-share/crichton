@@ -29,7 +29,7 @@ module Crichton
       # Whether the descriptor is embeddable or not as indicated by the presence of an embed key in the
       # underlying resource descriptor document.
       #
-      # @return [Boolean] `true` if embeddable. `false` otherwise.
+      # @return [Boolean] <tt>true<\tt> if embeddable. <tt>false</tt> otherwise.
       def embeddable?
         !!embed
       end
