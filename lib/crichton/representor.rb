@@ -85,8 +85,8 @@ module Crichton
     # resource.
     # 
     # @example
-    #  @drd_instance.data_semantics({except: :status}).to_a   
-    #  @drd_instance.data_semantics({only: [:uuid, 'name']}).to_a
+    #  @drd_instance.each_data_semantic({except: :status}).to_a   
+    #  @drd_instance.each_data_semantic({only: [:uuid, 'name']}).to_a
     # 
     # @param [Hash] options Optional conditions.
     # @option options [String, Symbol, Array] :except The semantic data descriptor names to filter out.
@@ -101,8 +101,8 @@ module Crichton
     # Returns a hash populated with the related semantic keys and underlying descriptors for embedded resources.
     # 
     # @example
-    #  @drds_instance.embedded_semantics({include: :items}).to_a   
-    #  @drds_instance.embedded_semantics({exclude: 'items'}).to_a
+    #  @drds_instance.each_embedded_semantic({include: :items}).to_a   
+    #  @drds_instance.each_embedded_semantic({exclude: 'items'}).to_a
     # 
     # @param [Hash] options Optional conditions.
     # @option options [String, Symbol, Array] :include The embedded semantic descriptor names to include.
@@ -118,8 +118,8 @@ module Crichton
     # resource.
     # 
     # @example
-    #  @drd_instance.data_semantics({except: :status}).to_a   
-    #  @drd_instance.data_semantics({only: [:uuid, 'name']}).to_a
+    #  @drd_instance.each_link_transition({except: :status}).to_a   
+    #  @drd_instance.each_link_transition({only: [:uuid, 'name']}).to_a
     # 
     # @param [Hash] options Optional conditions.
     # @option options [String, Symbol, Array] :conditions The state conditions.
@@ -147,9 +147,9 @@ module Crichton
     def each_enumerator(type, descriptor, options)
       return to_enum("each_#{type}_#{descriptor}", options) unless block_given?
 
-      filtered_semantic_descriptors(type, descriptor, options).inject([]) do |a, descriptor|   
+      filtered_semantic_descriptors(type, descriptor, options).each do |descriptor|   
         decorated_descriptor = descriptor.decorate(self, options)
-        a.tap { |array| array << (yield decorated_descriptor) if decorated_descriptor.available? }
+        yield decorated_descriptor if decorated_descriptor.available?
       end
     end
     
@@ -178,7 +178,9 @@ module Crichton
     end
     
     def slice_known(options, *known_options)
-      (options || {}).slice(*known_options)
+      options ||= {}
+      raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'." unless options.is_a?(Hash)
+      options.slice(*known_options)
     end
     
     ##

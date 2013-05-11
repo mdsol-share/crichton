@@ -119,6 +119,11 @@ module Crichton
             item.instance_of?(Crichton::Descriptor::SemanticDecorator)
           end
         end
+
+        it 'raises an error if options are passed that are not a hash' do
+          expect { simple_test_class.new.each_data_semantic('options').to_a }.to raise_error(ArgumentError,
+            /options must be nil or a hash. Received '"options"'./)
+        end
         
         it 'returns only semantic descriptors whose source exists' do
           @attributes.each { |k, v| data_semantics[k].value.should == v }
@@ -168,6 +173,11 @@ module Crichton
           end
         end
         
+        it 'raises an error if options are passed that are not a hash' do
+          expect { simple_test_class.new.each_embedded_semantic('options').to_a }.to raise_error(ArgumentError,
+            /options must be nil or a hash. Received '"options"'./)
+        end
+        
         it 'returns only semantic descriptors whose source exists' do
           embedded_semantics['items'].value.should == [@item]
         end
@@ -213,6 +223,11 @@ module Crichton
           simple_test_class.new.each_embedded_semantic.all? do |item|
             item.instance_of?(Crichton::Descriptor::TransitionDecorator)
           end
+        end
+
+        it 'raises an error if options are passed that are not a hash' do
+          expect { simple_test_class.new.each_link_transition('options').to_a }.to raise_error(ArgumentError,
+            /options must be nil or a hash. Received '"options"'./)
         end
         
         shared_examples_for 'a filtered list of link transactions' do
