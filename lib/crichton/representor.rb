@@ -206,8 +206,7 @@ module Crichton
     # with, for example, an address object that includes a <tt>state</tt> attribute.
     module State
       extend ActiveSupport::Concern
-      
-      # @private
+
       included do
         include Representor
       end
@@ -219,10 +218,22 @@ module Crichton
         # @example
         #   class DRD
         #     include Crichton::Representor::State
-        #   
         #     represents   :drd
-        #     state_method :some_instance_method
         #
+        #   end
+        #   DRD.respond_to?(:state) # => true
+        #   
+        #   
+        #   class Address
+        #     include Crichton::Representor::State
+        #     represents   :address
+        #     state_method :my_state_method
+        #
+        #     attr_accessor :city, :state, :zip
+        #
+        #     def my_state_method
+        #       # Do something to determine the state of the resource.
+        #     end
         #   end
         #
         # @param [String, Symbol] method The method.
@@ -231,24 +242,25 @@ module Crichton
         end
         
       private
-        def crichton_state_method
-          @crichton_state_method || raise(Error, "No state method has been defined in the class #{self.name} for " << 
-            "Crichton. Please specify a state method using the class method #state_method.")
+        def crichton_state_method(target)
+          @crichton_state_method ||= if target.respond_to?(:state)
+            :state
+          else
+            raise(Error, "No state method has been defined in the class '#{self.name}'. Please specify a " <<
+              "state method using the class method #state_method or define an instance method #state on the class.")
+          end
         end
       end
       
-      ##
-      # Returns the Crichton-related state associated with the represented resource instance.
-      #
-      # @return [String, Symbol] The state.
       def crichton_state
         @crichton_state ||= begin
-          state_method = self.class.send(:crichton_state_method)
+          state_method = self.class.send(:crichton_state_method, self)
           state = @target.is_a?(Hash) ? target_state(state_method) : instance_state(state_method)
           
           state.tap do |state|
             unless [String, Symbol].include?(state.class)
-              raise(Error, "The method #crichton_state must return a string or a symbol. Returned #{state.inspect}.") 
+              raise(Error, "The state method '#{state_method }' must return a string or a symbol. " <<
+                "Returned #{state.inspect}.") 
             end
           end
         end
@@ -256,8 +268,8 @@ module Crichton
       
     private
       def instance_state(state_method)
-        send(state_method) || raise(Error, "The #crichton_state result was nil. Please check that the class " <<
-          "#{self.class.name} properly implements a response associated with the state method #{state_method}.")
+        send(state_method) || raise(Error, "The state was nil in the class '#{self.class.name}'. Please check " <<
+          "the class properly implements a response associated with the state method '#{state_method}.'")
       end
       
       def target_state(state_method)

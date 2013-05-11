@@ -26,7 +26,7 @@ module Crichton
       # A transition is not available if it is not defined for a particular state or if the conditions are not
       # met for the transition.
       # 
-      # @return [Boolean] <tt>true</tt> if avaliable, <tt>false</tt> otherwise.
+      # @return [Boolean] <tt>true</tt> if available, <tt>false</tt> otherwise.
       def available?
         state_transition ? state_transition.available?(@options.slice(:conditions)) : state.nil?
       end

@@ -8,12 +8,26 @@ module Crichton
       let(:descriptor) { resource_descriptor.semantics[@descriptor || 'drds'].transitions[@transition || 'list'] }
       let(:options) do
         {}.tap do |options|
-          options[:state] = @state unless @skip_state
+          options[:state] = @state unless @skip_state_option
           options[:conditions] = @conditions
           options[:protocol] = @protocol
         end
       end
-      let(:target) { mock('target') }
+      let(:target) do
+        if @skip_state_option
+          state = @state
+          target_class = Class.new do
+            include Crichton::Representor::State
+            
+            def self.name; 'target' end
+
+            define_method(:state) { state }
+          end
+          target_class.new
+        else
+          mock('target')
+        end
+      end
       let(:decorator) { TransitionDecorator.new(target, descriptor, options) }
 
       describe '#available?' do
@@ -41,7 +55,7 @@ module Crichton
               @state = 'activated'
               @transition = 'deactivate'
               @conditions = :can_deactivate
-              
+
               decorator.should be_available
             end
 
@@ -91,20 +105,7 @@ module Crichton
         
         context 'with target that implements the State module' do
           before do
-            @skip_state = true
-          end
-          
-          let(:target) do
-            state = @state
-            target_class = Class.new do 
-              include Crichton::Representor::State   
-              
-              state_method state
-
-              # Note: the following code is for the test only. Normally, #state_method points to existing method.
-              define_method(state) { state } if state 
-            end
-            target_class.new
+            @skip_state_option = true
           end
           
           it_behaves_like 'a state transition'
@@ -112,7 +113,7 @@ module Crichton
           context 'with a nil state' do
             it 'it raises an error' do
               expect { decorator.available? }.to raise_error(Crichton::Representor::Error, 
-                /^No state method has been defined in the class.*/)
+                /^The state was nil in the class 'target'.*/)
             end
           end
         end
