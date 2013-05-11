@@ -97,11 +97,12 @@ module Crichton
           let(:target) do
             state = @state
             target_class = Class.new do 
-              include Crichton::Representor::State
-              if state
-                state_method state 
-                define_method(state) { state }
-              end
+              include Crichton::Representor::State   
+              
+              state_method state
+
+              # Note: the following code is for the test only. Normally, #state_method points to existing method.
+              define_method(state) { state } if state 
             end
             target_class.new
           end

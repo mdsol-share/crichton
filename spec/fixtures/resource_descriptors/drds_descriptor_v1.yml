@@ -81,8 +81,8 @@ states:
     - id: deactivated
       doc: The DRD is shut down.
       transitions:
-        - id: self
-          alias: show
+        - id: show
+          name: self
           next:
             - item
         - id: activate

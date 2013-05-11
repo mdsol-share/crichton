@@ -9,18 +9,10 @@ module Crichton
       ##
       # @param [Hash, Object] target The target instance to retrieve data from.
       # @param [Crichton::Descriptor::Detail] descriptor The Detail descriptor associated with the semantic data.
-      def initialize(target, descriptor)
+      def initialize(target, descriptor, options = nil)
         super(descriptor.resource_descriptor, descriptor.parent_descriptor, descriptor.descriptor_document)
+        # options not implemented
         @target = target
-      end
-      
-      ##
-      # The value of the data.
-      #
-      # @return [Object] The data value.
-      def value
-        # TODO: Add logging if a value is requested and the source in not defined vs. raising a MethodMissingError.
-        @target.is_a?(Hash) ? @target[source] : @target.try(source)
       end
       
       ##
@@ -30,6 +22,16 @@ module Crichton
       # @return [Boolean] true, if the data source is defined.
       def source_defined?
         @target.is_a?(Hash) ? @target.key?(source) : @target.respond_to?(source)
+      end
+      alias :available? :source_defined?
+
+      ##
+      # The value of the data.
+      #
+      # @return [Object] The data value.
+      def value
+        # TODO: Add logging if a value is requested and the source in not defined vs. raising a MethodMissingError.
+        @target.is_a?(Hash) ? @target[source] : @target.try(source)
       end
     end
   end

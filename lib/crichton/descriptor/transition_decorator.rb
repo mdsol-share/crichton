@@ -13,7 +13,7 @@ module Crichton
       # @param [Hash] options Optional conditions.
       # @option options [String, Symbol, Array] :conditions The state conditions.
       # @option options [String, Symbol] :protocol The protocol the transition implements.
-      # @option options [String, Symbol] :state The state of the object.
+      # @option options [String, Symbol] :state The state of the resource.
       def initialize(target, descriptor, options = {})
         super(descriptor.resource_descriptor, descriptor.parent_descriptor, descriptor.descriptor_document)
         @target = target

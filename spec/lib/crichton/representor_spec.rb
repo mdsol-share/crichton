@@ -113,8 +113,14 @@ module Crichton
         it 'returns an enumerator' do
           simple_test_class.new.each_data_semantic.should be_a(Enumerable)
         end
+
+        it 'yields decorated semantic descriptors' do
+          simple_test_class.new.each_data_semantic.to_a.all? do |item| 
+            item.instance_of?(Crichton::Descriptor::SemanticDecorator)
+          end
+        end
         
-        it 'returns a hash of decorated semantic descriptors associated with the represented resource' do
+        it 'returns only semantic descriptors whose source exists' do
           @attributes.each { |k, v| data_semantics[k].value.should == v }
         end
         
@@ -155,8 +161,14 @@ module Crichton
         it 'returns an enumerator' do
           simple_test_class.new.each_data_semantic.should be_a(Enumerable)
         end
+
+        it 'yields decorated semantic descriptors' do
+          simple_test_class.new.each_embedded_semantic.all? do |item|
+            item.instance_of?(Crichton::Descriptor::SemanticDecorator)
+          end
+        end
         
-        it 'returns a hash of purely semantic attributes associated with the represented resource' do
+        it 'returns only semantic descriptors whose source exists' do
           embedded_semantics['items'].value.should == [@item]
         end
 
@@ -172,6 +184,96 @@ module Crichton
             @options = {exclude: :items}
             embedded_semantics['items'].should be_nil
           end
+        end
+      end
+
+      let(:options) do
+        (@options || {}).tap do |options|
+          options[:state] = @state
+          options[:conditions] = @conditions
+        end
+      end
+
+      describe '#each_link_transition' do
+        let(:link_transitions) do
+          simple_test_class.new(@attributes).each_link_transition(options).inject({}) do |h, descriptor|
+            h.tap { |hash| hash[descriptor.id] = descriptor }
+          end
+        end
+      
+        before do
+          @resource_name = 'drd'
+        end
+      
+        it 'returns an enumerator' do
+          simple_test_class.new.each_link_transition.should be_a(Enumerable)
+        end
+      
+        it 'yields decorated transition descriptors' do
+          simple_test_class.new.each_embedded_semantic.all? do |item|
+            item.instance_of?(Crichton::Descriptor::TransitionDecorator)
+          end
+        end
+        
+        shared_examples_for 'a filtered list of link transactions' do
+          context 'with :only option' do
+            it 'returns only the specified semantic descriptors' do
+              @options = {only: :show}
+              link_transitions['show'].should_not be_nil
+              @comparison_links.each { |link| link_transitions[link].should be_nil }
+            end
+          end
+
+          context 'with :except option' do
+            it 'returns only the specified semantic descriptors' do
+              @options = {except: 'show'}
+              link_transitions['show'].should be_nil
+              @comparison_links.each { |link| link_transitions[link].should_not be_nil }
+            end
+          end
+        end
+      
+        context 'without a state' do
+          before do
+            @comparison_links = %w(activate deactivate update delete)
+          end
+        
+          it 'returns all link transitions' do
+            %w(show activate deactivate update delete).each { |id| link_transitions[id].should_not be_nil }
+          end
+        
+          it_behaves_like 'a filtered list of link transactions'
+        end
+      
+        context 'with a :state option' do
+          before do
+            @state = 'activated'
+            @comparison_links = %w(deactivate)
+            @conditions = :can_deactivate
+          end
+
+          it_behaves_like 'a filtered list of link transactions'
+          
+          context 'without :conditions option' do
+            it 'only includes transitions available for the state that do not have conditions' do
+              @conditions = nil
+              link_transitions['show'].should_not be_nil
+              %w(deactivate update delete).each { |id| link_transitions[id].should be_nil }
+            end
+          end
+
+          context 'with :conditions option' do
+            it 'only includes transitions available for the state' do
+              %w(show deactivate).each { |id| link_transitions[id].should_not be_nil }
+              %w(activate update delete).each { |id| link_transitions[id].should be_nil }
+            end
+          end
+        end
+      end
+      
+      describe '#method_missing' do
+        it 'continues to raise an error when an unknown method is called' do
+          expect { simple_test_class.new.bogus }.to raise_error(NoMethodError, /undefined method `bogus'.*/)
         end
       end
     end
