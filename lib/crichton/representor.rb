@@ -114,24 +114,42 @@ module Crichton
     end
 
     ##
+    # Returns a hash populated with the related semantic keys and underlying descriptors for embedded resources.
+    # 
+    # @example
+    #  @drds_instance.each_embedded_semantic({include: :items}).to_a   
+    #  @drds_instance.each_embedded_semantic({exclude: 'items'}).to_a
+    # 
+    # @param [Hash] options Optional conditions.
+    # @option options [String, Symbol, Array] :conditions The state conditions.
+    # @option options [String, Symbol, Array] :except The embedded transition descriptors to filter out.
+    # @option options [String, Symbol, Array] :only The embedded transition descriptors to limit.
+    # @option options [String, Symbol, Array] :state The state of the resource.
+    #
+    # @return [Hash] The embedded resources.
+    def each_embedded_transition(options = nil, &block)
+      each_embedded_transition_enumerator(slice_known(options, :include, :exclude, :state, :conditions), &block)
+    end
+
+    ##
     # Returns a hash populated with the data related semantic keys and underlying descriptors for the represented
     # resource.
     # 
     # @example
-    #  @drd_instance.each_link_transition({except: :status}).to_a   
-    #  @drd_instance.each_link_transition({only: [:uuid, 'name']}).to_a
+    #  @drd_instance.each_link_transition({except: :delete}).to_a   
+    #  @drd_instance.each_link_transition({only: [:show, 'activate']}).to_a
+    #  @drd_instance.each_link_transition({state: :activated, conditions: :can_do_anything}).to_a
     # 
     # @param [Hash] options Optional conditions.
     # @option options [String, Symbol, Array] :conditions The state conditions.
-    # @option options [String, Symbol, Array] :except The semantic data descriptor names to filter out.
-    # @option options [String, Symbol, Array] :only The semantic data descriptor names to limit.
+    # @option options [String, Symbol, Array] :except The link transition descriptors to filter out.
+    # @option options [String, Symbol, Array] :only The link transition descriptors to limit.
     # @option options [String, Symbol, Array] :state The state of the resource.
     #
     # @return [Hash] The data.
     def each_link_transition(options = nil, &block)
       each_link_transition_enumerator(slice_known(options, :only, :except, :state, :conditions), &block)
     end
-
 
     # @private
     # Used to return the correct enumerator.

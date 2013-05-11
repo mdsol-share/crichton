@@ -134,17 +134,29 @@ module Crichton
         end
         
         context 'with :only option' do
-          it 'returns only the specified semantic descriptors' do
+          before do
             @options = {only: :uuid}
+          end
+          
+          it 'returns the specified semantic descriptors' do
             data_semantics['uuid'].should_not be_nil
+          end
+
+          it 'excludes all other semantic descriptors' do
             data_semantics['name'].should be_nil
           end
         end
 
         context 'with :except option' do
-          it 'returns only the specified semantic descriptors' do
+          before do
             @options = {except: :uuid}
+          end
+          
+          it 'excludes all specified semantic descriptors' do
             data_semantics['uuid'].should be_nil
+          end
+
+          it 'returns all other semantic descriptors' do
             data_semantics['name'].should_not be_nil
           end
         end
@@ -190,7 +202,7 @@ module Crichton
         end
 
         context 'with :except option' do
-          it 'returns only the specified semantic descriptors' do
+          it 'returns all the semantic descriptors that were not excluded' do
             @options = {exclude: :items}
             embedded_semantics['items'].should be_nil
           end
@@ -204,6 +216,110 @@ module Crichton
         end
       end
 
+      describe '#each_embedded_transition' do
+        let(:embedded_transitions) do
+          simple_test_class.new(@attributes).each_embedded_transition(options).inject({}) do |h, descriptor|
+            h.tap { |hash| hash[descriptor.id] = descriptor }
+          end
+        end
+
+        before do
+          @resource_name = 'drd'
+        end
+
+        it 'returns an enumerator' do
+          simple_test_class.new.each_link_transition.should be_a(Enumerable)
+        end
+
+        it 'yields decorated transition descriptors' do
+          simple_test_class.new.each_embedded_semantic.all? do |item|
+            item.instance_of?(Crichton::Descriptor::TransitionDecorator)
+          end
+        end
+
+        it 'raises an error if options are passed that are not a hash' do
+          expect { simple_test_class.new.each_link_transition(:options).to_a }.to raise_error(ArgumentError,
+            /options must be nil or a hash. Received ':options'./)
+        end
+
+        shared_examples_for 'a filtered list of embedded transitions' do
+          context 'with :include option' do
+            before do
+              @options = {include: :leviathan}
+            end
+            
+            it 'returns only the specified transition descriptors' do
+              @comparison_links.each { |link| embedded_transitions[link].should be_nil }
+            end
+
+            it 'excludes all unspecified transition descriptors' do
+              @comparison_links.each { |link| embedded_transitions[link].should be_nil }
+            end
+          end
+
+          context 'with :exclude option' do
+            before do
+              @options = {exclude: 'leviathan'}
+            end
+            
+            it 'excludes all the transition descriptors that were specified' do
+              embedded_transitions['leviathan-link'].should be_nil
+            end
+
+            it 'returns all other unspecified the transition descriptors' do
+              @comparison_links.each { |link| embedded_transitions[link].should_not be_nil }
+            end
+          end
+        end
+
+        context 'without a state' do
+          before do
+            @comparison_links = %w(repair-history)
+          end
+
+          it 'returns all link transitions' do
+            %w(leviathan-link repair-history).each { |id| embedded_transitions[id].should_not be_nil }
+          end
+
+          it_behaves_like 'a filtered list of embedded transitions'
+        end
+
+        context 'with a :state option' do
+          before do
+            @state = 'activated'
+            @comparison_links = %w(repair-history)
+            @conditions = :can_repair
+          end
+
+          it_behaves_like 'a filtered list of embedded transitions'
+
+          context 'without :conditions option' do
+            before do
+              @conditions = nil
+            end
+            
+            it 'only includes transitions available for the state that do not have conditions' do
+              embedded_transitions['leviathan-link'].should_not be_nil
+            end
+
+            it 'excludes transitions available for the state that have conditions' do
+              embedded_transitions['repair-history'].should be_nil
+            end
+          end
+
+          context 'with :conditions option' do
+            it 'only includes transition descriptors available for the state with satisfied conditions' do
+              %w(leviathan-link repair-history).each { |id| embedded_transitions[id].should_not be_nil }
+            end
+
+            it 'excludes all transition descriptors available for the state with unsatisfied conditions' do
+              @conditions = :cannot_repair
+              embedded_transitions['repair-history'].should be_nil
+            end
+          end
+        end
+      end
+      
       describe '#each_link_transition' do
         let(:link_transitions) do
           simple_test_class.new(@attributes).each_link_transition(options).inject({}) do |h, descriptor|
@@ -230,19 +346,31 @@ module Crichton
             /options must be nil or a hash. Received '"options"'./)
         end
         
-        shared_examples_for 'a filtered list of link transactions' do
+        shared_examples_for 'a filtered list of link transitions' do
           context 'with :only option' do
-            it 'returns only the specified semantic descriptors' do
+            before do
               @options = {only: :show}
+            end
+            
+            it 'returns only the specified transition descriptors' do
               link_transitions['show'].should_not be_nil
+            end
+
+            it 'excludes all other transition descriptors' do
               @comparison_links.each { |link| link_transitions[link].should be_nil }
             end
           end
 
           context 'with :except option' do
-            it 'returns only the specified semantic descriptors' do
+            before do
               @options = {except: 'show'}
+            end
+            
+            it 'excludes the specified transition descriptors' do
               link_transitions['show'].should be_nil
+            end
+
+            it 'returns all other transition descriptors' do
               @comparison_links.each { |link| link_transitions[link].should_not be_nil }
             end
           end
@@ -257,7 +385,7 @@ module Crichton
             %w(show activate deactivate update delete).each { |id| link_transitions[id].should_not be_nil }
           end
         
-          it_behaves_like 'a filtered list of link transactions'
+          it_behaves_like 'a filtered list of link transitions'
         end
       
         context 'with a :state option' do
@@ -267,19 +395,28 @@ module Crichton
             @conditions = :can_deactivate
           end
 
-          it_behaves_like 'a filtered list of link transactions'
+          it_behaves_like 'a filtered list of link transitions'
           
           context 'without :conditions option' do
-            it 'only includes transitions available for the state that do not have conditions' do
+            before do
               @conditions = nil
+            end
+            
+            it 'only includes transitions available for the state that do not have conditions' do
               link_transitions['show'].should_not be_nil
+            end
+
+            it 'excludes transitions available for the state that have conditions' do
               %w(deactivate update delete).each { |id| link_transitions[id].should be_nil }
             end
           end
 
           context 'with :conditions option' do
             it 'only includes transitions available for the state' do
-              %w(show deactivate).each { |id| link_transitions[id].should_not be_nil }
+              %w(activate update delete).each { |id| link_transitions[id].should be_nil }
+            end
+
+            it 'excludes transitions available for the state with unsatisfied conditions' do
               %w(activate update delete).each { |id| link_transitions[id].should be_nil }
             end
           end
