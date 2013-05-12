@@ -115,7 +115,7 @@ module Crichton
         end
 
         it 'yields decorated semantic descriptors' do
-          simple_test_class.new.each_data_semantic.to_a.all? do |item| 
+          simple_test_class.new(@attributes).each_data_semantic.all? do |item| 
             item.instance_of?(Crichton::Descriptor::SemanticDecorator)
           end
         end
@@ -180,7 +180,7 @@ module Crichton
         end
 
         it 'yields decorated semantic descriptors' do
-          simple_test_class.new.each_embedded_semantic.all? do |item|
+          simple_test_class.new(@attributes).each_embedded_semantic.all? do |item|
             item.instance_of?(Crichton::Descriptor::SemanticDecorator)
           end
         end
@@ -232,7 +232,7 @@ module Crichton
         end
 
         it 'yields decorated transition descriptors' do
-          simple_test_class.new.each_embedded_semantic.all? do |item|
+          simple_test_class.new.each_embedded_transition.all? do |item|
             item.instance_of?(Crichton::Descriptor::TransitionDecorator)
           end
         end
@@ -336,7 +336,7 @@ module Crichton
         end
       
         it 'yields decorated transition descriptors' do
-          simple_test_class.new.each_embedded_semantic.all? do |item|
+          simple_test_class.new.each_link_transition.all? do |item|
             item.instance_of?(Crichton::Descriptor::TransitionDecorator)
           end
         end
