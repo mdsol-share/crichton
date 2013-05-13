@@ -28,8 +28,10 @@ module Crichton
       # @param [Crichton::Descriptor::Resource] resource_descriptor The top-level resource descriptor instance.   
       # @param [Crichton::Descriptor::Base] parent_descriptor The parent descriptor instance.                                                            # 
       # @param [Hash] descriptor_document The section of the descriptor document representing this instance.
-      def initialize(resource_descriptor, parent_descriptor, descriptor_document)
-        super(resource_descriptor, descriptor_document)
+      def initialize(resource_descriptor, parent_descriptor, id, descriptor_document = nil)
+        # descriptor_document argument not documented since used internally by decorator classes for performance.
+        descriptor_document ||= parent_descriptor.child_descriptor_document(id)
+        super(resource_descriptor, descriptor_document, id)
         @descriptors[:parent] = parent_descriptor
       end
       

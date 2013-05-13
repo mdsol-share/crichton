@@ -15,7 +15,7 @@ module Crichton
       # @option options [String, Symbol] :protocol The protocol the transition implements.
       # @option options [String, Symbol] :state The state of the resource.
       def initialize(target, descriptor, options = {})
-        super(descriptor.resource_descriptor, descriptor.parent_descriptor, descriptor.descriptor_document)
+        super(descriptor.resource_descriptor, descriptor.parent_descriptor, descriptor.id, descriptor.descriptor_document)
         @target = target
         @options = options || {}
       end
@@ -34,7 +34,7 @@ module Crichton
       ##
       # Returns the protocol for the transition.
       #
-      # @return [String] The downcased name of the protocol.
+      # @return [String] The down-cased name of the protocol.
       def protocol
         @protocol ||= begin
           if protocol = @options[:protocol]

@@ -19,9 +19,8 @@ module Crichton
       #
       # @return [Hash] The state transition descriptors.
       def transitions
-        @transitions ||= (descriptor_document['transitions'] || []).inject({}) do |h, transition_descriptor|
-          transition = StateTransition.new(resource_descriptor, transition_descriptor)
-          h.tap { |hash| hash[transition.id] = transition }
+        @transitions ||= (descriptor_document['transitions'] || {}).inject({}) do |h, (id, transition_descriptor)|
+          h.tap { |hash| hash[id] = StateTransition.new(resource_descriptor, transition_descriptor, id) }
         end.freeze
       end
     end

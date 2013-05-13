@@ -7,7 +7,7 @@ module Crichton
       let(:descriptor) { Profile.new(mock('resource_descriptor'), @descriptor) }
 
       before do
-        @descriptor = descriptors.detect { |descriptor| descriptor['id'] == 'drds' }
+        @descriptor = descriptors['drds']
       end
 
       describe '.new' do
@@ -56,7 +56,7 @@ module Crichton
   
         context 'without nested semantic descriptors' do
           it 'returns an empty hash if there are no nested semantic descriptors' do
-            @descriptor['descriptors'].reject! { |descriptor| descriptor['type'] == 'semantic' }
+            @descriptor['descriptors'].reject! { |_, descriptor| descriptor['type'] == 'semantic' }
             descriptor.semantics.should be_empty
           end
         end

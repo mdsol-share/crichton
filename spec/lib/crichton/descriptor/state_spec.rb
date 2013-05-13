@@ -3,9 +3,9 @@ require 'spec_helper'
 module Crichton
   module Descriptor
     describe State do
-      let(:state_descriptor) { drds_descriptor['states']['drds'].first }
+      let(:state_descriptor) { drds_descriptor['states']['drds']['collection'] }
       let(:resource_descriptor) { mock('resource_descriptor') }
-      let(:descriptor) { State.new(resource_descriptor, state_descriptor) }
+      let(:descriptor) { State.new(resource_descriptor, state_descriptor, 'collection') }
   
       describe '#doc' do
         it 'returns the underlying descriptor doc property' do
@@ -15,7 +15,7 @@ module Crichton
   
       describe '#id' do
         it 'returns the name of the state' do
-          descriptor.id.should == state_descriptor['id']
+          descriptor.id.should == 'collection'
         end
       end
       
