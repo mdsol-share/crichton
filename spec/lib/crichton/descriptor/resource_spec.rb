@@ -112,12 +112,46 @@ module Crichton
         end
       end
       
-      let(:resource_descriptor) { Resource.new(drds_descriptor) }
+      let(:descriptor_document) { drds_descriptor }
+      let(:resource_descriptor) { Resource.new(descriptor_document) }
+      
+      describe '#available_protocols' do
+        it 'returns a list of available protocols' do
+          resource_descriptor.available_protocols.should == %w(http)
+        end
+      end
+      
+      describe '#default_protocol' do
+        it 'returns the top-level default protocol defined in the descriptor document' do
+          descriptor_document['default_protocol'] = 'some_protocol'
+          resource_descriptor.default_protocol.should == 'some_protocol'
+        end
+
+        it 'returns the first protocol define with no default protocol defined in the descriptor document' do
+          resource_descriptor.default_protocol.should == 'http'
+        end
+        
+        it 'raises an error if no protocols are defined and no default_protocol is defined' do
+          descriptor_document['protocols'] = {}
+          expect { resource_descriptor.default_protocol }.to raise_error(
+            /^No protocols defined for the resource descriptor DRDs.*/)
+        end
+      end
       
       describe '#inspect' do
         it 'includes the @key ivar' do
           resource_descriptor.to_key
           resource_descriptor.inspect.should =~ /.*@key=.*/
+        end
+      end
+
+      describe '#protocol_exists?' do
+        it 'returns true if the protocol is defined in the descriptor document' do
+          resource_descriptor.protocol_exists?('http').should be_true
+        end
+
+        it 'returns false if the protocol is not defined in the descriptor document' do
+          resource_descriptor.protocol_exists?('bogus').should be_false
         end
       end
       
@@ -145,6 +179,10 @@ module Crichton
       describe '#states' do
         it 'returns as hash of state descriptors keyed by resource' do
           resource_descriptor.states['drds'].should_not be_empty
+        end
+        
+        it 'returns a hash of a hash of State instances' do
+          resource_descriptor.states['drds']['collection'].should be_a(State)
         end
       end
   

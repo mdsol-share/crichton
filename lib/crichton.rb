@@ -1,3 +1,4 @@
+require 'active_support/all'
 require 'crichton/configuration'
 require 'crichton/descriptor'
 require 'crichton/dice_bag/template'

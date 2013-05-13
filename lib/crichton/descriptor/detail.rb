@@ -8,34 +8,59 @@ module Crichton
       # @!macro string_reader
       descriptor_reader :href
 
-      ##
-      # Returns the protocol-specific descriptor of the transition.
-      #
-      # @param [String, Symbol] protocol The protocol.
-      #
-      # @return [Object] The protocol descriptor instance.
-      def protocol_descriptor(protocol)
-        return {} if semantic?
-        
-        protocol_key = protocol.downcase.to_s
-        @descriptors[:protocol] ||= {}
-        @descriptors[:protocol][protocol_key] ||= resource_descriptor.protocol_transition(protocol_key, id)
-      end
-
       # @!macro string_reader
       descriptor_reader :embed
+
+      # @!macro string_reader
+      descriptor_reader :rt
+
+      # @!macro object_reader
+      descriptor_reader :sample
+
+      # @!macro string_reader
+      descriptor_reader :type
+      
+      ##
+      # Constructs a new instance of BaseDocumentDescriptor.
+      #
+      # Subclasses MUST call <tt>super</tt> in their constructors.
+      #
+      # @param [Crichton::Descriptor::Resource] resource_descriptor The top-level resource descriptor instance.   
+      # @param [Crichton::Descriptor::Base] parent_descriptor The parent descriptor instance.                                                            # 
+      # @param [Hash] descriptor_document The section of the descriptor document representing this instance.
+      def initialize(resource_descriptor, parent_descriptor, descriptor_document)
+        super(resource_descriptor, descriptor_document)
+        @descriptors[:parent] = parent_descriptor
+      end
+      
+      ##
+      # Decorates a descriptor to access associated properties from a target.
+      #
+      # @param [Object] target The target.
+      # @param [Hash] options Optional conditions.
+      #
+      # @return [Crichton::Descriptor::SemanticDecorator, Crichton::Descriptor::TransitionDecorator] The decorated 
+      #   descriptor.
+      def decorate(target, options = nil)
+        decorator_class.new(target, self, options)
+      end
       
       ##
       # Whether the descriptor is embeddable or not as indicated by the presence of an embed key in the
       # underlying resource descriptor document.
       #
-      # @return [Boolean] <tt>true<\tt> if embeddable. <tt>false</tt> otherwise.
+      # @return [Boolean] <tt>true</tt> if embeddable. <tt>false</tt> otherwise.
       def embeddable?
         !!embed
       end
       
-      # @!macro string_reader
-      descriptor_reader :rt
+      ##
+      # Returns the parent descriptor of a nested-descriptor.
+      #
+      # @return [Crichton::Descriptor::Base] The parent descriptor.
+      def parent_descriptor
+        @descriptors[:parent]
+      end
 
       ##
       # The source of the descriptor. Used to specify the local attribute associated with the semantic descriptor
@@ -45,12 +70,16 @@ module Crichton
       def source
         descriptor_document['source'] || name
       end
-  
-      # @!macro object_reader
-      descriptor_reader :sample
       
-      # @!macro string_reader
-      descriptor_reader :type
+    private
+      def decorator_class
+        @decorator_class ||= begin
+          require 'crichton/descriptor/semantic_decorator'
+          require 'crichton/descriptor/transition_decorator'
+          
+          semantic? ? SemanticDecorator : TransitionDecorator
+        end
+      end
     end
   end
 end

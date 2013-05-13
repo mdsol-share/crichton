@@ -3,7 +3,7 @@ require 'spec_helper'
 module Crichton
   module Descriptor
     describe SemanticDecorator do
-      let(:descriptor) { Detail.new(mock('resource_descriptor'), @descriptor_document) }
+      let(:descriptor) { Detail.new(mock('resource_descriptor'), mock('parent_descriptor'), @descriptor_document) }
       let(:decorator) { SemanticDecorator.new(@target, descriptor) }
       
       describe '#source_defined?' do

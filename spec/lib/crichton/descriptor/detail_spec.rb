@@ -5,7 +5,8 @@ module Crichton
     describe Detail do
       let(:resource_descriptor) { mock('resource_descriptor') }
       let(:descriptor_document) { drds_descriptor['descriptors'].first }
-      let(:descriptor) { Detail.new(resource_descriptor, descriptor_document) }
+      let(:parent_descriptor) { mock('parent_descriptor') }
+      let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, descriptor_document) }
   
       describe '.new' do
         it 'returns a subclass of Profile' do
@@ -38,15 +39,10 @@ module Crichton
           descriptor.href.should == descriptor_document['href']
         end
       end
-  
-      describe '#protocol_descriptor' do
-        it 'returns a protocol description for the specified protocol' do
-          protocol_descriptor = mock('protocol_descriptor')
-          resource_descriptor.stub(:protocol_transition).with('http', 'list').and_return(protocol_descriptor)
-          
-          transition_descriptor = descriptor_document['descriptors'].detect { |descriptor| descriptor['id'] == 'list' }
-          descriptor =  Detail.new(resource_descriptor, transition_descriptor)
-          descriptor.protocol_descriptor('http').should == protocol_descriptor
+      
+      describe '#parent_descriptor' do
+        it 'returns the parent of the descriptor' do
+          descriptor.parent_descriptor.should == parent_descriptor
         end
       end
 

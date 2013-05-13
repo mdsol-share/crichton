@@ -56,7 +56,7 @@ states:
   drd:
     - id: activated 
       doc: The default state of a DRD.
-      transistions:
+      transitions:
         - id: show
           name: self
           next:
@@ -75,14 +75,20 @@ states:
             - can_do_anything
           next:
             - deleted
-        - id: leviathan
+        - id: leviathan-link
+          name: leviathan
           next:
             - location: http://alps.io/schema.org/Leviathans#leviathan
+        - id: repair-history
+          conditions:
+            - can_repair
+          next:
+            - location: http://alps.io/schema.org/Repais#history
     - id: deactivated
       doc: The DRD is shut down.
-      transistions:
-        - id: self
-          alias: show
+      transitions:
+        - id: show
+          name: self
           next:
             - item
         - id: activate
@@ -105,7 +111,8 @@ states:
             - can_do_anything
           next:
             - deleted
-        - id: leviathan
+        - id: leviathan-link
+          name: leviathan
           next:
             - location: http://alps.io/schema.org/Leviathans#leviathan
     - id: deleted
@@ -252,6 +259,11 @@ descriptors:
         type: safe
         embed: true
         rt: http://alps.io/schema.org/Leviathan#leviathan
+      - id: repair-history
+        doc: A reference to the list of historical repairs performed.
+        type: safe
+        embed: true
+        rt: http://alps.io/schema.org/Repairs#history
       - id: update
         doc: Updates a DRD.
         type: idempotent

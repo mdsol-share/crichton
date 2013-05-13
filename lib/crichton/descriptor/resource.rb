@@ -69,6 +69,40 @@ module Crichton
   
       # @!macro descriptor_reader
       descriptor_reader :version
+      
+      ##
+      # Lists the protocols defined in the descriptor document.
+      #
+      # @return [Array] The protocols.
+      def available_protocols
+        protocols.keys
+      end
+      
+      ## 
+      # The default protocol used to send messages. If not defined explicitly in the top-level of the resource 
+      # descriptor document, it defaults to the first protocol defined.
+      #
+      # @return [String] The protocol.
+      def default_protocol
+        @default_protocol ||= begin
+          if default_protocol = descriptor_document['default_protocol']
+            default_protocol.downcase
+          elsif protocol_key = protocols.keys.first
+            protocol_key
+          else
+            raise "No protocols defined for the resource descriptor #{id}. Please define a protocol in the " <<
+              "associated descriptor document or set a 'default_protocol' for the document."
+          end
+        end
+      end
+      
+      ##
+      # Whether the specified protocol exists or not.
+      #
+      # @return [Boolean] <tt>true</tt> if it exists, <tt>false</tt> otherwise.
+      def protocol_exists?(protocol)
+        available_protocols.include?(protocol)
+      end
   
       ##
       # Returns the protocol transition descriptors specified in the resource descriptor document.
@@ -107,8 +141,10 @@ module Crichton
       # @return [Hash] The state instances.
       def states
         @descriptors[:state] ||= (descriptor_document['states'] || {}).inject({}) do |h, (resource, resource_states)|
-          h[resource] = (resource_states || {}).inject({}) do |states, (state, state_descriptor)|
-            states.tap { |hash| hash[state] = State.new(self, state_descriptor) }
+          h[resource] = (resource_states || []).inject({}) do |states, resource_state|
+            state = State.new(self, resource_state)
+            states[state.name] = state
+            states
           end
           h
         end.freeze

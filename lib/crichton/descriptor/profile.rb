@@ -20,7 +20,7 @@ module Crichton
       # @return [Array] The descriptor instances.
       def descriptors
         @descriptors[:all] ||= (descriptor_document['descriptors'] || []).map do |descriptor_section|
-          Detail.new(resource_descriptor, descriptor_section)
+          Detail.new(resource_descriptor, self, descriptor_section)
         end.freeze
       end
 
