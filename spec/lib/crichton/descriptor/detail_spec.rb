@@ -38,9 +38,17 @@ module Crichton
         end
       end
   
-      describe '#href' do
-        it 'returns the href in the descriptor document' do
-          descriptor.href.should == descriptor_document['href']
+      describe '#metadata_links' do
+        it 'includes the descriptor profile link' do
+          simple_test_class.metadata_links.map(&:name).should include('profile')
+        end
+
+        it 'includes the descriptor type link' do
+          simple_test_class.metadata_links.map(&:name).should include('type')
+        end
+
+        it 'includes the descriptor help link' do
+          simple_test_class.metadata_links.map(&:name).should include('help')
         end
       end
       

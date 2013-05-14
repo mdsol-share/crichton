@@ -63,7 +63,10 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :id
-      
+
+      # @!macro string_reader
+      descriptor_reader :href
+
       ##
       # Accesses the child descriptor document hash so inheriting classes that implement parents set
       # it directly from the parent.

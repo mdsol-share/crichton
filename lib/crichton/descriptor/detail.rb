@@ -6,9 +6,6 @@ module Crichton
     # Manages detail information associated with descriptors.
     class Detail < Profile
       # @!macro string_reader
-      descriptor_reader :href
-
-      # @!macro string_reader
       descriptor_reader :embed
 
       # @!macro string_reader

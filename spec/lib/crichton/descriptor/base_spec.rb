@@ -25,6 +25,14 @@ module Crichton
         end
       end
 
+      describe '#href' do
+        it 'returns the href in the descriptor document' do
+          descriptor_document['href'] = 'some_href'
+          descriptor.href.should == descriptor_document['href']
+        end
+      end
+
+
       describe '#resource_descriptor' do
         it 'returns the parent resource_descriptor instance' do
           descriptor.resource_descriptor.should == resource_descriptor
