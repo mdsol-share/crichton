@@ -166,7 +166,7 @@ module Crichton
       return to_enum("each_#{type}_#{descriptor}", options) unless block_given?
 
       filtered_semantic_descriptors(type, descriptor, options).each do |descriptor|   
-        decorated_descriptor = descriptor.decorate(self, options)
+        decorated_descriptor = descriptor.decorate(target, options)
         yield decorated_descriptor if decorated_descriptor.available?
       end
     end
@@ -199,6 +199,10 @@ module Crichton
       options ||= {}
       raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'." unless options.is_a?(Hash)
       options.slice(*known_options)
+    end
+    
+    def target
+      @target ||= self
     end
     
     ##
@@ -254,7 +258,7 @@ module Crichton
       
       def crichton_state
         @crichton_state ||= begin
-          state_method = self.class.send(:crichton_state_method, self)
+          state_method = self.class.send(:crichton_state_method, target)
           state = @target.is_a?(Hash) ? target_state(state_method) : instance_state(state_method)
           
           state.tap do |state|
