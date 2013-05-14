@@ -87,6 +87,14 @@ module Crichton
       def name
         descriptor_document['name'] || id
       end
+      
+      ##
+      # Returns the profile link for the resource descriptor.
+      #
+      # @return [Crichton::Descriptor::Link] The link.
+      def profile_link
+        resource_descriptor.profile_link
+      end
 
       # @private
       # Overrides inspect to remove the descriptor document for readability

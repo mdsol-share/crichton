@@ -53,6 +53,14 @@ module Crichton
           end
         end
       end
+      
+      describe '#profile_link' do
+        it 'returns the resource descriptor self link' do
+          link = mock('link')
+          resource_descriptor.stub(:profile_link).and_return(link)
+          descriptor.profile_link.should == link
+        end
+      end
 
       describe '#inspect' do
         it 'excludes the @descriptors ivar for readability' do
