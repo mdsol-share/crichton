@@ -33,8 +33,8 @@ module Crichton
       #
       # @return [Array] The link objects.
       def links
-        @links ||= (descriptor_document['links'] || {}).inject({}) do |h, (rel, descriptor)|
-          h.tap { |hash| hash[rel] = Link.new(self, descriptor, rel)}
+        @links ||= (descriptor_document['links'] || {}).inject({}) do |h, (rel, href)|
+          h.tap { |hash| hash[rel] = Link.new(self, rel, href)}
         end
       end
       alias :link :links # ALPS expects a singular property name.

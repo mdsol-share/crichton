@@ -4,7 +4,7 @@ require 'crichton/descriptor/link'
 module Crichton
   module Descriptor
     describe Link do
-      let(:link) { Link.new(mock('resource_descriptor'), {'href' => 'link_url'}, 'rel') }
+      let(:link) { Link.new(mock('resource_descriptor'), 'rel', 'link_url') }
       
       describe '#rel' do
         it 'returns the link relationship' do

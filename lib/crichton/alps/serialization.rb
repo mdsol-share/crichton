@@ -70,7 +70,9 @@ module Crichton
                          when EXT_ELEMENT
                            alps_value
                          when LINK_ELEMENT
-                           alps_value unless alps_value.empty?
+                           unless alps_value.empty?
+                             alps_value.values.map { |link| {'rel' => link.rel, 'href' => link.href} } 
+                           end
                          end
 
           hash.tap { |h| h[element] = alps_element if alps_element }
