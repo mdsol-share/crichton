@@ -25,6 +25,14 @@ module Crichton
         end.freeze
       end
 
+      # Returns the descriptor help link descriptor. If no help link is defined on the descriptor is defined, it 
+      # returns the resource descriptor help link.
+      #
+      # @return [Crichton::Descriptor::Link] The link.
+      def help_link
+        links['help'] || resource_descriptor.help_link
+      end
+
       # @!macro string_reader
       descriptor_reader :ext
       ##
