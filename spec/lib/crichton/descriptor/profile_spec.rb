@@ -39,7 +39,7 @@ module Crichton
 
       describe '#links' do
         it 'returns the descriptor links' do
-          descriptor.links.should == @descriptor['links']
+          descriptor.links['self'].should_not be_nil
         end
       end
 

@@ -1,7 +1,8 @@
 require 'crichton/descriptor/base'
+require 'crichton/descriptor/link'
 require 'crichton/alps/serialization'
-
 module Crichton
+  
   module Descriptor
     # Manages core profile functionality for all descriptors.
     class Profile < Base
@@ -32,7 +33,9 @@ module Crichton
       #
       # @return [Array] The link objects.
       def links
-        @links ||= (descriptor_document['links'] || [])
+        @links ||= (descriptor_document['links'] || {}).inject({}) do |h, (rel, descriptor)|
+          h.tap { |hash| hash[rel] = Link.new(self, descriptor, rel)}
+        end
       end
       alias :link :links # ALPS expects a singular property name.
 

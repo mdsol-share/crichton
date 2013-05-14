@@ -13,9 +13,9 @@ id: DRDs
 version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
-  - rel: self
+  self:
     href: alps_base/DRDs
-  - rel: help
+  help:
     href: documentation_base/Things/DRDs
  
 # This section associates a simple state-machine DSL with the particular resource. It shows
@@ -139,7 +139,7 @@ descriptors:
       html: <p>A list of DRDs.</p>
     type: semantic
     links:
-      - rel: self
+      self:
         href: alps_base/DRDs#drds
     descriptors:
       # Semantics
@@ -176,9 +176,9 @@ descriptors:
             type: semantic
             href: drd/update/update-drd # Indicates that this should dereference update-drd
             links:
-              - rel: self 
+              self: 
                 href: alps_base/DRDs#drd/create/create-drd
-              - rel: help
+              help:
                 href: documentation_base/Forms/create-drd
             descriptors:
               form-name:
@@ -205,7 +205,7 @@ descriptors:
       built by a Leviathan as it grows.
     type: semantic
     links:
-      - rel: self
+      self:
         href: alps_base/DRDs#drd
     descriptors:
       # Semantics
@@ -275,9 +275,9 @@ descriptors:
           update-drd:
             type: semantic
             links:
-              - rel: self 
+              self: 
                 href: alps_base/DRDs#drd/update/update-drd  
-              - rel: help
+              help:
                 href: documentation_base/Forms/update-drd
             descriptors:
               form-status:
