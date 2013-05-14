@@ -423,6 +423,13 @@ module Crichton
         end
       end
       
+      describe '#metadata_links' do
+        it 'returns the metadata links associated with the represented resource' do
+          @resource_name = 'drds'
+          simple_test_class.new.metadata_links.map(&:rel).should == %w(profile type help)
+        end
+      end
+      
       describe '#method_missing' do
         it 'continues to raise an error when an unknown method is called' do
           expect { simple_test_class.new.bogus }.to raise_error(NoMethodError, /undefined method `bogus'.*/)

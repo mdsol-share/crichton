@@ -54,6 +54,14 @@ module Crichton
       end
       
       ##
+      # Returns an array of the profile, type and help links associated with the descriptor.
+      #
+      # @return [Array] The link instances.
+      def metadata_links
+        @metadata_links ||= [profile_link, type_link, help_link].compact
+      end
+      
+      ##
       # Returns the parent descriptor of a nested-descriptor.
       #
       # @return [Crichton::Descriptor::Base] The parent descriptor.
@@ -68,6 +76,12 @@ module Crichton
       # @return [String] The source of the semantic descriptor.
       def source
         descriptor_document['source'] || name
+      end
+      
+      def type_link
+        @descriptors[:type_link] ||= if semantic? && (self_link = links['self'])
+          Crichton::Descriptor::Link.new(resource_descriptor, 'type', self_link.href)
+        end
       end
       
     private

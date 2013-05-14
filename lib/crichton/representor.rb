@@ -150,6 +150,14 @@ module Crichton
     def each_link_transition(options = nil, &block)
       each_link_transition_enumerator(slice_known(options, :only, :except, :state, :conditions), &block)
     end
+    
+    ##
+    # Returns the profile, type and help links of the associated descriptor.
+    #
+    # @return [Array] The link instances.
+    def metadata_links
+      self.class.resource_descriptor.metadata_links
+    end
 
     # @private
     # Used to return the correct enumerator.
