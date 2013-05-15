@@ -41,7 +41,7 @@ module Crichton
       #
       # @return [Boolean] true, if a semantic descriptor.
       def semantic?
-        SEMANTIC_TYPES.include?(type)
+        @semantic ||= SEMANTIC_TYPES.include?(type)
       end
 
       ##
@@ -58,7 +58,7 @@ module Crichton
       #
       # @return [Boolean] true, if a transition descriptor.
       def transition?
-        TRANSITION_TYPES.include?(type)
+        @transition ||= TRANSITION_TYPES.include?(type)
       end
       
       ##

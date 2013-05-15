@@ -25,9 +25,8 @@ module Crichton
           if @check_semantics
             representor.each_data_semantic.any? { |data_semantic| data_semantic.value == '1812' }.should be_true
           else
-            representor.each_link_transition({conditions: 'can_do_anything'}).any? do |transition| 
-              transition.name == 'deactivate' 
-            end.should be_true
+            enumerator = representor.each_link_transition(conditions: 'can_do_anything')
+            enumerator.any? { |transition| transition.name == 'deactivate' }.should be_true
           end
         end
       end
@@ -75,7 +74,7 @@ module Crichton
 
           context 'with :state option' do
             before do
-              @options = {state: 'activate'}
+              @options = {state: 'activated'}
             end
 
             context 'with object target' do
@@ -103,7 +102,7 @@ module Crichton
             context 'with object target' do
               before do
                 @target = :object
-                target.stub(:my_state).and_return('activate')
+                target.stub(:my_state).and_return('activated')
               end
 
               it_behaves_like 'a representor factory method'
@@ -111,10 +110,21 @@ module Crichton
 
             context 'with hash target' do
               before do
-                @target = {name: '1812'}
+                @target = {name: '1812', my_state: 'activated'}
               end
 
               it_behaves_like 'a representor factory method'
+              
+              context 'when accessing transitions with a state_method that is not an attribute of the hash' do
+                it 'raises an error' do
+                  @target = {name: '1812'}
+                  expect { subject.build_state_representor(target, :drd, @options).each_link_transition.to_a }
+                    .to raise_error(
+                      Crichton::Representor::Error, 
+                      /^No attribute exists in the target.* that corresponds to the state method 'my_state'.$/
+                    )
+                end
+              end
             end
           end
 
