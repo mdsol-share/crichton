@@ -25,100 +25,104 @@ links:
 
 states:
   drds:
-    - id: collection
+    collection:
       doc: The entry point state for interacting with DRDs.
       location: entry
       transitions:
-        - id: list
+        list:
           name: self
           next:
             - collection
-        - id: search
+        search:
           next:
             - navigation
-        - id: create
+        create:
           conditions:
             - can_create 
             - can_do_anything
           next:
             - activated
             - error   
-    - id: navigation
+    navigation:
       doc: Represents a filtered list of DRDs.
       transitions:
-        - id: search
+        search:
           name: self
           next:
             - navigation
-        - id: search
+        create:
+          conditions:
+            - can_create 
+            - can_do_anything
           next:
-            - navigation        
+            - activated
+            - error        
   drd:
-    - id: activated 
+    activated :
       doc: The default state of a DRD.
       transitions:
-        - id: show
+        show:
           name: self
           next:
             - item
-        - id: deactivate
+        deactivate:
           conditions:
             - can_deactivate 
             - can_update 
             - can_do_anything
           next:
            - deactivated
-        - id: delete
+        delete:
           conditions:
             - airlock_open 
             - can_delete 
             - can_do_anything
           next:
             - deleted
-        - id: leviathan-link
+        leviathan-link:
           name: leviathan
           next:
             - location: http://alps.io/schema.org/Leviathans#leviathan
-        - id: repair-history
+        repair-history:
           conditions:
             - can_repair
           next:
             - location: http://alps.io/schema.org/Repais#history
-    - id: deactivated
+    deactivated:
       doc: The DRD is shut down.
       transitions:
-        - id: show
+        show:
           name: self
           next:
             - item
-        - id: activate
+        activate:
           conditions:
             - can_activate 
             - can_update 
             - can_do_anything
           next:
            - activated
-        - id: update
+        update:
           conditions:
             - can_update 
             - can_do_anything
           next:
             - deactivated
-        - id: delete
+        delete:
           conditions:
             - airlock_open 
             - can_delete 
             - can_do_anything
           next:
             - deleted
-        - id: leviathan-link
+        leviathan-link:
           name: leviathan
           next:
             - location: http://alps.io/schema.org/Leviathans#leviathan
-    - id: deleted
+    deleted:
       doc: The DRD is now free-floating in space.
       location: exit
-    - id: error
+    error:
       doc: An error has occured.
       location: http://alps.io/schema.org/Error
       
@@ -130,7 +134,7 @@ states:
 # represent type='safe,unsafe,idempotent' descriptors. 
 
 descriptors:
-  - id: drds
+  drds:
     doc: 
       html: <p>A list of DRDs.</p>
     type: semantic
@@ -139,31 +143,31 @@ descriptors:
         href: alps_base/DRDs#drds
     descriptors:
       # Semantics
-      - id: total_count
+      total_count:
         doc: The total count of DRDs.
         type: semantic
         href: http://alps.io/schema.org/Integer
         sample: 1
-      - id: items
+      items:
         doc: An array of embedded DRD resources.
         type: semantic
         href: drd
         embed: multiple # Select non-ALPS values are treated as extensions in the profile.
       # Transitions
-      - id: list
+      list:
         doc: Returns a list of DRDs.
         type: safe
         rt: drds
-      - id: search
+      search:
         doc: Returns a list of DRDs that satisfy the search term.
         type: safe
         rt: drds
         descriptors:
-          - id: search_term
+          search_term:
             doc: The terms to search.
             type: semantic
             href: http://alps.io/schema.org/Text
-      - id: create
+      create:
         doc: Creates a DRD.
         type: unsafe
         rt: drd
@@ -177,7 +181,7 @@ descriptors:
               - rel: help
                 href: documentation_base/Forms/create-drd
             descriptors:
-              - id: form-name
+              form-name:
                 name: name
                 doc: The name of the DRD.
                 type: semantic
@@ -185,7 +189,7 @@ descriptors:
                 field_type: input
                 validators:
                   - presence
-              - id: form-leviathan_uuid
+              form-leviathan_uuid:
                 name: leviathan_uuid
                 doc: The UUID of the creator Leviathan.
                 type: semantic
@@ -195,7 +199,7 @@ descriptors:
                   href: http://alps.io.example.org/Leviathans#list
                 validators:
                   - presence     
-  - id: drd
+  drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
       built by a Leviathan as it grows.
@@ -205,70 +209,70 @@ descriptors:
         href: alps_base/DRDs#drd
     descriptors:
       # Semantics
-      - id: uuid
+      uuid:
         doc: The UUID of the DRD.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
-      - id: name
+      name:
         doc: The name of the DRD.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: 1812
-      - id: status
+      status:
         doc: How is the DRD.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: renegade
-      - id: kind
+      kind:
         doc: What kind is it.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: standard
-      - id: leviathan_uuid
+      leviathan_uuid:
         doc: The UUID of the creator Leviathan.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
-      - id: built_at
+      built_at:
         doc: When the DRD was constructed.
         type: semantic
         href: http://alps.io/schema.org/DateTime
         sample: 2013-03-20T00:00:00+00:00
-      - id: leviathan
+      leviathan:
         doc: The associated Leviathan resource.
         type: semantic
         href: http://alps.io/schema.org/Thing/Leviathan
         embed: optional
       # Transitions
-      - id: show
+      show:
         doc: Shows a particular DRD.
         type: safe
         rt: drd
-      - id: activate
+      activate:
         doc: Activates a DRD if it is deactivated.
         type: idempotent
         rt: drd
-      - id: deactivate
+      deactivate:
         doc: Deactivates a DRD if it is activated.
         type: idempotent
         rt: drd
-      - id: leviathan-link
+      leviathan-link:
         name: leviathan
         doc: A reference to the Leviathan the DRD works on.
         type: safe
         embed: true
         rt: http://alps.io/schema.org/Leviathan#leviathan
-      - id: repair-history
+      repair-history:
         doc: A reference to the list of historical repairs performed.
         type: safe
         embed: true
         rt: http://alps.io/schema.org/Repairs#history
-      - id: update
+      update:
         doc: Updates a DRD.
         type: idempotent
         descriptors:
-          - id: update-drd
+          update-drd:
             type: semantic
             links:
               - rel: self 
@@ -276,7 +280,7 @@ descriptors:
               - rel: help
                 href: documentation_base/Forms/update-drd
             descriptors:
-              - id: form-status
+              form-status:
                 doc: How is the DRD.
                 href: http://alps.io/schema.org/Text
                 name: status
@@ -287,7 +291,7 @@ descriptors:
                   - broken
                 validators:
                   - presence
-              - id: form-kind
+              form-kind:
                 name: kind
                 doc: What kind is it.
                 href: http://alps.io/schema.org/Text
@@ -297,7 +301,7 @@ descriptors:
                   - sentinel
                 validators:
                   - presence 
-      - id: delete
+      delete:
         doc: Drops a DRD out an air-lock.
         type: idempotent    
 

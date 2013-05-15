@@ -4,9 +4,13 @@ module Crichton
   module Descriptor
     describe Detail do
       let(:resource_descriptor) { mock('resource_descriptor') }
-      let(:descriptor_document) { drds_descriptor['descriptors'].first }
-      let(:parent_descriptor) { mock('parent_descriptor') }
-      let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, descriptor_document) }
+      let(:descriptor_document) { drds_descriptor['descriptors']['drds'] }
+      let(:parent_descriptor) do
+        descriptor = mock('parent_descriptor')
+        descriptor.stub(:child_descriptor_document).with('drds').and_return(descriptor_document)
+        descriptor
+      end
+      let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, 'drds') }
   
       describe '.new' do
         it 'returns a subclass of Profile' do

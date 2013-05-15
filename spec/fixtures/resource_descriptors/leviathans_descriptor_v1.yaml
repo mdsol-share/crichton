@@ -10,7 +10,7 @@ ext:
   - href: alps_base/Leviathans#leviathan/alt
     value: Alternate.
 descriptors:
-  - id: leviathan
+  leviathan:
     doc: 
       html: <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
     ext:
@@ -19,23 +19,23 @@ descriptors:
     type: semantic
     descriptors:
       # Semantics
-      - id: uuid
+      uuid:
         doc: The UUID of the Leviathan.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
-      - id: name
+      name:
         doc: The name of the Leviathan.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: Moya
       #Transitions
-      - id: create
+      create:
         doc: Creates a Leviathan.
         type: unsafe
         rt: leviathan
         descriptors:
-          - id: create-leviathan
+          create-leviathan:
             type: semantic
             links:
               - rel: self
@@ -43,7 +43,7 @@ descriptors:
               - rel: help
                 href: documentation_base/Forms/create-leviathan
             descriptors:
-              - id: form_name
+              form_name:
                 name: name
                 doc: The name of the Leviathan.
                 type: semantic

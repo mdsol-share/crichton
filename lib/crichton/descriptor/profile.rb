@@ -19,8 +19,8 @@ module Crichton
       #
       # @return [Array] The descriptor instances.
       def descriptors
-        @descriptors[:all] ||= (descriptor_document['descriptors'] || []).map do |descriptor_section|
-          Detail.new(resource_descriptor, self, descriptor_section)
+        @descriptors[:all] ||= (descriptor_document['descriptors'] || {}).keys.map do |id|
+          Detail.new(resource_descriptor, self, id)
         end.freeze
       end
 

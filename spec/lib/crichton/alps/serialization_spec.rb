@@ -19,19 +19,20 @@ module Crichton
         alias :link :links
 
         define_method('descriptors') do
-          (descriptor_document['descriptors'] || []).inject([]) do |a, descriptor|
-            a << SimpleAlpsTestClass.new(descriptor)
+          (descriptor_document['descriptors'] || {}).inject([]) do |a, (id, descriptor)|
+            a << SimpleAlpsTestClass.new(descriptor, id)
           end
         end
         
-        def initialize(descriptor_document)
+        def initialize(descriptor_document, id)
           @descriptor_document = descriptor_document && descriptor_document.dup || {}
+          @descriptor_document['id'] = id
         end
         
         attr_reader :descriptor_document
       end
     
-      let(:descriptor) { SimpleAlpsTestClass.new(leviathans_descriptor) }
+      let(:descriptor) { SimpleAlpsTestClass.new(leviathans_descriptor, 'Leviathans') }
       
       describe '#alps_attributes' do
         it 'returns a hash of alps descriptor attributes' do

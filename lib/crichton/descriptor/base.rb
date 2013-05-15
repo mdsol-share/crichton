@@ -38,10 +38,12 @@ module Crichton
       #
       # @param [Hash] resource_descriptor The parent resource descriptor instance.                                                              # 
       # @param [Hash] descriptor_document The section of the descriptor document representing this instance.
-      def initialize(resource_descriptor, descriptor_document)
+      # @param [Hash] id The id of the ALPS descriptor
+      def initialize(resource_descriptor, descriptor_document, id = nil)
         @resource_descriptor = resource_descriptor
         @descriptor_document = descriptor_document && descriptor_document.dup || {}
         @descriptors = {}
+        set_id(id)
       end
   
       ##
@@ -61,6 +63,15 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :id
+      
+      ##
+      # Accesses the child descriptor document hash so inheriting classes that implement parents set
+      # it directly from the parent.
+      #
+      # @return [Hash] The descriptor document.
+      def child_descriptor_document(id)
+        (descriptor_document['descriptors'] || {})[id.to_s] 
+      end
 
       ##
       # @!attribute [r] name
@@ -81,6 +92,12 @@ module Crichton
           "#{ivar}=#{instance_variable_get(ivar).inspect}"
         end
         '#<%s:0x%s %s>' % [self.class.name, self.hash.to_s(16), ivars.join(", ")]
+      end
+      
+    protected
+      # Helper method to allow inheriting classes to set the ALPS id of the descriptor.
+      def set_id(id)
+        descriptor_document['id'] = id.to_s if id
       end
     end
   end

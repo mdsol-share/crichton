@@ -3,9 +3,9 @@ require 'spec_helper'
 module Crichton
   module Descriptor
     describe StateTransition do
-      let(:state_transitions) { drds_descriptor['states']['drds'].first['transitions'] }
+      let(:state_transitions) { drds_descriptor['states']['drds']['collection']['transitions'] }
       let(:state_transition_descriptor) do 
-        state_transitions.detect { |descriptor| descriptor['id'] == 'create' }
+        state_transitions['create']
       end
       let(:resource_descriptor) { mock('resource_descriptor') }
       let(:descriptor) { StateTransition.new(resource_descriptor, state_transition_descriptor) }

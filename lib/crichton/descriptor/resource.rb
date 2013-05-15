@@ -140,9 +140,9 @@ module Crichton
       #
       # @return [Hash] The state instances.
       def states
-        @descriptors[:state] ||= (descriptor_document['states'] || {}).inject({}) do |h, (resource, resource_states)|
-          h[resource] = (resource_states || []).inject({}) do |states, resource_state|
-            state = State.new(self, resource_state)
+        @descriptors[:state] ||= (descriptor_document['states'] || {}).inject({}) do |h, (resource, state_descriptors)|
+          h[resource] = (state_descriptors || {}).inject({}) do |states, (id, state_descriptor)|
+            state = State.new(self, state_descriptor, id)
             states[state.name] = state
             states
           end
