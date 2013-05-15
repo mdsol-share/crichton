@@ -106,6 +106,18 @@ module Crichton
               end
 
               it_behaves_like 'a representor factory method'
+
+              context 'when accessing transitions with a state_method that is not defined on the target' do
+                it 'raises an error' do
+                  # Following is a hack absent an #unstub method on mocks
+                  target.stub(:respond_to?).with('my_state').and_return(false)
+                  expect { subject.build_state_representor(target, :drd, @options).each_link_transition.to_a }
+                    .to raise_error(
+                      Crichton::Representor::Error,
+                      /^The state method my_state is not implemented in the target.*/
+                    )
+                end
+              end
             end
 
             context 'with hash target' do
@@ -121,7 +133,7 @@ module Crichton
                   expect { subject.build_state_representor(target, :drd, @options).each_link_transition.to_a }
                     .to raise_error(
                       Crichton::Representor::Error, 
-                      /^No attribute exists in the target.* that corresponds to the state method 'my_state'.$/
+                      /^No attribute exists in the target.* that corresponds to the state method 'my_state'.*/
                     )
                 end
               end
