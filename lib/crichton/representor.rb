@@ -288,7 +288,7 @@ module Crichton
       def hash_state(state_method)
         unless state_key = target.keys.detect { |k| k.to_s == state_method }
           raise(Error, "No attribute exists in the target '#{@target.inspect}' that corresponds to the state method " <<
-              "'#{state_method}'. In a hash target, it must contain an attribute that corresponds to the state method.")
+            "'#{state_method}'. In a hash target, it must contain an attribute that corresponds to the state method.")
         end
         @target[state_key]
       end
@@ -298,7 +298,7 @@ module Crichton
           target.send(state_method)
         else
           raise(Error, "The state method #{state_method} is not implemented in the target #{target.inspect}. " <<
-              "Please ensure this state method is defined.")
+            "Please ensure this state method is defined.")
         end
       end
     end
