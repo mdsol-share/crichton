@@ -153,8 +153,7 @@ module Crichton
       end
       
       def add_xml_descriptors(builder)
-        descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, 
-          skip_instruct: true}) }
+        descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true}) }
       end
     end
   end

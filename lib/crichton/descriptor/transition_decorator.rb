@@ -73,7 +73,7 @@ module Crichton
         @state ||= if @options[:state]
           @options[:state]
         elsif @target.is_a?(Crichton::Representor::State)
-          @target.crichton_state 
+          @target.crichton_state
         else
           # TODO: Log warning no state specified
         end
@@ -82,7 +82,7 @@ module Crichton
       def state_descriptor
         @state_descriptor ||= if state
           # TODO: Log warning if no state descriptor exists for the state, or should this raise?
-          resource_descriptor.states[parent_descriptor.name][state]
+          resource_descriptor.states[parent_descriptor.name][state.to_s]
         end
       end
 

@@ -14,6 +14,11 @@ module Support
     def drds_descriptor
       YAML.load_file(drds_filename)
     end
+    
+    def register_drds_descriptor
+      Crichton.clear_registry
+      Crichton::Descriptor::Resource.register(drds_descriptor)
+    end
 
     def drds_filename
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
