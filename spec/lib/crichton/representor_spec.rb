@@ -4,13 +4,16 @@ module Crichton
   describe Representor do
     let(:simple_test_class) do 
       resource_name = @resource_name
+      class_state_method = @state_method
+      include_state = @include_state
       Class.new do
-        include Representor
+        include class_state_method || include_state ? Representor::State : Representor
         
         represents resource_name if resource_name
+        state_method class_state_method if class_state_method
         
         def initialize(attributes = {})
-          @attributes = attributes
+          @attributes = attributes.stringify_keys if attributes
         end
         
         attr_accessor :attributes
@@ -21,7 +24,7 @@ module Crichton
         end
         
         def respond_to?(method)
-          (attributes && attributes.keys.include?(method)) ? true : super
+          (attributes && attributes.keys.include?(method.to_s)) ? true : super
         end
       end
     end
@@ -283,21 +286,13 @@ module Crichton
 
           it_behaves_like 'a filtered list of embedded transitions'
         end
-
-        context 'with a :state option' do
-          before do
-            @state = 'activated'
-            @comparison_links = %w(repair-history)
-            @conditions = :can_repair
-          end
-
-          it_behaves_like 'a filtered list of embedded transitions'
-
+        
+        shared_examples_for 'an embedded transition enumerator' do
           context 'without :conditions option' do
             before do
               @conditions = nil
             end
-            
+
             it 'only includes transitions available for the state that do not have conditions' do
               embedded_transitions['leviathan-link'].should_not be_nil
             end
@@ -316,6 +311,49 @@ module Crichton
               @conditions = :cannot_repair
               embedded_transitions['repair-history'].should be_nil
             end
+          end
+        end
+
+        context 'with a :state option' do
+          before do
+            @state = 'activated'
+            @comparison_links = %w(repair-history)
+            @conditions = :can_repair
+          end
+
+          it_behaves_like 'a filtered list of embedded transitions'
+
+          it_behaves_like 'an embedded transition enumerator'
+        end
+
+        context 'with a valid state_method' do
+          before do
+            @state_method = 'my_state_method'
+            @attributes = {'my_state_method' => 'activated'}
+            @comparison_links = %w(repair-history)
+            @conditions = :can_repair
+          end
+
+          it_behaves_like 'a filtered list of embedded transitions'
+
+          it_behaves_like 'an embedded transition enumerator'
+
+          it 'raises an error if the state is not a string or a symbol' do
+            attributes = {'my_state_method' => mock('invalid_state')}
+            expect { simple_test_class.new(attributes).each_link_transition.to_a }.to raise_error(
+                Crichton::Representor::Error,
+                /^The state method 'my_state_method' must return a string or a symbol.*/
+            )
+          end
+        end
+        
+        context 'with no state_method' do
+          it 'raises an error' do
+            @include_state = true
+            expect { simple_test_class.new.each_link_transition.to_a }.to raise_error(
+              Crichton::Representor::Error,
+              /^No state method has been defined in the class ''.*/
+            )
           end
         end
       end
@@ -387,21 +425,14 @@ module Crichton
         
           it_behaves_like 'a filtered list of link transitions'
         end
-      
-        context 'with a :state option' do
-          before do
-            @state = 'activated'
-            @comparison_links = %w(deactivate)
-            @conditions = :can_deactivate
-          end
 
-          it_behaves_like 'a filtered list of link transitions'
-          
+        shared_examples_for 'a link transition enumerator' do
+
           context 'without :conditions option' do
             before do
               @conditions = nil
             end
-            
+
             it 'only includes transitions available for the state that do not have conditions' do
               link_transitions['show'].should_not be_nil
             end
@@ -419,6 +450,39 @@ module Crichton
             it 'excludes transitions available for the state with unsatisfied conditions' do
               %w(activate update delete).each { |id| link_transitions[id].should be_nil }
             end
+          end
+        end
+      
+        context 'with a :state option' do
+          before do
+            @state = 'activated'
+            @comparison_links = %w(deactivate)
+            @conditions = :can_deactivate
+          end
+
+          it_behaves_like 'a filtered list of link transitions'
+
+          it_behaves_like 'a link transition enumerator'
+        end
+
+        context 'with a valid state_method' do
+          before do
+            @state_method = 'my_state_method'
+            @attributes = {'my_state_method' => 'activated'}
+            @comparison_links = %w(deactivate)
+            @conditions = :can_deactivate
+          end
+
+          it_behaves_like 'a filtered list of link transitions'
+
+          it_behaves_like 'a link transition enumerator'
+
+          it 'raises an error if the state is not a string or a symbol' do
+            attributes = {'my_state_method' => mock('invalid_state')}
+            expect { simple_test_class.new(attributes).each_link_transition.to_a }.to raise_error(
+              Crichton::Representor::Error,
+              /The state method 'my_state_method' must return a string or a symbol.*/
+            )
           end
         end
       end

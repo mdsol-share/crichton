@@ -173,13 +173,15 @@ module Crichton
     def each_enumerator(type, descriptor, options)
       return to_enum("each_#{type}_#{descriptor}", options) unless block_given?
 
-      filtered_semantic_descriptors(type, descriptor, options).each do |descriptor|   
-        decorated_descriptor = descriptor.decorate(target, options)
+      filtered_descriptors(type, descriptor, options).each do |descriptor| 
+        # For semantic descriptors, use the target in case it is a hash adapter. For transition descriptors, use
+        # the actual Representor instance which implements state functionality regardless.
+        decorated_descriptor = descriptor.decorate(descriptor.semantic? ? target : self, options)
         yield decorated_descriptor if decorated_descriptor.available?
       end
     end
     
-    def filtered_semantic_descriptors(type, descriptor, options)
+    def filtered_descriptors(type, descriptor, options)
       descriptors = self.class.send("#{type}_#{descriptor}_descriptors")
       names, select = filter_names(options)
       method = select ? :select : :reject
@@ -210,6 +212,7 @@ module Crichton
     end
     
     def target
+      # @target will only be set in a Factory adapter instance.
       @target ||= self
     end
     
@@ -254,8 +257,8 @@ module Crichton
         end
         
       private
-        def crichton_state_method(target)
-          @crichton_state_method ||= if target.respond_to?(:state)
+        def crichton_state_method(representor)
+          @crichton_state_method ||= if representor.respond_to?(:state)
             :state
           else
             raise(Error, "No state method has been defined in the class '#{self.name}'. Please specify a " <<
@@ -266,8 +269,14 @@ module Crichton
       
       def crichton_state
         @crichton_state ||= begin
-          state_method = self.class.send(:crichton_state_method, target)
-          state = @target.is_a?(Hash) ? target_state(state_method) : instance_state(state_method)
+          state_method = self.class.send(:crichton_state_method, self)
+          state = if self.respond_to?(state_method)
+            instance_state(state_method)
+          elsif target.is_a?(Hash)
+            hash_state(state_method)
+          else
+            target_state(state_method)
+          end
           
           state.tap do |state|
             unless [String, Symbol].include?(state.class)
@@ -284,12 +293,21 @@ module Crichton
           "the class properly implements a response associated with the state method '#{state_method}.'")
       end
       
-      def target_state(state_method)
-        unless state_key = @target.keys.detect { |k| k.to_s == state_method }
-          raise(Error, "No attribute exists in the target #{@target.inspect} that corresponds to the state method" <<
-            "#{state_method}.")
+      def hash_state(state_method)
+        unless state_key = target.keys.detect { |k| k.to_s == state_method }
+          raise(Error, "No attribute exists in the target '#{@target.inspect}' that corresponds to the state method " <<
+            "'#{state_method}'. In a hash target, it must contain an attribute that corresponds to the state method.")
         end
         @target[state_key]
+      end
+
+      def target_state(state_method)
+        if target.respond_to?(state_method)
+          target.send(state_method)
+        else
+          raise(Error, "The state method #{state_method} is not implemented in the target #{target.inspect}. " <<
+            "Please ensure this state method is defined.")
+        end
       end
     end
     
