@@ -2,10 +2,8 @@ id: Leviathans
 version: v1.0.0
 doc: Describes Leviathans.
 links:
-  - rel: self
-    href: alps_base/Leviathans
-  - rel: help
-    href: documentation_base/Things/Leviathans
+  self: alps_base/Leviathans
+  help: documentation_base/Things/Leviathans
 ext: 
   - href: alps_base/Leviathans#leviathan/alt
     value: Alternate.
@@ -38,10 +36,8 @@ descriptors:
           create-leviathan:
             type: semantic
             links:
-              - rel: self
-                href: alps_base/Leviathans#leviatahn/create/create-leviathan
-              - rel: help
-                href: documentation_base/Forms/create-leviathan
+              self: alps_base/Leviathans#leviatahn/create/create-leviathan
+              help: documentation_base/Forms/create-leviathan
             descriptors:
               form_name:
                 name: name

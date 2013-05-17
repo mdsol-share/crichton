@@ -25,6 +25,14 @@ module Crichton
         end
       end
 
+      describe '#href' do
+        it 'returns the href in the descriptor document' do
+          descriptor_document['href'] = 'some_href'
+          descriptor.href.should == descriptor_document['href']
+        end
+      end
+
+
       describe '#resource_descriptor' do
         it 'returns the parent resource_descriptor instance' do
           descriptor.resource_descriptor.should == resource_descriptor
@@ -43,6 +51,14 @@ module Crichton
             descriptor_document['name'] = 'name'
             descriptor.name.should == descriptor_document['name']
           end
+        end
+      end
+      
+      describe '#profile_link' do
+        it 'returns the resource descriptor self link' do
+          link = mock('link')
+          resource_descriptor.stub(:profile_link).and_return(link)
+          descriptor.profile_link.should == link
         end
       end
 

@@ -4,7 +4,8 @@ module Crichton
   module Descriptor
     describe Profile do
       let(:descriptors) { drds_descriptor['descriptors'] }
-      let(:descriptor) { Profile.new(mock('resource_descriptor'), @descriptor) }
+      let(:resource_descriptor) { mock('resource_descriptor') }
+      let(:descriptor) { Profile.new(resource_descriptor, @descriptor) }
 
       before do
         @descriptor = descriptors['drds']
@@ -37,9 +38,22 @@ module Crichton
         end
       end
 
+      describe '#help_link' do
+        it 'returns the help link in the descriptor' do
+          descriptors['drds']['links'] = {'help' => 'help_link'}
+          descriptor.help_link.href.should == 'help_link'
+        end
+        
+        it 'returns the resource descriptor help link if no help link in descriptor' do
+          link = mock('help_link')
+          resource_descriptor.stub(:help_link).and_return(link)
+          descriptor.help_link.should == link
+        end
+      end
+
       describe '#links' do
         it 'returns the descriptor links' do
-          descriptor.links.should == @descriptor['links']
+          descriptor.links['self'].should_not be_nil
         end
       end
 

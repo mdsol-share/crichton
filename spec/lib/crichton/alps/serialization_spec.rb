@@ -14,7 +14,9 @@ module Crichton
         end
         
         def links
-          @links ||= descriptor_document['links'] || []
+          @links ||= (descriptor_document['links'] || {}).inject({}) do |h, (rel, href)|
+            h.tap { |hash| hash[rel] = Crichton::Descriptor::Link.new(self, rel, href) }
+          end
         end
         alias :link :links
 

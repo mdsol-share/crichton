@@ -63,7 +63,10 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :id
-      
+
+      # @!macro string_reader
+      descriptor_reader :href
+
       ##
       # Accesses the child descriptor document hash so inheriting classes that implement parents set
       # it directly from the parent.
@@ -83,6 +86,14 @@ module Crichton
       # @return [String] The descriptor name.
       def name
         descriptor_document['name'] || id
+      end
+      
+      ##
+      # Returns the profile link for the resource descriptor.
+      #
+      # @return [Crichton::Descriptor::Link] The link.
+      def profile_link
+        resource_descriptor.profile_link
       end
 
       # @private

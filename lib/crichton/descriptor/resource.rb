@@ -95,6 +95,15 @@ module Crichton
           end
         end
       end
+
+      # Returns the profile link.
+      #
+      # @return [Crichton::Descriptor::Link] The link.
+      def profile_link
+        @descriptors[:profile_link] ||= if self_link = links['self']
+          Crichton::Descriptor::Link.new(self, 'profile', self_link.href)
+        end
+      end
       
       ##
       # Whether the specified protocol exists or not.

@@ -144,6 +144,12 @@ module Crichton
           resource_descriptor.inspect.should =~ /.*@key=.*/
         end
       end
+      
+      describe '#profile_link' do
+        it 'returns a link with the name profile' do
+          resource_descriptor.profile_link.name.should == 'profile'
+        end
+      end
 
       describe '#protocol_exists?' do
         it 'returns true if the protocol is defined in the descriptor document' do

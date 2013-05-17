@@ -37,13 +37,46 @@ module Crichton
           descriptor.embeddable?.should be_false
         end
       end
-  
-      describe '#href' do
-        it 'returns the href in the descriptor document' do
-          descriptor.href.should == descriptor_document['href']
+      
+      describe '#metadata_links' do
+        let(:profile_link) { mock('profile_link') }
+        let(:type_link) { mock('type_link') }
+        let(:help_link) { mock('help_link') }
+        
+        before do
+          descriptor.stub(:profile_link).and_return(profile_link)
+          descriptor.stub(:type_link).and_return(type_link)
+          descriptor.stub(:help_link).and_return(help_link)
+        end
+                  
+        after do
+          descriptor.metadata_links.should include(@link)
+        end
+
+        it 'includes the descriptor profile link' do
+          @link = profile_link
+        end
+
+        it 'includes the descriptor type link' do
+          @link = type_link
+        end
+
+        it 'includes the descriptor help link' do
+          @link = help_link
         end
       end
-      
+
+      describe '#type_link' do
+        it 'returns nil for transition descriptors' do
+          descriptor.stub(:semantic?).and_return(false)
+          descriptor.type_link.should be_nil
+        end
+
+        it 'returns the self link for semantic descriptors' do
+          descriptor.type_link.href.should == descriptor.links['self'].href
+        end
+      end
+
       describe '#parent_descriptor' do
         it 'returns the parent of the descriptor' do
           descriptor.parent_descriptor.should == parent_descriptor
