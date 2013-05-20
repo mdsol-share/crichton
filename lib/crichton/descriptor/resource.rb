@@ -126,7 +126,7 @@ module Crichton
                       raise "Unknown protocol #{protocol} defined in resource descriptor document #{id}."
                     end
             h[protocol] = (protocol_transitions || {}).inject({}) do |transitions, (transition, transition_descriptor)|
-              transitions.tap { |hash| hash[transition] = klass.new(self, transition_descriptor) }
+              transitions.tap { |hash| hash[transition] = klass.new(self, transition_descriptor, transition) }
             end
             h
           end
