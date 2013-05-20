@@ -51,7 +51,7 @@ module Crichton
 
       describe '#uri_source' do
         it 'returns the source method associated with the uri' do
-          @protocol_transition = 'leviathan'
+          @protocol_transition = 'leviathan-link'
           descriptor.uri_source.should == http_descriptor['uri_source']
         end
       end
@@ -65,37 +65,35 @@ module Crichton
           Crichton.stub(:config).and_return(config)
         end
 
-        context 'with object target' do
-          context 'with parameterized uri' do
-            before do
-              @protocol_transition = 'activate'
-            end
-            
-            it 'returns the uri populated from the target attributes' do
-              target.stub(:uuid).and_return('some_uuid')
-              descriptor.url_for(target).should =~ /#{deployment_base_uri}\/drds\/some_uuid\/activate/
-            end
-
-            it 'raises an error if the target does not implement a uri parameter' do
-              expect { descriptor.url_for(target) }.to raise_error(ArgumentError, 
-                /^The target .* does not implement the template variable\(s\) 'uuid'.*/)
-            end
+        context 'with parameterized uri' do
+          before do
+            @protocol_transition = 'activate'
+          end
+          
+          it 'returns the uri populated from the target attributes' do
+            target.stub(:uuid).and_return('some_uuid')
+            descriptor.url_for(target).should =~ /#{deployment_base_uri}\/drds\/some_uuid\/activate/
           end
 
-          context 'without parameterized uri' do
-            it 'returns the uri as a url' do
-              descriptor.url_for(target).should =~ /#{deployment_base_uri}\/drds/
-            end
+          it 'raises an error if the target does not implement a uri parameter' do
+            expect { descriptor.url_for(target) }.to raise_error(ArgumentError, 
+              /^The target .* does not implement the template variable\(s\) 'uuid'.*/)
           end
+        end
 
-          context 'with embedded transition' do
-            it 'returns the url associated with the source method' do
-              @protocol_transition = 'leviathan'
-              url = mock('url')
-              target.stub(descriptor.uri_source).and_return(url)
+        context 'without parameterized uri' do
+          it 'returns the uri as a url' do
+            descriptor.url_for(target).should =~ /#{deployment_base_uri}\/drds/
+          end
+        end
 
-              descriptor.url_for(target).should == url
-            end
+        context 'with embedded transition' do
+          it 'returns the url associated with the source method' do
+            @protocol_transition = 'leviathan-link'
+            url = mock('url')
+            target.stub(descriptor.uri_source).and_return(url)
+
+            descriptor.url_for(target).should == url
           end
         end
       end

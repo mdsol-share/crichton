@@ -60,12 +60,13 @@ module Crichton
       end
       
       ##
-      # Whether the source of the data exists in the hash or object. This is not a <tt>nil?</tt> check, but rather 
-      # determines if the related attribute is defined on the object.
-      #
-      # @return [Boolean] true, if the data source is defined.
-      def source_defined?
-        @target.is_a?(Hash) ? @target.key?(source) : @target.respond_to?(source)
+      # The fully-qualified URL for the transition.
+      def url
+        @url ||= if protocol_descriptor
+          protocol_descriptor.url_for(@target)
+        else
+          #TODO: log warning no url
+        end
       end
 
     private

@@ -388,7 +388,7 @@ protocols:
       headers:
       status_codes:
       slt: *slt1
-    leviathan: 
+    leviathan-link: 
       uri_source: leviathan_url
       method: GET
         

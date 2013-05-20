@@ -157,8 +157,64 @@ module Crichton
       end
       
       describe '#url' do
-        it 'returns the fully qualified url for the transition' do
-          pending 'TODO'
+        let(:deployment_base_uri) { 'http://deployment.example.org' }
+        
+        before do
+          config = Crichton::Configuration.new({'deployment_base_uri' => deployment_base_uri})
+          Crichton.stub(:config).and_return(config)
+        end
+        
+        shared_examples_for 'a memoized url' do
+          it 'memoizes the url' do
+            url_object_id = decorator.url.object_id
+            decorator.url.object_id.should == url_object_id
+          end
+        end
+        
+        context 'with protocol descriptor defined for transition' do
+          context 'with parameterized uri' do
+            before do
+              @descriptor = 'drd'
+              @transition = 'activate'
+              target.stub(:uuid).and_return('some_uuid')
+            end
+
+            it 'returns the uri populated from the target attributes' do
+              decorator.url.should =~ /#{deployment_base_uri}\/drds\/some_uuid\/activate/
+            end
+            
+            it_behaves_like 'a memoized url'
+          end
+
+          context 'without parameterized uri' do
+            it 'returns the uri as a url' do
+              decorator.url.should =~ /#{deployment_base_uri}\/drds/
+            end
+
+            it_behaves_like 'a memoized url'
+          end
+          
+          context 'with embedded transition' do
+            before do
+              @descriptor = 'drd'
+              @transition = 'leviathan'
+              @url = mock('url')
+              target.stub('leviathan_url').and_return(@url)
+            end
+            
+            it 'returns the url associated with the source method' do
+              decorator.url.should == @url
+            end
+            
+            it_behaves_like 'a memoized url'
+          end
+        end
+        
+        context 'without protocol descriptor defined' do
+          it 'returns nil' do
+            decorator.stub(:protocol_descriptor).and_return(nil)
+            decorator.url.should be_nil
+          end
         end
       end
     end
