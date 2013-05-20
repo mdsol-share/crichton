@@ -32,6 +32,12 @@ module Crichton
       end
       
       ##
+      # Returns the uniform interface method associated with the protocol descriptor.
+      def method
+        protocol_descriptor && protocol_descriptor.method
+      end
+      
+      ##
       # Returns the protocol for the transition.
       #
       # @return [String] The down-cased name of the protocol.
