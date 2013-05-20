@@ -30,7 +30,7 @@ module Crichton
       # Returns the url for a particular target. If the associated URI is templated, it raises an error if the
       # template variables cannot be populated from the target.
       #
-      # @param [Hash, Object] target The target.
+      # @param [Object] target The target.
       #
       # @return [String] The fully-qualified url for the desciptor based on the target attributes.
       def url_for(target)
