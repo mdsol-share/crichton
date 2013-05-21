@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   DESC
 
   s.add_dependency('activesupport', '~>3.2')
+  s.add_dependency('addressable',   '~>2.3')
   s.add_dependency('builder',       '~>3.2')
   s.add_dependency('dice_bag',      '~>0.6')
 end

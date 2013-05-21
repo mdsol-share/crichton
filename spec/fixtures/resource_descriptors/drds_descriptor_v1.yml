@@ -344,7 +344,7 @@ protocols:
       status_codes:
       slt: *slt2  
     show:
-      uri: drd/{uuid}
+      uri: drds/{uuid}
       method: GET
       content_types:
         - application/json
@@ -353,7 +353,7 @@ protocols:
       status_codes:
       slt: *slt1
     activate:
-      uri: drd/{uuid}/activate
+      uri: drds/{uuid}/activate
       method: PUT
       content_types:
         - application/json
@@ -362,7 +362,7 @@ protocols:
       status_codes:
       slt: *slt1
     deactivate:
-      uri: drd/{uuid}/deactivate
+      uri: drds/{uuid}/deactivate
       method: PUT
       content_types:
         - application/json
@@ -371,7 +371,7 @@ protocols:
       status_codes:
       slt: *slt1
     update:
-      uri: drd/{uuid}
+      uri: drds/{uuid}
       method: PUT
       content_types:
         - application/json
@@ -388,6 +388,9 @@ protocols:
       headers:
       status_codes:
       slt: *slt1
+    leviathan-link: 
+      uri_source: leviathan_url
+      method: GET
         
 # This optional section defines the route mapping for the resource that can be used in 
 # lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra

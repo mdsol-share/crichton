@@ -106,6 +106,11 @@ module Crichton
       end
       
     protected
+      # Make the configuration accessible to all descriptors
+      def config
+        Crichton.config
+      end
+      
       # Helper method to allow inheriting classes to set the ALPS id of the descriptor.
       def set_id(id)
         descriptor_document['id'] = id.to_s if id
