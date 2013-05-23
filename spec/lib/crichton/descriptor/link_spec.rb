@@ -6,6 +6,12 @@ module Crichton
     describe Link do
       let(:link) { Link.new(mock('resource_descriptor'), 'rel', 'link_url') }
       
+      describe '#attributes' do
+        it 'returns the attributes of the link' do
+          link.attributes.should == {rel: 'rel', href: 'link_url'}
+        end
+      end
+      
       describe '#rel' do
         it 'returns the link relationship' do
           link.rel.should == 'rel'
