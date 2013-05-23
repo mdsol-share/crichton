@@ -3,13 +3,14 @@ require 'crichton/representor'
 module Crichton
   module Representor
     class Serializer
-      class << self  
+
+     class << self
         ##
         # Serializer factory method that returns a serializer associated with a particular media-type.
         #
         # @param [String, Symbol] type The media-type associated with the serializer.
-        # @param [Cricthon::Representor] object That resource representor instance.
-        # @param [Hash] options Serializtaion options.
+        # @param [Cricthon::Representor] representor That resource representor instance.
+        # @param [Hash] options Serialization options.
         #
         # @return [Cricthon::Representor::Serializer] The built serializer.
         def build(type, representor, options = nil)
@@ -23,6 +24,25 @@ module Crichton
         end
         
         ##
+        # Define alternate media types that should return the same serializer.
+        # 
+        # @example
+        #  class MediaTypeSerializer < Crichton::Representor::Serializer
+        #    alternate_media_types :alt_media_type, 'other_alt_media_type'
+        #  end
+        #
+        #  Crichton::Representor::Serializer.registered_serializers[:media_type]            #=> MediaTypeSerializer
+        #  Crichton::Representor::Serializer.registered_serializers[:alt_media_type]        #=> MediaTypeSerializer
+        #  Crichton::Representor::Serializer.registered_serializers[:other_alt_media_type]  #=> MediaTypeSerializer
+        #
+        def alternate_media_types(*args)
+          @alternate_media_types ||= [] 
+          @alternate_media_types |= args.map(&:to_sym)
+          
+          @alternate_media_types.each { |media_type| register_serializer(media_type, self) }
+        end
+
+        ##
         # The registered serializers by media type.
         #
         # @return [Hash] The mapped serializers keyed by media-type.
@@ -33,7 +53,7 @@ module Crichton
         # @private
         # Subclasses self-register themselves
         def inherited(subclass)
-          registered_serializers[find_type(subclass)] = subclass
+          register_serializer(find_type(subclass), subclass)
         end
       
       private
@@ -46,7 +66,11 @@ module Crichton
   
           name.demodulize.gsub(/Serializer$/, '').underscore.to_sym
         end
-      end
+
+        def register_serializer(media_type, serializer)
+          Serializer.registered_serializers[media_type] = serializer
+        end
+    end
   
       ##
       # @param [Crichton::Representor] object The representor object.

@@ -4,8 +4,13 @@ require 'crichton/representor/serializer'
 module Crichton
   module Representor
     describe Serializer do
+      def clear_serializers
+        Serializer.instance_variable_set('@registered_serializers', {})
+      end
+      
       def clear_media_type_serializer(serializer = nil)
         Crichton::Representor.send(:remove_const, serializer || :MediaTypeSerializer)
+        clear_serializers
       end
       
       def create_media_type_serializer(serializer = nil)
@@ -22,10 +27,6 @@ module Crichton
         Class.new { include Representor }.new
       end
       
-      after do
-        Serializer.instance_variable_set('@registered_serializers', {})
-      end
-      
       context 'when subclassed' do
         context 'with serializer subclasses with well-formed names' do
           around do |example|
@@ -33,7 +34,16 @@ module Crichton
           end
 
           it 'auto registers sublclassed serializers' do
-            Serializer.registered_serializers[:media_type].should_not be_nil
+            Serializer.registered_serializers[:media_type].should == MediaTypeSerializer
+          end
+        end
+        
+        context 'with alternate media types defined for the serializer' do
+          it 'auto registers alternate media types' do
+            eval("class MediaTypeSerializer < Crichton::Representor::Serializer; alternate_media_types " <<
+              ":alt_media_type, 'other_alt_media_type'; end")
+            Serializer.registered_serializers[:alt_media_type].should == MediaTypeSerializer
+            Serializer.registered_serializers[:other_alt_media_type].should == MediaTypeSerializer
           end
         end
   
@@ -73,7 +83,13 @@ module Crichton
       end
       
       describe '.registered_serializers' do
-        it 'returns an empty hash if no serializers are registred' do
+        around do |example|
+          clear_serializers
+          example.run
+          clear_serializers
+        end
+        
+        it 'returns an empty hash if no serializers are registered' do
           Serializer.registered_serializers.should == {}
         end
         
