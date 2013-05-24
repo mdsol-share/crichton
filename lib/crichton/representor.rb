@@ -185,7 +185,7 @@ module Crichton
       descriptors = self.class.send("#{type}_#{descriptor}_descriptors")
       names, select = filter_names(options)
       method = select ? :select : :reject
-
+      
       names ? descriptors.send(method) { |descriptor| names.include?(descriptor.name) } : descriptors
     end
     
