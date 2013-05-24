@@ -118,7 +118,21 @@ module Crichton
           end
         end
       end
-      
+
+      describe '#method' do
+        it 'returns the uniform interface method associated with the transition' do
+          @descriptor = 'drd'
+          @transition = 'delete'
+
+          decorator.method.should == 'DELETE'
+        end
+
+        it 'returns nil if there is not protocol descriptor' do
+          decorator.stub(:protocol_descriptor).and_return(nil)
+          decorator.method.should be_nil
+        end
+      end
+
       describe '#protocol' do
         context 'without :protocol option' do
           it 'returns the default protocol for the parent resource descriptor' do
@@ -145,20 +159,6 @@ module Crichton
         end
       end
       
-      describe '#method' do
-        it 'returns the uniform interface method associated with the transition' do
-          @descriptor = 'drd'
-          @transition = 'delete'
-          
-          decorator.method.should == 'DELETE'
-        end
-
-        it 'returns nil if there is not protocol descriptor' do
-          decorator.stub(:protocol_descriptor).and_return(nil)
-          decorator.method.should be_nil
-        end
-      end
-
       describe '#protocol_descriptor' do
         it 'returns the protocol descriptor that details the implementation of the transition' do
           decorator.protocol_descriptor.should be_a(Http)
@@ -167,6 +167,17 @@ module Crichton
         it 'returns nil if no protocol descriptor implements the transition for the transition protocol' do
           decorator.stub(:id).and_return('non-existent')
           decorator.protocol_descriptor.should be_nil
+        end
+      end
+      
+      describe '#templated?' do
+        it 'returns true if the transition has semantic descriptors' do
+          @transition = 'search'
+          decorator.should be_templated
+        end
+
+        it 'returns false if the transition has no semantic descriptors' do
+          decorator.should_not be_templated
         end
       end
       
@@ -211,7 +222,7 @@ module Crichton
           context 'with embedded transition' do
             before do
               @descriptor = 'drd'
-              @transition = 'leviathan'
+              @transition = 'leviathan-link'
               @url = mock('url')
               target.stub('leviathan_url').and_return(@url)
             end

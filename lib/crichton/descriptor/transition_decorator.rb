@@ -66,6 +66,12 @@ module Crichton
       end
       
       ##
+      # Whether the transition contains any nested semantics associated with a templated URL or a control.
+      def templated?
+        semantics.any?
+      end
+      
+      ##
       # The fully-qualified URL for the transition.
       def url
         @url ||= if protocol_descriptor
