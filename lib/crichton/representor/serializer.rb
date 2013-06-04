@@ -3,8 +3,7 @@ require 'crichton/representor'
 module Crichton
   module Representor
     class Serializer
-
-     class << self
+      class << self
         ##
         # Serializer factory method that returns a serializer associated with a particular media-type.
         #
@@ -41,6 +40,22 @@ module Crichton
           
           @alternate_media_types.each { |media_type| register_serializer(media_type, self) }
         end
+        
+        ##
+        # Returns the media-type of the Serializer.
+        #
+        # @return [Symbol]
+        def media_type
+          @media_type ||= begin
+            name = self.name
+            unless name =~ /\w+Serializer$/
+              raise Error, "Subclasses of Chrichton::Serializer must follow the naming convention " <<
+                "OptionalModule::MediaTypeSerializer. #{self.name} is an invalid subclass name."
+            end
+  
+            name.demodulize.gsub(/Serializer$/, '').underscore.to_sym
+          end
+        end
 
         ##
         # The registered serializers by media type.
@@ -49,28 +64,18 @@ module Crichton
         def registered_serializers
           @registered_serializers ||= {}
         end
-
+        
         # @private
         # Subclasses self-register themselves
         def inherited(subclass)
-          register_serializer(find_type(subclass), subclass)
+          register_serializer(subclass.media_type, subclass)
         end
       
-      private
-        def find_type(subclass)
-          name = subclass.name
-          unless name =~ /Serializer$/
-            raise Error, "Subclasses of #{self.name} must follow the naming convention " <<
-              "OptionalModule::MediaTypeSerializer. #{subclass.name} is an invalid subclass name."
+        private
+          def register_serializer(media_type, serializer)
+            Serializer.registered_serializers[media_type] = serializer
           end
-  
-          name.demodulize.gsub(/Serializer$/, '').underscore.to_sym
-        end
-
-        def register_serializer(media_type, serializer)
-          Serializer.registered_serializers[media_type] = serializer
-        end
-    end
+      end
   
       ##
       # @param [Crichton::Representor] object The representor object.
@@ -81,6 +86,28 @@ module Crichton
         end
         
         @object, @options = object, options || {}
+      end
+      
+      def as_media_type(options = {})
+        raise("The method #as_media_type is an abstract method of the Crichton::Serializer class and must be " <<
+          "overridden in the #{self.class.name} sub-class.")
+      end
+
+      ##
+      # Returns the serializer as the final media-type in correct format.
+      #
+      # Sub-classes should override the default functionality which delegates to #as_media_type, if, for example, 
+      # the result should be returned as JSON string.
+      #
+      # @example
+      # # application/hal+json
+      # def to_media_type(options = {})
+      #   self.as_media_type(options).to_json
+      # end
+      #
+      # @param [Hash] options
+      def to_media_type(options = {})
+        self.as_media_type(options)
       end
     end
   end

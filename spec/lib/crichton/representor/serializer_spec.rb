@@ -4,16 +4,26 @@ require 'crichton/representor/serializer'
 module Crichton
   module Representor
     describe Serializer do
+      before(:all) do
+        @existing_serializers = Serializer.registered_serializers
+      end
+      
+      after(:all) do
+        # Necessary since other specs load serializers so that randomization does not cause erroneous failures
+        # since registered_serializers is a class method.
+        reset_serializers(@existing_serializers)
+      end
+      
       def create_media_type_serializer(serializer = nil)
         serializer ||= :MediaTypeSerializer
         Crichton::Representor.send(:remove_const, serializer) if Representor.const_defined?(serializer)
-        clear_serializers
+        reset_serializers
         
         eval("class #{serializer} < Crichton::Representor::Serializer; end")
       end
 
-      def clear_serializers
-        Serializer.instance_variable_set('@registered_serializers', {})
+      def reset_serializers(value = {})
+        Serializer.instance_variable_set('@registered_serializers', value)
       end
 
       let(:object) do
@@ -77,7 +87,7 @@ module Crichton
       describe '.registered_serializers' do
         context 'without any registered serializers' do
           it 'returns an empty hash if no serializers are registered' do
-            clear_serializers
+            reset_serializers
             Serializer.registered_serializers.should == {}
           end
         end

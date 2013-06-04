@@ -1,4 +1,5 @@
 require 'active_support/concern'
+require 'crichton/representor/serialization/media_type'
 
 module Crichton
   ##
@@ -14,6 +15,10 @@ module Crichton
   #
   module Representor
     extend ActiveSupport::Concern
+    
+    included do
+      include Serialization::MediaType
+    end
     
     module ClassMethods
       ##

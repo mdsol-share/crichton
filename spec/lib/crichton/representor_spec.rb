@@ -29,6 +29,10 @@ module Crichton
       end
     end
     
+    it 'acts as a media-type serializer' do
+      simple_test_class.new.should be_a(Representor::Serialization::MediaType)
+    end
+    
     context 'with associated class-level descriptors' do
       before do
         @resource_name = 'drds'
