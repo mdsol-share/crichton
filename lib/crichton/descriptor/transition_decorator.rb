@@ -71,6 +71,10 @@ module Crichton
         semantics.any?
       end
       
+      def templated_url
+        @templated_url ||=  url << (semantics.any? ? "{?#{semantics.values.map(&:name).join(',')}}" : '')
+      end
+      
       ##
       # The fully-qualified URL for the transition.
       def url

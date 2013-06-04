@@ -66,6 +66,17 @@ module Crichton
         end
       end
 
+      describe '#safe?' do
+        it 'returns true for descriptors whose type is safe' do
+          transition_descriptor = descriptor.transitions['list']
+          transition_descriptor.should be_safe
+        end
+
+        it 'returns false for descriptors whose type is not safe' do
+          descriptor.should_not be_safe
+        end
+      end
+
       describe '#type_link' do
         it 'returns nil for transition descriptors' do
           descriptor.stub(:semantic?).and_return(false)

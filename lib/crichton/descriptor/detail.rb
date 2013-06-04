@@ -5,6 +5,9 @@ module Crichton
     ##
     # Manages detail information associated with descriptors.
     class Detail < Profile
+      # @private
+      SAFE = 'safe'
+      
       # @!macro string_reader
       descriptor_reader :embed
 
@@ -67,6 +70,12 @@ module Crichton
       # @return [Crichton::Descriptor::Base] The parent descriptor.
       def parent_descriptor
         @descriptors[:parent]
+      end
+
+      ##
+      # Whether the type is <tt>safe</tt>.
+      def safe?
+        type == SAFE
       end
 
       ##

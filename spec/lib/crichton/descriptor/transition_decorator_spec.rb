@@ -180,13 +180,36 @@ module Crichton
           decorator.should_not be_templated
         end
       end
+
+      let(:deployment_base_uri) { 'http://deployment.example.org' }
+
+      def stub_config
+        config = Crichton::Configuration.new({'deployment_base_uri' => deployment_base_uri})
+        Crichton.stub(:config).and_return(config)
+      end
+      
+      describe '#templated_url' do
+        before do
+          stub_config
+        end
+        
+        context 'without query parameter semantic descriptors' do
+          it 'returns the url' do
+            decorator.templated_url.should == decorator.url
+          end
+        end
+
+        context 'with query parameter semantic descriptors' do
+          it 'returns the url with templated query parameters' do
+            @transition = 'search'
+            decorator.templated_url.should =~ /{?search_term}/
+          end
+        end
+      end
       
       describe '#url' do
-        let(:deployment_base_uri) { 'http://deployment.example.org' }
-        
         before do
-          config = Crichton::Configuration.new({'deployment_base_uri' => deployment_base_uri})
-          Crichton.stub(:config).and_return(config)
+          stub_config
         end
         
         shared_examples_for 'a memoized url' do
