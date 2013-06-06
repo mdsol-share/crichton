@@ -29,6 +29,10 @@ module Crichton
       end
     end
     
+    it 'acts as a media-type serializer' do
+      simple_test_class.new.should be_a(Representor::Serialization::MediaType)
+    end
+    
     context 'with associated class-level descriptors' do
       before do
         @resource_name = 'drds'
@@ -48,8 +52,8 @@ module Crichton
       end
 
       describe '.link_transition_descriptors' do
-        it 'returns the filtered list of link transition descriptors' do
-          simple_test_class.link_transition_descriptors.first.name.should == 'list'
+        it 'returns the filtered list of link transition descriptors mapped by name' do
+          simple_test_class.link_transition_descriptors.first.name.should == 'self'
         end
       end
 
@@ -387,7 +391,7 @@ module Crichton
         shared_examples_for 'a filtered list of link transitions' do
           context 'with :only option' do
             before do
-              @options = {only: :show}
+              @options = {only: :self}
             end
             
             it 'returns only the specified transition descriptors' do
@@ -401,7 +405,7 @@ module Crichton
 
           context 'with :except option' do
             before do
-              @options = {except: 'show'}
+              @options = {except: 'self'}
             end
             
             it 'excludes the specified transition descriptors' do

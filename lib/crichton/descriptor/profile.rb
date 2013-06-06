@@ -61,7 +61,7 @@ module Crichton
       #
       # @return [Hash] The semantic descriptor instances.
       def semantics
-        @descriptors[:semantic] ||= filter_descriptors(:semantic)
+        @descriptors[:semantic] ||= filter_descriptors(:semantic, :name)
       end
       
       ##
@@ -78,13 +78,13 @@ module Crichton
       #
       # @return [Hash] The transition descriptor instances.
       def transitions
-        @descriptors[:transition] ||= filter_descriptors(:transition)
+        @descriptors[:transition] ||= filter_descriptors(:transition, :id)
       end
       
       private
-      def filter_descriptors(type)
+      def filter_descriptors(type, property)
         descriptors.inject({}) do |h, descriptor|
-          h.tap { |hash| hash[descriptor.name] = descriptor if descriptor.send("#{type}?") }
+          h.tap { |hash| hash[descriptor.send(property)] = descriptor if descriptor.send("#{type}?") }
         end.freeze
       end
     end

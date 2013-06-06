@@ -66,6 +66,19 @@ module Crichton
       end
       
       ##
+      # Whether the transition contains any nested semantics associated with a templated URL or a control.
+      def templated?
+        semantics.any?
+      end
+      
+      ##
+      # The fully-qualified url for the transition, including a templated query, if any, per 
+      # {http://tools.ietf.org/html/rfc6570 RFC 6570}.
+      def templated_url
+        @templated_url ||=  url << (semantics.any? ? "{?#{semantics.values.map(&:name).join(',')}}" : '')
+      end
+      
+      ##
       # The fully-qualified URL for the transition.
       def url
         @url ||= if protocol_descriptor

@@ -153,6 +153,7 @@ descriptors:
       # Transitions
       list:
         doc: Returns a list of DRDs.
+        name: self
         type: safe
         rt: drds
       search:
@@ -241,6 +242,7 @@ descriptors:
       # Transitions
       show:
         doc: Shows a particular DRD.
+        name: self
         type: safe
         rt: drd
       activate:
@@ -323,7 +325,7 @@ protocols:
         std_dev: 25ms
         requests_per_second: 50 
     search: 
-      uri: drds{?search_term}
+      uri: drds
       method: GET
       content_types:
         - application/json

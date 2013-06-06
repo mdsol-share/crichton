@@ -16,6 +16,12 @@ module Crichton
       
       alias :rel :name
       alias :url :href
+      
+      ##
+      # The attributes of the link.
+      def attributes
+        {rel: rel, href: href}
+      end
     end
   end
 end
