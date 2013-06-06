@@ -73,7 +73,7 @@ module Crichton
       end
 
       ##
-      # Whether the type is <tt>safe</tt>.
+      # Whether the descriptor is an ALPS <tt>safe</tt> type, which will only be true for safe transitions.
       def safe?
         type == SAFE
       end
