@@ -23,6 +23,14 @@ module Support
     def drds_filename
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
+
+    def drds_microdata_html
+      @drds_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_microdata.html')))
+    end
+
+    def drds_styled_microdata_html
+      @drds_styled__microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata.html')))
+    end
     
     def example_environment_config
       %w(alps deployment discovery documentation).inject({}) do |h, attribute|
@@ -36,6 +44,10 @@ module Support
 
     def leviathans_filename
       fixture_path('resource_descriptors', 'leviathans_descriptor_v1.yaml')
+    end
+    
+    def stub_example_configuration
+      Crichton.stub(:config).and_return(Crichton::Configuration.new(example_environment_config))
     end
     
     def register_descriptor(descriptor)

@@ -77,7 +77,7 @@ module Crichton
       end
   
       ##
-      # @param [Crichton::Representor] object The representor object.
+      #  @param [Crichton::Representor] object The representor object.
       # @param [Hash] options Serialization options.
       def initialize(object, options = nil)
         unless object.is_a?(Crichton::Representor)
