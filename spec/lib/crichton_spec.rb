@@ -86,7 +86,7 @@ describe Crichton do
   describe '.registry' do
     context 'with a directory of resource descriptors specified' do
       before do
-        Crichton.stub_chain(:config, :resource_descriptors_location).and_return(resource_descriptor_fixtures)
+        Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
       end
   
       it 'loads resource descriptors from a resource descriptor directory if configured' do
@@ -95,10 +95,6 @@ describe Crichton do
     end
   
     context 'without a directory of resource descriptors specified' do
-      before do
-        Crichton.stub_chain(:config, :resource_descriptors_location).and_return(nil)
-      end
-  
       it 'returns any manually registered resource descriptors' do
         resource_descriptor = Crichton::Descriptor::Resource.register(drds_descriptor)
 
@@ -107,8 +103,8 @@ describe Crichton do
         end
       end
   
-      it 'returns an empty hash if no resource descriptors are registered' do
-        Crichton.registry.should be_empty
+      it 'raises an error' do
+        expect { Crichton.registry }.to raise_error(/^No resource descriptor directory exists./)
       end
     end
   end
