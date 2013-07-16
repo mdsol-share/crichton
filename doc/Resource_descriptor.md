@@ -11,8 +11,8 @@ referenced resource's data and state transitions. As such, it may define terms o
 documents as appropriate. Further, it establishes the semantics of the affordances associated with state transitions 
 for the resource. Again, it may define these or reference external semantic documents.
 
-2. The underlying concept behind the design is the [ALPS specification](), which defines a protocol and media-type 
-independent resource semantic profile in a machine-readable format.
+2. The underlying concept behind the design is the [ALPS specification](http://alps.io/spec/index.html), which defines
+a protocol and media-type independent resource semantic profile in a machine-readable format.
 
 3. It assumes an external, referenceable source of human-readable semantic documentation of any properties or 
 affordances it exposes. A _Resource Descriptor_ may be used to generate some of this information, but it presupposes 
