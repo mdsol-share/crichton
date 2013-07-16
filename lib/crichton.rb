@@ -11,7 +11,7 @@ module Crichton
     @registry = nil
     Descriptor::Resource.clear_registry
   end
-  
+
   ##
   # Clears the config and config_directory so that they reset themselves.
   def self.clear_config
@@ -19,7 +19,7 @@ module Crichton
     @root = nil
     self.config_directory = nil
   end
-  
+
   ##
   # Returns the configuration specified in the crichton.yml file in the configuration directory.
   #
@@ -32,17 +32,17 @@ module Crichton
       raise "No crichton.yml file found in the configuration directory: #{config_directory}."
     end
   end
-  
+
   ##
   # @!attribute config_directory
   # The directory where the crichton.yml configuration file is located. Modify this value in an initializer to
   # set a different path to the configuration.
   #
   # @example
-  #   Crichton.config_directory #=> config
+  #   Crichton.config_directory #=> 'config'
   #
-  #   Crichton.config_directory = other_config
-  #   Crichton.config_directory #=> other_config
+  #   Crichton.config_directory = 'other_config
+  #   Crichton.config_directory #=> 'other_config'
   #
   # @return [String] The configuration directory. Default is root/config.
   def self.config_directory
@@ -64,6 +64,31 @@ module Crichton
   end
 
   ##
+  # @!attribute config_directory
+  # The directory where the crichton.yml configuration file is located. Modify this value in an initializer to
+  # set a different path to the configuration.
+  #
+  # @example
+  #   Crichton.descriptor_directory #=> 'api_descriptors'
+  #
+  #   Crichton.config_directory = 'other_api_descriptors'
+  #   Crichton.config_directory #=> 'other_api_descriptors'
+  #
+  # @return [String] The descriptors directory. Default is root/api_descriptors.
+  def self.descriptor_directory
+    @descriptor_directory ||= 'api_descriptors'
+  end
+
+  def self.descriptor_directory=(directory)
+    @descriptor_location = nil
+    @descriptor_directory = directory
+  end
+
+  def self.descriptor_location
+    @descriptor_location ||= File.join(root, descriptor_directory)
+  end
+
+  ##
   # Returns the registered resources.
   #
   # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
@@ -73,10 +98,12 @@ module Crichton
   def self.registry
     unless @registry
       unless Descriptor::Resource.registrations?
-        if location = config.resource_descriptors_location
-          Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f| 
+        if File.exists?(location = descriptor_location)
+          Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
             Descriptor::Resource.register(YAML.load_file(f))
           end
+        else
+          raise "No resource descriptor directory exists. Default is #{descriptor_location}."
         end
       end
       @registry = Descriptor::Resource.registry

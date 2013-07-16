@@ -1,3 +1,5 @@
+require 'crichton/representor/serializers/xhtml'
+
 module Crichton
   module Representor
     module Serialization
@@ -30,7 +32,7 @@ module Crichton
           raise ArgumentError, 'The media_type argument cannot be blank.' if media_type.blank?
 
           # TODO: !slice serializer options related options
-          Serializer.build(media_type.to_sym, object, options)
+          Crichton::Representor::Serializer.build(media_type.to_sym, object, options)
         end
       end
     end
