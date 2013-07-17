@@ -13,7 +13,7 @@ begin
     YARD::Rake::YardocTask.new do |yardoc|
       yardoc.name = 'yard' 
       yardoc.options = ['--verbose', '--no-private', '--output-dir', './yardoc']
-      yardoc.files = [ 'lib/**/*.rb', 'ext/**/*.c', '-', 'doc/**/*.md', 'README.md', 'CHANGELOG.md']
+      yardoc.files = [ 'lib/**/*.rb', 'ext/**/*.c', '-', 'doc/**/*.md', 'README.md', 'CHANGELOG.md', 'CONTRIBUTING.md']
     end
   end
 
