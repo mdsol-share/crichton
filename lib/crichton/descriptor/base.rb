@@ -102,7 +102,7 @@ module Crichton
         ivars = (instance_variables - EXCLUDED_VARIABLES).map do |ivar|
           "#{ivar}=#{instance_variable_get(ivar).inspect}"
         end
-        '#<%s:0x%s %s>' % [self.class.name, self.hash.to_s(16), ivars.join(", ")]
+        '#<%s:0x%s %s %s>' % [self.class.name, self.hash.to_s(16), self.name, ivars.join(", ")]
       end
       
     protected
