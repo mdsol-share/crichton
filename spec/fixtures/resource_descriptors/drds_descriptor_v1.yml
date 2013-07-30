@@ -56,13 +56,13 @@ states:
             - activated
             - error        
   drd:
-    activated :
+    activated:
       doc: The default state of a DRD.
       transitions:
         show:
           name: self
           next:
-            - item
+            - activated
         deactivate:
           conditions:
             - can_deactivate 
@@ -98,7 +98,7 @@ states:
         show:
           name: self
           next:
-            - item
+            - deactivated
         activate:
           conditions:
             - can_activate 
