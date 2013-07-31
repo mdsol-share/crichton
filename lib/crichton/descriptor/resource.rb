@@ -3,6 +3,8 @@ require 'crichton/descriptor/profile'
 require 'crichton/descriptor/detail'
 require 'crichton/descriptor/state'
 
+require 'pry'
+
 module Crichton
   module Descriptor
     ##
@@ -13,6 +15,7 @@ module Crichton
       # Clears all registered resource descriptors
       def self.clear_registry
         @registry = nil
+        @ids_registry = nil
       end
       
       ##
@@ -30,16 +33,48 @@ module Crichton
         else
           raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
         end
-  
+
         new(hash_descriptor).tap do |resource_descriptor|
           resource_descriptor.descriptors.each do |descriptor|
             if registry[descriptor.id]
-              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered." 
+              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
             end
-              
-            registry[descriptor.id] = descriptor 
+
+            registry[descriptor.id] = descriptor
           end
         end
+
+        # EXPERIMENTAL
+        # dereferencing registry links
+
+        descriptors = hash_descriptor['descriptors']
+        descriptors.each do |k,v|
+          build_descriptor_hashes_by_id(k, [k], nil, v)
+        end
+        #
+  binding.pry
+
+
+      end
+
+      def self.build_descriptor_hashes_by_id(descriptor_id, pre_path, name, hash)
+        cur_path = [pre_path, [name]].flatten.compact
+        if @ids_registry.nil?
+          @ids_registry = {}
+        end
+        if !name.nil? && @ids_registry.include?(name)
+          raise "Descriptor name #{name} already in ids_registry!"
+        end
+        # Add descriptor to the IDs hash
+        @ids_registry[cur_path.join("/")] = hash unless name.nil?
+
+        # Descend
+        unless hash['descriptors'].nil?
+          hash['descriptors'].each do |k,v|
+            build_descriptor_hashes_by_id(descriptor_id, cur_path, k, v)
+          end
+        end
+
       end
   
       ##
@@ -49,7 +84,9 @@ module Crichton
       def self.registry
         @registry ||= {}
       end
-  
+
+
+
       ##
       # Whether any resource descriptors have been registered or not.
       #
