@@ -15,6 +15,7 @@ module Crichton
       # Clears all registered resource descriptors
       def self.clear_registry
         @registry = nil
+        @dereferenced_registry = nil
         @ids_registry = nil
       end
       
@@ -50,6 +51,16 @@ module Crichton
             end
 
             registry[descriptor.id] = descriptor
+          end
+        end
+
+        new(hash_descriptor_with_dereferenced_links).tap do |resource_descriptor|
+          resource_descriptor.descriptors.each do |descriptor|
+            if dereferenced_registry[descriptor.id]
+              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
+            end
+
+            dereferenced_registry[descriptor.id] = descriptor
           end
         end
 
@@ -106,6 +117,14 @@ module Crichton
       # @return [Hash] The registered resource descriptors, if any.
       def self.registry
         @registry ||= {}
+      end
+
+      ##
+      # Lists the registered resource descriptors.
+      #
+      # @return [Hash] The registered resource descriptors, if any.
+      def self.dereferenced_registry
+        @dereferenced_registry ||= {}
       end
 
 
