@@ -33,6 +33,15 @@ module Crichton
         else
           raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
         end
+        # EXPERIMENTAL
+        # dereferencing registry links
+        descriptors = hash_descriptor['descriptors']
+        descriptors.each do |k,v|
+          build_descriptor_hashes_by_id(k, [k], nil, v)
+        end
+
+        # Build hash with resolved local links
+        hash_descriptor_with_dereferenced_links = build_dereferenced_hash_descriptor(hash_descriptor)
 
         new(hash_descriptor).tap do |resource_descriptor|
           resource_descriptor.descriptors.each do |descriptor|
@@ -44,17 +53,7 @@ module Crichton
           end
         end
 
-        # EXPERIMENTAL
-        # dereferencing registry links
-
-        descriptors = hash_descriptor['descriptors']
-        descriptors.each do |k,v|
-          build_descriptor_hashes_by_id(k, [k], nil, v)
-        end
-        #
   binding.pry
-
-
       end
 
       def self.build_descriptor_hashes_by_id(descriptor_id, pre_path, name, hash)
@@ -74,7 +73,31 @@ module Crichton
             build_descriptor_hashes_by_id(descriptor_id, cur_path, k, v)
           end
         end
+      end
 
+      def self.build_dereferenced_hash_descriptor(hash)
+        new_hash = {}
+        hash.each do |k,v|
+          if k == 'href'
+            binding.pry
+            if @ids_registry.include? v
+              new_hash.merge!(@ids_registry[v])
+            end
+            binding.pry
+          elsif v.is_a? Hash
+              der_ded = build_dereferenced_hash_descriptor(v)
+            if new_hash.include? k
+              binding.pry
+              new_hash[k].deep_merge! der_ded
+              binding.pry
+            else
+              new_hash[k] = der_ded
+            end
+          else
+            new_hash[k] = v
+          end
+        end
+        new_hash
       end
   
       ##
