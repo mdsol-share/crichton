@@ -15,6 +15,7 @@ in must specify a fully-qualified URI.
 `self` and `help` are used in accordance to [RFC 5988 - Web Linking](http://tools.ietf.org/html/rfc5988).
 
 ## Example
+The following example highlights top-section of the [Example Resource Descriptor][]. 
 
 ```yaml
 id: DRDs
@@ -29,3 +30,4 @@ links:
 The associated profile URI would be: http://alps.example.org/DRDs.
 
 [Back to Resource Descriptors](resource_descriptors.md)
+[Example Resource Descriptor]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml

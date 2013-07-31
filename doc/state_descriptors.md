@@ -14,16 +14,16 @@ categorical states of the state machine, each with its own unique set of availab
 ## Properties
 * `states` - Defines the states associated with each resource specified as the keys of this property. The 
 actual state names are the keys under the resource.
-* `doc` - Documents a particular state.
-* `location` - The location of the state. Valid values are `entry`, `exit`, or a URI to an external ALPS type that is
+    * `doc` - Documents a particular state.
+    * `location` - The location of the state. Valid values are `entry`, `exit`, or a URI to an external ALPS type that is
 associated with the transition from an application vs. resource state standpoint. 
-* `transitions` - The transtions available for the particular state. These can represent link or form based transitions.
-* `name` - Overrides the name to be set on the affordance in a response. Otherwise, the ID (YAML key) for the transition
+    * `transitions` - The transtions available for the particular state. These can represent link or form based transitions.
+        * `name` - Overrides the name to be set on the affordance in a response. Otherwise, the ID (YAML key) for the transition
 is used.
-* `conditions` - An array of conditions applied as a Boolean __OR__ that must exist for the transtion to be included. 
+        * `conditions` - An array of conditions applied as a Boolean __OR__ that must exist for the transtion to be included. 
 By passing an option including a list satisfied conditions when generating responses, Crichton determines which state's 
 transitions should be included in a response.
-* `next` - An array of next states in the state machine possible by following the transition. Typically, this will be
+        * `next` - An array of next states in the state machine possible by following the transition. Typically, this will be
 only one state, unless an error state is a possibility. If a transition is associated with an external a hash resource,
 a hash with the `location` key is used and the value is an ALPS type specifing the profile of the external resource.
 
@@ -114,7 +114,7 @@ state descriptor:
 
 * MUST have a related Semantic Descriptor whose ID (YAML key) is the same as the state resource.
 
-State transitions are directly related to [Transtion Descriptors](transition_descriptors.md) and indirectly to
+State transitions are also directly related to [Transtion Descriptors](transition_descriptors.md) and indirectly to
 [Protocol Descriptors](transition_descriptors.md), which indicate implemenatation details of the transtions. Thus, a 
 state descriptor transition:
 
@@ -123,5 +123,4 @@ state descriptor transition:
 media-type.
 
 [Back to Resource Descriptors](resource_descriptors.md)
-
 [Example Resource Descriptor]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml

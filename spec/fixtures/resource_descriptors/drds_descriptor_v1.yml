@@ -325,8 +325,8 @@ protocols:
         - ETag
       status_codes:
         200:
-          status: OK
-          definitions:
+          description: OK
+          notes:
             - We have processed your request and returned the data you asked for.
       slt: &slt1
         99th_percentile: 100ms
