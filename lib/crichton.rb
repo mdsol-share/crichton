@@ -112,7 +112,7 @@ module Crichton
   end
 
   def self.raw_registry
-    unless @registry
+    unless @raw_registry
       unless Descriptor::Resource.registrations?
         if File.exists?(location = descriptor_location)
           Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
