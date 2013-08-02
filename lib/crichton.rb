@@ -111,6 +111,22 @@ module Crichton
     @registry
   end
 
+  def self.raw_registry
+    unless @registry
+      unless Descriptor::Resource.registrations?
+        if File.exists?(location = descriptor_location)
+          Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
+            Descriptor::Resource.register(YAML.load_file(f))
+          end
+        else
+          raise "No resource descriptor directory exists. Default is #{descriptor_location}."
+        end
+      end
+      @raw_registry = Descriptor::Resource.raw_registry
+    end
+    @raw_registry
+  end
+
   ##
   # The root directory of parent project.
   #

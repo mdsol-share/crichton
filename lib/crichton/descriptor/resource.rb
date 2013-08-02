@@ -15,7 +15,7 @@ module Crichton
       # Clears all registered resource descriptors
       def self.clear_registry
         @registry = nil
-        @dereferenced_registry = nil
+        @raw_registry = nil
         @ids_registry = nil
       end
       
@@ -46,6 +46,16 @@ module Crichton
 
         new(hash_descriptor).tap do |resource_descriptor|
           resource_descriptor.descriptors.each do |descriptor|
+            if raw_registry[descriptor.id]
+              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
+            end
+
+            raw_registry[descriptor.id] = descriptor
+          end
+        end
+
+        new(hash_descriptor_with_dereferenced_links).tap do |resource_descriptor|
+          resource_descriptor.descriptors.each do |descriptor|
             if registry[descriptor.id]
               raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
             end
@@ -54,17 +64,7 @@ module Crichton
           end
         end
 
-        new(hash_descriptor_with_dereferenced_links).tap do |resource_descriptor|
-          resource_descriptor.descriptors.each do |descriptor|
-            if dereferenced_registry[descriptor.id]
-              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
-            end
-
-            dereferenced_registry[descriptor.id] = descriptor
-          end
-        end
-
-  binding.pry
+  #binding.pry
       end
 
       def self.build_descriptor_hashes_by_id(descriptor_id, pre_path, name, hash)
@@ -90,17 +90,17 @@ module Crichton
         new_hash = {}
         hash.each do |k,v|
           if k == 'href'
-            binding.pry
+            #binding.pry
             if @ids_registry.include? v
               new_hash.merge!(@ids_registry[v])
             end
-            binding.pry
+            #binding.pry
           elsif v.is_a? Hash
               der_ded = build_dereferenced_hash_descriptor(v)
             if new_hash.include? k
-              binding.pry
+              #binding.pry
               new_hash[k].deep_merge! der_ded
-              binding.pry
+              #binding.pry
             else
               new_hash[k] = der_ded
             end
@@ -123,8 +123,8 @@ module Crichton
       # Lists the registered resource descriptors.
       #
       # @return [Hash] The registered resource descriptors, if any.
-      def self.dereferenced_registry
-        @dereferenced_registry ||= {}
+      def self.raw_registry
+        @raw_registry ||= {}
       end
 
 
