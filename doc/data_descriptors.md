@@ -9,7 +9,8 @@ The YAML keys directly under the `descriptors` property are the ALPS IDs of the 
 unique within the document. The `name` property can be used to specify the semantic name that will be used in a
 response. Otherwise, the ID will be the name of the associated attribute in the representation of the resource.
 
-* `descriptors` - Recursive section that groups semantic and transition descriptors. 
+* `descriptors` - Recursive section that groups semantic and transition descriptors.
+  * \[alps_id\] - A YAML key that is the unique ID of the associated ALPS profile.
     * `doc` - The description of the semantic descriptor: REQUIRED.
     * `name` - The name associated with the related element in a response. Overrides the ID of the descriptor as the
 default name: OPTIONAL.
@@ -19,13 +20,14 @@ indicates the URI of the descriptor for top-level descriptors.
     * `href` - The underlying ALPS profile, either representing another resource or a primitive profile. See 
 [Primitive Profiles](primitive_profiles.md) for more information: REQUIRED.
     * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
-    * `embed` - Indicates that this resource should be embedded in a response. Valid values are `single`, `multiple`, and
-`optional`. The default, if not specified, is `single`. The value `multiple` indicates the item should be embedded as 
-an array. The value `optional` indicates this property should only be included is specifically requested using an 
+    * `embed` - Indicates that this resource should be embedded in a response. Valid values are `single`, `multiple`, 
+and `optional`. The default, if not specified, is `single`. The value `multiple` indicates the item should be embedded 
+as an array. The value `optional` indicates this property should only be included is specifically requested using an 
 associated transition that specifies its optional inclusion: OPTIONAL.
 
 ### Template Properties
-The following properties are only used with semantic descriptors representing templates (forms).
+The following properties are only used with semantic descriptors representing templates (media-type form, 
+in contrast to a link).
 
 * `field_type` - Defines the type of field for the form. Valid values are `input`, `boolean`, `select`, or 
 `multi-select`: REQUIRED.
@@ -66,7 +68,7 @@ descriptors:
         descriptors: # Descriptors associated with a form to template a body associated with the 'create' affordance.
           create-drd: # Unique ID that does not collide with 'update' transition descriptor above.
             type: semantic
-            href: drd/update/update-drd # Indicates that this should de-reference update-drd
+            href: update-drd # Indicates that this should de-reference update-drd
             links:
               self: alps_base/DRDs#drd/create/create-drd
               help: documentation_base/Forms/create-drd
@@ -128,7 +130,7 @@ descriptors:
           update-drd: # Unique ID that does not collide with 'update' transition descriptor above.
             type: semantic
             links:
-              self: alps_base/DRDs#drd/update/update-drd  
+              self: alps_base/DRDs#update-drd  
               help: documentation_base/Forms/update-drd
             descriptors:
               form-status: # Unique value to differentiate from 'status' descriptor.
@@ -155,9 +157,7 @@ descriptors:
                 validators:
                   - presence 
 ```
- 
-### Templates
-       
+
 ## Descriptor Dependencies
 Data descriptors are directly related to [State Descriptors](data_descriptors.md) in a _Resource Descriptor_. Thus, a
 data descriptor:

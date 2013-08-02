@@ -7,13 +7,14 @@ either as query parameters, or as a body, depending on the type of the transitio
 
 ## Properties
 * `descriptors` - Recursive section that groups transition descriptors or nested semantic descriptors: REQUIRED.
-* `doc` - The description of the transition descriptor: REQUIRED.
-* `type` - The type of transition, either `safe`, `unsafe` or `idempotent` type: REQUIRED.
-* `name` - The name associated with the related element in a response. Overrides the ID of the descriptor as the
-default name: OPTIONAL.
-* `links` - Links related to the transition descriptor: RECOMMENDED.
-* `href` - An underlying ALPS profile: OPTIONAL.
-* `rt` - The return type, as an absolute or relative URI to an ALPS profile: REQUIRED.
+  * \[alps_id\] - A YAML key that is the unique ID of the associated ALPS profile.
+    * `doc` - The description of the transition descriptor: REQUIRED.
+    * `type` - The type of transition, either `safe`, `unsafe` or `idempotent` type: REQUIRED.
+    * `name` - The name associated with the related element in a response. Overrides the ID of the descriptor as the
+    default name: OPTIONAL.
+    * `links` - Links related to the transition descriptor: RECOMMENDED.
+    * `href` - An underlying ALPS profile: OPTIONAL.
+    * `rt` - The return type, as an absolute or relative URI to an ALPS profile: REQUIRED.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (forms).

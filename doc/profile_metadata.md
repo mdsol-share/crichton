@@ -9,8 +9,8 @@ The top-level of a _Resource Descriptor_ contains metadata associated with the p
 * `version` - The version of the document(for internal use): REQUIRED.
 
 Note: If `self` and/or `help` links are included as relative links, they will be generated in ALPS profiles as
-fully-qualified URIs using `the alps_base_uri` and/or `documentation_base_uri`, respectively. Any other link included
-in must specify a fully-qualified URI.
+fully-qualified URIs using `the alps_base_uri` and/or `documentation_base_uri` configuration variables see 
+[Crichton Configuration][]. Any other link included must specify a fully-qualified URI.
 
 `self` and `help` are used in accordance to [RFC 5988 - Web Linking](http://tools.ietf.org/html/rfc5988).
 
@@ -31,3 +31,4 @@ The associated profile URI would be: http://alps.example.org/DRDs.
 
 [Back to Resource Descriptors](resource_descriptors.md)
 [Example Resource Descriptor]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Crichton Configuration]:(crichton_configuration.md)

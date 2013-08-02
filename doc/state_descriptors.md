@@ -14,16 +14,20 @@ categorical states of the state machine, each with its own unique set of availab
 ## Properties
 * `states` - Defines the states associated with each resource specified as the keys of this property. The 
 actual state names are the keys under the resource.
-    * `doc` - Documents a particular state.
-    * `location` - The location of the state. Valid values are `entry`, `exit`, or a URI to an external ALPS type that is
-associated with the transition from an application vs. resource state standpoint. 
-    * `transitions` - The transtions available for the particular state. These can represent link or form based transitions.
-        * `name` - Overrides the name to be set on the affordance in a response. Otherwise, the ID (YAML key) for the transition
-is used.
-        * `conditions` - An array of conditions applied as a Boolean __OR__ that must exist for the transtion to be included. 
-By passing an option including a list satisfied conditions when generating responses, Crichton determines which state's 
-transitions should be included in a response.
-        * `next` - An array of next states in the state machine possible by following the transition. Typically, this will be
+    * \[state_resource\] The ID (YAML key) of the corresponding data descriptor. See [Data Descriptors][].
+        * \[state name\] The name of the state.
+            * `doc` - Documents a particular state.
+            * `location` - The location of the state. Valid values are `entry`, `exit`, or a URI to an external ALPS type that 
+            is associated with the transition from an application vs. resource state standpoint. 
+            * `transitions` - The transtions available for the particular state. These can represent link or form based 
+            transitions.
+                * `name` - Overrides the name to be set on the affordance in a response. Otherwise, the ID (YAML key) for the 
+                transition is used.
+                * `conditions` - An array of conditions applied as a Boolean __OR__ that must exist for the transtion to be 
+                included. By passing an option including a list satisfied conditions when generating responses, Crichton 
+                determines which state's transitions should be included in a response. These strings are defined in your
+                own applications authorization logic and passed to Crichton (the following conditions are examples only).
+                * `next` - An array of next states in the state machine possible by following the transition. Typically, this will be
 only one state, unless an error state is a possibility. If a transition is associated with an external a hash resource,
 a hash with the `location` key is used and the value is an ALPS type specifing the profile of the external resource.
 
@@ -47,7 +51,7 @@ states:
             - navigation
         create:
           conditions: 
-            - can_create # These are simply keys that are defined
+            - can_create # These are simply keys that one defines in an application authorization logic.
             - can_do_anything
           next:
             - activated
@@ -74,7 +78,7 @@ states:
             - can_update 
             - can_do_anything
           next:
-           - current_state
+            - deactivated
         # ...
         leviathan-link: # ID of a transtion to a related external resource representing a 'leviathan'.
           name: leviathan # Overrides the 'rel' attribute in the associated link.
@@ -109,18 +113,19 @@ states:
 ```
 
 ## Descriptor Dependencies
-State Descriptors are directly related to [Data Descriptors](data_descriptors.md) in a _Resource Descriptor_. Thus, a
+State Descriptors are directly related to [Data Descriptors][] in a _Resource Descriptor_. Thus, a
 state descriptor:
 
-* MUST have a related Semantic Descriptor whose ID (YAML key) is the same as the state resource.
+* MUST have a related Semantic Descriptor whose ID (YAML key) is the same as the value of the \[state_resource\].
 
 State transitions are also directly related to [Transtion Descriptors](transition_descriptors.md) and indirectly to
 [Protocol Descriptors](transition_descriptors.md), which indicate implemenatation details of the transtions. Thus, a 
 state descriptor transition:
 
-* MUST have a related Transition Descriptor whose ID (YAML key) is the same as some transition.
+* MUST have a related Transition Descriptor whose ID (YAML key) is the same as the state transition.
 * MAY use a `name` property to override the associated name of the affordance as implemented in a particular 
 media-type.
 
 [Back to Resource Descriptors](resource_descriptors.md)
 [Example Resource Descriptor]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Data Descriptors]: data_descriptors.md

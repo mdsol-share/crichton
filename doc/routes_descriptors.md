@@ -5,8 +5,10 @@ an application associated with a _Resource Desciptors_ transitions. These are OP
 
 ## Properties
 * `routes` - Indicates routes descriptor section. OPTIONAL. 
-    * `controller` - The name of the associated controller: OPTIONAL.
-    * `action` - The name of the associated method in the controller. OPTIONAL.
+  * \[alps_id\] - A YAML key that is the unique ID of the associated ALPS profile.
+    * \[transition\] - The implemented transition related to a specific transition descriptor.
+        * `controller` - The name of the associated controller: OPTIONAL.
+        * `action` - The name of the associated method in the controller. OPTIONAL.
 
 ## Example
 The following example highlights a few parts of the [Example Resource Descriptor][] `routes` section. In-line comments

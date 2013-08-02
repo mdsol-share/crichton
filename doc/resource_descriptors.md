@@ -65,7 +65,8 @@ Hypermedia API:
 * Analyze the entities, states and transitions associated with the underlying workflow
 * Define the semantics of the entities
 * Define the semantics of the state transitions
-* Define the semantics of any templates used in transitions that require a formatted body
+* Define the semantics of any templates (media-type form, in contrast to a link) used in transitions that require a 
+formatted body
 * Define the particulars of how the transitions are implemented for different protocols
 * Define routing/scaffolding information for the resource (OPTIONAL).
 
@@ -82,8 +83,11 @@ in the current _Resource Descriptor_ document.
 * `links` - Related links. The YAML keys correspond to a link `rel` attribute and the value with the URI 
 specified in the link `href` attribute.
 * `name` - Used to specify descriptor names which would otherwise have the same, non-unique `id` (YAML key).
-* `rt` - The return type of a transition as a relative or fully-qualified ALPS profile fragment URI.
-* `type` - The type of descriptor. Valid values are `semantic`, `safe`, `unsafe`, or `idempotent`.
+* `rt` - The return type of a transition that is an ALPS profile URI. This can be a relative URI indicating it is 
+associated with secondary profile in the existing resource descriptor or fully-qualified fragment URI associated 
+with an external ALPS profile. See [ALPS specification][] discussion of `id` for more information.
+* `type` - The type of the descriptor. Valid values are `semantic`, `safe`, `unsafe`, or `idempotent`. See 
+[ALPS specification][] discussion of `type` for more information.
 
 Other properties are defined in the sections that follow.
 
