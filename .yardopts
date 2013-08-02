@@ -1,0 +1,16 @@
+--title Crichton Documentation
+--verbose 
+--no-private 
+--output-dir ./yardoc
+-
+README.md
+doc/resource_descriptors.md
+doc/profile_metadata.md
+doc/state_descriptors.md
+doc/data_descriptors.md
+doc/transition_descriptors.md
+doc/protocol_descriptors.md
+doc/routes_descriptors.md
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE.md

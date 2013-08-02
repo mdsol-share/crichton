@@ -10,11 +10,7 @@ begin
 
   namespace :doc do
     desc 'Generate Yardoc documentation'
-    YARD::Rake::YardocTask.new do |yardoc|
-      yardoc.name = 'yard' 
-      yardoc.options = ['--verbose', '--no-private', '--output-dir', './yardoc']
-      yardoc.files = [ 'lib/**/*.rb', 'ext/**/*.c', '-', 'doc/**/*.md', 'README.md', 'CHANGELOG.md', 'CONTRIBUTING.md']
-    end
+    YARD::Rake::YardocTask.new
   end
 
   desc 'Alias to doc:yard'
