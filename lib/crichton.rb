@@ -96,35 +96,36 @@ module Crichton
   #
   # @return [Hash] The registered resource descriptors, if any?
   def self.registry
-    unless @registry
-      unless Descriptor::Resource.registrations?
-        if File.exists?(location = descriptor_location)
-          Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
-            Descriptor::Resource.register(YAML.load_file(f))
-          end
-        else
-          raise "No resource descriptor directory exists. Default is #{descriptor_location}."
-        end
+    @registry ||= begin
+      if Descriptor::Resource.registry.empty?
+        build_registry
       end
-      @registry = Descriptor::Resource.registry
+      Descriptor::Resource.registry
     end
     @registry
   end
 
   def self.raw_registry
-    unless @raw_registry
-      unless Descriptor::Resource.registrations?
-        if File.exists?(location = descriptor_location)
-          Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
-            Descriptor::Resource.register(YAML.load_file(f))
-          end
-        else
-          raise "No resource descriptor directory exists. Default is #{descriptor_location}."
-        end
+    @raw_registry ||= begin
+      if Descriptor::Resource.raw_registry.empty?
+        build_registry
       end
       @raw_registry = Descriptor::Resource.raw_registry
     end
     @raw_registry
+  end
+
+  def self.build_registry
+    unless Descriptor::Resource.registrations?
+      if File.exists?(location = descriptor_location)
+        Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
+          Descriptor::Resource.register(YAML.load_file(f))
+        end
+      else
+        raise "No resource descriptor directory exists. Default is #{descriptor_location}."
+      end
+    end
+
   end
 
   ##
