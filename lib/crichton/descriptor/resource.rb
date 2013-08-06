@@ -3,8 +3,6 @@ require 'crichton/descriptor/profile'
 require 'crichton/descriptor/detail'
 require 'crichton/descriptor/state'
 
-require 'pry'
-
 module Crichton
   module Descriptor
     ##
@@ -63,8 +61,6 @@ module Crichton
             registry[descriptor.id] = descriptor
           end
         end
-
-  #binding.pry
       end
 
       def self.build_descriptor_hashes_by_id(descriptor_id, pre_path, name, hash)
@@ -90,17 +86,13 @@ module Crichton
         new_hash = {}
         hash.each do |k,v|
           if k == 'href'
-            #binding.pry
             if @ids_registry.include? v
               new_hash.merge!(@ids_registry[v])
             end
-            #binding.pry
           elsif v.is_a? Hash
               der_ded = build_dereferenced_hash_descriptor(v)
             if new_hash.include? k
-              #binding.pry
               new_hash[k].deep_merge! der_ded
-              #binding.pry
             else
               new_hash[k] = der_ded
             end
