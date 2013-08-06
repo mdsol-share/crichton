@@ -111,6 +111,8 @@ module Crichton
           resource_descriptor = Resource.register(drds_descriptor)
 
           resource_descriptor.descriptors.each do |descriptor|
+            # Can't use a direct comparison as we don't get the original rescriptors returned when registering
+            # but we can at least test that the names match.
             Resource.raw_registry[descriptor.id].name.should == descriptor.name
           end
         end
