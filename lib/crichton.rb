@@ -110,7 +110,7 @@ module Crichton
       if Descriptor::Resource.raw_registry.empty?
         build_registry
       end
-      @raw_registry = Descriptor::Resource.raw_registry
+      Descriptor::Resource.raw_registry
     end
     @raw_registry
   end
