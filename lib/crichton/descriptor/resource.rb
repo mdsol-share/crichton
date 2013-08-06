@@ -88,6 +88,8 @@ module Crichton
           if k == 'href'
             if @ids_registry.include? v
               new_hash.merge!(@ids_registry[v])
+            else
+              new_hash[k] = v
             end
           elsif v.is_a? Hash
               der_ded = build_dereferenced_hash_descriptor(v)
