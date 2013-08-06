@@ -12,6 +12,7 @@ module Crichton
           Resource.register(drds_descriptor)
           Resource.clear_registry
           Resource.registry.should be_empty
+          Resource.raw_registry.should be_empty
         end
       end
       
@@ -31,7 +32,7 @@ module Crichton
         end
         
         shared_examples_for 'a resource descriptor registration' do
-          it 'registers a the child detail descriptors by id' do
+          it 'registers a the child detail descriptors by id in the registry' do
             resource_descriptor = Resource.register(@descriptor)
 
             resource_descriptor.descriptors.each do |descriptor|
@@ -101,6 +102,20 @@ module Crichton
         end
       end
   
+      describe '.raw_registry' do
+        it 'returns an empty hash hash if no resource descriptors are registered' do
+          Resource.raw_registry.should be_empty
+        end
+
+        it 'returns a hash of registered descriptor instances keyed by descriptor id' do
+          resource_descriptor = Resource.register(drds_descriptor)
+
+          resource_descriptor.descriptors.each do |descriptor|
+            Resource.raw_registry[descriptor.id].name.should == descriptor.name
+          end
+        end
+      end
+
       describe '.registrations?' do
         it 'returns false if no resource descriptors are registered' do
           Resource.registrations?.should be_false
@@ -203,7 +218,6 @@ module Crichton
           resource_descriptor.version.should == 'v1.0.0'
         end
       end
-
 
       context 'with serialization' do
         let(:descriptor) { Resource.new(leviathans_descriptor) }
