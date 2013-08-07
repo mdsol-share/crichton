@@ -3,6 +3,8 @@
 Crichton is a library to simplify generating and consuming Hypermedia API responses. It has the knowledge of Hypermedia 
 from the Ancients.
 
+Checkout the [Documentation][] for more info.
+
 ## Usage
 Any class can be used to represent a resource by simply including the Crichton::Representor module and specifying the 
 resource it represents defined in an associated _Resource Descriptor_ document:
@@ -58,5 +60,6 @@ See [CONTRIBUTING][] for details.
 ## Copyright
 Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 
-[LICENSE]: LICENSE.md
 [CONTRIBUTING]: CONTRIBUTING.md
+[Documentation]: http://rubydoc.info/github/mdsol/crichton/develop/file/README.md
+[LICENSE]: LICENSE.md
