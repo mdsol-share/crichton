@@ -6,6 +6,17 @@ require 'crichton/representor'
 
 module Crichton
   ##
+  # Logger
+  def self.logger= logger
+    @logger = logger
+  end
+
+  def self.logger
+    # This is probably not to be the final outcome - but for now this defaults to STDOUT.
+    @logger ||= Logger.new(STDOUT)
+  end
+
+  ##
   # Clears any registered resource descriptors.
   def self.clear_registry
     @registry = nil
