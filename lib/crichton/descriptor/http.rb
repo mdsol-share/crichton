@@ -39,7 +39,7 @@ module Crichton
         elsif target.respond_to?(uri_source)
           target.send(uri_source)
         else 
-          # TODO: log warning
+          Crighton::logger.warn "Crichton::Descriptor::Http.url_for doesn't have URL configured (#{target})"
         end
       end 
       

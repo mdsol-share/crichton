@@ -148,7 +148,7 @@ module Crichton
         end
 
         def add_transition(transition)
-          # TODO: log warning for nil transition.url
+          Crichton::logger.warn("Transition URL is nil for #{transition}!")
           @markup_builder.a(transition.name, {rel: transition.name, href: transition.url}) if transition.url
         end
 
@@ -177,7 +177,7 @@ module Crichton
             when Crichton::Representor
               add_embedded_object(embedded_object, options)
             else
-              # TODO: log warning or raise
+              Crichton::logger.warn("Semantic element should be either representor or array! Was #{semantic}")
             end
           end
         end

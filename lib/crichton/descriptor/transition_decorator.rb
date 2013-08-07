@@ -84,7 +84,7 @@ module Crichton
         @url ||= if protocol_descriptor
           protocol_descriptor.url_for(@target)
         else
-          #TODO: log warning no url
+          Crichton::logger.warn("URL not defined for #{@target}!")
         end
       end
 
@@ -95,14 +95,17 @@ module Crichton
         elsif @target.is_a?(Crichton::Representor::State)
           @target.crichton_state
         else
-          # TODO: Log warning no state specified
+          Crichton::logger.warn("No state specified for #{target}!")
         end
       end
 
       def state_descriptor
         @state_descriptor ||= if state
-          # TODO: Log warning if no state descriptor exists for the state, or should this raise?
-          resource_descriptor.states[parent_descriptor.name][state.to_s]
+          state = resource_descriptor.states[parent_descriptor.name][state.to_s]
+          if state.nil?
+            Crichton::logger.warn("No state descriptor for transition #{parent_descriptor.name} -> #{state.to_s}!")
+          end
+          state
         end
       end
 
