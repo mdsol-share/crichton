@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "bundler"
+require 'lib/crichton/lint/lint'
+
+Bundler.setup
+
+Crichton::Lint.validate
