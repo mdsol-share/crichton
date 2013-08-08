@@ -71,6 +71,13 @@ module Crichton
       # Manages Abstract Base functionality for semantic Builders that implement the specifics of Hypermedia 
       # serialization per ALPS media-type guidance specs for HTML.
       class BaseSemanticBuilder
+        ##
+        # Make the Crichton logger more accessible
+        #
+        # @return [Logger] Logger object
+        def logger
+          @logger ||= Crichton::logger
+        end
 
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
         # @param [Crichton::Representor] object The object to build semantics for.
@@ -148,7 +155,7 @@ module Crichton
         end
 
         def add_transition(transition)
-          Crichton::logger.warn("Transition URL is nil for #{transition}!")
+          logger.warn("Transition URL is nil for #{transition}!")
           @markup_builder.a(transition.name, {rel: transition.name, href: transition.url}) if transition.url
         end
 
@@ -177,7 +184,7 @@ module Crichton
             when Crichton::Representor
               add_embedded_object(embedded_object, options)
             else
-              Crichton::logger.warn("Semantic element should be either representor or array! Was #{semantic}")
+              logger.warn("Semantic element should be either representor or array! Was #{semantic}")
             end
           end
         end
