@@ -75,7 +75,7 @@ module Crichton
             Serializer.registered_serializers[media_type] = serializer
           end
       end
-  
+
       ##
       #  @param [Crichton::Representor] object The representor object.
       # @param [Hash] options Serialization options.
