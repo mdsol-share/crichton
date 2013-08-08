@@ -85,6 +85,7 @@ module Crichton
           protocol_descriptor.url_for(@target)
         else
           Crichton::logger.warn("URL not defined for #{@target}!")
+          nil
         end
       end
 
@@ -95,17 +96,18 @@ module Crichton
         elsif @target.is_a?(Crichton::Representor::State)
           @target.crichton_state
         else
-          Crichton::logger.warn("No state specified for #{target}!")
+          Crichton::logger.warn("No state specified for #{@target}!")
+          nil
         end
       end
 
       def state_descriptor
         @state_descriptor ||= if state
-          state = resource_descriptor.states[parent_descriptor.name][state.to_s]
-          if state.nil?
+          saved_state = resource_descriptor.states[parent_descriptor.name][state.to_s]
+          if saved_state.nil?
             Crichton::logger.warn("No state descriptor for transition #{parent_descriptor.name} -> #{state.to_s}!")
           end
-          state
+          saved_state
         end
       end
 
