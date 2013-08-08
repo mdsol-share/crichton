@@ -7,7 +7,7 @@ require 'crichton/representor'
 module Crichton
   ##
   # Logger
-  def self.logger= logger
+  def self.logger=(logger)
     @logger = logger
   end
 
