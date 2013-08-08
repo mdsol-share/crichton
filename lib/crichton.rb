@@ -12,8 +12,14 @@ module Crichton
   end
 
   def self.logger
-    # This is probably not to be the final outcome - but for now this defaults to STDOUT.
-    @logger ||= Logger.new(STDOUT)
+    # This is probably not to be the final outcome - but for now this defaults to Rails.logger or STDOUT.
+    # TODO: Add Sinatra support. I couldn't find any reliable enough way - it seems that there is no standard way
+    # of accessing the logger like there is for Rails.
+    @logger ||= if defined?(Rails)
+                  Rails.logger
+                else
+                  Logger.new(STDOUT)
+                end
   end
 
   ##
