@@ -2,7 +2,7 @@
 
 require "rubygems"
 require "bundler"
-require 'lib/crichton/lint/lint'
+require '../lib/crichton/lint/lint'
 
 Bundler.setup
 
