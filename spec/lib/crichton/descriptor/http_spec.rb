@@ -96,6 +96,15 @@ module Crichton
             descriptor.url_for(target).should == url
           end
         end
+
+        it 'logs a warning in case of no configured URL' do
+          descriptor.stub(:uri).and_return(nil)
+          descriptor.stub(:uri_source).and_return(:junk)
+          @logger = mock(:logger)
+          @logger.should_receive(:warn)
+          descriptor.should_receive(:logger).and_return(@logger)
+          descriptor.url_for(target)
+        end
       end
     end
   end
