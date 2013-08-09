@@ -2,8 +2,23 @@
 
 require "rubygems"
 require "bundler"
-require '../lib/crichton/lint/lint'
 
 Bundler.setup
 
-Crichton::Lint.validate
+require 'optparse'
+
+$options = {}
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: rdlint <descriptor file name>"
+end
+
+require File.dirname(__FILE__)+'/../lib/lint'
+
+optparse.parse!
+# go for single file linting for now...
+unless ARGV.length == 1
+	abort optparse.to_s
+end
+
+# lint the individual file
+Lint.validate ARGV[0]
