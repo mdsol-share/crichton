@@ -504,5 +504,20 @@ module Crichton
         end
       end
     end
+
+    context "BaseSemanticBuilder" do
+      describe '#logger' do
+        let(:bsb) { Crichton::Representor::XHTMLSerializer::BaseSemanticBuilder.new('xhtml', {}, 'markup') }
+        it 'allows access to the Crichton logger' do
+          Crichton.should_receive(:logger).once.and_return("something")
+          bsb.logger.should == "something"
+        end
+        it 'allows only calls the Crichton logger once when called multiple times and caches the logger' do
+          Crichton.should_receive(:logger).once.and_return("something")
+          bsb.logger.should == "something"
+          bsb.logger.should == "something"
+        end
+      end
+    end
   end
 end

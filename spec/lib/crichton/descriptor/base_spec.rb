@@ -39,6 +39,18 @@ module Crichton
         end
       end
 
+      describe '#logger' do
+        it 'allows access to the Crichton logger' do
+          Crichton.should_receive(:logger).once.and_return("something")
+          descriptor.logger.should == "something"
+        end
+        it 'allows only calls the Crichton logger once when called multiple times and caches the logger' do
+          Crichton.should_receive(:logger).once.and_return("something")
+          descriptor.logger.should == "something"
+          descriptor.logger.should == "something"
+        end
+      end
+
       describe '#name' do
         context 'without a name defined in the descriptor document' do
           it 'returns the id of the descriptor as a string' do
