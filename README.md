@@ -67,7 +67,7 @@ to see if the file is well formed: [yaml parser] (http://yaml-online-parser.apps
 
 Crichton lint works to validate the logic of a single resource descriptor file, outputting errors, warning and hints to help generate an optimal document.
 
-Lint can be invoked in two ways, once crichton is added to your project as a gem
+Lint can be invoked in two ways, once crichton is added to your project as a gem:
 
 ### A lint gem ruby executable  (rdlint)
 
@@ -89,7 +89,7 @@ Place this into your project as a file under lib/tasks:
         Lint.validate args[:rd_file]
       end
 
-And you can invoke line with `bundle exec rake <resource descriptor file>`
+And you can invoke lint with `bundle exec rake <resource descriptor file>`
 
 
 ### Logging
