@@ -69,19 +69,19 @@ Crichton lint works to validate the logic of a single resource descriptor file, 
 
 Lint can be invoked in two ways, once crichton is added to your project as a gem
 
-# A lint gem ruby executable  (rdlint)
+### A lint gem ruby executable  (rdlint)
 
 `bundle exec rdlint <resource desciptor file> `
 
 The file should a path, which is relative to the root of the project. For example, if you're in the root of the project, you can run lint as:
 
-bundle exec rdlint api_descriptor/my_resource_descriptor_file.yml     (api_descriptors is a recommended standard folder to place your descriptor files.
+`bundle exec rdlint api_descriptors/my_resource_descriptor_file.yml `    (api_descriptors is a recommended standard folder to place your descriptor files.
 
-#Running from rake
+### Running from rake
 
 Place this into your project as a file under lib/tasks:
 
-require 'lint'
+     require 'lint'
 
      desc "Generate lint validation of a resource descriptor file"
      task :lint, [:rd_file] => :environment do |t, args|
