@@ -105,7 +105,7 @@ module Crichton
         @state_descriptor ||= if state
           saved_state = resource_descriptor.states[parent_descriptor.name][state.to_s]
           if saved_state.nil?
-            logger.warn("No state descriptor for transition #{parent_descriptor.name} -> #{state.to_s}!")
+            raise(MissingStateError, "No state descriptor for transition #{parent_descriptor.name} -> #{state.to_s}!")
           end
           saved_state
         end
@@ -117,5 +117,8 @@ module Crichton
         end
       end
     end
+
+    # Unknown state
+    class MissingStateError < StandardError; end
   end
 end
