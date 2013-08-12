@@ -65,6 +65,17 @@ module Crichton
             decorator.value.should == value
           end
         end
+
+        context 'with object target' do
+          it 'returns the value of the attribute of the object' do
+            @descriptor_document = {'source' => 'uuid'}
+            @target = nil
+            @logger = mock(:logger)
+            @logger.should_receive(:warn)
+            Crichton.should_receive(:logger).once.and_return(@logger)
+            decorator.value
+          end
+        end
       end
     end
   end
