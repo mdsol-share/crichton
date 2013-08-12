@@ -226,6 +226,45 @@ module Crichton
 
         it_behaves_like 'it serializes to ALPS'
       end
+
+      context 'build_dereferenced_hash_descriptor' do
+        it 'dereferences a local reference' do
+          @ids_registry = {}
+          descriptor_hash = {
+              "descriptors" => {
+              "example" => {
+                  "descriptors" => {
+                      "some_name" => {
+                          "href" => "example/other_name",
+                          "value" => "something"
+                      },
+                      "other_name" => {
+                          "value2" => "something else"
+                      }
+                  }
+              }
+            }
+          }
+          reference_hash = {
+              "descriptors" => {
+              "example" => {
+                  "descriptors" => {
+                      "some_name" => {
+                          "value2" => "something else",
+                          "value" => "something"
+                      },
+                      "other_name" => {
+                          "value2" => "something else"
+                      }
+                  }
+              }
+            }
+          }
+          Resource.send(:collect_descriptor_ids, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, descriptor_hash)
+          deref_hash.should == reference_hash
+        end
+      end
     end
   end
 end
