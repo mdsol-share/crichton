@@ -32,14 +32,15 @@ module Crichton
       #
       # @param [Object] target The target.
       #
-      # @return [String] The fully-qualified url for the desciptor based on the target attributes.
+      # @return [String] The fully-qualified url for the descriptor based on the target attributes.
       def url_for(target)
         if uri
           generate_populated_url(target)
         elsif target.respond_to?(uri_source)
           target.send(uri_source)
         else
-          logger.warn "Crichton::Descriptor::Http.url_for doesn't have URL configured (#{target})"
+          logger.warn "Crichton::Descriptor::Http.url_for doesn't have URL configured (#{target})" <<
+              "Please ensure that your descriptor either has an uri attribute."
         end
       end 
       

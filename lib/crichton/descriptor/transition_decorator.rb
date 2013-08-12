@@ -84,7 +84,7 @@ module Crichton
         @url ||= if protocol_descriptor
           protocol_descriptor.url_for(@target)
         else
-          logger.warn("URL not defined for #{@target}!")
+          logger.warn("The URL for the transition is not defined for #{@target}!")
           nil
         end
       end
