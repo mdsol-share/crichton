@@ -231,30 +231,30 @@ module Crichton
         it 'dereferences a local reference' do
           @ids_registry = {}
           descriptor_hash = {
-              "descriptors" => {
-              "example" => {
-                  "descriptors" => {
-                      "some_name" => {
-                          "href" => "example/other_name",
-                          "value" => "something"
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'href' => 'example/other_name',
+                          'value' => 'something'
                       },
-                      "other_name" => {
-                          "value2" => "something else"
+                      'other_name' => {
+                          'value2' => 'something else'
                       }
                   }
               }
             }
           }
           reference_hash = {
-              "descriptors" => {
-              "example" => {
-                  "descriptors" => {
-                      "some_name" => {
-                          "value2" => "something else",
-                          "value" => "something"
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value2' => 'something else',
+                          'value' => 'something'
                       },
-                      "other_name" => {
-                          "value2" => "something else"
+                      'other_name' => {
+                          'value2' => 'something else'
                       }
                   }
               }
@@ -268,29 +268,29 @@ module Crichton
         it 'gives a local value priority over a remote value is the local value is after the href' do
           @ids_registry = {}
           descriptor_hash = {
-              "descriptors" => {
-              "example" => {
-                  "descriptors" => {
-                      "some_name" => {
-                          "href" => "example/other_name",
-                          "value" => "something"
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'href' => 'example/other_name',
+                          'value' => 'something'
                       },
-                      "other_name" => {
-                          "value" => "something else"
+                      'other_name' => {
+                          'value' => 'something else'
                       }
                   }
               }
             }
           }
           reference_hash = {
-              "descriptors" => {
-              "example" => {
-                  "descriptors" => {
-                      "some_name" => {
-                          "value" => "something"
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something'
                       },
-                      "other_name" => {
-                          "value" => "something else"
+                      'other_name' => {
+                          'value' => 'something else'
                       }
                   }
               }
@@ -304,29 +304,69 @@ module Crichton
         it 'gives a remote value priority over a local value if the remote value is after the href' do
           @ids_registry = {}
           descriptor_hash = {
-              "descriptors" => {
-              "example" => {
-                  "descriptors" => {
-                      "some_name" => {
-                          "value" => "something",
-                          "href" => "example/other_name"
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something',
+                          'href' => 'example/other_name'
                       },
-                      "other_name" => {
-                          "value" => "something else"
+                      'other_name' => {
+                          'value' => 'something else'
                       }
                   }
               }
             }
           }
           reference_hash = {
-              "descriptors" => {
-              "example" => {
-                  "descriptors" => {
-                      "some_name" => {
-                          "value" => "something else"
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something else'
                       },
-                      "other_name" => {
-                          "value" => "something else"
+                      'other_name' => {
+                          'value' => 'something else'
+                      }
+                  }
+              }
+            }
+          }
+          Resource.send(:collect_descriptor_ids, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, descriptor_hash)
+          deref_hash.should == reference_hash
+        end
+
+        it 'deep-merges the remote value' do
+          @ids_registry = {}
+          descriptor_hash = {
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something',
+                          'hierarchy' => {'l' => 'm'},
+                          'href' => 'example/other_name'
+                      },
+                      'other_name' => {
+                          'value' => 'something else',
+                          'hierarchy' => {'k' => 'v'}
+                      }
+                  }
+              }
+            }
+          }
+          reference_hash = {
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something else',
+                          'hierarchy' => {'k' => 'v', 'l' => 'm'}
+                      },
+                      'other_name' => {
+                          'value' => 'something else',
+                          'hierarchy' => {'k' => 'v'}
                       }
                   }
               }
