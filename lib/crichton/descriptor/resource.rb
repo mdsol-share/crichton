@@ -32,34 +32,30 @@ module Crichton
         else
           raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
         end
-        # EXPERIMENTAL
-        # dereferencing registry links
-        descriptors = hash_descriptor['descriptors']
-        descriptors.each do |k,v|
-          build_descriptor_hashes_by_id(k, [k], nil, v)
-        end
-
+        collect_descriptor_ids(hash_descriptor)
         # Build hash with resolved local links
         hash_descriptor_with_dereferenced_links = build_dereferenced_hash_descriptor(hash_descriptor)
+        add_resource_descriptors_to_registry(hash_descriptor, raw_registry)
+        add_resource_descriptors_to_registry(hash_descriptor_with_dereferenced_links, registry)
+      end
 
+      def self.add_resource_descriptors_to_registry(hash_descriptor, registry)
         new(hash_descriptor).tap do |resource_descriptor|
-          resource_descriptor.descriptors.each do |descriptor|
-            if raw_registry[descriptor.id]
-              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
-            end
-
-            raw_registry[descriptor.id] = descriptor
-          end
-        end
-
-        new(hash_descriptor_with_dereferenced_links).tap do |resource_descriptor|
           resource_descriptor.descriptors.each do |descriptor|
             if registry[descriptor.id]
               raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
             end
-
             registry[descriptor.id] = descriptor
           end
+        end
+
+      end
+
+      def self.collect_descriptor_ids(hash_descriptor)
+        # dereferencing registry links
+        descriptors = hash_descriptor['descriptors']
+        descriptors.each do |k,v|
+          build_descriptor_hashes_by_id(k, [k], nil, v)
         end
       end
 
