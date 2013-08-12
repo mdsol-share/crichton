@@ -89,7 +89,7 @@ module Crichton
   end
 
   ##
-  # Returns the registered resources.
+  # Returns the registered resources - version that had local resources de-referenced.
   #
   # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
   # descriptors in that location.
@@ -97,14 +97,19 @@ module Crichton
   # @return [Hash] The registered resource descriptors, if any?
   def self.registry
     @registry ||= begin
-      if Descriptor::Resource.registry.empty?
-        build_registry
-      end
+      build_registry if Descriptor::Resource.registry.empty?
       Descriptor::Resource.registry
     end
     @registry
   end
 
+  ##
+  # Returns the registered resources - raw version that did not have local resources de-referenced.
+  #
+  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
+  # descriptors in that location.
+  #
+  # @return [Hash] The registered raw resource descriptors, if any?
   def self.raw_registry
     @raw_registry ||= begin
       if Descriptor::Resource.raw_registry.empty?
@@ -125,8 +130,8 @@ module Crichton
         raise "No resource descriptor directory exists. Default is #{descriptor_location}."
       end
     end
-
   end
+  private_class_method :build_registry
 
   ##
   # The root directory of parent project.
