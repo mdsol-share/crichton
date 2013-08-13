@@ -507,15 +507,18 @@ module Crichton
 
     context "BaseSemanticBuilder" do
       describe '#logger' do
-        let(:bsb) { Crichton::Representor::XHTMLSerializer::BaseSemanticBuilder.new('xhtml', {}, 'markup') }
+        let(:builder) { Crichton::Representor::XHTMLSerializer::BaseSemanticBuilder.new('xhtml', {}, 'markup') }
         it 'allows access to the Crichton logger' do
-          Crichton.should_receive(:logger).once.and_return("something")
-          bsb.logger.should == "something"
+          logger = double('logger')
+          Crichton.should_receive(:logger).once.and_return(logger)
+          builder.logger.should == logger
         end
-        it 'allows only calls the Crichton logger once when called multiple times and caches the logger' do
-          Crichton.should_receive(:logger).once.and_return("something")
-          bsb.logger.should == "something"
-          bsb.logger.should == "something"
+
+        it 'memoizes the logger' do
+          doubled_logger = double("logger")
+          Crichton.stub(:logger).and_return(doubled_logger)
+          memoized_logger = builder.logger
+          builder.logger.object_id.should == memoized_logger.object_id
         end
       end
     end
