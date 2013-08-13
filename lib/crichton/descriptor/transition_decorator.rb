@@ -103,11 +103,11 @@ module Crichton
 
       def state_descriptor
         @state_descriptor ||= if state
-          saved_state = resource_descriptor.states[parent_descriptor.name][state.to_s]
-          if saved_state.nil?
-            raise(MissingStateError, "No state descriptor for transition #{parent_descriptor.name} -> #{state.to_s}!")
+          resource_descriptor.states[parent_descriptor.name][state.to_s].tap do |descriptor_state|
+            unless descriptor_state
+               raise(MissingStateError, "No state descriptor for transition #{parent_descriptor.name} -> #{state.to_s}!")
+            end
           end
-          saved_state
         end
       end
 
