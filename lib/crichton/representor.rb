@@ -74,7 +74,7 @@ module Crichton
       #
       # @return [String] The resource name.
       def resource_name
-        @resource_name || raise(Crichton::RepresenterError,
+        @resource_name || raise(Crichton::RepresentorError,
           "No resource name has been defined#{self.name ? ' for ' << self.name : ''}. " <<
           "Use #represents method in the class definition to set the associated resource name.")
       end
@@ -267,7 +267,7 @@ module Crichton
           @crichton_state_method ||= if representor.respond_to?(:state)
             :state
           else
-            raise(Crichton::RepresenterError,
+            raise(Crichton::RepresentorError,
               "No state method has been defined in the class '#{self.name}'. Please specify a " <<
               "state method using the class method #state_method or define an instance method #state on the class.")
           end
@@ -287,7 +287,7 @@ module Crichton
           
           state.tap do |state|
             unless [String, Symbol].include?(state.class)
-              raise(Crichton::RepresenterError,
+              raise(Crichton::RepresentorError,
                 "The state method '#{state_method }' must return a string or a symbol. " <<
                 "Returned #{state.inspect}.") 
             end
@@ -297,14 +297,14 @@ module Crichton
       
     private
       def instance_state(state_method)
-        send(state_method) || raise(Crichton::RepresenterError,
+        send(state_method) || raise(Crichton::RepresentorError,
           "The state was nil in the class '#{self.class.name}'. Please check " <<
           "the class properly implements a response associated with the state method '#{state_method}.'")
       end
       
       def hash_state(state_method)
         unless state_key = target.keys.detect { |k| k.to_s == state_method }
-          raise(Crichton::RepresenterError,
+          raise(Crichton::RepresentorError,
             "No attribute exists in the target '#{@target.inspect}' that corresponds to the state method " <<
             "'#{state_method}'. In a hash target, it must contain an attribute that corresponds to the state method.")
         end
@@ -315,7 +315,7 @@ module Crichton
         if target.respond_to?(state_method)
           target.send(state_method)
         else
-          raise(Crichton::RepresenterError,
+          raise(Crichton::RepresentorError,
             "The state method #{state_method} is not implemented in the target #{target.inspect}. " <<
             "Please ensure this state method is defined.")
         end

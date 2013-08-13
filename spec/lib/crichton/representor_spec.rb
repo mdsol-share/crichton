@@ -75,7 +75,7 @@ module Crichton
     describe '.resource_descriptor' do
       it 'raises an error if no resource name has been defined for the class' do
         Crichton.stub(:registry).and_return({})
-        expect { simple_test_class.resource_descriptor }.to raise_error(Crichton::RepresenterError,
+        expect { simple_test_class.resource_descriptor }.to raise_error(Crichton::RepresentorError,
           /^No resource name has been defined.*/)
       end
       
@@ -90,7 +90,7 @@ module Crichton
     
     describe '.resource_name' do
       it 'raises an error if no resource name has been defined for the class' do
-        expect { simple_test_class.resource_name }.to raise_error(Crichton::RepresenterError,
+        expect { simple_test_class.resource_name }.to raise_error(Crichton::RepresentorError,
           /^No resource name has been defined.*/)
       end
       
@@ -345,7 +345,7 @@ module Crichton
           it 'raises an error if the state is not a string or a symbol' do
             attributes = {'my_state_method' => mock('invalid_state')}
             expect { simple_test_class.new(attributes).each_link_transition.to_a }.to raise_error(
-                Crichton::RepresenterError,
+                Crichton::RepresentorError,
                 /^The state method 'my_state_method' must return a string or a symbol.*/
             )
           end
@@ -355,7 +355,7 @@ module Crichton
           it 'raises an error' do
             @include_state = true
             expect { simple_test_class.new.each_link_transition.to_a }.to raise_error(
-              Crichton::RepresenterError,
+              Crichton::RepresentorError,
               /^No state method has been defined in the class ''.*/
             )
           end
@@ -484,7 +484,7 @@ module Crichton
           it 'raises an error if the state is not a string or a symbol' do
             attributes = {'my_state_method' => mock('invalid_state')}
             expect { simple_test_class.new(attributes).each_link_transition.to_a }.to raise_error(
-              Crichton::RepresenterError,
+              Crichton::RepresentorError,
               /The state method 'my_state_method' must return a string or a symbol.*/
             )
           end

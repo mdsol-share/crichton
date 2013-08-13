@@ -56,7 +56,7 @@ module Crichton
         context 'with serializer subclasses with mal-formed names' do
           it 'raises an error when the name does not end in Serializer' do
             @serializer = :MediaTypeSerializers
-            expect { create_media_type_serializer(@serializer) }.to raise_error(Crichton::RepresenterError,
+            expect { create_media_type_serializer(@serializer) }.to raise_error(Crichton::RepresentorError,
               /Subclasses .* must follow the naming convention OptionalModule::MediaTypeSerializer.*/)
           end
         end
@@ -79,7 +79,7 @@ module Crichton
         end
 
         it 'raises an error if the type does not have a registered serializer' do
-          expect { Serializer.build(:some_media_type, object) }.to raise_error(Crichton::RepresenterError,
+          expect { Serializer.build(:some_media_type, object) }.to raise_error(Crichton::RepresentorError,
             /^No representor serializer is registered that corresponds to the type 'some_media_type'.$/)
         end
       end

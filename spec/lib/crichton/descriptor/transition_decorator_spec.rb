@@ -112,7 +112,7 @@ module Crichton
 
           context 'with a nil state' do
             it 'it raises an error' do
-              expect { decorator.available? }.to raise_error(Crichton::RepresenterError,
+              expect { decorator.available? }.to raise_error(Crichton::RepresentorError,
                 /^The state was nil in the class 'target'.*/)
             end
           end

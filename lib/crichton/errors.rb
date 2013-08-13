@@ -4,6 +4,6 @@ module Crichton
   class MissingStateError < StandardError; end
 
   # Raised in Crichton::Representors that are not configured correctly in some way.
-  class RepresenterError < StandardError; end
+  class RepresentorError < StandardError; end
 
 end
