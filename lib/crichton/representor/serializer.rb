@@ -18,7 +18,8 @@ module Crichton
           if serializer_class = registered_serializers[type.to_sym]
             serializer_class.new(representor, options)
           else
-            raise Error, "No representor serializer is registered that corresponds to the type '#{type}'."
+            raise Crichton::RepresenterError,
+              "No representor serializer is registered that corresponds to the type '#{type}'."
           end
         end
         
@@ -48,7 +49,8 @@ module Crichton
           @media_type ||= begin
             name = self.name
             unless name =~ /\w+Serializer$/
-              raise Error, "Subclasses of Chrichton::Serializer must follow the naming convention " <<
+              raise Crichton::RepresenterError,
+                "Subclasses of Chrichton::Serializer must follow the naming convention " <<
                 "OptionalModule::MediaTypeSerializer. #{self.name} is an invalid subclass name."
             end
   

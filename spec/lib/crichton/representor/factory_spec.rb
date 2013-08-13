@@ -113,7 +113,7 @@ module Crichton
                   target.stub(:respond_to?).with('my_state').and_return(false)
                   expect { subject.build_state_representor(target, :drd, @options).each_link_transition.to_a }
                     .to raise_error(
-                      Crichton::Representor::Error,
+                      Crichton::RepresenterError,
                       /^The state method my_state is not implemented in the target.*/
                     )
                 end
@@ -132,7 +132,7 @@ module Crichton
                   @target = {name: '1812'}
                   expect { subject.build_state_representor(target, :drd, @options).each_link_transition.to_a }
                     .to raise_error(
-                      Crichton::Representor::Error, 
+                      Crichton::RepresenterError,
                       /^No attribute exists in the target.* that corresponds to the state method 'my_state'.*/
                     )
                 end

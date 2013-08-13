@@ -112,7 +112,7 @@ module Crichton
 
           context 'with a nil state' do
             it 'it raises an error' do
-              expect { decorator.available? }.to raise_error(Crichton::Representor::Error,
+              expect { decorator.available? }.to raise_error(Crichton::RepresenterError,
                 /^The state was nil in the class 'target'.*/)
             end
           end
@@ -123,7 +123,7 @@ module Crichton
             @descriptor = 'drd'
             @state = 'junk'
             @transition = 'deactivate'
-            expect {decorator.available? }.to raise_error(Crichton::Descriptor::MissingStateError,
+            expect {decorator.available? }.to raise_error(Crichton::MissingStateError,
               /^No state descriptor for transition drd -> junk!/)
           end
         end

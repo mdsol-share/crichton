@@ -1,6 +1,7 @@
 require 'active_support/all'
 require 'crichton/configuration'
 require 'crichton/descriptor'
+require 'crichton/errors'
 require 'crichton/dice_bag/template'
 require 'crichton/representor'
 
