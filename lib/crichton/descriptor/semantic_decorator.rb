@@ -31,7 +31,7 @@ module Crichton
       # @return [Object] The data value.
       def value
         val = @target.is_a?(Hash) ? @target[source] : @target.try(source)
-        logger.warn("Source is not defined for #{@target}") unless val
+        logger.warn("Source is not defined for #{@target.inspect}") unless val
         val
       end
     end
