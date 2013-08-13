@@ -84,7 +84,7 @@ module Crichton
         @url ||= if protocol_descriptor
           protocol_descriptor.url_for(@target)
         else
-          logger.warn("The URL for the transition is not defined for #{@target}!")
+          logger.warn("The URL for the transition is not defined for #{@target.inspect}!")
           nil
         end
       end
@@ -96,7 +96,7 @@ module Crichton
         elsif @target.is_a?(Crichton::Representor::State)
           @target.crichton_state
         else
-          logger.warn("No state specified for #{@target}!")
+          logger.warn("No state specified for #{@target.inspect}!")
           nil
         end
       end
