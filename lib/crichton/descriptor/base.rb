@@ -77,11 +77,11 @@ module Crichton
       end
 
       ##
-      # Access the logger
+      # Helper to access the Crichton logger locally.
       #
       # @return [Logger] Logger object
       def logger
-        @logger ||= Crichton::logger
+        @logger ||= Crichton.logger
       end
 
       ##

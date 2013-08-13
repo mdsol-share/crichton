@@ -72,11 +72,11 @@ module Crichton
       # serialization per ALPS media-type guidance specs for HTML.
       class BaseSemanticBuilder
         ##
-        # Make the Crichton logger more accessible
+        # Helper to access the Crichton logger locally.
         #
         # @return [Logger] Logger object
         def logger
-          @logger ||= Crichton::logger
+          @logger ||= Crichton.logger
         end
 
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
