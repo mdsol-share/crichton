@@ -6,32 +6,39 @@ describe Crichton do
     Crichton.clear_config
   end
 
-  describe '.logger=' do
-    it 'accepts a logger parameter' do
-      Crichton::logger = 'Something'
-      Crichton::logger.should == 'Something'
+  describe '.logger' do
+    let(:logger) { double('logger') }
+
+    after do
+      Crichton.logger = nil
+    end
+
+    it 'sets a logger' do
+      Crichton.logger = logger
+      Crichton.logger.should == logger
+    end
+
+    context 'without Rails' do
+      it 'returns a logger configured to STDOUT by default' do
+        ::Logger.stub(:new).with(STDOUT).and_return(logger)
+        Crichton.logger.should == logger
+      end
+    end
+
+    context 'with Rails' do
+      after do
+        Object.send(:remove_const, :Rails)
+      end
+
+      it 'returns the Rails logger by default' do
+        rails = double('Rails')
+        rails.stub(:logger).and_return(logger)
+        Object.const_set(:Rails, rails)
+
+        Crichton.logger.should == logger
+      end
     end
   end
-
-  # These work perfectly when called alone but fail reliably when called in the whole test
-  #describe '.logger' do
-  #  it 'configures to STDOUT be default is no Rails is around' do
-  #    #TODO: Match _reliably_ for STDOUT - just putthing in a .with(STDOUT) fails now and then
-  #    mock_logger = mock("Logger")
-  #    Object.const_set(:Logger, mock_logger)
-  #    Logger.should_receive(:new).and_return('Something')
-  #    Crichton::logger.should == 'Something'
-  #    Object.send(:remove_const, :Logger)
-  #  end
-  #
-  #  it 'configures to Rails logger when Rails is around' do
-  #    mock_rails = mock("Rails")
-  #    Object.const_set(:Rails, mock_rails)
-  #    Rails.should_receive(:logger).and_return("Something")
-  #    Crichton::logger.should == 'Something'
-  #    Object.send(:remove_const, :Rails)
-  #  end
-  #end
 
   describe '.clear_registry' do
     it 'clears any registered resource descriptors' do
