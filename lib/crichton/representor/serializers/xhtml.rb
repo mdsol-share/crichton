@@ -155,7 +155,7 @@ module Crichton
         end
 
         def add_transition(transition)
-          logger.warn("Transition URL is nil for #{transition}!") if transition.url.nil?
+          logger.warn("Transition URL is nil for #{transition}!") if transition.url.blank?
           @markup_builder.a(transition.name, {rel: transition.name, href: transition.url}) if transition.url
         end
 
