@@ -84,7 +84,8 @@ module Crichton
         @url ||= if protocol_descriptor
           protocol_descriptor.url_for(@target)
         else
-          #TODO: log warning no url
+          logger.warn("The URL for the transition is not defined for #{@target.inspect}!")
+          nil
         end
       end
 
@@ -95,14 +96,19 @@ module Crichton
         elsif @target.is_a?(Crichton::Representor::State)
           @target.crichton_state
         else
-          # TODO: Log warning no state specified
+          logger.warn("No state specified for #{@target.inspect}!")
+          nil
         end
       end
 
       def state_descriptor
         @state_descriptor ||= if state
-          # TODO: Log warning if no state descriptor exists for the state, or should this raise?
-          resource_descriptor.states[parent_descriptor.name][state.to_s]
+          resource_descriptor.states[parent_descriptor.name][state.to_s].tap do |descriptor_state|
+            unless descriptor_state
+               raise(Crichton::MissingStateError,
+                 "No state descriptor for transition #{parent_descriptor.name} -> #{state.to_s}!")
+            end
+          end
         end
       end
 

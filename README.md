@@ -54,6 +54,12 @@ class Address
 end
 ```
 
+### Logging
+If you use Rails, then the ```Rails.logger``` should be configured automatically.
+If no logger is configured, the current behavior is to log to STDOUT. You can override it by calling
+```Crichton.logger = Logger.new("some logging sink")```
+early on. This only works before the first use of the logger - for performance reasons the logger object is cached.
+
 ## Contributing
 See [CONTRIBUTING][] for details.
 

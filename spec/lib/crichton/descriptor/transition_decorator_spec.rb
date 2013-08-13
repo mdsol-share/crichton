@@ -102,19 +102,29 @@ module Crichton
             it_behaves_like 'a state transition'
           end
         end
-        
+
         context 'with target that implements the State module' do
           before do
             @skip_state_option = true
           end
-          
+
           it_behaves_like 'a state transition'
 
           context 'with a nil state' do
             it 'it raises an error' do
-              expect { decorator.available? }.to raise_error(Crichton::Representor::Error, 
+              expect { decorator.available? }.to raise_error(Crichton::RepresentorError,
                 /^The state was nil in the class 'target'.*/)
             end
+          end
+        end
+
+        context 'with an illegal state' do
+          it 'logs a warning' do
+            @descriptor = 'drd'
+            @state = 'junk'
+            @transition = 'deactivate'
+            expect { decorator.available? }.to raise_error(Crichton::MissingStateError,
+              /^No state descriptor for transition drd -> junk!/)
           end
         end
       end

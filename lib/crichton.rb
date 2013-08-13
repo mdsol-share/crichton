@@ -1,10 +1,29 @@
 require 'active_support/all'
 require 'crichton/configuration'
 require 'crichton/descriptor'
+require 'crichton/errors'
 require 'crichton/dice_bag/template'
 require 'crichton/representor'
 
 module Crichton
+  ##
+  # Logger
+  def self.logger=(logger)
+    @logger = logger
+  end
+
+  def self.logger
+    # This is probably not to be the final outcome - but for now this defaults to Rails.logger or STDOUT.
+    # TODO: Add Sinatra support. I couldn't find any reliable enough way - it seems that there is no standard way
+    # of accessing the logger like there is for Rails.
+    @logger ||= if Object.const_defined?(:Rails)
+        Rails.logger
+      #Add other environments as needed here!
+      else
+        ::Logger.new(STDOUT)
+      end
+  end
+
   ##
   # Clears any registered resource descriptors.
   def self.clear_registry

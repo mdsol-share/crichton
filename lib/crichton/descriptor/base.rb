@@ -77,6 +77,14 @@ module Crichton
       end
 
       ##
+      # Helper to access the Crichton logger locally.
+      #
+      # @return [Logger] Logger object
+      def logger
+        @logger ||= Crichton.logger
+      end
+
+      ##
       # @!attribute [r] name
       # The name of the descriptor.
       #

@@ -39,6 +39,21 @@ module Crichton
         end
       end
 
+      describe '#logger' do
+        it 'allows access to the Crichton logger' do
+          doubled_logger = double("logger")
+          Crichton.should_receive(:logger).once.and_return(doubled_logger)
+          descriptor.logger.should == doubled_logger
+        end
+
+        it 'memoizes the logger' do
+          doubled_logger = double("logger")
+          Crichton.stub(:logger).and_return(doubled_logger)
+          memoized_logger = descriptor.logger
+          descriptor.logger.object_id.should == memoized_logger.object_id
+        end
+      end
+
       describe '#name' do
         context 'without a name defined in the descriptor document' do
           it 'returns the id of the descriptor as a string' do

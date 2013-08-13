@@ -18,7 +18,8 @@ module Crichton
           if serializer_class = registered_serializers[type.to_sym]
             serializer_class.new(representor, options)
           else
-            raise Error, "No representor serializer is registered that corresponds to the type '#{type}'."
+            raise(Crichton::RepresentorError,
+              "No representor serializer is registered that corresponds to the type '#{type}'.")
           end
         end
         
@@ -48,8 +49,9 @@ module Crichton
           @media_type ||= begin
             name = self.name
             unless name =~ /\w+Serializer$/
-              raise Error, "Subclasses of Chrichton::Serializer must follow the naming convention " <<
-                "OptionalModule::MediaTypeSerializer. #{self.name} is an invalid subclass name."
+              raise(Crichton::RepresentorError,
+                "Subclasses of Chrichton::Serializer must follow the naming convention " <<
+                "OptionalModule::MediaTypeSerializer. #{self.name} is an invalid subclass name.")
             end
   
             name.demodulize.gsub(/Serializer$/, '').underscore.to_sym
@@ -75,7 +77,7 @@ module Crichton
             Serializer.registered_serializers[media_type] = serializer
           end
       end
-  
+
       ##
       #  @param [Crichton::Representor] object The representor object.
       # @param [Hash] options Serialization options.
