@@ -34,7 +34,8 @@ module Crichton
         end
         collect_descriptor_ids(hash_descriptor)
         # Build hash with resolved local links
-        hash_descriptor_with_dereferenced_links = build_dereferenced_hash_descriptor(hash_descriptor)
+        hash_descriptor_with_dereferenced_links = build_dereferenced_hash_descriptor(hash_descriptor['links']['self'],
+          hash_descriptor)
         add_resource_descriptors_to_registry(hash_descriptor, raw_registry)
         add_resource_descriptors_to_registry(hash_descriptor_with_dereferenced_links, registry)
       end
@@ -52,15 +53,16 @@ module Crichton
 
       # This method calls the recursive method
       def self.collect_descriptor_ids(hash_descriptor)
+        descriptor_document_self = hash_descriptor['links']['self']
         descriptors = hash_descriptor['descriptors']
         descriptors.each do |k,v|
-          build_descriptor_hashes_by_id(k, [k], nil, v)
+          build_descriptor_hashes_by_id(k, descriptor_document_self, [k], nil, v)
         end
       end
       private_class_method :collect_descriptor_ids
 
       # Recursive descent
-      def self.build_descriptor_hashes_by_id(descriptor_id, pre_path, name, hash)
+      def self.build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, pre_path, name, hash)
         cur_path = [pre_path, [name]].flatten.compact
         if @ids_registry.nil?
           @ids_registry = {}
@@ -69,28 +71,29 @@ module Crichton
           raise "Descriptor name #{name} already in ids_registry!"
         end
         # Add descriptor to the IDs hash
-        @ids_registry[cur_path.join("/")] = hash unless name.nil?
+        @ids_registry["#{descriptor_name_prefix}\##{cur_path.join('/')}"] = hash unless name.nil?
 
         # Descend
         unless hash['descriptors'].nil?
           hash['descriptors'].each do |k,v|
-            build_descriptor_hashes_by_id(descriptor_id, cur_path, k, v)
+            build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, cur_path, k, v)
           end
         end
       end
       private_class_method :build_descriptor_hashes_by_id
 
-      def self.build_dereferenced_hash_descriptor(hash)
+      def self.build_dereferenced_hash_descriptor(descriptor_name_prefix, hash)
         new_hash = {}
         hash.each do |k,v|
           if k == 'href'
-            if @ids_registry.include? v
-              new_hash.deep_merge!(@ids_registry[v].deep_dup)
+            v_with_prefix = "#{descriptor_name_prefix}\##{v}"
+            if @ids_registry.include? v_with_prefix
+              new_hash.deep_merge!(@ids_registry[v_with_prefix].deep_dup)
             else
               new_hash[k] = v
             end
           elsif v.is_a? Hash
-              der_ded = build_dereferenced_hash_descriptor(v)
+              der_ded = build_dereferenced_hash_descriptor(descriptor_name_prefix, v)
             if new_hash.include? k
               new_hash[k].deep_merge! der_ded
             else

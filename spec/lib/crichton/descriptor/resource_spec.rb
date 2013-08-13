@@ -231,6 +231,9 @@ module Crichton
         it 'dereferences a local reference' do
           @ids_registry = {}
           descriptor_hash = {
+              'links' => {
+                  'self' => "example"
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -246,6 +249,9 @@ module Crichton
             }
           }
           reference_hash = {
+              'links' => {
+                  'self' => "example"
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -261,13 +267,16 @@ module Crichton
             }
           }
           Resource.send(:collect_descriptor_ids, descriptor_hash)
-          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, 'example', descriptor_hash)
           deref_hash.should == reference_hash
         end
 
         it 'gives a local value priority over a remote value is the local value is after the href' do
           @ids_registry = {}
           descriptor_hash = {
+              'links' => {
+                  'self' => "example"
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -283,6 +292,9 @@ module Crichton
             }
           }
           reference_hash = {
+              'links' => {
+                  'self' => "example"
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -297,13 +309,16 @@ module Crichton
             }
           }
           Resource.send(:collect_descriptor_ids, descriptor_hash)
-          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, 'example', descriptor_hash)
           deref_hash.should == reference_hash
         end
 
         it 'gives a remote value priority over a local value if the remote value is after the href' do
           @ids_registry = {}
           descriptor_hash = {
+              'links' => {
+                  'self' => "example"
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -319,6 +334,9 @@ module Crichton
             }
           }
           reference_hash = {
+              'links' => {
+                  'self' => "example"
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -333,13 +351,16 @@ module Crichton
             }
           }
           Resource.send(:collect_descriptor_ids, descriptor_hash)
-          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, 'example', descriptor_hash)
           deref_hash.should == reference_hash
         end
 
         it 'deep-merges the remote value' do
           @ids_registry = {}
           descriptor_hash = {
+              'links' => {
+                  'self' => "example"
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -357,6 +378,9 @@ module Crichton
             }
           }
           reference_hash = {
+              'links' => {
+                  'self' => "example"
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -373,7 +397,7 @@ module Crichton
             }
           }
           Resource.send(:collect_descriptor_ids, descriptor_hash)
-          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, 'example', descriptor_hash)
           deref_hash.should == reference_hash
         end
       end
