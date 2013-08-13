@@ -70,9 +70,9 @@ module Crichton
           it 'returns the value of the attribute of the object' do
             @descriptor_document = {'source' => 'uuid'}
             @target = nil
-            @logger = mock(:logger)
-            @logger.should_receive(:warn)
-            Crichton.should_receive(:logger).once.and_return(@logger)
+            logger = mock(:logger)
+            Crichton.stub(:logger).once.and_return(logger)
+            logger.should_receive(:warn)
             decorator.value
           end
         end
