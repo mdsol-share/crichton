@@ -48,17 +48,18 @@ module Crichton
             registry[descriptor.id] = descriptor
           end
         end
-
       end
 
+      # This method calls the recursive method
       def self.collect_descriptor_ids(hash_descriptor)
-        # dereferencing registry links
         descriptors = hash_descriptor['descriptors']
         descriptors.each do |k,v|
           build_descriptor_hashes_by_id(k, [k], nil, v)
         end
       end
+      private_class_method :collect_descriptor_ids
 
+      # Recursive descent
       def self.build_descriptor_hashes_by_id(descriptor_id, pre_path, name, hash)
         cur_path = [pre_path, [name]].flatten.compact
         if @ids_registry.nil?
@@ -77,13 +78,14 @@ module Crichton
           end
         end
       end
+      private_class_method :build_descriptor_hashes_by_id
 
       def self.build_dereferenced_hash_descriptor(hash)
         new_hash = {}
         hash.each do |k,v|
           if k == 'href'
             if @ids_registry.include? v
-              new_hash.merge!(@ids_registry[v])
+              new_hash.deep_merge!(@ids_registry[v].deep_dup)
             else
               new_hash[k] = v
             end
@@ -100,6 +102,7 @@ module Crichton
         end
         new_hash
       end
+      private_class_method :build_dereferenced_hash_descriptor
   
       ##
       # Lists the registered resource descriptors.
@@ -116,8 +119,6 @@ module Crichton
       def self.raw_registry
         @raw_registry ||= {}
       end
-
-
 
       ##
       # Whether any resource descriptors have been registered or not.
