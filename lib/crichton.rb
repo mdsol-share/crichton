@@ -100,11 +100,10 @@ module Crichton
       build_registry if Descriptor::Resource.registry.empty?
       Descriptor::Resource.registry
     end
-    @registry
   end
 
   ##
-  # Returns the registered resources - raw version that did not have local resources de-referenced.
+  # Returns the registered resources - raw version that does not have local resources de-referenced.
   #
   # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
   # descriptors in that location.
@@ -112,9 +111,7 @@ module Crichton
   # @return [Hash] The registered raw resource descriptors, if any?
   def self.raw_registry
     @raw_registry ||= begin
-      if Descriptor::Resource.raw_registry.empty?
-        build_registry
-      end
+      build_registry if Descriptor::Resource.raw_registry.empty?
       Descriptor::Resource.raw_registry
     end
     @raw_registry

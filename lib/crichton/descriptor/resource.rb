@@ -108,7 +108,7 @@ module Crichton
       private_class_method :build_dereferenced_hash_descriptor
   
       ##
-      # Lists the registered resource descriptors.
+      # Lists the registered resource descriptors that had local links dereferenced.
       #
       # @return [Hash] The registered resource descriptors, if any.
       def self.registry
@@ -116,7 +116,7 @@ module Crichton
       end
 
       ##
-      # Lists the registered resource descriptors.
+      # Lists the registered resource descriptors that do not have local links de-referenced.
       #
       # @return [Hash] The registered resource descriptors, if any.
       def self.raw_registry
