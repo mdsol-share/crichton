@@ -17,8 +17,9 @@ module Crichton
     # of accessing the logger like there is for Rails.
     @logger ||= if Object.const_defined?(:Rails)
         Rails.logger
+      #Add other environments as needed here!
       else
-        Logger.new(STDOUT)
+        ::Logger.new(STDOUT)
       end
   end
 
