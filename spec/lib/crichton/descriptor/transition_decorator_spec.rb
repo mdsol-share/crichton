@@ -123,7 +123,7 @@ module Crichton
             @descriptor = 'drd'
             @state = 'junk'
             @transition = 'deactivate'
-            expect {decorator.available? }.to raise_error(Crichton::MissingStateError,
+            expect { decorator.available? }.to raise_error(Crichton::MissingStateError,
               /^No state descriptor for transition drd -> junk!/)
           end
         end
