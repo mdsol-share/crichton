@@ -79,18 +79,9 @@ The file should a path, which is relative to the root of the project. For exampl
 
 ### Running from rake
 
-Place this into your project as a file under lib/tasks:
+lint is also a rake task within the crichton gem. You can invoke lint with `bundle exec rake[<resource descriptor file>]`
 
-     require 'lint'
-
-     desc "Generate lint validation of a resource descriptor file"
-     task :lint, [:rd_file] => :environment do |t, args|
-        puts "Linting file "+args[:rd_file]
-        Lint.validate args[:rd_file]
-      end
-
-And you can invoke lint with `bundle exec rake <resource descriptor file>`
-
+For those unfamiliar with rake, arguments to rake require brackets. In zsh, you must escape the brackets with \[...\]
 
 ### Logging
 If you use Rails, then the ```Rails.logger``` should be configured automatically.
