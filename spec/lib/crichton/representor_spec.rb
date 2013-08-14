@@ -75,7 +75,7 @@ module Crichton
     describe '.resource_descriptor' do
       it 'raises an error if no resource name has been defined for the class' do
         Crichton.stub(:registry).and_return({})
-        expect { simple_test_class.resource_descriptor }.to raise_error(Representor::Error, 
+        expect { simple_test_class.resource_descriptor }.to raise_error(Crichton::RepresentorError,
           /^No resource name has been defined.*/)
       end
       
@@ -90,7 +90,7 @@ module Crichton
     
     describe '.resource_name' do
       it 'raises an error if no resource name has been defined for the class' do
-        expect { simple_test_class.resource_name }.to raise_error(Representor::Error, 
+        expect { simple_test_class.resource_name }.to raise_error(Crichton::RepresentorError,
           /^No resource name has been defined.*/)
       end
       
@@ -345,7 +345,7 @@ module Crichton
           it 'raises an error if the state is not a string or a symbol' do
             attributes = {'my_state_method' => mock('invalid_state')}
             expect { simple_test_class.new(attributes).each_link_transition.to_a }.to raise_error(
-                Crichton::Representor::Error,
+                Crichton::RepresentorError,
                 /^The state method 'my_state_method' must return a string or a symbol.*/
             )
           end
@@ -355,7 +355,7 @@ module Crichton
           it 'raises an error' do
             @include_state = true
             expect { simple_test_class.new.each_link_transition.to_a }.to raise_error(
-              Crichton::Representor::Error,
+              Crichton::RepresentorError,
               /^No state method has been defined in the class ''.*/
             )
           end
@@ -484,7 +484,7 @@ module Crichton
           it 'raises an error if the state is not a string or a symbol' do
             attributes = {'my_state_method' => mock('invalid_state')}
             expect { simple_test_class.new(attributes).each_link_transition.to_a }.to raise_error(
-              Crichton::Representor::Error,
+              Crichton::RepresentorError,
               /The state method 'my_state_method' must return a string or a symbol.*/
             )
           end
@@ -501,6 +501,24 @@ module Crichton
       describe '#method_missing' do
         it 'continues to raise an error when an unknown method is called' do
           expect { simple_test_class.new.bogus }.to raise_error(NoMethodError, /undefined method `bogus'.*/)
+        end
+      end
+    end
+
+    context "BaseSemanticBuilder" do
+      describe '#logger' do
+        let(:builder) { Crichton::Representor::XHTMLSerializer::BaseSemanticBuilder.new('xhtml', {}, 'markup') }
+        it 'allows access to the Crichton logger' do
+          logger = double('logger')
+          Crichton.should_receive(:logger).once.and_return(logger)
+          builder.logger.should == logger
+        end
+
+        it 'memoizes the logger' do
+          doubled_logger = double("logger")
+          Crichton.stub(:logger).and_return(doubled_logger)
+          memoized_logger = builder.logger
+          builder.logger.object_id.should == memoized_logger.object_id
         end
       end
     end

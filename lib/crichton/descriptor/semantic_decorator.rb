@@ -30,8 +30,9 @@ module Crichton
       #
       # @return [Object] The data value.
       def value
-        # TODO: Add logging if a value is requested and the source in not defined vs. raising a NoMethodError.
-        @target.is_a?(Hash) ? @target[source] : @target.try(source)
+        val = @target.is_a?(Hash) ? @target[source] : @target.try(source)
+        logger.warn("Source is not defined for #{@target.inspect}") unless val
+        val
       end
     end
   end
