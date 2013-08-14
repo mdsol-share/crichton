@@ -1,0 +1,251 @@
+# A resource descriptor is a declarative configuration file that defines the semantic data,  
+# states, and state transitions associated with a particular resource independent of protocol 
+# media-type. Further, it also defines protocol specific templates for links that can be 
+# and  included in the response and populated based on the associated state. By including  
+# optional routes related metadata in the configuration, routes.rb mappings can be managed  
+# DRYly in the resource descriptor file.
+#
+# The following sections facilitate a number of objectives including generating an ALPS profile 
+# of the resource, generating human readable documents including sample representations, 
+# decorating service responses, and scaffolding routes, controllers and models.
+
+id: DRDs
+version: v1.0.0
+doc: Describes the semantics, states and state transitions associated with DRDs.
+links:
+  self: alps_base/DRDs
+  help: documentation_base/Things/DRDs
+ 
+# This section associates a simple state-machine DSL with the particular resource. It shows
+# the state name and lists the data and application affordances available in that state, 
+# conditions for inclusion of a transition in a response and what states are exposed by 
+# following the transitions.
+
+states:
+  drds:
+    collection:
+      doc: The entry point state for interacting with DRDs.
+      location: entry
+      transitions:
+        list:
+          name: self
+          next:
+            - collection
+        search:
+          next:
+            - navigation
+        create:
+          conditions:
+            - can_create 
+            - can_do_anything
+          next:
+            - activated
+            - error   
+
+    navigation:
+      doc: Represents a filtered list of DRDs.
+      transitions:
+        search:
+          name: self
+          next:
+            - navigation
+        create:
+          conditions:
+            - can_create 
+            - can_do_anything
+          next:
+            - activated
+            - error        
+  drd:
+    activated :
+      doc: The default state of a DRD.
+      transitions:
+        show:
+          name: self
+          next:
+            - item
+        deactivate:
+          conditions:
+            - can_deactivate 
+            - can_update 
+            - can_do_anything
+          next:
+           - deactivated
+        delete:
+          conditions:
+            - airlock_open 
+            - can_delete 
+            - can_do_anything
+          next:
+            - deleted
+        update:
+          conditions:
+            - can_update 
+            - can_do_anything
+          next:
+            - activated
+        leviathan-link:
+          name: leviathan
+          next:
+            - location: http://alps.io/schema.org/Leviathans#leviathan
+        repair-history:
+          conditions:
+            - can_repair
+          next:
+            - location: http://alps.io/schema.org/Repais#history
+    deactivated:
+      doc: The DRD is shut down.
+      transitions:
+        show:
+          name: self
+          next:
+            - item
+        activate:
+          conditions:
+            - can_activate 
+            - can_update 
+            - can_do_anything
+          next:
+           - activated
+        update:
+          conditions:
+            - can_update 
+            - can_do_anything
+          next:
+            - deactivated
+        delete:
+          conditions:
+            - airlock_open 
+            - can_delete 
+            - can_do_anything
+          next:
+            - deleted
+        leviathan-link:
+          name: leviathan
+          next:
+            - location: http://alps.io/schema.org/Leviathans#leviathan
+    deleted:
+      doc: The DRD is now free-floating in space.
+      location: exit
+    error:
+      doc: An error has occured.
+      location: http://alps.io/schema.org/Error
+      
+# The protocol descriptors section defines the protocol affordances associated with the 
+# application affordances. This decouples protocol specific information from the 
+# semantic description of a resource and its affordances.
+protocols:
+  http:
+    list:
+      uri: drds
+      entry_point: drds # Indicates this endpoint is a resource entry point for the protocol.
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+        - application/xhtml+xml
+      headers:
+        - Content-Type
+        - ETag
+      status_codes:
+        200:
+          status: OK
+          definitions:
+            - We have processed your request and returned the data you asked for.
+      slt: &slt1
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50 
+    search: 
+      uri: drds
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: &slt2
+        99th_percentile: 250ms
+        std_dev: 50ms
+        requests_per_second: 25
+    create:
+      uri: drds
+      method: POST
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: *slt2  
+    show:
+      uri: drds/{uuid}
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: *slt1
+    activate:
+      uri: drds/{uuid}/activate
+      method: PUT
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: *slt1
+    deactivate:
+      uri: drds/{uuid}/deactivate
+      method: PUT
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: *slt1
+    update:
+      uri: drds/{uuid}
+      method: PUT
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: *slt2
+    delete:
+      uri: drds/{uuid}
+      method: DELETE
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+      slt: *slt1
+    leviathan-link: 
+      uri_source: leviathan_url
+      method: GET
+        
+# This optional section defines the route mapping for the resource that can be used in 
+# lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
+# application. It has nothing to do with the resource semantics per se, but is rather
+# a convenience for DRYing out routing in a service.
+routes:
+  drds:
+    list: &list
+      controller: drds_controller
+      action: index
+    search: *list
+    create: 
+      controller: drds_controller
+      action: create
+  drd:
+    show: 
+      controller: drds_controller
+      action: show
+    update: 
+      controller: drds_controller
+      action: update
+    delete: 
+      controller: drds_controller
+      action: update
