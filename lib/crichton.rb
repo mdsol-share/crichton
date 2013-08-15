@@ -4,6 +4,7 @@ require 'crichton/descriptor'
 require 'crichton/errors'
 require 'crichton/dice_bag/template'
 require 'crichton/representor'
+require 'crichton/alps/deserialization'
 
 module Crichton
   ##

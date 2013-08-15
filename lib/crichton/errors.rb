@@ -6,4 +6,6 @@ module Crichton
   # Raised in Crichton::Representors that are not configured correctly in some way.
   class RepresentorError < StandardError; end
 
+  class ExternalProfileLoadError < StandardError; end
+
 end

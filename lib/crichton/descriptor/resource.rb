@@ -2,6 +2,9 @@ require 'crichton/descriptor/http'
 require 'crichton/descriptor/profile'
 require 'crichton/descriptor/detail'
 require 'crichton/descriptor/state'
+require 'net/http'
+
+require 'pry'
 
 module Crichton
   module Descriptor
@@ -86,9 +89,18 @@ module Crichton
         new_hash = {}
         hash.each do |k,v|
           if k == 'href'
-            v_with_prefix = "#{descriptor_name_prefix}\##{v}"
+            # If the URL starts with 'http' then it is an external URL. So we need to do a little more work.
+            if v.start_with?('http') && !v.start_with?("http://alps.io")
+              # Load external profile (if possible) and add it to the IDs registry
+              load_external_profile(v)
+              # In case of an external link, the link 'as is' is taken as the key.
+              v_with_prefix = v
+            else
+              v_with_prefix = "#{descriptor_name_prefix}\##{v}"
+            end
             if @ids_registry.include? v_with_prefix
               new_hash.deep_merge!(@ids_registry[v_with_prefix].deep_dup)
+              binding.pry
             else
               new_hash[k] = v
             end
@@ -106,7 +118,28 @@ module Crichton
         new_hash
       end
       private_class_method :build_dereferenced_hash_descriptor
-  
+
+      def self.load_external_profile(link)
+        # find and get profile
+        begin
+          profile_data = Net::HTTP.get(URI(link))
+        rescue => e
+          errormessage = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
+          logger.warn errormessage
+          raise(Crichton::ExternalProfileLoadError, errormessage)
+        end
+        # parse profile to hash
+        ext_profile_hash = Crichton::ALPS::Deserialization.alps_xml_to_hash(profile_data)
+        # add profile to id registry
+        uri = URI.parse(link)
+        uri.fragment = nil
+        descriptor_root = uri.to_s
+        descriptors = ext_profile_hash['descriptors']
+        descriptors.each do |k,v|
+          build_descriptor_hashes_by_id(k, descriptor_root, [k], nil, v)
+        end
+      end
+
       ##
       # Lists the registered resource descriptors that had local links dereferenced.
       #
