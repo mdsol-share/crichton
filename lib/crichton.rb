@@ -143,6 +143,10 @@ module Crichton
         Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
           Descriptor::Resource.register(YAML.load_file(f))
         end
+        # The above register step works on a per-file basis. If a early file references a later file, it won't be
+        # able to dereference the data. So in order to handle this, the dereferencing needs to be done in a later
+        # step. Not elegant, but should get the job done.
+        Descriptor::Resource.dereference_queued_descriptor_hashes_and_build_registry
       else
         raise "No resource descriptor directory exists. Default is #{descriptor_location}."
       end

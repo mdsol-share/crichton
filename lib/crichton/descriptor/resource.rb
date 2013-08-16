@@ -35,12 +35,24 @@ module Crichton
         else
           raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
         end
+        # Collect the hash fragments for dereferencing keyed by the ID (which is a link to a descriptor element)
         collect_descriptor_ids(hash_descriptor)
-        # Build hash with resolved local links
-        hash_descriptor_with_dereferenced_links = build_dereferenced_hash_descriptor(hash_descriptor['links']['self'],
-          hash_descriptor)
+        # Add the non-dereferenced descriptor document -
+        # the de-referencing will need to wait until all IDs are collected.
         add_resource_descriptors_to_registry(hash_descriptor, raw_registry)
-        add_resource_descriptors_to_registry(hash_descriptor_with_dereferenced_links, registry)
+
+        @dereference_queue = [] if @dereference_queue.nil?
+        @dereference_queue << hash_descriptor
+      end
+
+      def self.dereference_queued_descriptor_hashes_and_build_registry
+        @dereference_queue.each do |hash_descriptor|
+          # Build hash with resolved local links
+          hash_descriptor_with_dereferenced_links = build_dereferenced_hash_descriptor(hash_descriptor['links']['self'],
+            hash_descriptor)
+          add_resource_descriptors_to_registry(hash_descriptor_with_dereferenced_links, registry)
+        end
+        @dereference_queue = nil
       end
 
       def self.add_resource_descriptors_to_registry(hash_descriptor, registry)
@@ -91,16 +103,20 @@ module Crichton
           if k == 'href'
             # If the URL starts with 'http' then it is an external URL. So we need to do a little more work.
             if v.start_with?('http') && !v.start_with?("http://alps.io")
+              # External link
               # Load external profile (if possible) and add it to the IDs registry
               load_external_profile(v)
               # In case of an external link, the link 'as is' is taken as the key.
               v_with_prefix = v
+            elsif v.include? '#'
+              # Semi-local (other descriptor file but still local)
+              v_with_prefix = v
             else
+              # Local (within descriptor file)
               v_with_prefix = "#{descriptor_name_prefix}\##{v}"
             end
             if @ids_registry.include? v_with_prefix
               new_hash.deep_merge!(@ids_registry[v_with_prefix].deep_dup)
-              binding.pry
             else
               new_hash[k] = v
             end
