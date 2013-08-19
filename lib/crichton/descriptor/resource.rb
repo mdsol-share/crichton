@@ -4,8 +4,6 @@ require 'crichton/descriptor/detail'
 require 'crichton/descriptor/state'
 require 'net/http'
 
-require 'pry'
-
 module Crichton
   module Descriptor
     ##
