@@ -23,6 +23,15 @@ module Crichton
           h.tap { |hash| hash[id] = StateTransition.new(resource_descriptor, transition_descriptor, id) }
         end.freeze
       end
+
+      #SHOULD BE IN A LOWER LEVEL OBJECT?
+      def doc_property
+         descriptor_document['doc']
+      end
+
+      def location
+        descriptor_document['location']
+      end
     end
   end
 end

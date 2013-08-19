@@ -14,6 +14,14 @@ module Crichton
         @descriptors[:conditions] ||= (descriptor_document['conditions'] || [])
       end
 
+      # distinguish non-existent condition statement from empty condition set
+      def empty_conditions_set
+         descriptor_document['conditions'].nil? ? false : descriptor_document['conditions'].empty?
+      end
+
+      def location
+
+      end
       ## 
       # @!attribute [r] next
       # The next states that are possible if the transition is executed. 
@@ -25,8 +33,20 @@ module Crichton
       def next
         @descriptors[:next] ||= (descriptor_document['next'] || [])
       end
-      
-      ##
+
+      def next_state_name
+        self.next.nil? ? nil : self.next[0]
+      end
+
+      def is_next_state_a_location?
+        next_state_name.nil?  ? false : next_state_name.keys[0] == 'location'
+      end
+
+      def is_specified_name_property_not_self?
+         self.id != self.name && self.name != 'self'  && !is_next_state_a_location?
+      end
+
+       ##
       # Whether the transition is available for the specified options.
       #
       # @param [Hash] options Conditional options.
