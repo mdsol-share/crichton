@@ -18,6 +18,7 @@ module Crichton
         @registry = nil
         @raw_registry = nil
         @ids_registry = nil
+        @dereference_queue = nil
       end
       
       ##
@@ -39,10 +40,10 @@ module Crichton
         collect_descriptor_ids(hash_descriptor)
         # Add the non-dereferenced descriptor document -
         # the de-referencing will need to wait until all IDs are collected.
-        add_resource_descriptors_to_registry(hash_descriptor, raw_registry)
-
+        new_descriptor = add_resource_descriptors_to_registry(hash_descriptor, raw_registry)
         @dereference_queue = [] if @dereference_queue.nil?
         @dereference_queue << hash_descriptor
+        new_descriptor
       end
 
       def self.dereference_queued_descriptor_hashes_and_build_registry
