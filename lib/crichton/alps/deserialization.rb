@@ -26,7 +26,6 @@ module Crichton
               if node.children.size > 0
                 node.children.each do |child|
                   result = xml_node_to_hash(child)
-
                   if child.name == "text"
                     unless child.next_sibling || child.previous_sibling
                       return prepare(result)
@@ -51,7 +50,6 @@ module Crichton
                     result_hash[child.name] = prepare(result)
                   end
                 end
-
                 return result_hash
               else
                 return result_hash
@@ -64,10 +62,6 @@ module Crichton
           def self.prepare(data)
             (data.class == String && data.to_i.to_s == data) ? data.to_i : data
           end
-
-        #def self.to_struct(struct_name)
-        #    Struct.new(struct_name,*keys).new(*values)
-        #end
     end
   end
 end
