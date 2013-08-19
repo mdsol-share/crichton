@@ -32,11 +32,11 @@ module Crichton
         end
         
         shared_examples_for 'a resource descriptor registration' do
-          it 'registers a the child detail descriptors by id in the registry' do
+          it 'registers a the child detail descriptors by id in the raw registry' do
             resource_descriptor = Resource.register(@descriptor)
 
             resource_descriptor.descriptors.each do |descriptor|
-              Resource.registry[descriptor.id].should == descriptor
+              Resource.raw_registry[descriptor.id].should == descriptor
             end
           end
         end
@@ -88,16 +88,16 @@ module Crichton
         end
       end
       
-      describe '.registry' do
+      describe '.raw_registry' do
         it 'returns an empty hash hash if no resource descriptors are registered' do
-          Resource.registry.should be_empty
+          Resource.raw_registry.should be_empty
         end
         
         it 'returns a hash of registered descriptor instances keyed by descriptor id' do
           resource_descriptor = Resource.register(drds_descriptor)
 
           resource_descriptor.descriptors.each do |descriptor|
-            Resource.registry[descriptor.id].should == descriptor
+            Resource.raw_registry[descriptor.id].should == descriptor
           end
         end
       end
@@ -119,12 +119,17 @@ module Crichton
       end
 
       describe '.registrations?' do
+        before do
+          Resource.clear_registry
+        end
+
         it 'returns false if no resource descriptors are registered' do
           Resource.registrations?.should be_false
         end
-  
+
         it 'returns true if resource descriptors are registered' do
           Resource.register(drds_descriptor)
+          Resource.dereference_queued_descriptor_hashes_and_build_registry
           Resource.registrations?.should be_true
         end
       end
