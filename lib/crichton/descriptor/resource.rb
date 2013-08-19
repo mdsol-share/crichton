@@ -101,6 +101,8 @@ module Crichton
         hash.each do |k,v|
           if k == 'href'
             # If the URL starts with 'http' then it is an external URL. So we need to do a little more work.
+            # The alps.io links are 'primitives' - there isn't much of a point in de-referencing them.
+            # TODO: Figure out if there is a better way of doing this than manually excluding that URL prefix.
             if v.start_with?('http') && !v.start_with?("http://alps.io")
               # External link
               # Load external profile (if possible) and add it to the IDs registry
