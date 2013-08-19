@@ -110,12 +110,13 @@ module Crichton
               # In case of an external link, the link 'as is' is taken as the key.
               v_with_prefix = v
             elsif v.include? '#'
-              # Semi-local (other descriptor file but still local)
+              # Semi-local (other descriptor file but still local) link with a # fragment in it
               v_with_prefix = v
             else
-              # Local (within descriptor file)
+              # Local (within descriptor file) - use the link as a fragment and add the current name as prefix
               v_with_prefix = "#{descriptor_name_prefix}\##{v}"
             end
+            # Check if the link is in the registry - and if it is then merge it.
             if @ids_registry.include? v_with_prefix
               new_hash.deep_merge!(@ids_registry[v_with_prefix].deep_dup)
             else
