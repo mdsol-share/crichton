@@ -42,7 +42,6 @@ module Crichton
                     result_hash['descriptors'] = {} unless result_hash.include?('descriptors')
                     result_hash['descriptors'][child.attributes['id'].value] = result
                   elsif result_hash[child.name]
-              binding.pry
                     if result_hash[child.name].is_a?(Object::Array)
                       result_hash[child.name] << prepare(result)
                     else
