@@ -29,6 +29,7 @@ module Crichton
   # Clears any registered resource descriptors.
   def self.clear_registry
     @registry = nil
+    @raw_registry = nil
     Descriptor::Resource.clear_registry
   end
 
@@ -134,7 +135,6 @@ module Crichton
       build_registry if Descriptor::Resource.raw_registry.empty?
       Descriptor::Resource.raw_registry
     end
-    @raw_registry
   end
 
   def self.build_registry
