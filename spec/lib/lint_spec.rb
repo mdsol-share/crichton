@@ -47,7 +47,7 @@ describe Lint do
     filename = lint_spec_filename('state_section_errors', 'condition_doc_and_self_errors.yml')
 
     warning1 = "\tWARNING: resource drds, state collection, transition list name property is not 'self'.\n"
-    warning2 =  "\tWARNING: resource drd, state deactivated does not have a doc property.\n"
+    warning2 =  "\tWARNING: resource drd, state activated does not have a doc property.\n"
     warnings = warning1+ warning2
 
     content = capture(:stdout) {
@@ -59,8 +59,8 @@ describe Lint do
   it "display errors when next transitions are missing or empty" do
     filename = lint_spec_filename('state_section_errors', 'missing_and_empty_transitions.yml')
 
-    error1 = "\tERROR:  Empty next property defined for resource drd in state activated, transition update\n"
-    error2 =  "\tERROR:  Empty next property defined for resource drd in state deactivated, transition activate\n"
+    error1 = "\tERROR:  Empty next property defined for resource drds in state collection, transition self\n"
+    error2 =  "\tERROR:  Empty next property defined for resource drd in state activated, transition self\n"
     errors = error1+ error2
 
     content = capture(:stdout) {
@@ -72,8 +72,8 @@ describe Lint do
   it "display errors when next transitions are pointing to non-existent states" do
     filename = lint_spec_filename('state_section_errors', 'phantom_transitions.yml')
 
-    error1 = "\tERROR:  Next property pointing to a state that is not specified in resource drds, in state collection, transition action search, 'next' transition navegation\n"
-    error2 =  "\tERROR:  Next property pointing to a state that is not specified in resource drd, in state deactivated, transition action activate, 'next' transition activate\n"
+    error1 = "\tERROR:  Next property pointing to a state that is not specified in resource drds, in state navigation, transition action self, next state navegation\n"
+    error2 =  "\tERROR:  Next property pointing to a state that is not specified in resource drd, in state activated, transition action self, next state activate\n"
     errors = error1+ error2
 
     content = capture(:stdout) {
