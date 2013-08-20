@@ -261,6 +261,7 @@ module Crichton
               'example' => {
                   'descriptors' => {
                       'some_name' => {
+                          'dhref' => 'example/other_name',
                           'value2' => 'something else',
                           'value' => 'something'
                       },
@@ -304,6 +305,7 @@ module Crichton
               'example' => {
                   'descriptors' => {
                       'some_name' => {
+                          'dhref' => 'example/other_name',
                           'value' => 'something'
                       },
                       'other_name' => {
@@ -346,7 +348,8 @@ module Crichton
               'example' => {
                   'descriptors' => {
                       'some_name' => {
-                          'value' => 'something else'
+                          'value' => 'something else',
+                          'dhref' => 'example/other_name'
                       },
                       'other_name' => {
                           'value' => 'something else'
@@ -391,7 +394,8 @@ module Crichton
                   'descriptors' => {
                       'some_name' => {
                           'value' => 'something else',
-                          'hierarchy' => {'k' => 'v', 'l' => 'm'}
+                          'hierarchy' => {'k' => 'v', 'l' => 'm'},
+                          'dhref' => 'example/other_name'
                       },
                       'other_name' => {
                           'value' => 'something else',

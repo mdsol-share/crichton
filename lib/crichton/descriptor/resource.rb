@@ -120,6 +120,9 @@ module Crichton
             end
             # Check if the link is in the registry - and if it is then merge it.
             if @ids_registry.include? v_with_prefix
+              unless new_hash.include?('dhref')
+                new_hash['dhref'] = v
+              end
               new_hash.deep_merge!(@ids_registry[v_with_prefix].deep_dup)
             else
               new_hash[k] = v
