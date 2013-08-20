@@ -7,12 +7,21 @@ module Crichton
     ##
     # Manages serialization to the Application-Level Profile Semantics (ALPS) specification JSON and XML formats.
     class Deserialization
-      def self.alps_xml_to_hash(alps_data)
+      def initialize(alps_data)
+        @hash = alps_xml_to_hash(alps_data)
+      end
+
+      def to_hash
+        @hash
+      end
+
+      def alps_xml_to_hash(alps_data)
         xml_data = Nokogiri::XML(alps_data)
         xml_node_to_hash(xml_data.root)
       end
 
-      def self.xml_node_to_hash(node)
+      private
+      def xml_node_to_hash(node)
         # If we are at the root of the document, start the hash
         if node.element?
           result_hash = {}

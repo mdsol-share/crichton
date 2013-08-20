@@ -80,19 +80,19 @@ module Crichton
       private_class_method :collect_descriptor_ids
 
       # Recursive descent
-      def self.build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, pre_path, name, hash)
-        cur_path = [pre_path, [name]].flatten.compact
+      def self.build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, pre_path, id, hash)
+        cur_path = [pre_path, [id]].flatten.compact
         @ids_registry ||= {}
-        if !name.nil? && @ids_registry.include?(name)
-          raise "Descriptor name #{name} already in ids_registry!"
+        if !id.nil? && @ids_registry.include?(id)
+          raise "Descriptor name #{id} already in ids_registry!"
         end
         # Add descriptor to the IDs hash
-        @ids_registry["#{descriptor_name_prefix}\##{cur_path.join('/')}"] = hash unless name.nil?
+        @ids_registry["#{descriptor_name_prefix}\##{cur_path.join('/')}"] = hash unless id.nil?
 
         # Descend
         unless hash['descriptors'].nil?
-          hash['descriptors'].each do |k,v|
-            build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, cur_path, k, v)
+          hash['descriptors'].each do |child_id, descriptor|
+            build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, cur_path, child_id, descriptor)
           end
         end
       end
@@ -149,7 +149,8 @@ module Crichton
           raise(Crichton::ExternalProfileLoadError, error_message)
         end
         # parse profile to hash
-        ext_profile_hash = Crichton::ALPS::Deserialization.alps_xml_to_hash(profile_data)
+        profile = Crichton::ALPS::Deserialization(profile_data)
+        ext_profile_hash = profile.to_hash
         # add profile to id registry
         uri = URI.parse(link)
         uri.fragment = nil
