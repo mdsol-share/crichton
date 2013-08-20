@@ -2,7 +2,7 @@ require 'rake'
 require 'lint'
 
 desc "Generate lint validation of a resource descriptor file"
-namespace :Crichton do
+namespace :crichton do
   task :lint, :rd_file do |t, args|
      puts "Linting file: "+args[:rd_file]
      begin
