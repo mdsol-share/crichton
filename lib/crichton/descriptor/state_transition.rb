@@ -39,7 +39,7 @@ module Crichton
       end
 
       def is_next_state_a_location?
-        next_state_name.nil?  ? false : next_state_name.keys[0] == 'location'
+        next_state_name.nil?  ? false : next_state_name.is_a?(Hash) && next_state_name.keys[0] == 'location'
       end
 
       def is_specified_name_property_not_self?
