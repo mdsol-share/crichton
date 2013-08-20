@@ -110,7 +110,7 @@ module Crichton
   end
 
   ##
-  # Returns the registered resources - version that had local resources de-referenced.
+  # Returns the registered resources - version that has local resources de-referenced.
   #
   # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
   # descriptors in that location.

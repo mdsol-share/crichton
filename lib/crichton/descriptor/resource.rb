@@ -34,27 +34,31 @@ module Crichton
         else
           raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
         end
+
         # Collect the hash fragments for dereferencing keyed by the ID (which is a link to a descriptor element)
         collect_descriptor_ids(hash_descriptor)
+
         # Add the non-dereferenced descriptor document -
         # the de-referencing will need to wait until all IDs are collected.
-        new_descriptor = add_resource_descriptors_to_registry(hash_descriptor, raw_registry)
-        @dereference_queue = [] if @dereference_queue.nil?
-        @dereference_queue << hash_descriptor
-        new_descriptor
+        add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
+        add_resource_descriptor_to_registry(hash_descriptor, raw_registry)
+      end
+
+      def self.add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
+        (@dereference_queue ||= []) << hash_descriptor
       end
 
       def self.dereference_queued_descriptor_hashes_and_build_registry
         @dereference_queue.each do |hash_descriptor|
           # Build hash with resolved local links
-          hash_descriptor_with_dereferenced_links = build_dereferenced_hash_descriptor(hash_descriptor['links']['self'],
+          dereferenced_hash_descriptor = build_dereferenced_hash_descriptor(hash_descriptor['links']['self'],
             hash_descriptor)
-          add_resource_descriptors_to_registry(hash_descriptor_with_dereferenced_links, registry)
+          add_resource_descriptor_to_registry(dereferenced_hash_descriptor, registry)
         end
         @dereference_queue = nil
       end
 
-      def self.add_resource_descriptors_to_registry(hash_descriptor, registry)
+      def self.add_resource_descriptor_to_registry(hash_descriptor, registry)
         new(hash_descriptor).tap do |resource_descriptor|
           resource_descriptor.descriptors.each do |descriptor|
             if registry[descriptor.id]
@@ -69,7 +73,7 @@ module Crichton
       def self.collect_descriptor_ids(hash_descriptor)
         descriptor_document_self = hash_descriptor['links']['self']
         descriptors = hash_descriptor['descriptors']
-        descriptors.each do |k,v|
+        descriptors.each do |k, v|
           build_descriptor_hashes_by_id(k, descriptor_document_self, [k], nil, v)
         end
       end
@@ -78,9 +82,7 @@ module Crichton
       # Recursive descent
       def self.build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, pre_path, name, hash)
         cur_path = [pre_path, [name]].flatten.compact
-        if @ids_registry.nil?
-          @ids_registry = {}
-        end
+        @ids_registry ||= {}
         if !name.nil? && @ids_registry.include?(name)
           raise "Descriptor name #{name} already in ids_registry!"
         end
@@ -98,7 +100,7 @@ module Crichton
 
       def self.build_dereferenced_hash_descriptor(descriptor_name_prefix, hash)
         new_hash = {}
-        hash.each do |k,v|
+        hash.each do |k, v|
           if k == 'href'
             # If the URL starts with 'http' then it is an external URL. So we need to do a little more work.
             # The alps.io links are 'primitives' - there isn't much of a point in de-referencing them.
@@ -142,9 +144,9 @@ module Crichton
         begin
           profile_data = Net::HTTP.get(URI(link))
         rescue => e
-          errormessage = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
-          logger.warn errormessage
-          raise(Crichton::ExternalProfileLoadError, errormessage)
+          error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
+          logger.warn error_message
+          raise(Crichton::ExternalProfileLoadError, error_message)
         end
         # parse profile to hash
         ext_profile_hash = Crichton::ALPS::Deserialization.alps_xml_to_hash(profile_data)
