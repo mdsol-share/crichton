@@ -151,7 +151,7 @@ module Crichton
           raise(Crichton::ExternalProfileLoadError, error_message)
         end
         # parse profile to hash
-        profile = Crichton::ALPS::Deserialization(profile_data)
+        profile = Crichton::ALPS::Deserialization.new(profile_data)
         ext_profile_hash = profile.to_hash
         # add profile to id registry
         uri = URI.parse(link)
@@ -159,7 +159,7 @@ module Crichton
         descriptor_root = uri.to_s
         descriptors = ext_profile_hash['descriptors']
         descriptors.each do |k,v|
-          build_descriptor_hashes_by_id(k, descriptor_root, [k], nil, v)
+          build_descriptor_hashes_by_id(k, descriptor_root, nil, v)
         end
       end
 

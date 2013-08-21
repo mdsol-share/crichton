@@ -58,7 +58,7 @@ module Crichton
         end
       end
 
-      def self.prepare(data)
+      def prepare(data)
         data.class == String && data.to_i.to_s == data ? data.to_i : data
       end
     end
