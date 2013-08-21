@@ -102,9 +102,7 @@ module Crichton
         hash.each do |k, v|
           if k == 'href'
             # If the URL starts with 'http' then it is an external URL. So we need to do a little more work.
-            # The alps.io links are 'primitives' - there isn't much of a point in de-referencing them.
-            # TODO: Figure out if there is a better way of doing this than manually excluding that URL prefix.
-            if v.start_with?('http') && !v.start_with?("http://alps.io")
+            if v.start_with?('http')
               # External link
               # Load external profile (if possible) and add it to the IDs registry
               load_external_profile(v)
@@ -143,22 +141,25 @@ module Crichton
 
       def self.load_external_profile(link)
         # find and get profile
-        begin
-          profile_data = Net::HTTP.get(URI(link))
-        rescue => e
-          error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
-          logger.warn error_message
-          raise(Crichton::ExternalProfileLoadError, error_message)
+        unless (@external_descriptor_documents ||= {}).include?(link)
+          begin
+            @external_descriptor_documents[link] = Net::HTTP.get(URI(link))
+          rescue => e
+            error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
+            # FIXME: After the refactor, get logger working again.
+            #logger.warn error_message
+            raise(Crichton::ExternalProfileLoadError, error_message)
+          end
         end
         # parse profile to hash
-        profile = Crichton::ALPS::Deserialization.new(profile_data)
+        profile = Crichton::ALPS::Deserialization.new(@external_descriptor_documents[link])
         ext_profile_hash = profile.to_hash
         # add profile to id registry
         uri = URI.parse(link)
         uri.fragment = nil
         descriptor_root = uri.to_s
         descriptors = ext_profile_hash['descriptors']
-        descriptors.each do |k,v|
+        descriptors && descriptors.each do |k,v|
           build_descriptor_hashes_by_id(k, descriptor_root, nil, v)
         end
       end

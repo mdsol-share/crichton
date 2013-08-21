@@ -198,7 +198,7 @@ descriptors:
                 href: http://alps.io/schema.org/Text
                 field_type: select
                 enum:
-                  href: http://alps.io.example.org/Leviathans#list
+                  href: Leviathans#list
                 validators:
                   - presence     
   drd:
