@@ -18,6 +18,7 @@ module Support
     def register_drds_descriptor
       Crichton.clear_registry
       Crichton::Descriptor::Resource.register(drds_descriptor)
+      Crichton::Descriptor::Resource.dereference_queued_descriptor_hashes_and_build_registry
     end
 
     def drds_filename
@@ -53,6 +54,7 @@ module Support
     def register_descriptor(descriptor)
       Crichton.clear_registry
       Crichton::Descriptor::Resource.register(descriptor)
+      Crichton::Descriptor::Resource.dereference_queued_descriptor_hashes_and_build_registry
     end
 
     def resource_descriptor_fixtures

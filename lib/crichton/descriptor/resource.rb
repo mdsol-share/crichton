@@ -2,6 +2,7 @@ require 'crichton/descriptor/http'
 require 'crichton/descriptor/profile'
 require 'crichton/descriptor/detail'
 require 'crichton/descriptor/state'
+require 'net/http'
 
 module Crichton
   module Descriptor
@@ -13,6 +14,9 @@ module Crichton
       # Clears all registered resource descriptors
       def self.clear_registry
         @registry = nil
+        @raw_registry = nil
+        @ids_registry = nil
+        @dereference_queue = nil
       end
       
       ##
@@ -30,26 +34,152 @@ module Crichton
         else
           raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
         end
-  
+
+        # Collect the hash fragments for dereferencing keyed by the ID (which is a link to a descriptor element)
+        collect_descriptor_ids(hash_descriptor)
+
+        # Add the non-dereferenced descriptor document -
+        # the de-referencing will need to wait until all IDs are collected.
+        add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
+        add_resource_descriptor_to_registry(hash_descriptor, raw_registry)
+      end
+
+      def self.add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
+        (@dereference_queue ||= []) << hash_descriptor
+      end
+
+      def self.dereference_queued_descriptor_hashes_and_build_registry
+        @dereference_queue.each do |hash_descriptor|
+          # Build hash with resolved local links
+          dereferenced_hash_descriptor = build_dereferenced_hash_descriptor(hash_descriptor['links']['self'],
+            hash_descriptor)
+          add_resource_descriptor_to_registry(dereferenced_hash_descriptor, registry)
+        end
+        @dereference_queue = nil
+      end
+
+      def self.add_resource_descriptor_to_registry(hash_descriptor, registry)
         new(hash_descriptor).tap do |resource_descriptor|
           resource_descriptor.descriptors.each do |descriptor|
             if registry[descriptor.id]
-              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered." 
+              raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
             end
-              
-            registry[descriptor.id] = descriptor 
+            registry[descriptor.id] = descriptor
           end
         end
       end
-  
+
+      # This method calls the recursive method
+      def self.collect_descriptor_ids(hash_descriptor)
+        descriptor_document_self = hash_descriptor['id']
+        descriptors = hash_descriptor['descriptors']
+        descriptors.each do |k, v|
+          build_descriptor_hashes_by_id(k, descriptor_document_self, nil, v)
+        end
+      end
+      private_class_method :collect_descriptor_ids
+
+      # Recursive descent
+      def self.build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, id, hash)
+        @ids_registry ||= {}
+        if id && @ids_registry.include?(id)
+          raise "Descriptor name #{id} already in ids_registry!"
+        end
+        # Add descriptor to the IDs hash
+        @ids_registry["#{descriptor_name_prefix}\##{id}"] = hash unless id.nil?
+
+        # Descend
+        unless hash['descriptors'].nil?
+          hash['descriptors'].each do |child_id, descriptor|
+            build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, child_id, descriptor)
+          end
+        end
+      end
+      private_class_method :build_descriptor_hashes_by_id
+
+      def self.build_dereferenced_hash_descriptor(descriptor_name_prefix, hash)
+        new_hash = {}
+        hash.each do |k, v|
+          if k == 'href'
+            # If the URL starts with 'http' then it is an external URL. So we need to do a little more work.
+            if v.start_with?('http')
+              # External link
+              # Load external profile (if possible) and add it to the IDs registry
+              load_external_profile(v)
+              # In case of an external link, the link 'as is' is taken as the key.
+              v_with_prefix = v
+            elsif v.include? '#'
+              # Semi-local (other descriptor file but still local) link with a # fragment in it
+              v_with_prefix = v
+            else
+              # Local (within descriptor file) - use the link as a fragment and add the current name as prefix
+              v_with_prefix = "#{descriptor_name_prefix}\##{v}"
+            end
+            # Check if the link is in the registry - and if it is then merge it.
+            if @ids_registry.include? v_with_prefix
+              unless new_hash.include?('dhref')
+                new_hash['dhref'] = v
+              end
+              new_hash.deep_merge!(@ids_registry[v_with_prefix].deep_dup)
+            else
+              new_hash[k] = v
+            end
+          elsif v.is_a? Hash
+              der_ded = build_dereferenced_hash_descriptor(descriptor_name_prefix, v)
+            if new_hash.include? k
+              new_hash[k].deep_merge! der_ded
+            else
+              new_hash[k] = der_ded
+            end
+          else
+            new_hash[k] = v
+          end
+        end
+        new_hash
+      end
+      private_class_method :build_dereferenced_hash_descriptor
+
+      def self.load_external_profile(link)
+        # find and get profile
+        unless (@external_descriptor_documents ||= {}).include?(link)
+          begin
+            @external_descriptor_documents[link] = Net::HTTP.get(URI(link))
+          rescue => e
+            error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
+            # FIXME: After the refactor, get logger working again.
+            #logger.warn error_message
+            raise(Crichton::ExternalProfileLoadError, error_message)
+          end
+        end
+        # parse profile to hash
+        profile = Crichton::ALPS::Deserialization.new(@external_descriptor_documents[link])
+        ext_profile_hash = profile.to_hash
+        # add profile to id registry
+        uri = URI.parse(link)
+        uri.fragment = nil
+        descriptor_root = uri.to_s
+        descriptors = ext_profile_hash['descriptors']
+        descriptors && descriptors.each do |k,v|
+          build_descriptor_hashes_by_id(k, descriptor_root, nil, v)
+        end
+      end
+
       ##
-      # Lists the registered resource descriptors.
+      # Lists the registered resource descriptors that had local links dereferenced.
       #
       # @return [Hash] The registered resource descriptors, if any.
       def self.registry
         @registry ||= {}
       end
-  
+
+      ##
+      # Lists the registered resource descriptors that do not have local links de-referenced.
+      #
+      # @return [Hash] The registered resource descriptors, if any.
+      def self.raw_registry
+        @raw_registry ||= {}
+      end
+
       ##
       # Whether any resource descriptors have been registered or not.
       #

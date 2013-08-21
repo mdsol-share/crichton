@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <link rel="profile" href="alps_base/DRDs"/>
-  <link rel="type" href="alps_base/DRDs#drds"/>
+  <link rel="profile" href="DRDs"/>
+  <link rel="type" href="DRDs#drds"/>
   <link rel="help" href="documentation_base/Things/DRDs"/>
 </head>
 <body>
-<div itemscope="itemscope" itemtype="alps_base/DRDs#drds">
+<div itemscope="itemscope" itemtype="DRDs#drds">
   <a rel="self" href="http://deployment.example.org/drds">self</a>
   <a rel="search" href="http://deployment.example.org/drds{?search_term}">search</a>
   <form action="http://deployment.example.org/drds" method="post" name="create">
+    <input itemprop="status" type="text" name="status"/>
+    <input itemprop="kind" type="text" name="kind"/>
     <input itemprop="name" type="text" name="name"/>
     <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
     <input type="hidden" name="_method" value="POST"/>
@@ -17,7 +19,7 @@
   </form>
   <span itemprop="total_count">2</span>
   <div itemscope="itemscope" itemtype="Array" itemprop="items">
-    <div itemscope="itemscope" itemtype="alps_base/DRDs#drd">
+    <div itemscope="itemscope" itemtype="DRDs#drd">
       <a rel="self" href="http://deployment.example.org/drds/0">self</a>
       <a rel="deactivate" href="http://deployment.example.org/drds/0/deactivate">deactivate</a>
       <form action="http://deployment.example.org/drds/0" method="post" name="update">
@@ -34,7 +36,7 @@
       <span itemprop="leviathan_uuid">leviathan_uuid_0</span>
       <span itemprop="built_at">built_at_0</span>
     </div>
-    <div itemscope="itemscope" itemtype="alps_base/DRDs#drd">
+    <div itemscope="itemscope" itemtype="DRDs#drd">
       <a rel="self" href="http://deployment.example.org/drds/1">self</a>
       <a rel="deactivate" href="http://deployment.example.org/drds/1/deactivate">deactivate</a>
       <form action="http://deployment.example.org/drds/1" method="post" name="update">

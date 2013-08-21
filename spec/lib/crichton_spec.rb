@@ -132,7 +132,7 @@ describe Crichton do
         resource_descriptor = Crichton::Descriptor::Resource.register(drds_descriptor)
 
         resource_descriptor.descriptors.each do |descriptor|
-          Crichton.registry[descriptor.id].should == descriptor
+          Crichton.raw_registry[descriptor.id].should == descriptor
         end
       end
   

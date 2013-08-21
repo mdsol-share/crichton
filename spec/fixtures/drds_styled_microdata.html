@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <link rel="profile" href="alps_base/DRDs"/>
-  <link rel="type" href="alps_base/DRDs#drds"/>
+  <link rel="profile" href="DRDs"/>
+  <link rel="type" href="DRDs#drds"/>
   <link rel="help" href="documentation_base/Things/DRDs"/>
   <style>
     *[itemprop]::before {
@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-<ul itemscope="itemscope" itemtype="alps_base/DRDs#drds">
+<ul itemscope="itemscope" itemtype="DRDs#drds">
   <li>
     <a rel="self" href="http://deployment.example.org/drds">self</a>
   </li>
@@ -31,6 +31,16 @@
   <li>
     <form action="http://deployment.example.org/drds" method="post">
       <ul>
+        <li>
+          <label itemprop="status">
+            <input type="text" name="status"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="kind">
+            <input type="text" name="kind"/>
+          </label>
+        </li>
         <li>
           <label itemprop="name">
             <input type="text" name="name"/>
@@ -52,7 +62,7 @@
   <li>
     <ul itemscope="itemscope" itemtype="Array" itemprop="items">
       <li>
-        <ul itemscope="itemscope" itemtype="alps_base/DRDs#drd">
+        <ul itemscope="itemscope" itemtype="DRDs#drd">
           <li>
             <a rel="self" href="http://deployment.example.org/drds/0">self</a>
           </li>
@@ -101,7 +111,7 @@
         </ul>
       </li>
       <li>
-        <ul itemscope="itemscope" itemtype="alps_base/DRDs#drd">
+        <ul itemscope="itemscope" itemtype="DRDs#drd">
           <li>
             <a rel="self" href="http://deployment.example.org/drds/1">self</a>
           </li>

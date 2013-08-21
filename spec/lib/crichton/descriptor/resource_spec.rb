@@ -12,6 +12,7 @@ module Crichton
           Resource.register(drds_descriptor)
           Resource.clear_registry
           Resource.registry.should be_empty
+          Resource.raw_registry.should be_empty
         end
       end
       
@@ -31,11 +32,11 @@ module Crichton
         end
         
         shared_examples_for 'a resource descriptor registration' do
-          it 'registers a the child detail descriptors by id' do
+          it 'registers a the child detail descriptors by id in the raw registry' do
             resource_descriptor = Resource.register(@descriptor)
 
             resource_descriptor.descriptors.each do |descriptor|
-              Resource.registry[descriptor.id].should == descriptor
+              Resource.raw_registry[descriptor.id].should == descriptor
             end
           end
         end
@@ -87,27 +88,48 @@ module Crichton
         end
       end
       
-      describe '.registry' do
+      describe '.raw_registry' do
         it 'returns an empty hash hash if no resource descriptors are registered' do
-          Resource.registry.should be_empty
+          Resource.raw_registry.should be_empty
         end
         
         it 'returns a hash of registered descriptor instances keyed by descriptor id' do
           resource_descriptor = Resource.register(drds_descriptor)
 
           resource_descriptor.descriptors.each do |descriptor|
-            Resource.registry[descriptor.id].should == descriptor
+            Resource.raw_registry[descriptor.id].should == descriptor
           end
         end
       end
   
+      describe '.raw_registry' do
+        it 'returns an empty hash hash if no resource descriptors are registered' do
+          Resource.raw_registry.should be_empty
+        end
+
+        it 'returns a hash of registered descriptor instances keyed by descriptor id' do
+          resource_descriptor = Resource.register(drds_descriptor)
+
+          resource_descriptor.descriptors.each do |descriptor|
+            # Can't use a direct comparison as we don't get the original rescriptors returned when registering
+            # but we can at least test that the names match.
+            Resource.raw_registry[descriptor.id].name.should == descriptor.name
+          end
+        end
+      end
+
       describe '.registrations?' do
+        before do
+          Resource.clear_registry
+        end
+
         it 'returns false if no resource descriptors are registered' do
           Resource.registrations?.should be_false
         end
-  
+
         it 'returns true if resource descriptors are registered' do
           Resource.register(drds_descriptor)
+          Resource.dereference_queued_descriptor_hashes_and_build_registry
           Resource.registrations?.should be_true
         end
       end
@@ -204,11 +226,173 @@ module Crichton
         end
       end
 
-
       context 'with serialization' do
         let(:descriptor) { Resource.new(leviathans_descriptor) }
 
         it_behaves_like 'it serializes to ALPS'
+      end
+
+      context 'build_dereferenced_hash_descriptor' do
+        it 'dereferences a local reference' do
+          @ids_registry = {}
+          descriptor_hash = {
+              'id' => "example",
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'href' => 'other_name',
+                          'value' => 'something'
+                      },
+                      'other_name' => {
+                          'value2' => 'something else'
+                      }
+                  }
+              }
+            }
+          }
+          reference_hash = {
+              'id' => "example",
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'dhref' => 'other_name',
+                          'value2' => 'something else',
+                          'value' => 'something'
+                      },
+                      'other_name' => {
+                          'value2' => 'something else'
+                      }
+                  }
+              }
+            }
+          }
+          Resource.send(:collect_descriptor_ids, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, 'example', descriptor_hash)
+          deref_hash.should == reference_hash
+        end
+
+        it 'gives a local value priority over a remote value is the local value is after the href' do
+          @ids_registry = {}
+          descriptor_hash = {
+              'id' => "example",
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'href' => 'other_name',
+                          'value' => 'something'
+                      },
+                      'other_name' => {
+                          'value' => 'something else'
+                      }
+                  }
+              }
+            }
+          }
+          reference_hash = {
+              'id' => "example",
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'dhref' => 'other_name',
+                          'value' => 'something'
+                      },
+                      'other_name' => {
+                          'value' => 'something else'
+                      }
+                  }
+              }
+            }
+          }
+          Resource.send(:collect_descriptor_ids, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, 'example', descriptor_hash)
+          deref_hash.should == reference_hash
+        end
+
+        it 'gives a remote value priority over a local value if the remote value is after the href' do
+          @ids_registry = {}
+          descriptor_hash = {
+              'id' => "example",
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something',
+                          'href' => 'other_name'
+                      },
+                      'other_name' => {
+                          'value' => 'something else'
+                      }
+                  }
+              }
+            }
+          }
+          reference_hash = {
+              'id' => "example",
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something else',
+                          'dhref' => 'other_name'
+                      },
+                      'other_name' => {
+                          'value' => 'something else'
+                      }
+                  }
+              }
+            }
+          }
+          Resource.send(:collect_descriptor_ids, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, 'example', descriptor_hash)
+          deref_hash.should == reference_hash
+        end
+
+        it 'deep-merges the remote value' do
+          @ids_registry = {}
+          descriptor_hash = {
+              'id' => "example",
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something',
+                          'hierarchy' => {'l' => 'm'},
+                          'href' => 'other_name'
+                      },
+                      'other_name' => {
+                          'value' => 'something else',
+                          'hierarchy' => {'k' => 'v'}
+                      }
+                  }
+              }
+            }
+          }
+          reference_hash = {
+              'id' => "example",
+              'descriptors' => {
+              'example' => {
+                  'descriptors' => {
+                      'some_name' => {
+                          'value' => 'something else',
+                          'hierarchy' => {'k' => 'v', 'l' => 'm'},
+                          'dhref' => 'other_name'
+                      },
+                      'other_name' => {
+                          'value' => 'something else',
+                          'hierarchy' => {'k' => 'v'}
+                      }
+                  }
+              }
+            }
+          }
+          Resource.send(:collect_descriptor_ids, descriptor_hash)
+          deref_hash = Resource.send(:build_dereferenced_hash_descriptor, 'example', descriptor_hash)
+          deref_hash.should == reference_hash
+        end
       end
     end
   end
