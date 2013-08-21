@@ -236,14 +236,12 @@ module Crichton
         it 'dereferences a local reference' do
           @ids_registry = {}
           descriptor_hash = {
-              'links' => {
-                  'self' => "example"
-              },
+              'id' => "example",
               'descriptors' => {
               'example' => {
                   'descriptors' => {
                       'some_name' => {
-                          'href' => 'example/other_name',
+                          'href' => 'other_name',
                           'value' => 'something'
                       },
                       'other_name' => {
@@ -254,14 +252,12 @@ module Crichton
             }
           }
           reference_hash = {
-              'links' => {
-                  'self' => "example"
-              },
+              'id' => "example",
               'descriptors' => {
               'example' => {
                   'descriptors' => {
                       'some_name' => {
-                          'dhref' => 'example/other_name',
+                          'dhref' => 'other_name',
                           'value2' => 'something else',
                           'value' => 'something'
                       },
@@ -280,14 +276,12 @@ module Crichton
         it 'gives a local value priority over a remote value is the local value is after the href' do
           @ids_registry = {}
           descriptor_hash = {
-              'links' => {
-                  'self' => "example"
-              },
+              'id' => "example",
               'descriptors' => {
               'example' => {
                   'descriptors' => {
                       'some_name' => {
-                          'href' => 'example/other_name',
+                          'href' => 'other_name',
                           'value' => 'something'
                       },
                       'other_name' => {
@@ -298,14 +292,12 @@ module Crichton
             }
           }
           reference_hash = {
-              'links' => {
-                  'self' => "example"
-              },
+              'id' => "example",
               'descriptors' => {
               'example' => {
                   'descriptors' => {
                       'some_name' => {
-                          'dhref' => 'example/other_name',
+                          'dhref' => 'other_name',
                           'value' => 'something'
                       },
                       'other_name' => {
@@ -323,15 +315,13 @@ module Crichton
         it 'gives a remote value priority over a local value if the remote value is after the href' do
           @ids_registry = {}
           descriptor_hash = {
-              'links' => {
-                  'self' => "example"
-              },
+              'id' => "example",
               'descriptors' => {
               'example' => {
                   'descriptors' => {
                       'some_name' => {
                           'value' => 'something',
-                          'href' => 'example/other_name'
+                          'href' => 'other_name'
                       },
                       'other_name' => {
                           'value' => 'something else'
@@ -341,15 +331,13 @@ module Crichton
             }
           }
           reference_hash = {
-              'links' => {
-                  'self' => "example"
-              },
+              'id' => "example",
               'descriptors' => {
               'example' => {
                   'descriptors' => {
                       'some_name' => {
                           'value' => 'something else',
-                          'dhref' => 'example/other_name'
+                          'dhref' => 'other_name'
                       },
                       'other_name' => {
                           'value' => 'something else'
@@ -366,16 +354,14 @@ module Crichton
         it 'deep-merges the remote value' do
           @ids_registry = {}
           descriptor_hash = {
-              'links' => {
-                  'self' => "example"
-              },
+              'id' => "example",
               'descriptors' => {
               'example' => {
                   'descriptors' => {
                       'some_name' => {
                           'value' => 'something',
                           'hierarchy' => {'l' => 'm'},
-                          'href' => 'example/other_name'
+                          'href' => 'other_name'
                       },
                       'other_name' => {
                           'value' => 'something else',
@@ -386,16 +372,14 @@ module Crichton
             }
           }
           reference_hash = {
-              'links' => {
-                  'self' => "example"
-              },
+              'id' => "example",
               'descriptors' => {
               'example' => {
                   'descriptors' => {
                       'some_name' => {
                           'value' => 'something else',
                           'hierarchy' => {'k' => 'v', 'l' => 'm'},
-                          'dhref' => 'example/other_name'
+                          'dhref' => 'other_name'
                       },
                       'other_name' => {
                           'value' => 'something else',

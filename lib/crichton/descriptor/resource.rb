@@ -71,28 +71,27 @@ module Crichton
 
       # This method calls the recursive method
       def self.collect_descriptor_ids(hash_descriptor)
-        descriptor_document_self = hash_descriptor['links']['self']
+        descriptor_document_self = hash_descriptor['id']
         descriptors = hash_descriptor['descriptors']
         descriptors.each do |k, v|
-          build_descriptor_hashes_by_id(k, descriptor_document_self, [k], nil, v)
+          build_descriptor_hashes_by_id(k, descriptor_document_self, nil, v)
         end
       end
       private_class_method :collect_descriptor_ids
 
       # Recursive descent
-      def self.build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, pre_path, id, hash)
-        cur_path = [pre_path, [id]].flatten.compact
+      def self.build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, id, hash)
         @ids_registry ||= {}
         if !id.nil? && @ids_registry.include?(id)
           raise "Descriptor name #{id} already in ids_registry!"
         end
         # Add descriptor to the IDs hash
-        @ids_registry["#{descriptor_name_prefix}\##{cur_path.join('/')}"] = hash unless id.nil?
+        @ids_registry["#{descriptor_name_prefix}\##{id}"] = hash unless id.nil?
 
         # Descend
         unless hash['descriptors'].nil?
           hash['descriptors'].each do |child_id, descriptor|
-            build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, cur_path, child_id, descriptor)
+            build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, child_id, descriptor)
           end
         end
       end
