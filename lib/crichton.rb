@@ -1,5 +1,6 @@
 require 'active_support/all'
 require 'crichton/configuration'
+require 'crichton/registry'
 require 'crichton/descriptor'
 require 'crichton/errors'
 require 'crichton/dice_bag/template'
@@ -32,8 +33,21 @@ module Crichton
     @registries = nil
   end
 
-  def self.registries
-    @registries ||= Crichton::Descriptor::Registries.new
+  def self.registry
+    @registries ||= Crichton::Registry.new
+    @registries.registry
+  end
+
+  ##
+  # Returns the registered resources - version that has local resources de-referenced.
+  #
+  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
+  # descriptors in that location.
+  #
+  # @return [Hash] The registered resource descriptors, if any?
+  def self.raw_registry
+    @registries ||= Crichton::Registry.new
+    @registries.raw_registry
   end
 
   ##
@@ -110,17 +124,6 @@ module Crichton
 
   def self.descriptor_location
     @descriptor_location ||= File.join(root, descriptor_directory)
-  end
-
-  ##
-  # Returns the registered resources - version that has local resources de-referenced.
-  #
-  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
-  # descriptors in that location.
-  #
-  # @return [Hash] The registered resource descriptors, if any?
-  def self.registries
-    @registries ||= Crichton::Descriptor::Registries.new
   end
 
   ##
