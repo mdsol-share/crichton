@@ -5,6 +5,8 @@ from the Ancients.
 
 Checkout the [Documentation][] for more info.
 
+NOTE: THIS IS UNDER HEAVY DEV AND IS NOT READY TO BE USED YET
+
 ## Usage
 Any class can be used to represent a resource by simply including the Crichton::Representor module and specifying the 
 resource it represents defined in an associated _Resource Descriptor_ document:
