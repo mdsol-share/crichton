@@ -10,13 +10,20 @@ module Crichton
     ##
     # This is intended to be used in combination with automatic_load = false in the initializer.
     # It allows (particularly specs to) register a single descriptor document without needing a second stage call.
+    #
+    # @param [Hash, String] resource_descriptor The hashified resource descriptor document or filename of a YAML
+    # resource descriptor document.
     def register_single(resource_descriptor)
       register(resource_descriptor)
       dereference_queued_descriptor_hashes_and_build_registry
     end
 
     ##
-    # Registers a resource descriptor document by name and version.
+    # Registers a resource descriptor document by name and version in the raw registry.
+    # This is intended to be used by build_registry or register_single but in tests could be useful to be called
+    # directly. After all descriptor documents have been registered with this method, call
+    # dereference_queued_descriptor_hashes_and_build_registry to do the dereferencing in the next step.
+    #
     #
     # @param [Hash, String] resource_descriptor The hashified resource descriptor document or filename of a YAML
     # resource descriptor document.
@@ -40,6 +47,9 @@ module Crichton
       add_resource_descriptor_to_registry(hash_descriptor, @raw_registry ||= {})
     end
 
+    ##
+    # Finishes registration by building de-referenced descriptors. The de-referencing only makes sense once all
+    # local descriptor documents have been loaded.
     def dereference_queued_descriptor_hashes_and_build_registry
       @dereference_queue.each do |hash_descriptor|
         # Build hash with resolved local links
