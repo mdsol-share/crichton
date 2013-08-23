@@ -2,9 +2,9 @@ module Crichton
   ##
   # Manages descriptor documents and registers the descriptors
   class Registry
-    def initialize(automatic_load = true)
+    def initialize(args = {})
       @logger = Crichton.logger
-      build_registry if automatic_load
+      build_registry unless args[:automatic_load] == false
     end
 
     ##
@@ -26,7 +26,7 @@ module Crichton
     # @param [Hash, String] resource_descriptors The hashified resource descriptor documents or filenames of YAML
     # resource descriptor documents.
     def register_multiple(resource_descriptors)
-      resource_descriptors.each {|resource_descriptor| register(resource_descriptor)}
+      resource_descriptors.each { |resource_descriptor| register(resource_descriptor) }
       dereference_queued_descriptor_hashes_and_build_registry
     end
 

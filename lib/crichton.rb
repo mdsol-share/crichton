@@ -38,7 +38,7 @@ module Crichton
   #
   # This is mostly relevant for tests or situations in which you do not want the auto-loading to be performed.
   def self.initialize_registry(descriptor_document)
-    @registry = Crichton::Registry.new(false)
+    @registry = Crichton::Registry.new(:automatic_load => false)
     @registry.register_single(descriptor_document)
   end
 

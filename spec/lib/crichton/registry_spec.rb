@@ -9,26 +9,26 @@ module Crichton
         end
 
         it 'loads resource descriptors from a resource descriptor directory if configured' do
-          Registry.new().registry.count.should == 3
+          Registry.new.registry.count.should == 3
         end
       end
 
       context 'without a directory of resource descriptors specified' do
         it 'raises an error' do
-          expect { Registry.new().registry }.to raise_error(/^No resource descriptor directory exists./)
+          expect { Registry.new.registry }.to raise_error(/^No resource descriptor directory exists./)
         end
       end
     end
 
     describe ".register_single" do
       it "accepts a descriptor document" do
-        registry = Registry.new(false)
+        registry = Registry.new(:automatic_load => false)
         registry.register_single(drds_descriptor)
         registry.raw_registry.keys.should == ["drds", "drd"]
       end
 
       it "accepts a filename" do
-        registry = Registry.new(false)
+        registry = Registry.new(:automatic_load => false)
         registry.register_single(drds_filename)
         registry.raw_registry.keys.should == ["drds", "drd"]
       end
@@ -36,26 +36,26 @@ module Crichton
 
     describe ".register_multiple" do
       it "accepts descriptor documents" do
-        registry = Registry.new(false)
+        registry = Registry.new(:automatic_load => false)
         registry.register_multiple([drds_descriptor, leviathans_descriptor])
         registry.raw_registry.keys.should == ["drds", "drd", "leviathan"]
       end
 
       it "accepts filenames" do
-        registry = Registry.new(false)
+        registry = Registry.new(:automatic_load => false)
         registry.register_multiple([drds_filename, leviathans_filename])
         registry.raw_registry.keys.should == ["drds", "drd", "leviathan"]
       end
 
       it "accepts a document and a filename " do
-        registry = Registry.new(false)
+        registry = Registry.new(:automatic_load => false)
         registry.register_multiple([drds_descriptor, leviathans_filename])
         registry.raw_registry.keys.should == ["drds", "drd", "leviathan"]
       end
     end
 
     describe '.register_single' do
-      let(:registry) { Registry.new(false) }
+      let(:registry) { Registry.new(:automatic_load => false) }
 
       it 'returns the registered resource descriptor instance' do
         registry.register_single(drds_descriptor).should be_instance_of(Crichton::Descriptor::Resource)
@@ -119,7 +119,7 @@ module Crichton
     end
 
     describe '.raw_registry' do
-      let(:registry) { Registry.new(false) }
+      let(:registry) { Registry.new(:automatic_load => false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
         registry.raw_registry.should be_empty
@@ -135,7 +135,7 @@ module Crichton
     end
 
     describe '.raw_registry' do
-      let(:registry) { Registry.new(false) }
+      let(:registry) { Registry.new(:automatic_load => false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
         registry.raw_registry.should be_empty
@@ -153,7 +153,7 @@ module Crichton
     end
 
     describe '.registrations?' do
-      let(:registry) { Registry.new(false) }
+      let(:registry) { Registry.new(:automatic_load => false) }
 
       it 'returns false if no resource descriptors are registered' do
         registry.registrations?.should be_false
