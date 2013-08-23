@@ -30,12 +30,12 @@ module Crichton
   ##
   # Clears any registered resource descriptors.
   def self.clear_registries
-    @registries = nil
+    @registry = nil
   end
 
   def self.registry
-    @registries ||= Crichton::Registry.new
-    @registries.registry
+    @registry ||= Crichton::Registry.new
+    @registry.registry
   end
 
   ##
@@ -46,8 +46,8 @@ module Crichton
   #
   # @return [Hash] The registered resource descriptors, if any?
   def self.raw_registry
-    @registries ||= Crichton::Registry.new
-    @registries.raw_registry
+    @registry ||= Crichton::Registry.new
+    @registry.raw_registry
   end
 
   ##
