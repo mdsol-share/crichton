@@ -29,8 +29,17 @@ module Crichton
 
   ##
   # Clears any registered resource descriptors.
-  def self.clear_registries
+  def self.clear_registry
     @registry = nil
+  end
+
+  ##
+  # Explicitly initialize the registry with a particular document (or file name)
+  #
+  # This is mostly relevant for tests or situations in which you do not want the auto-loading to be performed.
+  def self.initialize_registry(descriptor_document)
+    @registry = Crichton::Registry.new(false)
+    @registry.register_single(descriptor_document)
   end
 
   def self.registry

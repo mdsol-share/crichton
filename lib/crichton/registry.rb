@@ -14,9 +14,47 @@ module Crichton
     # @param [Hash, String] resource_descriptor The hashified resource descriptor document or filename of a YAML
     # resource descriptor document.
     def register_single(resource_descriptor)
-      register(resource_descriptor)
+      resource = register(resource_descriptor)
+      dereference_queued_descriptor_hashes_and_build_registry
+      resource
+    end
+
+    ##
+    # This is intended to be used in combination with automatic_load = false in the initializer.
+    # It allows (particularly specs to) register multiple descriptor documents without needing a second stage call.
+    #
+    # @param [Hash, String] resource_descriptors The hashified resource descriptor documents or filenames of YAML
+    # resource descriptor documents.
+    def register_multiple(resource_descriptors)
+      resource_descriptors.each {|resource_descriptor| register(resource_descriptor)}
       dereference_queued_descriptor_hashes_and_build_registry
     end
+
+    ##
+    # Lists the registered resource descriptors that had local links dereferenced.
+    #
+    # @return [Hash] The registered resource descriptors, if any.
+    def registry
+      @registry ||= {}
+    end
+
+    ##
+    # Lists the registered resource descriptors that do not have local links de-referenced.
+    #
+    # @return [Hash] The registered resource descriptors, if any.
+    def raw_registry
+      @raw_registry ||= {}
+    end
+
+    ##
+    # Whether any resource descriptors have been registered or not.
+    #
+    # @return [Boolean] true, if any resource descriptors are registered.
+    def registrations?
+      registry.any?
+    end
+
+    private
 
     ##
     # Registers a resource descriptor document by name and version in the raw registry.
@@ -60,31 +98,6 @@ module Crichton
       @dereference_queue = nil
     end
 
-    ##
-    # Lists the registered resource descriptors that had local links dereferenced.
-    #
-    # @return [Hash] The registered resource descriptors, if any.
-    def registry
-      @registry ||= {}
-    end
-
-    ##
-    # Lists the registered resource descriptors that do not have local links de-referenced.
-    #
-    # @return [Hash] The registered resource descriptors, if any.
-    def raw_registry
-      @raw_registry ||= {}
-    end
-
-    ##
-    # Whether any resource descriptors have been registered or not.
-    #
-    # @return [Boolean] true, if any resource descriptors are registered.
-    def registrations?
-      registry.any?
-    end
-
-    private
 
     # Loads all descriptor documents from the descriptor directory location and processes them
     #
@@ -99,7 +112,7 @@ module Crichton
         # step. Not elegant, but should get the job done.
         dereference_queued_descriptor_hashes_and_build_registry
       else
-        raise "No resource descriptor directory exists. Default is #{descriptor_location}."
+        raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
       end
     end
 
@@ -193,8 +206,7 @@ module Crichton
           @external_descriptor_documents[link] = Net::HTTP.get(URI(link))
         rescue => e
           error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
-          # FIXME: After the refactor, get logger working again.
-          #logger.warn error_message
+          @logger.warn error_message
           raise(Crichton::ExternalProfileLoadError, error_message)
         end
       end

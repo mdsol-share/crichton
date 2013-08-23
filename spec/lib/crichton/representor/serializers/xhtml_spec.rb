@@ -48,7 +48,7 @@ module Crichton
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
-        register_descriptor(drds_descriptor)
+        Crichton.initialize_registry(drds_descriptor)
         DRD.apply_methods
       end
 

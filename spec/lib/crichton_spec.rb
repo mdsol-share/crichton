@@ -42,9 +42,17 @@ describe Crichton do
 
   describe '.clear_registry' do
     it 'clears any registered resource descriptors' do
-      Crichton::Descriptor::Resource.register(drds_descriptor)
+      Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
+      registry_obj = mock('Registry')
+      registry_obj.stub(:registry)
+      # Initializes registry
+      Crichton.registry
+      # Clears registry
       Crichton.clear_registry
-      Crichton::Descriptor::Resource.registry.should be_empty
+      # Don't move this up - the first time around it should use the normal mechanism
+      Crichton::Registry.should_receive(:new).and_return(registry_obj)
+      # Initialize the registry - this being called indicates that the registry was empty.
+      Crichton.registry
     end
   end
   
@@ -112,32 +120,6 @@ describe Crichton do
           ::Sinatra.stub_chain(:settings, :root).and_return(@root)
           Crichton.config_file.should == file_path
         end
-      end
-    end
-  end
-  
-  describe '.registry' do
-    context 'with a directory of resource descriptors specified' do
-      before do
-        Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
-      end
-  
-      it 'loads resource descriptors from a resource descriptor directory if configured' do
-        Crichton.registry.count.should == 3
-      end
-    end
-  
-    context 'without a directory of resource descriptors specified' do
-      it 'returns any manually registered resource descriptors' do
-        resource_descriptor = Crichton::Descriptor::Resource.register(drds_descriptor)
-
-        resource_descriptor.descriptors.each do |descriptor|
-          Crichton.raw_registry[descriptor.id].should == descriptor
-        end
-      end
-  
-      it 'raises an error' do
-        expect { Crichton.registry }.to raise_error(/^No resource descriptor directory exists./)
       end
     end
   end
