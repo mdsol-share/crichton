@@ -26,7 +26,7 @@ describe Lint do
     filename = lint_spec_filename('missing_sections', 'nodescriptors_descriptor.yml')
 
     error1 = "\tERROR: descriptors section missing from " << filename << " descriptor file\n"
-    error2 =  "\tERROR:  At least one resource type must be defined (e.g. object, collection, etc.) in states: and descriptors: sections\n"
+    error2 =  "\tERROR: At least one resource type must be defined (e.g. object, collection, etc.) in states: and descriptors: sections\n"
     errors = error1+ error2
 
     content = capture(:stdout) {
@@ -59,8 +59,8 @@ describe Lint do
   it "display errors when next transitions are missing or empty" do
     filename = lint_spec_filename('state_section_errors', 'missing_and_empty_transitions.yml')
 
-    error1 = "\tERROR:  Empty next property defined for resource drds in state collection, transition self\n"
-    error2 =  "\tERROR:  Empty next property defined for resource drd in state activated, transition self\n"
+    error1 = "\tERROR: Empty next property defined for resource drds in state collection, transition self\n"
+    error2 =  "\tERROR: Empty next property defined for resource drd in state activated, transition self\n"
     errors = error1+ error2
 
     content = capture(:stdout) {
@@ -72,8 +72,8 @@ describe Lint do
   it "display errors when next transitions are pointing to non-existent states" do
     filename = lint_spec_filename('state_section_errors', 'phantom_transitions.yml')
 
-    error1 = "\tERROR:  Next property pointing to a state that is not specified in resource drds, in state navigation, transition action self, next state navegation\n"
-    error2 =  "\tERROR:  Next property pointing to a state that is not specified in resource drd, in state activated, transition action self, next state activate\n"
+    error1 = "\tERROR: Next property pointing to a state that is not specified in resource drds, in state navigation, transition action self, next state navegation\n"
+    error2 =  "\tERROR: Next property pointing to a state that is not specified in resource drd, in state activated, transition action self, next state activate\n"
     errors = error1+ error2
 
     content = capture(:stdout) {
