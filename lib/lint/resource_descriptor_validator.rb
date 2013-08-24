@@ -70,10 +70,8 @@ module Lint
       end
     end
 
-    def report_lint_issues
-      #print out own current errors
-      super.report_lint_issues
-      # if others exist, print out their errors
+    def report
+      report_lint_issues
       @validator_classes.each do |validator|
         validator_subclasses[validator].report_lint_issues
       end

@@ -13,7 +13,7 @@ module Lint
     @rdv.validate(filename)
 
     # once all validations done, output the results
-    @rdv.report_lint_issues
+    @rdv.report
   end
 
 end

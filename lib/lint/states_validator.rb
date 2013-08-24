@@ -26,7 +26,7 @@ module Lint
     end
 
     # core deep dive method looking for missing properties and other syntactical errors down to the transitions of the states: section
-    def self.check_for_required_state_transition_properties
+    def check_for_required_state_transition_properties
       # build a list of states for all secondary descriptors
       states = build_state_list()
 
@@ -39,7 +39,7 @@ module Lint
             curr_state= state[1]
             #16
             add_to_warnings('states.doc_property_missing', :resource => resource_type,
-                          :state => curr_state.name) if curr_state.doc_property.nil?
+                          :state => curr_state.name) unless curr_state.doc
 
             # if a state does not have transitions, then check to see if it has a location property (e.g. deleted, error)
             if  curr_state.transitions.nil?
@@ -56,7 +56,7 @@ module Lint
                             :state => curr_state.name, :transition => curr_transition.name) if  curr_transition.next.nil?
                 #10 Transition next property has no value
                 add_to_errors(errors, 'states.empty_missing_next', :resource => resource_type,
-                                           :state => curr_state.name, :transition => curr_transition.name)
+                                           :state => curr_state.name, :transition => curr_transition.name)  if curr_transition.next && curr_transition.next.empty?
                 #13 Transition conditions property has no value(s)
                 add_to_errors('states.no_conditions_values', :resource => resource_type,
                               :state => curr_state.name, :transition => curr_transition.name) if curr_transition.empty_conditions_set
@@ -73,7 +73,7 @@ module Lint
     end
 
     # Build a comprehensive list of all states in order to test for transitions pointing to nowhere (#11)
-    def self.build_state_list
+    def build_state_list
       state_array = []
       secondary_descriptor_keys.each do |resource_type|
         get_states_for_secondary_descriptor(resource_type).each do |state|
@@ -88,17 +88,17 @@ module Lint
     end
 
     #ugly, gotta be a better way...
-    def self.get_states_for_secondary_descriptor(secondary_descriptor)
+    def get_states_for_secondary_descriptor(secondary_descriptor)
       registry[secondary_descriptor].parent_descriptor.resource_descriptor.states[secondary_descriptor]
     end
 
       #11, check to see if any next transition maps to an existing state. Check for null values at every level.
     # No need to check if the next transition points to an external resource (e.g. 'location')
-    def self.check_for_phantom_state_transitions states, secondary_descriptor, curr_state_name, curr_transition
+    def check_for_phantom_state_transitions states, secondary_descriptor, curr_state_name, curr_transition
       #
       # FIX THIS, STATES MAY BE AN ARRAY. MAYBE CHECK IF NOT A LOCATION INSTEAD
       #
-      if !curr_transition.next.nil? && is_next_transition_a_string?(curr_transition.next_state_name)
+      if curr_transition.next && curr_transition.is_next_a_string?
         add_to_errors('states.phantom_next_property', :secondary_descriptor => secondary_descriptor,
                       :state => curr_state_name,  :transition => curr_transition.name,
                       :next_state => curr_transition.next_state_name) unless states.include?(curr_transition.next_state_name)

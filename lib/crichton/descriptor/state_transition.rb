@@ -35,7 +35,7 @@ module Crichton
       end
 
       def next_state_name
-        self.next.nil? ? nil : self.next[0]
+        self.next ? self.next[0] : nil
       end
 
       def is_next_state_a_location?
@@ -44,6 +44,14 @@ module Crichton
 
       def is_specified_name_property_not_self?
          self.id != self.name && self.name != 'self'  && !is_next_state_a_location?
+      end
+
+      def is_next_a_string?
+        next_state_name.is_a?(String) ? true : false
+      end
+
+      def is_next_transition_a_location?
+        self.next.is_a?(Array) && self.next[0].keys[0] == 'location' ? true : false
       end
 
        ##
