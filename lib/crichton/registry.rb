@@ -4,9 +4,9 @@ module Crichton
   ##
   # Manages descriptor documents and registers the descriptors
   class Registry
-    def initialize(args = {})
+    def initialize(options = {})
       @logger = Crichton.logger
-      build_registry unless args[:automatic_load] == false
+      build_registry unless options[:automatic_load] == false
     end
 
     ##
