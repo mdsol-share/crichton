@@ -34,7 +34,7 @@ module Crichton
     # Lists the registered resource descriptors that had local links dereferenced.
     #
     # @return [Hash] The registered resource descriptors, if any.
-    def registry
+    def descriptor_registry
       @registry ||= {}
     end
 
@@ -42,16 +42,19 @@ module Crichton
     # Lists the registered resource descriptors that do not have local links de-referenced.
     #
     # @return [Hash] The registered resource descriptors, if any.
-    def raw_registry
-      @raw_registry ||= {}
+    def raw_descriptor_registry
+      @raw_descriptor_registry ||= {}
     end
+
+    #TODO: Add
+    # profile_registry and raw_profile_registry
 
     ##
     # Whether any resource descriptors have been registered or not.
     #
     # @return [Boolean] true, if any resource descriptors are registered.
     def registrations?
-      registry.any?
+      descriptor_registry.any?
     end
 
     private
@@ -82,7 +85,7 @@ module Crichton
       # Add the non-dereferenced descriptor document -
       # the de-referencing will need to wait until all IDs are collected.
       add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
-      add_resource_descriptor_to_registry(hash_descriptor, @raw_registry ||= {})
+      add_resource_descriptor_to_registry(hash_descriptor, @raw_descriptor_registry ||= {})
     end
 
     ##
