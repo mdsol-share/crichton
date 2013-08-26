@@ -1,4 +1,4 @@
-require 'crichton/descriptor_dereferencer'
+require 'crichton/descriptor/dereferencer'
 
 module Crichton
   ##
