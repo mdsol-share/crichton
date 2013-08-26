@@ -82,7 +82,7 @@ module Crichton
       it 'returns the resource descriptor registered with the resource name' do
         resource_descriptor = mock('resource_descriptor')
         @resource_name = 'resource'
-        Crichton.stub(:registry).and_return(@resource_name => resource_descriptor)
+        Crichton.stub(:descriptor_registry).and_return(@resource_name => resource_descriptor)
         
         simple_test_class.resource_descriptor.should == resource_descriptor
       end

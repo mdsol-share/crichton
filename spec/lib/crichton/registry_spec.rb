@@ -9,13 +9,13 @@ module Crichton
         end
 
         it 'loads resource descriptors from a resource descriptor directory if configured' do
-          Registry.new.registry.count.should == 3
+          Registry.new.descriptor_registry.count.should == 3
         end
       end
 
       context 'without a directory of resource descriptors specified' do
         it 'raises an error' do
-          expect { Registry.new.registry }.to raise_error(/^No resource descriptor directory exists./)
+          expect { Registry.new.descriptor_registry }.to raise_error(/^No resource descriptor directory exists./)
         end
       end
     end
@@ -24,13 +24,13 @@ module Crichton
       it "accepts a descriptor document" do
         registry = Registry.new(:automatic_load => false)
         registry.register_single(drds_descriptor)
-        registry.raw_registry.keys.should == ["drds", "drd"]
+        registry.raw_descriptor_registry.keys.should == ["drds", "drd"]
       end
 
       it "accepts a filename" do
         registry = Registry.new(:automatic_load => false)
         registry.register_single(drds_filename)
-        registry.raw_registry.keys.should == ["drds", "drd"]
+        registry.raw_descriptor_registry.keys.should == ["drds", "drd"]
       end
     end
 
@@ -38,19 +38,19 @@ module Crichton
       it "accepts descriptor documents" do
         registry = Registry.new(:automatic_load => false)
         registry.register_multiple([drds_descriptor, leviathans_descriptor])
-        registry.raw_registry.keys.should == ["drds", "drd", "leviathan"]
+        registry.raw_descriptor_registry.keys.should == ["drds", "drd", "leviathan"]
       end
 
       it "accepts filenames" do
         registry = Registry.new(:automatic_load => false)
         registry.register_multiple([drds_filename, leviathans_filename])
-        registry.raw_registry.keys.should == ["drds", "drd", "leviathan"]
+        registry.raw_descriptor_registry.keys.should == ["drds", "drd", "leviathan"]
       end
 
       it "accepts a document and a filename " do
         registry = Registry.new(:automatic_load => false)
         registry.register_multiple([drds_descriptor, leviathans_filename])
-        registry.raw_registry.keys.should == ["drds", "drd", "leviathan"]
+        registry.raw_descriptor_registry.keys.should == ["drds", "drd", "leviathan"]
       end
     end
 
@@ -66,7 +66,7 @@ module Crichton
           resource_descriptor = registry.register_single(@descriptor)
 
           resource_descriptor.descriptors.each do |descriptor|
-            registry.raw_registry[descriptor.id].should == descriptor
+            registry.raw_descriptor_registry[descriptor.id].should == descriptor
           end
         end
       end
@@ -122,14 +122,14 @@ module Crichton
       let(:registry) { Registry.new(:automatic_load => false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
-        registry.raw_registry.should be_empty
+        registry.raw_descriptor_registry.should be_empty
       end
 
       it 'returns a hash of registered descriptor instances keyed by descriptor id' do
         resource_descriptor = registry.register_single(drds_descriptor)
 
         resource_descriptor.descriptors.each do |descriptor|
-          registry.raw_registry[descriptor.id].should == descriptor
+          registry.raw_descriptor_registry[descriptor.id].should == descriptor
         end
       end
     end
@@ -138,7 +138,7 @@ module Crichton
       let(:registry) { Registry.new(:automatic_load => false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
-        registry.raw_registry.should be_empty
+        registry.raw_descriptor_registry.should be_empty
       end
 
       it 'returns a hash of registered descriptor instances keyed by descriptor id' do
@@ -147,7 +147,7 @@ module Crichton
         resource_descriptor.descriptors.each do |descriptor|
           # Can't use a direct comparison as we don't get the original rescriptors returned when registering
           # but we can at least test that the names match.
-          registry.raw_registry[descriptor.id].name.should == descriptor.name
+          registry.raw_descriptor_registry[descriptor.id].name.should == descriptor.name
         end
       end
     end

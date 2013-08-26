@@ -44,15 +44,15 @@ describe Crichton do
     it 'clears any registered resource descriptors' do
       Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
       registry_obj = mock('Registry')
-      registry_obj.stub(:registry)
+      registry_obj.stub(:descriptor_registry)
       # Initializes registry
-      Crichton.registry
+      Crichton.descriptor_registry
       # Clears registry
       Crichton.clear_registry
       # Don't move this up - the first time around it should use the normal mechanism
       Crichton::Registry.should_receive(:new).and_return(registry_obj)
       # Initialize the registry - this being called indicates that the registry was empty.
-      Crichton.registry
+      Crichton.descriptor_registry
     end
   end
   

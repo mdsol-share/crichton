@@ -66,7 +66,7 @@ module Crichton
       #
       # @return [Crichton::Descriptor::Detail] The resource descriptor.
       def resource_descriptor
-        Crichton.registry[resource_name]
+        Crichton.descriptor_registry[resource_name]
       end
 
       ##

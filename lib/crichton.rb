@@ -42,9 +42,9 @@ module Crichton
     @registry.register_single(descriptor_document)
   end
 
-  def self.registry
-    @registry ||= Crichton::Registry.new
-    @registry.registry
+  def self.descriptor_registry
+      @registry ||= Crichton::Registry.new
+    @registry.descriptor_registry
   end
 
   ##
@@ -54,9 +54,9 @@ module Crichton
   # descriptors in that location.
   #
   # @return [Hash] The registered resource descriptors, if any?
-  def self.raw_registry
+  def self.raw_descriptor_registry
     @registry ||= Crichton::Registry.new
-    @registry.raw_registry
+    @registry.raw_descriptor_registry
   end
 
   ##
