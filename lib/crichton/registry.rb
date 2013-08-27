@@ -150,8 +150,9 @@ module Crichton
     # Recursive descent
     def build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, id, hash)
       @ids_registry ||= {}
-      if id && @ids_registry.include?(id)
-        raise "Descriptor name #{id} already in ids_registry!"
+      descriptor_name = "#{descriptor_name_prefix}\##{id}"
+      if id && @ids_registry.include?(descriptor_name)
+        raise "Descriptor name #{descriptor_name} already in ids_registry!"
       end
       # Add descriptor to the IDs hash
       @ids_registry["#{descriptor_name_prefix}\##{id}"] = hash unless id.nil?
