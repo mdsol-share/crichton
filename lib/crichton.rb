@@ -43,7 +43,7 @@ module Crichton
   end
 
   def self.descriptor_registry
-      @registry ||= Crichton::Registry.new
+    @registry ||= Crichton::Registry.new
     @registry.descriptor_registry
   end
 
