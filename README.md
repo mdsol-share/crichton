@@ -57,15 +57,19 @@ end
 ```
 ## Crichton Lint
 
-Developing a Hypermedia aware resource, whose behavior is structured within a resource descriptor document, may appear
-daunting at first and the development of a well structured and logically correct resource descriptor document may take several iterations.
+Developing a Hypermedia aware resource, whose behavior is structured within a resource descriptor
+document, may appear daunting at first and the development of a well structured and logically correct
+resource descriptor document may take several iterations.
 
-To help with the development, a lint feature is part of Crichton in order to help catch major and minor errors in the design of the resource descriptor document.
+To help with the development, a lint feature is part of Crichton in order to help catch major and
+minor errors in the design of the resource descriptor document.
 
-Since a resource descriptor document is a .yml file, it first must meet the requirements of a well-formed YAML file. This website is one of many to help check
-to see if the file is well formed: [yaml parser] (http://yaml-online-parser.appspot.com/)
+Since a resource descriptor document is a .yml file, it first must meet the requirements of a
+well-formed YAML file. This website is one of many to help check to see if the file is well
+formed: [yaml parser] (http://yaml-online-parser.appspot.com/)
 
-Crichton lint works to validate the logic of a single resource descriptor file, outputting errors, warning and hints to help generate an optimal document.
+Crichton lint works to validate the logic of a single resource descriptor file, outputting errors, warning
+and hints to help generate an optimal document.
 
 Lint can be invoked in two ways, once crichton is added to your project as a gem:
 
@@ -73,21 +77,26 @@ Lint can be invoked in two ways, once crichton is added to your project as a gem
 
 `bundle exec rdlint <resource desciptor file> `
 
-The file should a path, which is relative to the root of the project. For example, if you're in the root of the project, you can run lint as:
+The file should be a path, which is relative to the root of the project. For example, if you're in the
+root of the project, you can run lint as:
 
-`bundle exec rdlint api_descriptors/my_resource_descriptor_file.yml `    (api_descriptors is a recommended standard folder to place your descriptor files.)
+`bundle exec rdlint api_descriptors/my_resource_descriptor_file.yml ` (api_descriptors is a
+recommended standard folder to place your descriptor files.)
 
 ### Running from rake
 
-lint is also a rake task within the crichton gem. You can invoke lint with `bundle exec rake[<resource descriptor file>]`
+lint is also a rake task within the crichton gem. You can invoke lint with:
+ `bundle exec rake crichton:lint[<resource descriptor file>]`
 
-For those unfamiliar with rake, arguments to rake require brackets. In zsh, you must escape the brackets with \[...\]
+For those unfamiliar with rake, arguments to rake require brackets. In zsh, you must escape
+the brackets with \[...\]
 
 ### Logging
 If you use Rails, then the ```Rails.logger``` should be configured automatically.
 If no logger is configured, the current behavior is to log to STDOUT. You can override it by calling
 ```Crichton.logger = Logger.new("some logging sink")```
-early on. This only works before the first use of the logger - for performance reasons the logger object is cached.
+early on. This only works before the first use of the logger - for performance reasons the logger
+object is cached.
 
 ## Contributing
 See [CONTRIBUTING][] for details.

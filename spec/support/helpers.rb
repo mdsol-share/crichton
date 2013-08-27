@@ -1,5 +1,10 @@
 module Support
   module Helpers
+    module OUT_TYPE
+      ERROR = 1
+      WARNING = 2
+    end
+
     def build_configuration_files(env_vars, template_path)
       directory = File.join(DiceBag::Project.root, template_path)
       Dir::mkdir(directory) unless Dir.exists?(directory)
@@ -111,6 +116,10 @@ module Support
 
     def lint_spec_filename folder, filename
       fixture_path('bad_resource_descriptors', folder,  filename)
+    end
+
+    def expected_output(error_or_warning, key, options = {})
+      ((error_or_warning == OUT_TYPE::ERROR ? "\tERROR: " : "\tWARNING: ") << I18n.t(key, options) << "\n")
     end
 
     private

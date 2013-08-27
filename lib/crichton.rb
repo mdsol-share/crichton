@@ -7,8 +7,6 @@ require 'crichton/dice_bag/template'
 require 'crichton/representor'
 require 'crichton/alps/deserialization'
 
-require 'crichton/rake_lint' if defined?(Rails)
-
 module Crichton
   ##
   # Logger
