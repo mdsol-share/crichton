@@ -32,6 +32,12 @@ module Crichton
         registry.register_single(drds_filename)
         registry.raw_descriptor_registry.keys.should == ["drds", "drd"]
       end
+
+      it "raises an error when duplicate descriptor names are registered" do
+        registry = Registry.new(:automatic_load => false)
+        expect { registry.register_single(fixture_path('broken_resource_descriptors', 'drds_descriptor_v1.yml'))
+          }.to raise_error('Descriptor name DRDs#update-drd already in ids_registry!')
+      end
     end
 
     describe ".register_multiple" do
@@ -51,6 +57,14 @@ module Crichton
         registry = Registry.new(:automatic_load => false)
         registry.register_multiple([drds_descriptor, leviathans_filename])
         registry.raw_descriptor_registry.keys.should == ["drds", "drd", "leviathan"]
+      end
+
+      it "accepts filenames" do
+        registry = Registry.new(:automatic_load => false)
+        expect do
+          registry.register_multiple([fixture_path('resource_descriptors', 'drds_descriptor_v1.yml'),
+            fixture_path('broken_resource_descriptors', 'leviathans_descriptor_v1.yaml')])
+        end.to raise_error('Resource descriptor for drd is already registered.')
       end
     end
 
@@ -114,7 +128,7 @@ module Crichton
 
       it 'raises an error when the resource descriptor is already registered' do
         registry.register_single(drds_descriptor)
-        expect { registry.register_single(drds_descriptor) }.to raise_error(ArgumentError)
+        expect { registry.register_single(drds_descriptor) }.to raise_error(RuntimeError)
       end
     end
 
@@ -162,6 +176,14 @@ module Crichton
       it 'returns true if resource descriptors are registered' do
         registry.register_single(drds_descriptor)
         registry.registrations?.should be_true
+      end
+    end
+
+    describe '.load_external_profile?' do
+      let(:registry) { Registry.new(:automatic_load => false) }
+
+      it 'raises an error when fed a bad link' do
+        expect { registry.send(:load_external_profile, "bad link") }.to raise_error(Crichton::ExternalProfileLoadError)
       end
     end
   end

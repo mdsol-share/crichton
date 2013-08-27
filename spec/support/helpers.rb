@@ -49,12 +49,6 @@ module Support
     def stub_example_configuration
       Crichton.stub(:config).and_return(Crichton::Configuration.new(example_environment_config))
     end
-    
-    def register_descriptor(descriptor)
-      Crichton.clear_registry
-      Crichton::Descriptor::Resource.register(descriptor)
-      Crichton::Descriptor::Resource.dereference_queued_descriptor_hashes_and_build_registry
-    end
 
     def resource_descriptor_fixtures
       fixture_path('resource_descriptors')

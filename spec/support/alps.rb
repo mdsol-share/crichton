@@ -95,5 +95,9 @@ module Support
     def alps_xml
       @alps_xml ||= Nokogiri::XML(File.open(fixture_path('leviathans_alps.xml')))
     end
+
+    def alps_xml_string
+      @alps_xml_string ||= File.open(fixture_path('leviathans_alps.xml'))
+    end
   end
 end
