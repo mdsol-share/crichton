@@ -37,18 +37,26 @@ module Crichton
   # Explicitly initialize the registry with a particular document (or file name)
   #
   # This is mostly relevant for tests or situations in which you do not want the auto-loading to be performed.
+  # @param descriptor_document [Hash or String] Descriptor document hash (loaded YML file) or filename to be registered.
   def self.initialize_registry(descriptor_document)
     @registry = Crichton::Registry.new(:automatic_load => false)
     @registry.register_single(descriptor_document)
   end
 
+  ##
+  # Returns the registered resources - version that has local resources de-referenced.
+  #
+  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
+  # descriptors in that location.
+  #
+  # @return [Hash] The registered resource descriptors, if any?
   def self.descriptor_registry
     @registry ||= Crichton::Registry.new
     @registry.descriptor_registry
   end
 
   ##
-  # Returns the registered resources - version that has local resources de-referenced.
+  # Returns the registered resources - version that does not have the local resources de-referenced.
   #
   # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
   # descriptors in that location.

@@ -2,7 +2,10 @@ module Crichton
   module Descriptor
     class Dereferencer
       ##
-      # ids_
+      # @param ids_registry [Hash] Hash of descriptor document components - the key is the internal link and the value
+      #                            is a branch from the descriptor document hash.
+      # @param load_external_profile [Block] Callback that is used to load an external document and insert it into
+      #                                      the ids_registry.
       def initialize(ids_registry, &load_external_profile)
         @ids_registry = ids_registry
         @load_external_profile = load_external_profile
