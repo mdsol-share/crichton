@@ -36,7 +36,7 @@ module Crichton
     context 'with associated class-level descriptors' do
       before do
         @resource_name = 'drds'
-        register_descriptor(drds_descriptor)
+        Crichton.initialize_registry(drds_descriptor)
       end
       
       describe '.data_semantic_descriptors' do
@@ -75,6 +75,7 @@ module Crichton
     describe '.resource_descriptor' do
       it 'raises an error if no resource name has been defined for the class' do
         Crichton.stub(:registry).and_return({})
+        Crichton.stub(:config_directory).and_return(resource_descriptor_fixtures)
         expect { simple_test_class.resource_descriptor }.to raise_error(Crichton::RepresentorError,
           /^No resource name has been defined.*/)
       end
@@ -82,7 +83,7 @@ module Crichton
       it 'returns the resource descriptor registered with the resource name' do
         resource_descriptor = mock('resource_descriptor')
         @resource_name = 'resource'
-        Crichton.stub(:registry).and_return(@resource_name => resource_descriptor)
+        Crichton.stub(:descriptor_registry).and_return(@resource_name => resource_descriptor)
         
         simple_test_class.resource_descriptor.should == resource_descriptor
       end
@@ -102,7 +103,7 @@ module Crichton
 
     context 'with_registered resource descriptor' do
       before do
-        register_descriptor(drds_descriptor)
+        Crichton.initialize_registry(drds_descriptor)
       end
 
       describe '#each_data_semantic' do

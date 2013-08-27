@@ -40,11 +40,73 @@ describe Crichton do
     end
   end
 
+  describe '.descriptor_registry' do
+    it 'initializes the registry if the registry is not already initialized' do
+      Crichton.clear_registry
+      mock_registry = mock('Registry')
+      mock_registry.stub(:descriptor_registry)
+      Crichton::Registry.should_receive(:new).and_return(mock_registry)
+      Crichton.descriptor_registry
+    end
+
+    it 'calls descriptor_registry on the registry' do
+      Crichton.clear_registry
+      mock_registry = mock('Registry')
+      mock_registry.should_receive(:descriptor_registry)
+      Crichton::Registry.stub(:new).and_return(mock_registry)
+      Crichton.descriptor_registry
+    end
+
+    it 'returns descriptor_registry of the registry' do
+      Crichton.clear_registry
+      mock_registry = mock('Registry')
+      mock_descriptor_registry = mock('descriptor_registry')
+      mock_registry.stub(:descriptor_registry).and_return(mock_descriptor_registry)
+      Crichton::Registry.stub(:new).and_return(mock_registry)
+      Crichton.descriptor_registry.should == mock_descriptor_registry
+    end
+  end
+
+  describe '.raw_descriptor_registry' do
+    it 'initializes the registry if the registry is not already initialized' do
+      Crichton.clear_registry
+      mock_registry = mock('Registry')
+      mock_registry.stub(:raw_descriptor_registry)
+      Crichton::Registry.should_receive(:new).and_return(mock_registry)
+      Crichton.raw_descriptor_registry
+    end
+
+    it 'calls raw_descriptor_registry on the registry' do
+      Crichton.clear_registry
+      mock_registry = mock('Registry')
+      mock_registry.should_receive(:raw_descriptor_registry)
+      Crichton::Registry.stub(:new).and_return(mock_registry)
+      Crichton.raw_descriptor_registry
+    end
+
+    it 'returns raw_descriptor_registry of the registry' do
+      Crichton.clear_registry
+      mock_registry = mock('Registry')
+      mock_descriptor_registry = mock('raw_descriptor_registry')
+      mock_registry.stub(:raw_descriptor_registry).and_return(mock_descriptor_registry)
+      Crichton::Registry.stub(:new).and_return(mock_registry)
+      Crichton.raw_descriptor_registry.should == mock_descriptor_registry
+    end
+  end
+
   describe '.clear_registry' do
     it 'clears any registered resource descriptors' do
-      Crichton::Descriptor::Resource.register(drds_descriptor)
+      Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
+      registry_obj = mock('Registry')
+      registry_obj.stub(:descriptor_registry)
+      # Initializes registry
+      Crichton.descriptor_registry
+      # Clears registry
       Crichton.clear_registry
-      Crichton::Descriptor::Resource.registry.should be_empty
+      # Don't move this up - the first time around it should use the normal mechanism
+      Crichton::Registry.should_receive(:new).and_return(registry_obj)
+      # Initialize the registry - this being called indicates that the registry was empty.
+      Crichton.descriptor_registry
     end
   end
   
@@ -115,30 +177,11 @@ describe Crichton do
       end
     end
   end
-  
-  describe '.registry' do
-    context 'with a directory of resource descriptors specified' do
-      before do
-        Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
-      end
-  
-      it 'loads resource descriptors from a resource descriptor directory if configured' do
-        Crichton.registry.count.should == 3
-      end
-    end
-  
-    context 'without a directory of resource descriptors specified' do
-      it 'returns any manually registered resource descriptors' do
-        resource_descriptor = Crichton::Descriptor::Resource.register(drds_descriptor)
 
-        resource_descriptor.descriptors.each do |descriptor|
-          Crichton.raw_registry[descriptor.id].should == descriptor
-        end
-      end
-  
-      it 'raises an error' do
-        expect { Crichton.registry }.to raise_error(/^No resource descriptor directory exists./)
-      end
+  describe '.descriptor_directory=' do
+    it 'sets the descriptor directory' do
+      Crichton.descriptor_directory = 'test_directory'
+      Crichton.descriptor_directory.should == 'test_directory'
     end
   end
 end

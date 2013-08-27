@@ -1,5 +1,6 @@
 require 'active_support/all'
 require 'crichton/configuration'
+require 'crichton/registry'
 require 'crichton/descriptor'
 require 'crichton/errors'
 require 'crichton/dice_bag/template'
@@ -25,12 +26,45 @@ module Crichton
       end
   end
 
+
   ##
   # Clears any registered resource descriptors.
   def self.clear_registry
     @registry = nil
-    @raw_registry = nil
-    Descriptor::Resource.clear_registry
+  end
+
+  ##
+  # Explicitly initialize the registry with a particular document (or file name)
+  #
+  # This is mostly relevant for tests or situations in which you do not want the auto-loading to be performed.
+  # @param descriptor_document [Hash or String] Descriptor document hash (loaded YML file) or filename to be registered.
+  def self.initialize_registry(descriptor_document)
+    @registry = Crichton::Registry.new(:automatic_load => false)
+    @registry.register_single(descriptor_document)
+  end
+
+  ##
+  # Returns the registered resources - version that has local resources de-referenced.
+  #
+  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
+  # descriptors in that location.
+  #
+  # @return [Hash] The registered resource descriptors, if any?
+  def self.descriptor_registry
+    @registry ||= Crichton::Registry.new
+    @registry.descriptor_registry
+  end
+
+  ##
+  # Returns the registered resources - version that does not have the local resources de-referenced.
+  #
+  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
+  # descriptors in that location.
+  #
+  # @return [Hash] The registered resource descriptors, if any?
+  def self.raw_descriptor_registry
+    @registry ||= Crichton::Registry.new
+    @registry.raw_descriptor_registry
   end
 
   ##
@@ -108,51 +142,6 @@ module Crichton
   def self.descriptor_location
     @descriptor_location ||= File.join(root, descriptor_directory)
   end
-
-  ##
-  # Returns the registered resources - version that has local resources de-referenced.
-  #
-  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
-  # descriptors in that location.
-  #
-  # @return [Hash] The registered resource descriptors, if any?
-  def self.registry
-    @registry ||= begin
-      build_registry if Descriptor::Resource.registry.empty?
-      Descriptor::Resource.registry
-    end
-  end
-
-  ##
-  # Returns the registered resources - raw version that does not have local resources de-referenced.
-  #
-  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
-  # descriptors in that location.
-  #
-  # @return [Hash] The registered raw resource descriptors, if any?
-  def self.raw_registry
-    @raw_registry ||= begin
-      build_registry if Descriptor::Resource.raw_registry.empty?
-      Descriptor::Resource.raw_registry
-    end
-  end
-
-  def self.build_registry
-    unless Descriptor::Resource.registrations?
-      if File.exists?(location = descriptor_location)
-        Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
-          Descriptor::Resource.register(YAML.load_file(f))
-        end
-        # The above register step works on a per-file basis. If a early file references a later file, it won't be
-        # able to dereference the data. So in order to handle this, the dereferencing needs to be done in a later
-        # step. Not elegant, but should get the job done.
-        Descriptor::Resource.dereference_queued_descriptor_hashes_and_build_registry
-      else
-        raise "No resource descriptor directory exists. Default is #{descriptor_location}."
-      end
-    end
-  end
-  private_class_method :build_registry
 
   ##
   # The root directory of parent project.
