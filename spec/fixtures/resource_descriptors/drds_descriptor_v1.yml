@@ -14,7 +14,7 @@ version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: DRDs
-  help: documentation_base/Things/DRDs
+  help: Things/DRDs
  
 # This section associates a simple state-machine DSL with the particular resource. It shows
 # the state name and lists the data and application affordances available in that state, 
@@ -181,7 +181,7 @@ descriptors:
             href: update-drd # Indicates that this should dereference update-drd
             links:
               self: DRDs#create-drd
-              help: documentation_base/Forms/create-drd
+              help: Forms/create-drd
             descriptors:
               form-name:
                 name: name
@@ -278,7 +278,7 @@ descriptors:
             type: semantic
             links:
               self: DRDs#drd/update/update-drd
-              help: documentation_base/Forms/update-drd
+              help: Forms/update-drd
             descriptors:
               form-status:
                 type: semantic

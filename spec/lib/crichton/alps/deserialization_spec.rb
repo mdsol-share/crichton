@@ -9,8 +9,8 @@ module Crichton
           deserialized_hash = deserializer.to_hash
           deserialized_hash.should include({
             "links" => {
-              "self" => "alps_base/Leviathans",
-              "help" => "documentation_base/Things/Leviathans"
+              "self" => "http://alps.example.com/Leviathans",
+              "help" => "http://docs.example.org/Things/Leviathans"
               }
             })
         end

@@ -74,7 +74,7 @@ module Crichton
     
     describe '.resource_descriptor' do
       it 'raises an error if no resource name has been defined for the class' do
-        Crichton.stub(:registry).and_return({})
+        Crichton.stub(:descriptor_registry).and_return({})
         Crichton.stub(:config_directory).and_return(resource_descriptor_fixtures)
         expect { simple_test_class.resource_descriptor }.to raise_error(Crichton::RepresentorError,
           /^No resource name has been defined.*/)

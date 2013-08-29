@@ -68,10 +68,12 @@ module Crichton
                              {'value' => alps_value }
                            end
                          when EXT_ELEMENT
-                           alps_value
+                           convert_ext_element_hrefs(alps_value)
                          when LINK_ELEMENT
                            unless alps_value.empty?
-                             alps_value.values.map { |link| {'rel' => link.rel, 'href' => link.href} } 
+                             alps_value.values.map do |link|
+                                 {'rel' => link.rel, 'href' => absolute_link(link.href, link.rel)}
+                               end
                            end
                          end
 
@@ -153,7 +155,35 @@ module Crichton
           end
         end
       end
-      
+
+      def config
+        @config ||= Crichton.config
+      end
+
+      def absolute_link(orig_link, rel)
+        if (['Array'].include? orig_link) || orig_link.starts_with?('http')
+          return orig_link
+        end
+
+        base_uri = rel == 'help' ? config.documentation_base_uri : config.alps_base_uri
+        return "#{base_uri}/#{orig_link}"
+      end
+
+      def convert_ext_element_hrefs(ext_elem)
+        if ext_elem.is_a?(Array)
+          ext_elem.each {|eae| convert_ext_element_hash_hrefs(eae) }
+        end
+        convert_ext_element_hash_hrefs(ext_elem)
+        ext_elem
+      end
+
+      def convert_ext_element_hash_hrefs(ext_elem)
+        if ext_elem.is_a?(Hash) && ext_elem.include?('href')
+          ext_elem['href'] = absolute_link(ext_elem['href'], nil)
+        end
+
+      end
+
       def add_xml_descriptors(builder)
         descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true}) }
       end

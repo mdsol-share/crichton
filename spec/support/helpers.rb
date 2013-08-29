@@ -73,7 +73,7 @@ module Support
         describe '#to_alps_hash' do
           context 'without options' do
             it 'returns a hash in an ALPS profile structure' do
-              descriptor.to_alps_hash.should == alps_profile
+              descriptor.to_alps_hash.should == alps_profile_with_absolute_links
             end
           end
   
@@ -89,7 +89,7 @@ module Support
         describe '#to_json' do
           context 'without options' do
             it 'returns a JSON ALPS profile structure' do
-              JSON.parse(descriptor.to_json).should == alps_profile
+              JSON.parse(descriptor.to_json).should == alps_profile_with_absolute_links
             end
           end
   
