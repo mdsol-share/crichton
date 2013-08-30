@@ -78,7 +78,8 @@ module Lint
         #13 Transition conditions property has no value(s)
         add_error('states.no_conditions_values', options) if curr_transition.missing_condition_item?
         #11
-        check_for_phantom_state_transitions(states_list, resource_name, state_name, curr_transition) if curr_transition.next
+        check_for_phantom_state_transitions(states_list, resource_name, state_name,
+          curr_transition) if curr_transition.next
         #14
         add_warning('states.no_self_property', options) if curr_transition.is_specified_name_property_not_self?
       end
