@@ -96,7 +96,7 @@ module Lint
 
     # Here we test if the next state of this transition exists in our pre-built list of all states
     # No need to test for next states that are external to this doc (e.g. having a location property)
-    def valid_next_state (states_list, curr_transition, next_state)
+    def valid_next_state(states_list, curr_transition, next_state)
       return  true if curr_transition.is_next_state_a_location?
       states_list.include?(next_state)
     end
