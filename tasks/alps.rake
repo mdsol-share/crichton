@@ -1,7 +1,7 @@
 require 'rake'
 require 'rake/clean'
 
-FILE_EXTENSION_TO_METHOD_MAPPING = {'xml' => :to_xml, 'json' => :to_json}
+FILE_EXTENSION_TO_METHOD_MAPPING = {xml: :to_xml, json: :to_json}
 
 begin
   namespace :alps do
