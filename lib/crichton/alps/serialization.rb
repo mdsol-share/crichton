@@ -1,5 +1,6 @@
 require 'json'
 require 'multi_json'
+require 'addressable/uri'
 
 module Crichton
   module ALPS
