@@ -92,4 +92,4 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt: *slt1
+

@@ -47,10 +47,6 @@ module Crichton
         next_state_name.is_a?(String)
       end
 
-      def is_next_transition_a_location?
-        self.next.is_a?(Array) && self.next[0].keys[0] == 'location' ? true : false
-      end
-
       ##
       # Whether the transition is available for the specified options.
       #

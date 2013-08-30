@@ -78,7 +78,7 @@ module Lint
         #13 Transition conditions property has no value(s)
         add_error('states.no_conditions_values', options) if curr_transition.missing_condition_item?
         #11
-        check_for_phantom_state_transitions(states_list, resource_name, state_name, curr_transition)
+        check_for_phantom_state_transitions(states_list, resource_name, state_name, curr_transition) if curr_transition.next
         #14
         add_warning('states.no_self_property', options) if curr_transition.is_specified_name_property_not_self?
       end
@@ -87,14 +87,18 @@ module Lint
     #11, check to see if any next transition maps to an existing state. Check for null values at every level.
     # No need to check if the next transition points to an external resource (e.g. 'location')
     def check_for_phantom_state_transitions(states_list, resource_name, curr_state_name, curr_transition)
-      #
-      # TODO: STATES MAY BE AN ARRAY. MAYBE CHECK IF NOT A LOCATION INSTEAD
-      #
-      if curr_transition.next && curr_transition.is_next_a_string?
+      curr_transition.next.each do |next_state|
         add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
-          transition: curr_transition.name, next_state: curr_transition.next_state_name,
-          filename: filename) unless states_list.include?(curr_transition.next_state_name)
+          transition: curr_transition.name, next_state: next_state,
+          filename: filename) unless valid_next_state(states_list,curr_transition, next_state)
       end
+    end
+
+    # Here we test if the next state of this transition exists in our pre-built list of all states
+    # No need to test for next states that are external to this doc (e.g. having a location property)
+    def valid_next_state (states_list, curr_transition, next_state)
+      return  true if curr_transition.is_next_state_a_location?
+      states_list.include?(next_state)
     end
   end
 end
