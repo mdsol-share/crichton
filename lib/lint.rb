@@ -10,7 +10,7 @@ module Lint
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
   def self.validate(filename)
     # Initialize lint messages
-    I18n.load_path = *File.expand_path('lint/eng.yml', __FILE__)
+    I18n.load_path = [File.dirname(__FILE__)+'/lint/eng.yml']
     I18n.default_locale = 'eng'
 
     # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.

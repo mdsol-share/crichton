@@ -69,7 +69,7 @@ module Lint
 
       curr_state.transitions.each do |transition|
         curr_transition = transition[1]
-        options = {resource: resource_name, state: state_name, transition: curr_transition.name,
+        options = {resource: resource_name, state: state_name, transition: curr_transition.id,
                    filename: filename}
         #9
         add_error('states.next_property_missing', options) unless curr_transition.next

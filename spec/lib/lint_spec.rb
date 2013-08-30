@@ -15,8 +15,8 @@ describe Lint do
   it "display a missing states section error when the states section is missing" do
     filename = lint_spec_filename('missing_sections', 'nostate_descriptor.yml')
     content = capture(:stdout) { Lint.validate(filename) }
-    content.should == expected_output(:error, 'catastrophic.section_missing',
-      section: 'states', filename: filename)
+    error = expected_output(:error, 'catastrophic.section_missing', section: 'states', filename: filename)
+    content.should == error
   end
 
   it "display missing descriptor errors when the descriptor section is missing" do
@@ -33,16 +33,17 @@ describe Lint do
   it "display a missing protocols section error when the protocols section is missing" do
     filename = lint_spec_filename('missing_sections', 'noprotocols_descriptor.yml')
     content = capture(:stdout) { Lint.validate(filename) }
-    content.should == expected_output(:error, 'catastrophic.section_missing',
-      section: 'protocols', filename: filename)
+    error = expected_output(:error, 'catastrophic.section_missing', section: 'protocols', filename: filename)
+    content.should == error
   end
 
   it "display warnings correlating to self: and doc: issues when they are found in a descriptor file" do
     filename = lint_spec_filename('state_section_errors', 'condition_doc_and_self_errors.yml')
 
     warnings = expected_output(:warning, 'states.no_self_property', resource: 'drds',
-      state: 'collection', transition: 'list') <<
-      expected_output(:warning, 'states.doc_property_missing', resource: 'drd', state: 'activated')
+      state: 'collection', transition: 'list',  filename: filename) <<
+      expected_output(:warning, 'states.doc_property_missing', resource: 'drd', state: 'activated',
+      filename: filename)
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == warnings
@@ -52,9 +53,9 @@ describe Lint do
     filename = lint_spec_filename('state_section_errors', 'missing_and_empty_transitions.yml')
 
     errors = expected_output(:error, 'states.empty_missing_next', resource: 'drds',
-      state: 'collection', transition: 'self') <<
+      state: 'collection', transition: 'list',  filename: filename) <<
       expected_output(:error, 'states.empty_missing_next', resource: 'drd',
-      state: 'activated', transition: 'self')
+      state: 'activated', transition: 'show',  filename: filename)
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
@@ -64,9 +65,9 @@ describe Lint do
     filename = lint_spec_filename('state_section_errors', 'phantom_transitions.yml')
 
     errors = expected_output(:error, 'states.phantom_next_property', secondary_descriptor: 'drds',
-      state: 'navigation', transition: 'self', next_state: 'navegation') <<
+      state: 'navigation', transition: 'self', next_state: 'navegation',  filename: filename) <<
       expected_output(:error, 'states.phantom_next_property', secondary_descriptor: 'drd',
-      state: 'activated', transition: 'self', next_state: 'activate')
+      state: 'activated', transition: 'self', next_state: 'activate',  filename: filename)
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
