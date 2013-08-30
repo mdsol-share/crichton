@@ -1,3 +1,5 @@
+require 'addressable/uri'
+
 module Crichton
   module Descriptor
     class Dereferencer
@@ -15,14 +17,15 @@ module Crichton
         new_hash = {}
         hash.each do |k, v|
           if k == 'href'
-            # If the URL starts with 'http' then it is an external URL. So we need to do a little more work.
-            if v.start_with?('http')
+            url = Addressable::URI.parse(v)
+            # If the URL is absolute then it is an external URL. So we need to do a little more work.
+            if url.absolute?
               # External link
               # Load external profile (if possible) and add it to the IDs registry
               @load_external_profile.call(v)
               # In case of an external link, the link 'as is' is taken as the key.
               v_with_prefix = v
-            elsif v.include? '#'
+            elsif url.fragment
               # Semi-local (other descriptor file but still local) link with a # fragment in it
               v_with_prefix = v
             else
