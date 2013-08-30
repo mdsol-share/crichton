@@ -181,7 +181,6 @@ module Crichton
         if ext_elem.is_a?(Hash) && ext_elem.include?('href')
           ext_elem['href'] = absolute_link(ext_elem['href'], nil)
         end
-
       end
 
       def add_xml_descriptors(builder)
