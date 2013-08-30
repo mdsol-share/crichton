@@ -161,10 +161,9 @@ module Crichton
       end
 
       def absolute_link(orig_link, rel)
-        if (['Array'].include? orig_link) || orig_link.starts_with?('http')
+        if Addressable::URI.parse(orig_link).absolute?
           return orig_link
         end
-
         base_uri = rel == 'help' ? config.documentation_base_uri : config.alps_base_uri
         return "#{base_uri}/#{orig_link}"
       end
