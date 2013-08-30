@@ -163,10 +163,10 @@ module Crichton
 
       def absolute_link(orig_link, rel)
         if Addressable::URI.parse(orig_link).absolute?
-          return orig_link
+          orig_link
+        else
+          "#{rel == 'help' ? config.documentation_base_uri : config.alps_base_uri}/#{orig_link}"
         end
-        base_uri = rel == 'help' ? config.documentation_base_uri : config.alps_base_uri
-        return "#{base_uri}/#{orig_link}"
       end
 
       def convert_ext_element_hrefs(ext_elem)
