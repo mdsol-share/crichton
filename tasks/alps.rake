@@ -1,7 +1,6 @@
 require 'rake'
 require 'rake/clean'
 
-require 'pry'
 
 begin
   namespace :alps do

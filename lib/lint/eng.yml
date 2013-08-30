@@ -1,0 +1,29 @@
+eng:
+  catastrophic:
+    no_secondary_descriptors: "At least one resource type must be defined (e.g. object, collection, etc.) in states: and descriptors: sections in file '%{filename}'"
+    no_states: "No states defined for resource '%{resource}' in file '%{filename}'"
+    no_descriptors: "No descriptors defined for resource '%{resource}' in file '%{filename}'"
+    no_protocols: "No protocol section found in file '%{filename}'"
+    cant_load_file: "Unable to load descriptor file '%{filename}': %{exception_message}"
+    section_missing: "'%{section}' section missing from '%{filename}' descriptor file"
+    cant_register: "Unable to process registry file '%{filename}': %{exception_message}"
+    missing_main_id: "Top level id property is missing from descriptor file '%{filename}'"
+  profile:
+    missing_version: "Tops level version property is missing from descriptor file '%{filename}'"
+    missing_doc: "Tops level doc property is missing from descriptor file '%{filename}'"
+    missing_self: "Top level links:self property is missing from descriptor file '%{filename}'"
+    missing_help: "Top level links:help property is missing from descriptor file '%{filename}'"
+  states:
+    empty_missing_next: "Empty next property defined for resource '%{resource}' in state '%{state}', transition '%{transition}' in file '%{filename}'"
+    no_resource_states: "No state defined for resource '%{resource}' in file '%{filename}'"
+    doc_property_missing:  "Resource '%{resource}', state '%{state}' does not have a doc property in file '%{filename}'"
+    location_property_missing: "No location property defined for resource '%{resource}' in state '%{state}' in file '%{filename}'"
+    next_property_missing: "No next property defined for resource '%{resource}' in state '%{state}', transition '%{transition}' in file '%{filename}'"
+    no_conditions_values: "Condition property has no values for resource '%{resource}' in state '%{state}', transition '%{transition}' in file '%{filename}'. Add conditions or delete this key."
+    no_self_property: "Resource '%{resource}', state '%{state}', transition '%{transition}' name property is not 'self' in file '%{filename}'"
+    phantom_next_property: "Next property pointing to a state that is not specified in resource '%{secondary_descriptor}', in state '%{state}', transition action '%{transition}', next state '%{next_state}' in file '%{filename}'"
+    duplicate_state: "Duplicate state found in state section: '%{state}' for resource '%{resource}'"
+  descriptors:
+  protocols:
+    no_media_types:  "No protocol media type section defined in file '%{filename}'"
+  aok: "Resource descriptor file passes lint validation."

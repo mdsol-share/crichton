@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "bundler"
+
+Bundler.setup
+
+require 'optparse'
+
+$options = {}
+optparse = OptionParser.new do |opts|
+  opts.banner = "Usage: rdlint <descriptor file name>"
+end
+
+require File.expand_path('../lib/lint', __FILE__)
+
+optparse.parse!
+# go for single file linting for now...
+unless ARGV.length == 1
+	abort optparse.to_s
+end
+
+# lint the individual file
+Lint.validate ARGV[0]

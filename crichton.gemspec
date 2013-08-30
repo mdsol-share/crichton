@@ -12,7 +12,8 @@ Gem::Specification.new do |s|
   s.files         = ['lib/**/*', 'spec/**/*', 'tasks/**/*', '[A-Z]*'].map { |glob| Dir[glob] }.inject([], &:+)
   s.require_paths = ['lib']
   s.rdoc_options  = ['--main', 'README.md']
-  
+  s.executables   = ['rdlint']
+
   s.description   = <<-DESC
     Crichton is a library to simplify generating and consuming Hypermedia API responses.
   DESC
