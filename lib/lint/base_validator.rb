@@ -1,19 +1,20 @@
 require 'crichton'
+require 'lint'
+require 'i18n'
 
 module Lint
   class BaseValidator
 
     attr_accessor :errors
     attr_accessor :warnings
-    cattr_accessor :validator_subclasses
+    attr_accessor :resource_descriptor
+    attr_accessor :filename
 
-    self.validator_subclasses = {}
-
-    def initialize(resource_desc = {})
+    def initialize(filename, resource_descriptor)
       @warnings = []
       @errors = []
-      @resource_descriptor = resource_desc
-      setup_internationalization_messages
+      @filename = filename
+      @resource_descriptor = resource_descriptor
     end
 
     def add_error(message, options = {})
@@ -34,19 +35,13 @@ module Lint
       raise "Abstract method #validate must be overridden in #{self.class.name}."
     end
 
-    def found_issues?
+    def issues?
       errors.any? || warnings.any?
     end
 
     protected
-    # here we use il8n to spit out all error and warning messages found in eng.yml
-    def setup_internationalization_messages
-      I18n.load_path = [File.dirname(__FILE__)+'/eng.yml']
-      I18n.default_locale = 'eng'
-    end
-
     def secondary_descriptors
-      @resource_descriptor.descriptors
+      resource_descriptor.descriptors
     end
   end
 end

@@ -16,36 +16,35 @@ module Lint
     begin
       yml_output = YAML.load_file(filename)
       resource_descriptor = Crichton::Descriptor::Resource.new(yml_output)
-    rescue Exception => e
-      puts I18n.t('catastrophic.cant_load_file', :filename => filename, :exception_message => e.message)
+    rescue StandardError => e
+      puts I18n.t('catastrophic.cant_load_file', filename: filename, exception_message: e.message)
       return
     end
 
     # the resource descriptor validator checks a lot of top level resource issues
-    resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename, yml_output)
-    resource_validator.validate()
+    resource_validator = ResourceDescriptorValidator.new(filename, resource_descriptor)
+    resource_validator.validate
 
     if resource_validator.errors.any?
-      # any errors caught at this point  are so catastrophic that it won't be useful to continue
+      # any errors caught at this point are so catastrophic that it won't be useful to continue
       resource_validator.report
       return [resource_validator]
     end
 
     validators = []
-    validators << resource_validator
 
-    validators << StatesValidator.new(resource_descriptor)
-    validators << DescriptorsValidator.new(resource_descriptor)
-    validators << ProtocolValidator.new(resource_descriptor)
+    validators << StatesValidator.new(filename, resource_descriptor)
+    validators << DescriptorsValidator.new(filename, resource_descriptor)
+    validators << ProtocolValidator.new(filename, resource_descriptor)
 
-      validators.tap do |validators|
-        validators.each do |validator|
-            validator.validate unless validator.class.name == 'Lint::ResourceDescriptorValidator'
-            validator.report
-          end
-      end
+    validators.each do |validator|
+      validator.validate
+      validator.report
+    end
 
     puts I18n.t('aok') unless errors_and_warnings_found?(validators)
+
+    validators << resource_validator
   end
 
   def self.setup_internationalization_messages
@@ -53,12 +52,9 @@ module Lint
     I18n.default_locale = 'eng'
   end
 
-
+  private
   def self.errors_and_warnings_found?(validators)
-    validators.each do |validator|
-          return true if validator.found_issues?
-    end
-    false
+    validators.any? { |validator| validator.issues? }
   end
 end
 

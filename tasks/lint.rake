@@ -7,8 +7,8 @@ namespace :crichton do
      puts "Linting file: "+args[:rd_file]
      begin
         Lint.validate args[:rd_file]
-     rescue Exception => e
-       puts "Lint exception: "+e.message
+     rescue StandardError => e
+       puts "Lint exception: #{e.message}"
     end
   end
 end

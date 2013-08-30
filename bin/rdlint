@@ -12,7 +12,7 @@ optparse = OptionParser.new do |opts|
   opts.banner = "Usage: rdlint <descriptor file name>"
 end
 
-require File.dirname(__FILE__)+'/../lib/lint'
+require File.expand_path('../lib/lint', __FILE__)
 
 optparse.parse!
 # go for single file linting for now...

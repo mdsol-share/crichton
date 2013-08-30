@@ -75,13 +75,13 @@ Lint can be invoked in two ways, once crichton is added to your project as a gem
 
 ### A lint gem ruby executable  (rdlint)
 
-`bundle exec rdlint <resource desciptor file> `
+`bundle exec rdlint <resource desciptor file>`
 
 The file should be a path, which is relative to the root of the project. For example, if you're in the
 root of the project, you can run lint as:
 
-`bundle exec rdlint api_descriptors/my_resource_descriptor_file.yml ` (api_descriptors is a
-recommended standard folder to place your descriptor files.)
+`bundle exec rdlint api_descriptors/my_resource_descriptor_file.yml` (api_descriptors is a
+possible standard folder to place descriptor files.)
 
 ### Running from rake
 

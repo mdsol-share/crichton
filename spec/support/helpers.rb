@@ -1,9 +1,5 @@
 module Support
   module Helpers
-    module OUT_TYPE
-      ERROR = 1
-      WARNING = 2
-    end
 
     def build_configuration_files(env_vars, template_path)
       directory = File.join(DiceBag::Project.root, template_path)
@@ -19,7 +15,7 @@ module Support
     def drds_descriptor
       YAML.load_file(drds_filename)
     end
-    
+
     def register_drds_descriptor
       Crichton.clear_registry
       Crichton.initialize_registry(drds_descriptor)
@@ -36,7 +32,7 @@ module Support
     def drds_styled_microdata_html
       @drds_styled__microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata.html')))
     end
-    
+
     def example_environment_config
       %w(alps deployment discovery documentation).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
@@ -50,7 +46,7 @@ module Support
     def leviathans_filename
       fixture_path('resource_descriptors', 'leviathans_descriptor_v1.yaml')
     end
-    
+
     def stub_example_configuration
       Crichton.stub(:config).and_return(Crichton::Configuration.new(example_environment_config))
     end
@@ -72,7 +68,7 @@ module Support
         descriptor.should respond_to(:transitions)
       end
     end
-    
+
     shared_examples_for 'it serializes to ALPS' do
       context 'when hash' do
         describe '#to_alps_hash' do
@@ -81,7 +77,7 @@ module Support
               descriptor.to_alps_hash.should == alps_profile
             end
           end
-  
+
           context 'with top_level option false' do
             it 'returns a hash in an ALPS descriptor structure' do
               descriptor.to_alps_hash(top_level: false)['alps'].should be_nil
@@ -89,7 +85,7 @@ module Support
           end
         end
       end
-      
+
       context 'when JSON' do
         describe '#to_json' do
           context 'without options' do
@@ -97,7 +93,7 @@ module Support
               JSON.parse(descriptor.to_json).should == alps_profile
             end
           end
-  
+
           context 'with pretty option true' do
             it 'returns a json alps profile pretty-formatted' do
               MultiJson.should_receive(:dump).with(descriptor.to_alps_hash, pretty: true)
@@ -106,7 +102,7 @@ module Support
           end
         end
       end
-      
+
       context 'when XML' do
         it 'returns an XML ALPS profile structure' do
           descriptor.to_xml.should be_equivalent_to(alps_xml)
@@ -114,12 +110,12 @@ module Support
       end
     end
 
-    def lint_spec_filename folder, filename
-      fixture_path('bad_resource_descriptors', folder,  filename)
+    def lint_spec_filename(folder, filename)
+      fixture_path('bad_resource_descriptors', folder, filename)
     end
 
     def expected_output(error_or_warning, key, options = {})
-      ((error_or_warning == OUT_TYPE::ERROR ? "\tERROR: " : "\tWARNING: ") << I18n.t(key, options) << "\n")
+      ((error_or_warning == :error ? "\tERROR: " : "\tWARNING: ") << I18n.t(key, options) << "\n")
     end
 
     private

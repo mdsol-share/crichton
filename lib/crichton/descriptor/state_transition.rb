@@ -15,8 +15,8 @@ module Crichton
       end
 
       # distinguish non-existent condition statement from empty condition set
-      def empty_conditions_set
-        descriptor_document['conditions'].nil? ? false : descriptor_document['conditions'].empty?
+      def missing_condition_item?
+        descriptor_document['conditions'] && conditions.empty?
       end
 
       ##
@@ -36,7 +36,7 @@ module Crichton
       end
 
       def is_next_state_a_location?
-        next_state_name.nil? ? false : next_state_name.is_a?(Hash) && next_state_name.keys[0] == 'location'
+        self.next.any? { |next_state| next_state.is_a?(Hash) && next_state['location']  }
       end
 
       def is_specified_name_property_not_self?
@@ -44,7 +44,7 @@ module Crichton
       end
 
       def is_next_a_string?
-        next_state_name.is_a?(String) ? true : false
+        next_state_name.is_a?(String)
       end
 
       def is_next_transition_a_location?
