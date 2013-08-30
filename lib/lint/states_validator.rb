@@ -17,7 +17,7 @@ module Lint
       #7,8 Check for second level egregious errors
       resource_descriptor.states.each do |descriptor|
         add_error('catastrophic.no_states', resource: descriptor[0],
-                  filename: filename) if secondary_descriptor_states(descriptor).empty?
+          filename: filename) if secondary_descriptor_states(descriptor).empty?
       end
     end
 
@@ -55,7 +55,7 @@ module Lint
         secondary_descriptor_states(secondary_descriptor).each do |state|
           if state_array.include?(state)
             add_error('states.duplicate_state', resource: secondary_descriptor[0],
-                      state: state, filename: filename)
+              state: state, filename: filename)
           else
             state_array << state[0]
           end
@@ -70,7 +70,7 @@ module Lint
       curr_state.transitions.each do |transition|
         curr_transition = transition[1]
         options = {resource: resource_name, state: state_name, transition: curr_transition.id,
-                   filename: filename}
+          filename: filename}
         #9
         add_error('states.next_property_missing', options) unless curr_transition.next
         #10 Transition next property has no value
@@ -92,8 +92,8 @@ module Lint
       #
       if curr_transition.next && curr_transition.is_next_a_string?
         add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
-                  transition: curr_transition.name, next_state: curr_transition.next_state_name,
-                  filename: filename) unless states_list.include?(curr_transition.next_state_name)
+          transition: curr_transition.name, next_state: curr_transition.next_state_name,
+          filename: filename) unless states_list.include?(curr_transition.next_state_name)
       end
     end
   end
