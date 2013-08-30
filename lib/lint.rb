@@ -9,8 +9,9 @@ require 'lint/protocol_validator'
 module Lint
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
   def self.validate(filename)
-
-    setup_internationalization_messages
+    # Initialize lint messages
+    I18n.load_path = *File.expand_path('lint/eng.yml', __FILE__)
+    I18n.default_locale = 'eng'
 
     # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.
     begin
@@ -22,7 +23,7 @@ module Lint
     end
 
     # the resource descriptor validator checks a lot of top level resource issues
-    resource_validator = ResourceDescriptorValidator.new(filename, resource_descriptor)
+    resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename)
     resource_validator.validate
 
     if resource_validator.errors.any?
@@ -33,9 +34,9 @@ module Lint
 
     validators = []
 
-    validators << StatesValidator.new(filename, resource_descriptor)
-    validators << DescriptorsValidator.new(filename, resource_descriptor)
-    validators << ProtocolValidator.new(filename, resource_descriptor)
+    validators << StatesValidator.new(resource_descriptor, filename)
+    validators << DescriptorsValidator.new(resource_descriptor, filename)
+    validators << ProtocolValidator.new(resource_descriptor, filename)
 
     validators.each do |validator|
       validator.validate
@@ -47,14 +48,8 @@ module Lint
     validators << resource_validator
   end
 
-  def self.setup_internationalization_messages
-    I18n.load_path = [File.dirname(__FILE__)+'/lint/eng.yml']
-    I18n.default_locale = 'eng'
-  end
-
   private
   def self.errors_and_warnings_found?(validators)
     validators.any? { |validator| validator.issues? }
   end
 end
-

@@ -5,24 +5,16 @@ require 'i18n'
 module Lint
   class BaseValidator
 
-    attr_accessor :errors
-    attr_accessor :warnings
-    attr_accessor :resource_descriptor
-    attr_accessor :filename
+    attr_reader :errors
+    attr_reader :warnings
+    attr_reader :resource_descriptor
+    attr_reader :filename
 
-    def initialize(filename, resource_descriptor)
+    def initialize(resource_descriptor, filename)
       @warnings = []
       @errors = []
       @filename = filename
       @resource_descriptor = resource_descriptor
-    end
-
-    def add_error(message, options = {})
-      @errors << I18n.t(message, options)
-    end
-
-    def add_warning(message, options = {})
-      @warnings << I18n.t(message, options)
     end
 
     #When the dust settles, print out the results of the lint analysis
@@ -40,6 +32,14 @@ module Lint
     end
 
     protected
+    def add_error(message, options = {})
+      @errors << I18n.t(message, options)
+    end
+
+    def add_warning(message, options = {})
+      @warnings << I18n.t(message, options)
+    end
+
     def secondary_descriptors
       resource_descriptor.descriptors
     end

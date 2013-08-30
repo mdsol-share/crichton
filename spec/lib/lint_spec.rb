@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'lint'
-require 'i18n'
 
 describe Lint do
   before do
