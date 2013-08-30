@@ -154,7 +154,7 @@ descriptors:
       items:
         doc: An array of embedded DRD resources.
         type: semantic
-        href: Array
+        href: http://alps.io/schema.org/Array
         embed: multiple # Select non-ALPS values are treated as extensions in the profile.
       # Transitions
       list:

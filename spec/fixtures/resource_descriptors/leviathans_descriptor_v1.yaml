@@ -9,7 +9,7 @@ ext:
     value: Alternate.
 descriptors:
   leviathan:
-    doc: 
+    doc:
       html: <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
     ext:
       - href: Leviathans#note
