@@ -148,6 +148,19 @@ module Crichton
       end
     end
 
+    describe '.raw_toplevel_registry' do
+      let(:registry) { Registry.new(:automatic_load => false) }
+
+      it 'returns an empty hash hash if no resource descriptors are registered' do
+        registry.raw_toplevel_registry.should be_empty
+      end
+
+      it 'returns a hash of registered descriptor instances keyed by descriptor id' do
+        resource_descriptor = registry.register_single(drds_descriptor)
+        registry.raw_toplevel_registry[drds_descriptor['id']].descriptors.length.should == 2
+      end
+    end
+
     describe '.raw_registry' do
       let(:registry) { Registry.new(:automatic_load => false) }
 
