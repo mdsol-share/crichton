@@ -47,6 +47,14 @@ module Crichton
     def raw_descriptor_registry
       @raw_descriptor_registry ||= {}
     end
+    ##
+
+    # Lists the registered toplevel resource descriptors that do not have local links de-referenced.
+    #
+    # @return [Hash] The registered resource descriptors, if any.
+    def raw_toplevel_registry
+      @raw_toplevel_registry ||= {}
+    end
 
     #TODO: Add
     # profile_registry and raw_profile_registry
@@ -127,15 +135,19 @@ module Crichton
       (@dereference_queue ||= []) << hash_descriptor
     end
 
+    def add_resource_descriptor_to_raw_toplevel_registry(descriptor)
+      (@raw_toplevel_registry ||= {})[descriptor.id] = descriptor
+    end
+
     def add_resource_descriptor_to_registry(hash_descriptor, registry)
-      Crichton::Descriptor::Resource.new(hash_descriptor).tap do |resource_descriptor|
+      add_resource_descriptor_to_raw_toplevel_registry(Crichton::Descriptor::Resource.new(hash_descriptor).tap do |resource_descriptor|
         resource_descriptor.descriptors.each do |descriptor|
           if registry[descriptor.id]
             raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
           end
           registry[descriptor.id] = descriptor
         end
-      end
+      end)
     end
 
     # This method calls the recursive method
