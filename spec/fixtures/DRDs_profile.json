@@ -1,0 +1,351 @@
+{"alps": {
+    "doc": {
+        "value": "Describes the semantics, states and state transitions associated with DRDs."
+    },
+    "link": [
+        {
+            "rel": "self",
+            "href": "DRDs"
+        },
+        {
+            "rel": "help",
+            "href": "Things/DRDs"
+        }
+    ],
+    "descriptor": [
+        {
+            "doc": {
+                "format": "html",
+                "value": "<p>A list of DRDs.</p>"
+            },
+            "link": [
+                {
+                    "rel": "self",
+                    "href": "DRDs#drds"
+                }
+            ],
+            "id": "drds",
+            "type": "semantic",
+            "descriptor": [
+                {
+                    "doc": {
+                        "value": "The total count of DRDs."
+                    },
+                    "id": "total_count",
+                    "type": "semantic",
+                    "href": "http://alps.io/schema.org/Integer"
+                },
+                {
+                    "doc": {
+                        "value": "An array of embedded DRD resources."
+                    },
+                    "id": "items",
+                    "type": "semantic",
+                    "href": "Array"
+                },
+                {
+                    "doc": {
+                        "value": "Returns a list of DRDs."
+                    },
+                    "id": "list",
+                    "name": "self",
+                    "type": "safe",
+                    "rt": "drds"
+                },
+                {
+                    "doc": {
+                        "value": "Returns a list of DRDs that satisfy the search term."
+                    },
+                    "id": "search",
+                    "type": "safe",
+                    "rt": "drds",
+                    "descriptor": [
+                        {
+                            "doc": {
+                                "value": "The terms to search."
+                            },
+                            "id": "search_term",
+                            "type": "semantic",
+                            "href": "http://alps.io/schema.org/Text"
+                        }
+                    ]
+                },
+                {
+                    "doc": {
+                        "value": "Creates a DRD."
+                    },
+                    "id": "create",
+                    "type": "unsafe",
+                    "rt": "drd",
+                    "descriptor": [
+                        {
+                            "link": [
+                                {
+                                    "rel": "self",
+                                    "href": "DRDs#create-drd"
+                                },
+                                {
+                                    "rel": "help",
+                                    "href": "documentation_base/Forms/create-drd"
+                                }
+                            ],
+                            "id": "create-drd",
+                            "type": "semantic",
+                            "descriptor": [
+                                {
+                                    "doc": {
+                                        "value": "How is the DRD."
+                                    },
+                                    "id": "form-status",
+                                    "name": "status",
+                                    "type": "semantic",
+                                    "href": "http://alps.io/schema.org/Text"
+                                },
+                                {
+                                    "doc": {
+                                        "value": "What kind is it."
+                                    },
+                                    "id": "form-kind",
+                                    "name": "kind",
+                                    "type": "semantic",
+                                    "href": "http://alps.io/schema.org/Text"
+                                },
+                                {
+                                    "doc": {
+                                        "value": "The name of the DRD."
+                                    },
+                                    "id": "form-name",
+                                    "name": "name",
+                                    "type": "semantic",
+                                    "href": "http://alps.io/schema.org/Text"
+                                },
+                                {
+                                    "doc": {
+                                        "value": "The UUID of the creator Leviathan."
+                                    },
+                                    "id": "form-leviathan_uuid",
+                                    "name": "leviathan_uuid",
+                                    "type": "semantic",
+                                    "href": "http://alps.io/schema.org/Text"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "doc": {
+                        "value": "Creates a EXTERNAL_EXAMPLE element."
+                    },
+                    "id": "external-example",
+                    "type": "unsafe",
+                    "rt": "external_examples_element",
+                    "descriptor": [
+                        {
+                            "link": [
+                                {
+                                    "rel": "self",
+                                    "href": "EXTERNAL_EXAMPLE#create-external-example"
+                                },
+                                {
+                                    "rel": "help",
+                                    "href": "documentation_base/Forms/create-external-example"
+                                }
+                            ],
+                            "id": "create-external_example",
+                            "type": "semantic",
+                            "href": "update-external-example",
+                            "descriptor": [
+                                {
+                                    "doc": {
+                                        "value": "The name of the external-example."
+                                    },
+                                    "id": "form-name",
+                                    "name": "name",
+                                    "type": "semantic",
+                                    "href": "http://alps.io/schema.org/Text"
+                                },
+                                {
+                                    "doc": {
+                                        "value": "The UUID of the creator Leviathan."
+                                    },
+                                    "id": "form-leviathan_uuid",
+                                    "name": "leviathan_uuid",
+                                    "type": "semantic",
+                                    "href": "http://alps.io/schema.org/Text"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "external-example-drd",
+                            "type": "semantic",
+                            "href": "http://127.0.0.1/AlpsProfiles/testdata_alps.xml#testdata/create/create-testdata"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "doc": {
+                "value": "Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are\nbuilt by a Leviathan as it grows.\n"
+            },
+            "link": [
+                {
+                    "rel": "self",
+                    "href": "DRDs#drd"
+                }
+            ],
+            "id": "drd",
+            "type": "semantic",
+            "descriptor": [
+                {
+                    "doc": {
+                        "value": "The UUID of the DRD."
+                    },
+                    "id": "uuid",
+                    "type": "semantic",
+                    "href": "http://alps.io/schema.org/Text"
+                },
+                {
+                    "doc": {
+                        "value": "The name of the DRD."
+                    },
+                    "id": "name",
+                    "type": "semantic",
+                    "href": "http://alps.io/schema.org/Text"
+                },
+                {
+                    "doc": {
+                        "value": "How is the DRD."
+                    },
+                    "id": "status",
+                    "type": "semantic",
+                    "href": "http://alps.io/schema.org/Text"
+                },
+                {
+                    "doc": {
+                        "value": "What kind is it."
+                    },
+                    "id": "kind",
+                    "type": "semantic",
+                    "href": "http://alps.io/schema.org/Text"
+                },
+                {
+                    "doc": {
+                        "value": "The UUID of the creator Leviathan."
+                    },
+                    "id": "leviathan_uuid",
+                    "type": "semantic",
+                    "href": "http://alps.io/schema.org/Text"
+                },
+                {
+                    "doc": {
+                        "value": "When the DRD was constructed."
+                    },
+                    "id": "built_at",
+                    "type": "semantic",
+                    "href": "http://alps.io/schema.org/DateTime"
+                },
+                {
+                    "doc": {
+                        "value": "The associated Leviathan resource."
+                    },
+                    "id": "leviathan",
+                    "type": "semantic",
+                    "href": "http://alps.io/schema.org/Thing/Leviathan"
+                },
+                {
+                    "doc": {
+                        "value": "Shows a particular DRD."
+                    },
+                    "id": "show",
+                    "name": "self",
+                    "type": "safe",
+                    "rt": "drd"
+                },
+                {
+                    "doc": {
+                        "value": "Activates a DRD if it is deactivated."
+                    },
+                    "id": "activate",
+                    "type": "idempotent",
+                    "rt": "drd"
+                },
+                {
+                    "doc": {
+                        "value": "Deactivates a DRD if it is activated."
+                    },
+                    "id": "deactivate",
+                    "type": "idempotent",
+                    "rt": "drd"
+                },
+                {
+                    "doc": {
+                        "value": "A reference to the Leviathan the DRD works on."
+                    },
+                    "id": "leviathan-link",
+                    "name": "leviathan",
+                    "type": "safe",
+                    "rt": "Leviathan#leviathan"
+                },
+                {
+                    "doc": {
+                        "value": "A reference to the list of historical repairs performed."
+                    },
+                    "id": "repair-history",
+                    "type": "safe",
+                    "rt": "Repairs#history"
+                },
+                {
+                    "doc": {
+                        "value": "Updates a DRD."
+                    },
+                    "id": "update",
+                    "type": "idempotent",
+                    "descriptor": [
+                        {
+                            "link": [
+                                {
+                                    "rel": "self",
+                                    "href": "DRDs#update-drd"
+                                },
+                                {
+                                    "rel": "help",
+                                    "href": "documentation_base/Forms/update-drd"
+                                }
+                            ],
+                            "id": "update-drd",
+                            "type": "semantic",
+                            "descriptor": [
+                                {
+                                    "doc": {
+                                        "value": "How is the DRD."
+                                    },
+                                    "id": "form-status",
+                                    "name": "status",
+                                    "type": "semantic",
+                                    "href": "http://alps.io/schema.org/Text"
+                                },
+                                {
+                                    "doc": {
+                                        "value": "What kind is it."
+                                    },
+                                    "id": "form-kind",
+                                    "name": "kind",
+                                    "type": "semantic",
+                                    "href": "http://alps.io/schema.org/Text"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "doc": {
+                        "value": "Drops a DRD out an air-lock."
+                    },
+                    "id": "delete",
+                    "type": "idempotent"
+                }
+            ]
+        }
+    ]
+}}

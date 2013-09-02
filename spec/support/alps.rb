@@ -99,5 +99,9 @@ module Support
     def alps_xml_string
       @alps_xml_string ||= File.open(fixture_path('leviathans_alps.xml'))
     end
+
+    def alps_json_string
+      @alps_xml_string ||= File.open(fixture_path('DRDs_profile.json'))
+    end
   end
 end

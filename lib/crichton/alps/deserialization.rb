@@ -7,8 +7,29 @@ module Crichton
     ##
     # Manages serialization to the Application-Level Profile Semantics (ALPS) specification JSON and XML formats.
     class Deserialization
-      def initialize(alps_data)
-        @hash = alps_xml_to_hash(alps_data)
+      def initialize(alps_data, data_type=nil)
+        if data_type.nil?
+          if alps_data.is_a?(File)
+            # Guess based on file name first
+            if alps_data.path.ends_with?('json')
+              data_type = :json
+            elsif alps_data.path.ends_with?('xml')
+              data_type = :xml
+            else
+            # Guess based on content second
+              data_type = alps_data.read(1000).strip.first == '{' ? :JSON : :XML
+              alps_data.rewind
+            end
+          else
+            # Plain string - take content
+            data_type = alps_data.strip.first == '{' ? :JSON : :XML
+          end
+        end
+        if data_type == :xml
+          @hash = alps_xml_to_hash(alps_data)
+        else
+          @hash = alps_json_to_hash(alps_data)
+        end
       end
 
       def to_hash
@@ -20,7 +41,41 @@ module Crichton
         xml_node_to_hash(xml_data.root)
       end
 
+      def alps_json_to_hash(alps_data)
+        json_data = JSON.load(alps_data)
+        raw_node = json_node_to_hash(json_data)
+        raw_node['alps']
+      end
+
       private
+      def json_node_to_hash(node)
+        unless node.is_a?(Hash)
+          return node
+        end
+        result_hash = {}
+        node.each do |k,v|
+          if v.is_a?(Array)
+            a_result_hash = {}
+            a_result_array = []
+            v.each do |ae|
+              if ae.is_a?(Hash) && ae.include?('id')
+                a_result_hash[ae['id']] = json_node_to_hash(ae)
+              else
+                a_result_array << json_node_to_hash(ae)
+              end
+            end
+            # I'm not quite sure about these. Pluralize is in the ActiveSupport package - but that may be a little
+            # heavyweight for what we want here. And adding a linguistics Gem for these may be too heavyweight.
+            # So for the cases that I ran into, this seems to work.
+            result_hash["#{k}s"] = a_result_hash unless a_result_hash.empty?
+            result_hash["#{k}s"] = a_result_array unless a_result_array.empty?
+          else
+            result_hash[k] = json_node_to_hash(v)
+          end
+        end
+        result_hash
+      end
+
       def xml_node_to_hash(node)
         # If we are at the root of the document, start the hash
         if node.element?
