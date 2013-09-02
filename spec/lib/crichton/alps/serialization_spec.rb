@@ -64,6 +64,14 @@ module Crichton
       end
 
       it_behaves_like 'it serializes to ALPS'
+
+
+      describe 'absolute_link' do
+        it 'returns the original link it it is already absolute' do
+          descriptor.send(:absolute_link, "http://original.link.com", 'something').should == "http://original.link.com"
+        end
+      end
+
     end
   end
 end
