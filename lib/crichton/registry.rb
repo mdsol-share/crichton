@@ -143,7 +143,8 @@ module Crichton
       add_resource_descriptor_to_raw_toplevel_registry(Crichton::Descriptor::Resource.new(hash_descriptor).tap do |resource_descriptor|
         resource_descriptor.descriptors.each do |descriptor|
           if registry[descriptor.id]
-            raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
+            raise Crichton::DescriptorAlreadyRegisteredError,
+              "Resource descriptor for #{descriptor.id} is already registered."
           end
           registry[descriptor.id] = descriptor
         end
@@ -164,7 +165,9 @@ module Crichton
       @ids_registry ||= {}
       descriptor_name = "#{descriptor_name_prefix}\##{id}"
       if id && @ids_registry.include?(descriptor_name)
-        raise "Descriptor name #{descriptor_name} already in ids_registry!"
+        unless @ids_registry[descriptor_name] == hash
+          raise Crichton::DescriptorAlreadyRegisteredError, "Descriptor name #{descriptor_name} already in ids_registry!"
+        end
       end
       # Add descriptor to the IDs hash
       @ids_registry["#{descriptor_name_prefix}\##{id}"] = hash unless id.nil?

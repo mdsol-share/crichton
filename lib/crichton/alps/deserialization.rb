@@ -17,12 +17,12 @@ module Crichton
               data_type = :xml
             else
             # Guess based on content second
-              data_type = alps_data.read(1000).strip.first == '{' ? :JSON : :XML
+              data_type = alps_data.read(1000).strip.first == '{' ? :json : :xml
               alps_data.rewind
             end
           else
             # Plain string - take content
-            data_type = alps_data.strip.first == '{' ? :JSON : :XML
+            data_type = alps_data.strip.first == '{' ? :json : :xml
           end
         end
         if data_type == :xml
@@ -59,7 +59,7 @@ module Crichton
             a_result_array = []
             v.each do |ae|
               if ae.is_a?(Hash) && ae.include?('id')
-                a_result_hash[ae['id']] = json_node_to_hash(ae)
+                a_result_hash[ae.delete('id')] = json_node_to_hash(ae)
               else
                 a_result_array << json_node_to_hash(ae)
               end

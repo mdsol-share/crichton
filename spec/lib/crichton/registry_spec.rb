@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton'
 
 module Crichton
   describe Registry do
@@ -128,7 +129,8 @@ module Crichton
 
       it 'raises an error when the resource descriptor is already registered' do
         registry.register_single(drds_descriptor)
-        expect { registry.register_single(drds_descriptor) }.to raise_error(RuntimeError)
+        expect { registry.register_single(drds_descriptor) }.to raise_error(
+          Crichton::DescriptorAlreadyRegisteredError)
       end
     end
 
