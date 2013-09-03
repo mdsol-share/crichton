@@ -52,8 +52,8 @@ module Crichton
     # Lists the registered toplevel resource descriptors that do not have local links de-referenced.
     #
     # @return [Hash] The registered resource descriptors, if any.
-    def raw_toplevel_registry
-      @raw_toplevel_registry ||= {}
+    def raw_profile_registry
+      @raw_profile_registry ||= {}
     end
 
     #TODO: Add
@@ -136,7 +136,7 @@ module Crichton
     end
 
     def add_resource_descriptor_to_raw_toplevel_registry(descriptor)
-      (@raw_toplevel_registry ||= {})[descriptor.id] = descriptor
+      raw_profile_registry[descriptor.id] = descriptor
     end
 
     def add_resource_descriptor_to_registry(hash_descriptor, registry)
