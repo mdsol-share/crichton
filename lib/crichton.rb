@@ -160,6 +160,50 @@ module Crichton
   end
 end
 
+module ActionController
+  class Responder
+    #
+    # This just acts as api_behavior: HTML will throw no template exception and fallback to navigational behavior;
+    #
+    protected
+    def navigation_behavior(error)
+      if get?
+        display resource
+      elsif post?
+        display resource, :status => :created, :location => api_location
+      else
+        head :no_content
+      end
+    end
+  end
+
+  module Renderers
+    add :html do |obj, options|
+      obj.respond_to?(:to_media_type) ? obj.to_media_type(options) : obj
+    end
+
+    add :halo_json do |obj, options|
+      obj.respond_to?(:to_media_type) ? obj.to_media_type(options) : obj
+    end
+  end
+
+  module Serialization
+    extend ActiveSupport::Concern
+    include ActionController::Renderers
+
+    def _render_option_html(resource, options)
+      resp = Crichton::Representor::Serializer.build(request.filtered_parameters['format'], resource, options)
+      if resp
+        super(resp, options)
+      else
+        super
+      end
+    end
+
+    alias_method :_render_option_halo_json, :_render_option_html
+  end
+end
+
 # YARD macros definitions for re-use in different classes. These must defined in the first loaded class to
 # be available in other classes.
 #
