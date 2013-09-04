@@ -95,7 +95,8 @@ module Crichton
       # Add the non-dereferenced descriptor document -
       # the de-referencing will need to wait until all IDs are collected.
       add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
-      add_resource_descriptor_to_registry(hash_descriptor, @raw_descriptor_registry ||= {})
+      add_resource_descriptor_to_raw_toplevel_registry(add_resource_descriptor_to_registry(hash_descriptor,
+        @raw_descriptor_registry ||= {}))
     end
 
     ##
@@ -140,14 +141,14 @@ module Crichton
     end
 
     def add_resource_descriptor_to_registry(hash_descriptor, registry)
-      add_resource_descriptor_to_raw_toplevel_registry(Crichton::Descriptor::Resource.new(hash_descriptor).tap do |resource_descriptor|
+      Crichton::Descriptor::Resource.new(hash_descriptor).tap do |resource_descriptor|
         resource_descriptor.descriptors.each do |descriptor|
           if registry[descriptor.id]
             raise ArgumentError, "Resource descriptor for #{descriptor.id} is already registered."
           end
           registry[descriptor.id] = descriptor
         end
-      end)
+      end
     end
 
     # This method calls the recursive method

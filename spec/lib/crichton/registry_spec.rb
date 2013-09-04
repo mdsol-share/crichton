@@ -157,7 +157,7 @@ module Crichton
 
       it 'returns a hash of registered descriptor instances keyed by profile id' do
         resource_descriptor = registry.register_single(drds_descriptor)
-        registry.raw_profile_registry[resource_descriptor.id].descriptors.length.should == 2
+        registry.raw_profile_registry[resource_descriptor.id].should == resource_descriptor
       end
     end
 
