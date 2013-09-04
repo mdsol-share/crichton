@@ -7,7 +7,7 @@ module Crichton
     ##
     # Manages serialization to the Application-Level Profile Semantics (ALPS) specification JSON and XML formats.
     class Deserialization
-      def initialize(alps_data, data_type=nil)
+      def initialize(alps_data, data_type = nil)
         if data_type.nil?
           if alps_data.is_a?(File)
             # Guess based on file name first
