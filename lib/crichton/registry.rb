@@ -166,9 +166,7 @@ module Crichton
       @ids_registry ||= {}
       descriptor_name = "#{descriptor_name_prefix}\##{id}"
       if id && @ids_registry.include?(descriptor_name)
-        unless @ids_registry[descriptor_name] == hash
-          raise Crichton::DescriptorAlreadyRegisteredError, "Descriptor name #{descriptor_name} already in ids_registry!"
-        end
+        raise Crichton::DescriptorAlreadyRegisteredError, "Descriptor name #{descriptor_name} already in ids_registry!"
       end
       # Add descriptor to the IDs hash
       @ids_registry["#{descriptor_name_prefix}\##{id}"] = hash unless id.nil?
