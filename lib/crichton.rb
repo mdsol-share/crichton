@@ -163,7 +163,7 @@ end
 module ActionController
   class Responder
     #
-    # This just acts as api_behavior: HTML will throw no template exception and fallback to navigational behavior;
+    # This just acts as api_behavior: HTML will throw no template exception and fallback to navigational behavior.
     #
     protected
     def navigation_behavior(error)
@@ -190,7 +190,12 @@ module ActionController
   module Serialization
     extend ActiveSupport::Concern
     include ActionController::Renderers
-
+    #
+    # Renderers.add method above should generate method with the name: _render_option_#format.
+    # Internally it would call to_media_type passing "options" as the parameter,
+    # while to_media_type expects media_type format as the first parameter.
+    # Therefore, this method exists to override Rails default behavior.
+    #
     def _render_option_html(resource, options)
       resp = Crichton::Representor::Serializer.build(request.filtered_parameters['format'], resource, options)
       if resp
