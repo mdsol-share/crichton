@@ -76,9 +76,9 @@ module Crichton
   # descriptors in that location.
   #
   # @return [Hash] The registered resource descriptors, if any?
-  def self.raw_toplevel_registry
+  def self.raw_profile_registry
     @registry ||= Crichton::Registry.new
-    @registry.raw_toplevel_registry
+    @registry.raw_profile_registry
   end
 
   ##

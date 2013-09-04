@@ -23,19 +23,19 @@ module Crichton
 
     describe ".register_single" do
       it "accepts a descriptor document" do
-        registry = Registry.new(:automatic_load => false)
+        registry = Registry.new(automatic_load: false)
         registry.register_single(drds_descriptor)
         registry.raw_descriptor_registry.keys.should == ["drds", "drd"]
       end
 
       it "accepts a filename" do
-        registry = Registry.new(:automatic_load => false)
+        registry = Registry.new(automatic_load: false)
         registry.register_single(drds_filename)
         registry.raw_descriptor_registry.keys.should == ["drds", "drd"]
       end
 
       it "raises an error when duplicate descriptor names are registered" do
-        registry = Registry.new(:automatic_load => false)
+        registry = Registry.new(automatic_load: false)
         expect { registry.register_single(fixture_path('broken_resource_descriptors', 'drds_descriptor_v1.yml'))
           }.to raise_error('Descriptor name DRDs#update-drd already in ids_registry!')
       end
@@ -43,25 +43,25 @@ module Crichton
 
     describe ".register_multiple" do
       it "accepts descriptor documents" do
-        registry = Registry.new(:automatic_load => false)
+        registry = Registry.new(automatic_load: false)
         registry.register_multiple([drds_descriptor, leviathans_descriptor])
         registry.raw_descriptor_registry.keys.should == ["drds", "drd", "leviathan"]
       end
 
       it "accepts filenames" do
-        registry = Registry.new(:automatic_load => false)
+        registry = Registry.new(automatic_load: false)
         registry.register_multiple([drds_filename, leviathans_filename])
         registry.raw_descriptor_registry.keys.should == ["drds", "drd", "leviathan"]
       end
 
       it "accepts a document and a filename " do
-        registry = Registry.new(:automatic_load => false)
+        registry = Registry.new(automatic_load: false)
         registry.register_multiple([drds_descriptor, leviathans_filename])
         registry.raw_descriptor_registry.keys.should == ["drds", "drd", "leviathan"]
       end
 
       it "accepts filenames" do
-        registry = Registry.new(:automatic_load => false)
+        registry = Registry.new(automatic_load: false)
         expect do
           registry.register_multiple([fixture_path('resource_descriptors', 'drds_descriptor_v1.yml'),
             fixture_path('broken_resource_descriptors', 'leviathans_descriptor_v1.yaml')])
@@ -70,7 +70,7 @@ module Crichton
     end
 
     describe '.register_single' do
-      let(:registry) { Registry.new(:automatic_load => false) }
+      let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns the registered resource descriptor instance' do
         registry.register_single(drds_descriptor).should be_instance_of(Crichton::Descriptor::Resource)
@@ -135,7 +135,7 @@ module Crichton
     end
 
     describe '.raw_registry' do
-      let(:registry) { Registry.new(:automatic_load => false) }
+      let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
         registry.raw_descriptor_registry.should be_empty
@@ -150,21 +150,21 @@ module Crichton
       end
     end
 
-    describe '.raw_toplevel_registry' do
-      let(:registry) { Registry.new(:automatic_load => false) }
+    describe '.raw_profile_registry' do
+      let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
-        registry.raw_toplevel_registry.should be_empty
+        registry.raw_profile_registry.should be_empty
       end
 
-      it 'returns a hash of registered descriptor instances keyed by descriptor id' do
+      it 'returns a hash of registered descriptor instances keyed by profile id' do
         resource_descriptor = registry.register_single(drds_descriptor)
-        registry.raw_toplevel_registry[drds_descriptor['id']].descriptors.length.should == 2
+        registry.raw_profile_registry[resource_descriptor.id].should == resource_descriptor
       end
     end
 
     describe '.raw_registry' do
-      let(:registry) { Registry.new(:automatic_load => false) }
+      let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
         registry.raw_descriptor_registry.should be_empty
@@ -182,7 +182,7 @@ module Crichton
     end
 
     describe '.registrations?' do
-      let(:registry) { Registry.new(:automatic_load => false) }
+      let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns false if no resource descriptors are registered' do
         registry.registrations?.should be_false
@@ -195,7 +195,7 @@ module Crichton
     end
 
     describe '.load_external_profile?' do
-      let(:registry) { Registry.new(:automatic_load => false) }
+      let(:registry) { Registry.new(automatic_load: false) }
 
       it 'raises an error when fed a bad link' do
         expect { registry.send(:load_external_profile, "bad link") }.to raise_error(Crichton::ExternalProfileLoadError)
