@@ -67,11 +67,10 @@ module Crichton
 
 
       describe 'absolute_link' do
-        it 'returns the original link it it is already absolute' do
-          descriptor.send(:absolute_link, "http://original.link.com", 'something').should == "http://original.link.com"
+        it 'returns the original link if it is already absolute' do
+          descriptor.send(:absolute_link, 'http://original.link.com', 'something').should == 'http://original.link.com'
         end
       end
-
     end
   end
 end
