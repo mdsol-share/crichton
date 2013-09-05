@@ -20,5 +20,6 @@ module ActionController
   end
 
   Mime::Type.unregister :html
-  Mime::Type.register "application/xhtml+xml", :html
+  Mime::Type.register "text/html", :html
+  Mime::Type.register "application/xhtml+xml", :xhtml
 end
