@@ -40,7 +40,18 @@ module Crichton
           
           @alternate_media_types.each { |media_type| register_serializer(media_type, self) }
         end
-        
+
+        ##
+        # Define mime types and corresponding content-types.
+        #
+        # @example
+        #  class JsonSerializer < Crichton::Representor::Serializer
+        #    mime_types :halo_json => [ "application/halo+json", "application/json" ], :hal_json => [ "application/hal+json" ]
+        #  end
+        def mime_types(args)
+          args.each { |media_type, array_of_content_types|  register_mime_type(media_type, array_of_content_types) }
+        end
+
         ##
         # Returns the media-type of the Serializer.
         #
@@ -65,7 +76,15 @@ module Crichton
         def registered_serializers
           @registered_serializers ||= {}
         end
-        
+
+        ##
+        # The registered content types by media type.
+        #
+        # @return [Hash] The mapped array of content-types keyed by media-type.
+        def registered_mime_types
+          @registered_mime_types ||= {}
+        end
+
         # @private
         # Subclasses self-register themselves
         def inherited(subclass)
@@ -75,6 +94,10 @@ module Crichton
         private
           def register_serializer(media_type, serializer)
             Serializer.registered_serializers[media_type] = serializer
+          end
+
+          def register_mime_type(media_type, array_of_content_types)
+            Serializer.registered_mime_types[media_type] = array_of_content_types
           end
       end
 
