@@ -1,6 +1,7 @@
 module ActionController
   class Responder
     def navigation_behavior(error)
+      options.merge!(:semantics => :styled_microdata) if request.env["HTTP_ACCEPT"].to_s.include?("text/html")
       if get?
         display resource
       elsif post?
