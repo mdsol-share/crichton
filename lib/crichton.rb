@@ -160,8 +160,7 @@ module Crichton
   end
 end
 
-require 'crichton/core_ext/action_controller/renderers'
-require 'crichton/core_ext/action_controller/responder'
+require 'crichton/core_ext/action_controller'
 
 # YARD macros definitions for re-use in different classes. These must defined in the first loaded class to
 # be available in other classes.
