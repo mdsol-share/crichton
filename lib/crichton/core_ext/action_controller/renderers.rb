@@ -1,12 +1,9 @@
 require 'crichton/representor/serializer'
+
 module ActionController
   module Renderers
     def self.register_mime_type(mime_type, content_types)
-      if content_types.length == 1
-        Mime::Type.register content_types.first, mime_type
-      else
-        Mime::Type.register content_types.first, mime_type, content_types[1..-1]
-      end
+      Mime::Type.register content_types.shift, mime_type, content_types
     end
 
     Crichton::Representor::Serializer.registered_mime_types.each { |mime_type, content_types|
