@@ -1,0 +1,101 @@
+id: DRDs
+version: v1.0.0
+doc: Describes the semantics, states and state transitions associated with DRDs.
+links:
+  self: alps_base/DRDs
+  help: documentation_base/Things/DRDs
+
+# HERE drds->collection->list transition has a next: with no value and
+# drd->activated->show transition is missing a next
+
+states:
+  drds:
+    collection:
+      doc: The entry point state for interacting with DRDs.
+      location: entry
+      transitions:
+        list:
+          name: self
+          next:
+  drd:
+    activated:
+      doc: The default state of a DRD.
+      transitions:
+        show:
+          name: self
+
+descriptors:
+  drds:
+    doc:
+      html: <p>A list of DRDs.</p>
+    type: semantic
+    links:
+      self: alps_base/DRDs#drds
+    descriptors:
+      # Transitions
+      list:
+        doc: Returns a list of DRDs.
+        name: self
+        type: safe
+        rt: drds
+  drd:
+    doc: |
+      Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
+      built by a Leviathan as it grows.
+    type: semantic
+    links:
+      self: alps_base/DRDs#drd
+    descriptors:
+      # Semantics
+      uuid:
+        doc: The UUID of the DRD.
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
+      name:
+        doc: The name of the DRD.
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: 1812
+      # Transitions
+      show:
+        doc: Shows a particular DRD.
+        name: self
+        type: safe
+        rt: drd
+
+protocols:
+  http:
+    list:
+      uri: drds
+      entry_point: drds # Indicates this endpoint is a resource entry point for the protocol.
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+        - application/xhtml+xml
+      headers:
+        - Content-Type
+        - ETag
+      status_codes:
+        200:
+          description: OK
+          notes:
+            - We have processed your request and returned the data you asked for.
+      slt: &slt1
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+    show:
+      uri: drds/{uuid}
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+        200:
+          description: OK
+          notes:
+            - We have processed your request and returned the data you asked for.
+      slt: *slt1

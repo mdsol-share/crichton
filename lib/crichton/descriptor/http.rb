@@ -26,6 +26,8 @@ module Crichton
       # @!macro string_reader
       descriptor_reader :uri_source 
 
+      descriptor_reader :entry_point
+
       ##
       # Returns the url for a particular target. If the associated URI is templated, it raises an error if the
       # template variables cannot be populated from the target.

@@ -17,10 +17,6 @@ states:
           name: not_self
           next:
             - collection
-        create:
-          conditions:
-          next:
-            - activated
   drd:
     activated:
       transitions:
@@ -28,11 +24,6 @@ states:
           name: self
           next:
             - activated
-        leviathan-link:
-          name: leviathan
-          next:
-            - location: http://alps.io/schema.org/Leviathans#leviathan
-
 descriptors:
   drds:
     doc: 
@@ -84,6 +75,10 @@ protocols:
           description: OK
           notes:
             - We have processed your request and returned the data you asked for.
+      slt: &slt1
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
     show:
       uri: drds/{uuid}
       method: GET
@@ -92,4 +87,12 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+        200:
+          description: OK
+          notes:
+            - We have processed your request and returned the data you asked for.
+      slt: &slt1
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
 

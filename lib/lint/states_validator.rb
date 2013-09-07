@@ -21,9 +21,6 @@ module Lint
       end
     end
 
-    def secondary_descriptor_states(descriptor)
-      descriptor[1]
-    end
 
     # core deep dive method looking for missing properties and other syntactical
     # errors down to the transitions of the states: section

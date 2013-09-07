@@ -123,7 +123,12 @@ module Support
     end
 
     def lint_spec_filename(folder, filename)
-      fixture_path('bad_resource_descriptors', folder, filename)
+      fixture_path('lint_resource_descriptors', folder, filename)
+    end
+
+    def load_lint_translation_file
+      I18n.load_path = [LINT_DIR+'/eng.yml']
+      I18n.default_locale = 'eng'
     end
 
     def expected_output(error_or_warning, key, options = {})

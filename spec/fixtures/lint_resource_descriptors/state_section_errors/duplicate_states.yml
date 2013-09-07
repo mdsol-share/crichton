@@ -2,11 +2,8 @@ id: DRDs
 version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
-  self: alps_base/DRDs
+  self: DRDs
   help: documentation_base/Things/DRDs
-
-# HERE drds->collection->list transition has a next: with no value and
-# drd->activated->show transition is missing a next
 
 states:
   drds:
@@ -17,13 +14,28 @@ states:
         list:
           name: self
           next:
+            - collection
+    collection:
+      doc: mistaken duplicate
+      transitions:
+        activate:
+           next:
+            - navigation
+    navigation:
+      doc: Represents a filtered list of DRDs.
+      transitions:
+        search:
+          name: self
+          next:
+            - navigation
   drd:
     activated:
       doc: The default state of a DRD.
       transitions:
         show:
           name: self
-
+          next:
+            - activated
 descriptors:
   drds:
     doc:
@@ -32,7 +44,6 @@ descriptors:
     links:
       self: alps_base/DRDs#drds
     descriptors:
-      # Transitions
       list:
         doc: Returns a list of DRDs.
         name: self
@@ -57,12 +68,6 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: 1812
-      # Transitions
-      show:
-        doc: Shows a particular DRD.
-        name: self
-        type: safe
-        rt: drd
 
 protocols:
   http:
@@ -79,8 +84,8 @@ protocols:
         - ETag
       status_codes:
         200:
-          status: OK
-          definitions:
+          description: OK
+          notes:
             - We have processed your request and returned the data you asked for.
     show:
       uri: drds/{uuid}
@@ -90,3 +95,4 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+      slt: *slt1
