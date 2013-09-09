@@ -6,6 +6,12 @@ describe Crichton do
     Crichton.clear_config
   end
 
+  # This restores the global setting - one of the tests sets this value to a generated value and that causes other
+  # tests to fail later on - depending on the order of the tests.
+  after do
+    Crichton::config_directory = File.join('spec', 'fixtures', 'config')
+  end
+
   describe '.logger' do
     let(:logger) { double('logger') }
 

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <alps>
   <doc>Describes Leviathans.</doc>
-  <ext href="alps_base/Leviathans#leviathan/alt" 
+  <ext href="http://alps.example.com/Leviathans#alt"
        value="Alternate."/>
   <link rel="self" 
-        href="alps_base/Leviathans"/>
+        href="http://alps.example.com/Leviathans"/>
   <link rel="help" 
-        href="documentation_base/Things/Leviathans"/>
+        href="http://docs.example.org/Things/Leviathans"/>
   <descriptor id="leviathan" 
               type="semantic">
     <doc format="html">
       <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
     </doc>
-    <ext href="alps_base/Leviathans#leviathan/note" 
+    <ext href="http://alps.example.com/Leviathans#note"
          value="A note."/>
     <descriptor id="uuid" 
                 type="semantic" 
@@ -31,9 +31,9 @@
       <descriptor id="create-leviathan" 
                   type="semantic">
         <link rel="self" 
-              href="alps_base/Leviathans#leviatahn/create/create-leviathan"/>
+              href="http://alps.example.com/Leviathans#create-leviathan"/>
         <link rel="help" 
-              href="documentation_base/Forms/create-leviathan"/>
+              href="http://docs.example.org/Forms/create-leviathan"/>
         <descriptor id="form_name" 
                     name="name" 
                     type="semantic" 
