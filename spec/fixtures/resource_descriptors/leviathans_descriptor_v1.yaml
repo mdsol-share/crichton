@@ -2,17 +2,17 @@ id: Leviathans
 version: v1.0.0
 doc: Describes Leviathans.
 links:
-  self: alps_base/Leviathans
-  help: documentation_base/Things/Leviathans
+  self: Leviathans
+  help: Things/Leviathans
 ext: 
-  - href: alps_base/Leviathans#leviathan/alt
+  - href: Leviathans#alt
     value: Alternate.
 descriptors:
   leviathan:
-    doc: 
+    doc:
       html: <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
     ext:
-      - href: alps_base/Leviathans#leviathan/note
+      - href: Leviathans#note
         value: A note.
     type: semantic
     descriptors:
@@ -36,8 +36,8 @@ descriptors:
           create-leviathan:
             type: semantic
             links:
-              self: alps_base/Leviathans#leviatahn/create/create-leviathan
-              help: documentation_base/Forms/create-leviathan
+              self: Leviathans#create-leviathan
+              help: Forms/create-leviathan
             descriptors:
               form_name:
                 name: name

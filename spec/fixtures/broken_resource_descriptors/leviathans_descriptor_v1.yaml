@@ -2,8 +2,8 @@ id: DRDs
 version: v1.0.0
 doc: Describes Leviathans.
 links:
-  self: alps_base/DRDs
-  help: documentation_base/Things/Leviathans
+  self: DRDs
+  help: Things/Leviathans
 ext: 
     value: Alternate.
 descriptors:
@@ -11,7 +11,7 @@ descriptors:
     doc: 
       html: <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
     ext:
-      - href: alps_base/Leviathans#leviathan/note
+      - href: Leviathans#note
         value: A note.
     type: semantic
     descriptors:
