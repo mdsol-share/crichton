@@ -8,32 +8,16 @@ module Crichton
     # Manages serialization to the Application-Level Profile Semantics (ALPS) specification JSON and XML formats.
     class Deserialization
       def initialize(alps_data, data_type = nil)
-        if data_type.nil?
-          if alps_data.is_a?(File)
-            # Guess based on file name first
-            if alps_data.path.ends_with?('json')
-              data_type = :json
-            elsif alps_data.path.ends_with?('xml')
-              data_type = :xml
-            else
-            # Guess based on content second
-              data_type = alps_data.read(1000).strip.first == '{' ? :json : :xml
-              alps_data.rewind
-            end
-          else
-            # Plain string - take content
-            data_type = alps_data.strip.first == '{' ? :json : :xml
-          end
-        end
-        if data_type == :xml
-          @hash = alps_xml_to_hash(alps_data)
-        else
-          @hash = alps_json_to_hash(alps_data)
-        end
+        @alps_data = alps_data
+        @data_type = data_type || guess_alps_data_type(@alps_data)
       end
 
       def to_hash
-        @hash
+        if @data_type == :xml
+          alps_xml_to_hash(@alps_data)
+        else
+          alps_json_to_hash(@alps_data)
+        end
       end
 
       def alps_xml_to_hash(alps_data)
@@ -48,6 +32,25 @@ module Crichton
       end
 
       private
+      def guess_alps_data_type(alps_data)
+        if alps_data.is_a?(File)
+          # Guess based on file name first
+          if alps_data.path.ends_with?('json')
+            data_type = :json
+          elsif alps_data.path.ends_with?('xml')
+            data_type = :xml
+          else
+            # Guess based on content second
+            data_type = alps_data.read(1000).strip.first == '{' ? :json : :xml
+            alps_data.rewind
+          end
+        else
+          # Plain string - take content
+          data_type = alps_data.strip.first == '{' ? :json : :xml
+        end
+        data_type
+      end
+
       def json_node_to_hash(node)
         return node unless node.is_a?(Hash)
         result_hash = {}
