@@ -95,8 +95,8 @@ module Crichton
       # Add the non-dereferenced descriptor document -
       # the de-referencing will need to wait until all IDs are collected.
       add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
-      add_resource_descriptor_to_raw_toplevel_registry(add_resource_descriptor_to_registry(hash_descriptor,
-        @raw_descriptor_registry ||= {}))
+      resource_descriptor = add_resource_descriptor_to_registry(hash_descriptor, @raw_descriptor_registry ||= {})
+      add_resource_descriptor_to_raw_profile_registry(resource_descriptor)
     end
 
     ##
@@ -136,8 +136,12 @@ module Crichton
       (@dereference_queue ||= []) << hash_descriptor
     end
 
-    def add_resource_descriptor_to_raw_toplevel_registry(descriptor)
-      raw_profile_registry[descriptor.id] = descriptor
+    def add_resource_descriptor_to_raw_profile_registry(resource_descriptor)
+      if raw_profile_registry[resource_descriptor.id]
+        raise ArgumentError, "Resource descriptor profile for #{resource_descriptor.id} is already registered."
+      else
+       raw_profile_registry[resource_descriptor.id] = resource_descriptor
+      end
     end
 
     def add_resource_descriptor_to_registry(hash_descriptor, registry)

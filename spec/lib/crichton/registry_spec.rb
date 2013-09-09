@@ -148,7 +148,7 @@ module Crichton
       end
     end
 
-    describe '.raw_toplevel_registry' do
+    describe '.raw_profile_registry' do
       let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
