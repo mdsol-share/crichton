@@ -160,7 +160,10 @@ module Crichton
   end
 end
 
-require 'crichton/core_ext/action_controller'
+if defined?(Rails)
+  require 'crichton/core_ext/action_controller'
+  require 'crichton/core_ext/action_dispatch'
+end
 
 # YARD macros definitions for re-use in different classes. These must defined in the first loaded class to
 # be available in other classes.

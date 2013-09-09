@@ -6,7 +6,7 @@ module Crichton
     # Manages the serialization of a Crichton::Representor to an application/xhtml+xml media-type.
     class XHTMLSerializer < Serializer
       alternate_media_types :html
-      mime_types :html => [ "application/xhtml+xml" ]
+      content_types %w(application/xhtml+xml), %w(text/html)
 
       ##
       # Returns a representation of the object as xhtml.

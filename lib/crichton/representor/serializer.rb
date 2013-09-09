@@ -42,14 +42,27 @@ module Crichton
         end
 
         ##
-        # Define mime types and corresponding content-types.
+        # Define content types arrays corresponding to media types registered with serializer.
         #
         # @example
-        #  class JsonSerializer < Crichton::Representor::Serializer
-        #    mime_types :halo_json => [ "application/halo+json", "application/json" ], :hal_json => [ "application/hal+json" ]
+        #  class MediaTypeSerializer < Crichton::Representor::Serializer
+        #    alternate_media_types :hal_json
+        #    content_types  %w(application/halo+json application/json), %w(application/hal+json)
         #  end
-        def mime_types(args)
-          args.each { |media_type, array_of_content_types|  register_mime_type(media_type, array_of_content_types) }
+        #
+        #  Crichton::Representor::Serializer.registered_media_types[:mediatype] #=> %w(application/halo+json application/json)
+        #  Crichton::Representor::Serializer.registered_media_types[:hal_json]  #=> %w(application/hal+json)
+        #
+        def content_types(*types)
+          @registered_media_types ||= {}
+          @registered_media_types[@media_type] = types.shift
+          if @alternate_media_types.length > types.length
+            types.zip(@alternate_media_types).each{ |element| @registered_media_types[element.last] = element.first }
+          else
+            @alternate_media_types.zip(types).each{ |element| @registered_media_types[element.first] = element.last }
+          end
+
+          register_media_types
         end
 
         ##
@@ -77,14 +90,6 @@ module Crichton
           @registered_serializers ||= {}
         end
 
-        ##
-        # The registered content types by media type.
-        #
-        # @return [Hash] The mapped array of content-types keyed by media-type.
-        def registered_mime_types
-          @registered_mime_types ||= {}
-        end
-
         # @private
         # Subclasses self-register themselves
         def inherited(subclass)
@@ -96,8 +101,17 @@ module Crichton
             Serializer.registered_serializers[media_type] = serializer
           end
 
-          def register_mime_type(media_type, array_of_content_types)
-            Serializer.registered_mime_types[media_type] = array_of_content_types
+          def register_media_types
+            if defined?(Rails)
+              @registered_media_types.each do |mime_type, content_types|
+                (Mime::Type.register content_types.shift, mime_type, content_types) unless mime_type == :html
+
+                ActionController::Renderers.add mime_type do |obj, options|
+                  type = mime_type
+                  obj.is_a?(Crichton::Representor) ? obj.to_media_type(type, options) : (raise TypeError, "The object #{obj.inspect} is not a Crichton::Representor. Please include in #{obj.class.name} class Crichton::Representor::State")
+                end
+              end
+            end
           end
       end
 
