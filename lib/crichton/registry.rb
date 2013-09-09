@@ -47,6 +47,14 @@ module Crichton
     def raw_descriptor_registry
       @raw_descriptor_registry ||= {}
     end
+    ##
+
+    # Lists the registered toplevel resource descriptors that do not have local links de-referenced.
+    #
+    # @return [Hash] The registered resource descriptors, if any.
+    def raw_profile_registry
+      @raw_profile_registry ||= {}
+    end
 
     #TODO: Add
     # profile_registry and raw_profile_registry
@@ -87,7 +95,9 @@ module Crichton
       # Add the non-dereferenced descriptor document -
       # the de-referencing will need to wait until all IDs are collected.
       add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
-      add_resource_descriptor_to_registry(hash_descriptor, @raw_descriptor_registry ||= {})
+      resource_descriptor = add_resource_descriptor_to_registry(hash_descriptor, @raw_descriptor_registry ||= {})
+      add_resource_descriptor_to_raw_profile_registry(resource_descriptor)
+      resource_descriptor
     end
 
     ##
@@ -125,6 +135,14 @@ module Crichton
 
     def add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
       (@dereference_queue ||= []) << hash_descriptor
+    end
+
+    def add_resource_descriptor_to_raw_profile_registry(resource_descriptor)
+      if raw_profile_registry[resource_descriptor.id]
+        raise ArgumentError, "Resource descriptor profile for #{resource_descriptor.id} is already registered."
+      else
+       raw_profile_registry[resource_descriptor.id] = resource_descriptor
+      end
     end
 
     def add_resource_descriptor_to_registry(hash_descriptor, registry)
