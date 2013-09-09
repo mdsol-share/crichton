@@ -10,7 +10,7 @@ begin
       Crichton.raw_profile_registry.keys.each do |key|
         %w(xml json).each do |ext|
           doc = Crichton.raw_profile_registry[key].send("to_#{ext}")
-          File.open(File.join(directory, "#{key}_profile.#{ext}"), 'w') { |f| f.write(doc) }
+          File.open(File.join(directory, "#{key}.#{ext}"), 'w') { |f| f.write(doc) }
         end
       end
     end
