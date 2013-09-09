@@ -97,6 +97,7 @@ module Crichton
       add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
       resource_descriptor = add_resource_descriptor_to_registry(hash_descriptor, @raw_descriptor_registry ||= {})
       add_resource_descriptor_to_raw_profile_registry(resource_descriptor)
+      resource_descriptor
     end
 
     ##
