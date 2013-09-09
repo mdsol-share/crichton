@@ -49,28 +49,29 @@ module Crichton
 
       private
       def json_node_to_hash(node)
-        unless node.is_a?(Hash)
-          return node
-        end
+        return node unless node.is_a?(Hash)
         result_hash = {}
-        node.each do |k,v|
-          if v.is_a?(Array)
-            a_result_hash = {}
-            a_result_array = []
-            v.each do |ae|
-              if ae.is_a?(Hash) && ae.include?('id')
-                a_result_hash[ae.delete('id')] = json_node_to_hash(ae)
+        node.each do |k, node_element|
+          if node_element.is_a?(Array)
+            # We can have either a data structure that uses IDs and then is put into a hash or lacking the IDs we end
+            # up having an array. The loop can handle both types and skips special logic to beforehand determine what
+            # kind of data it is.
+            array_result_hash = {}
+            array_result_array = []
+            node_element.each do |array_element|
+              if array_element.is_a?(Hash) && array_element.include?('id')
+                array_result_hash[array_element.delete('id')] = json_node_to_hash(array_element)
               else
-                a_result_array << json_node_to_hash(ae)
+                array_result_array << json_node_to_hash(array_element)
               end
             end
             # I'm not quite sure about these. Pluralize is in the ActiveSupport package - but that may be a little
             # heavyweight for what we want here. And adding a linguistics Gem for these may be too heavyweight.
             # So for the cases that I ran into, this seems to work.
-            result_hash["#{k}s"] = a_result_hash unless a_result_hash.empty?
-            result_hash["#{k}s"] = a_result_array unless a_result_array.empty?
+            result_hash["#{k}s"] = array_result_hash unless array_result_hash.empty?
+            result_hash["#{k}s"] = array_result_array unless array_result_array.empty?
           else
-            result_hash[k] = json_node_to_hash(v)
+            result_hash[k] = json_node_to_hash(node_element)
           end
         end
         result_hash

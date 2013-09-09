@@ -3,7 +3,7 @@ require 'spec_helper'
 module Crichton
   module ALPS 
     describe Deserialization do
-      describe '.init' do
+      describe '.new' do
         it 'deserializes XML data' do
           deserializer = Deserialization.new(alps_xml_string)
           deserializer.to_hash.keys.should == ["text", "doc", "ext", "links", "descriptors"]
