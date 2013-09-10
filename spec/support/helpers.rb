@@ -122,7 +122,8 @@ module Support
       end
     end
 
-    def lint_spec_filename(folder, filename)
+    def lint_spec_filename(*args)
+      folder, filename = args.count == 1 ? ['', args.first] : args
       fixture_path('lint_resource_descriptors', folder, filename)
     end
 

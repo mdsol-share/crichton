@@ -26,6 +26,7 @@ module Crichton
       # @!macro string_reader
       descriptor_reader :uri_source 
 
+      # @!macro string_reader
       descriptor_reader :entry_point
 
       ##
