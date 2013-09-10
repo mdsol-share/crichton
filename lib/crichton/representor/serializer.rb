@@ -22,55 +22,36 @@ module Crichton
               "No representor serializer is registered that corresponds to the type '#{type}'.")
           end
         end
-        
-        ##
-        # Define alternate media types that should return the same serializer.
-        # 
-        # @example
-        #  class XHTMLSerializer < Crichton::Representor::Serializer
-        #    alternate_media_types :html
-        #  end
-        #
-        #  Crichton::Representor::Serializer.registered_serializers[:xhtml] #=> XHTMLSerializer
-        #  Crichton::Representor::Serializer.registered_serializers[:html]  #=> XHTMLSerializer
-        #
-        def alternate_media_types(*args)
-          @alternate_media_types ||= [] 
-          @alternate_media_types |= args.map(&:to_sym)
-          
-          @alternate_media_types.each { |media_type| register_serializer(media_type, self) }
-        end
 
         ##
         # Define content types arrays corresponding to media types registered with serializer.
         #
         # @example
         #  class MediaTypeSerializer < Crichton::Representor::Serializer
-        #    alternate_media_types :hal_json
-        #    content_types  %w(application/halo+json application/json), %w(application/hal+json)
+        #    media_types  media_type: %w(application/mediatype), other_media_type: %w(application/other_media_type)
         #  end
         #
-        #  Crichton::Representor::Serializer.registered_media_types[:mediatype] #=> %w(application/halo+json application/json)
-        #  Crichton::Representor::Serializer.registered_media_types[:hal_json]  #=> %w(application/hal+json)
+        #  Crichton::Representor::Serializer.registered_media_types[:media_type] #=> %w(application/mediatype)
+        #  Crichton::Representor::Serializer.registered_media_types[:other_media_type]  #=> %w(application/other_media_type)
         #
-        def content_types(*types)
-          @registered_media_types ||= {}
-          @registered_media_types[@media_type] = types.shift
-          if @alternate_media_types.length > types.length
-            types.zip(@alternate_media_types).each{ |element| @registered_media_types[element.last] = element.first }
-          else
-            @alternate_media_types.zip(types).each{ |element| @registered_media_types[element.first] = element.last }
+        def media_types(types)
+          if types[default_media_type].nil?
+            raise ArgumentError,
+                  "The first media type in the list of available media_types should be #{self.default_media_type}"
           end
 
-          register_media_types
+          types.each do |media_type, content_types|
+            register_serializer(media_type, self)
+            register_media_types(media_type, content_types)
+          end
         end
 
         ##
         # Returns the media-type of the Serializer.
         #
         # @return [Symbol]
-        def media_type
-          @media_type ||= begin
+        def default_media_type
+          @default_media_type ||= begin
             name = self.name
             unless name =~ /\w+Serializer$/
               raise(Crichton::RepresentorError,
@@ -90,25 +71,42 @@ module Crichton
           @registered_serializers ||= {}
         end
 
-        # @private
-        # Subclasses self-register themselves
-        def inherited(subclass)
-          register_serializer(subclass.media_type, subclass)
+        ##
+        # The registered media types with content types.
+        #
+        # @return [Hash] The mapped content_types keyed by media-type.
+        def registered_media_types
+          @registered_media_types ||= {}
         end
-      
+
+        def register_mime_types(&block)
+          if block_given?
+            block.call
+          else
+            if defined?(Rails)
+              registered_media_types.each do |media_type, content_types|
+                Mime::Type.register content_types.shift, media_type, content_types
+              end
+            end
+          end
+        end
+
         private
           def register_serializer(media_type, serializer)
             Serializer.registered_serializers[media_type] = serializer
           end
 
-          def register_media_types
-            if defined?(Rails)
-              @registered_media_types.each do |mime_type, content_types|
-                (Mime::Type.register content_types.shift, mime_type, content_types) unless mime_type == :html
+          def register_media_types(media_type, content_types)
+            registered_media_types[media_type] = content_types
 
-                ActionController::Renderers.add mime_type do |obj, options|
-                  type = mime_type
-                  obj.is_a?(Crichton::Representor) ? obj.to_media_type(type, options) : (raise TypeError, "The object #{obj.inspect} is not a Crichton::Representor. Please include in #{obj.class.name} class Crichton::Representor::State")
+            if defined?(Rails)
+              ActionController::Renderers.add media_type do |obj, options|
+                type = media_type
+                if obj.is_a?(Crichton::Representor)
+                  obj.to_media_type(type, options)
+                else
+                  raise ArgumentError, "The object #{obj.inspect} is not a Crichton::Representor. " <<
+                      "Please include in #{obj.class.name} class Crichton::Representor::State."
                 end
               end
             end

@@ -5,8 +5,15 @@ module Crichton
     ##
     # Manages the serialization of a Crichton::Representor to an application/xhtml+xml media-type.
     class XHTMLSerializer < Serializer
-      alternate_media_types :html
-      content_types %w(application/xhtml+xml), %w(text/html)
+      media_types xhtml: %w(application/xhtml+xml), html: %w(text/html)
+
+      register_mime_types do
+        if defined?(Rails)
+          Mime::Type.unregister :html
+          Mime::Type.register "text/html", :html
+          Mime::Type.register "application/xhtml+xml", :xhtml
+        end
+      end
 
       ##
       # Returns a representation of the object as xhtml.
@@ -53,7 +60,7 @@ module Crichton
                   MicrodataSemanticBuilder
                 end
         
-        @semantic_builder = klass.new(self.class.media_type, @object, @markup_builder)
+        @semantic_builder = klass.new(self.class.default_media_type, @object, @markup_builder)
       end
       
       def add_head

@@ -7,7 +7,10 @@ require 'crichton/dice_bag/template'
 require 'crichton/representor'
 require 'crichton/alps/deserialization'
 
-require 'crichton/rake_lint' if defined?(Rails)
+if defined?(Rails)
+  require 'crichton/rake_lint'
+  require 'crichton/core_ext/action_controller'
+end
 
 module Crichton
   ##
@@ -158,11 +161,6 @@ module Crichton
       Dir.pwd
     end
   end
-end
-
-if defined?(Rails)
-  require 'crichton/core_ext/action_controller'
-  require 'crichton/core_ext/action_dispatch'
 end
 
 # YARD macros definitions for re-use in different classes. These must defined in the first loaded class to
