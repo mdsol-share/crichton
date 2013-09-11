@@ -86,9 +86,9 @@ module Crichton
 
           def register_media_types(media_type, content_types)
             Serializer.registered_media_types[media_type] = content_types
-            register_mime_types(media_type, content_types)
 
             if defined?(Rails)
+              register_mime_types(media_type, content_types)
               ActionController::Renderers.add media_type do |obj, options|
                 type = media_type
                 if obj.is_a?(Crichton::Representor)
