@@ -117,6 +117,10 @@ module Crichton
           raise_abstract('element_tag')
         end
 
+        def object
+          @object
+        end
+
       private
         def element_attributes
           {itemscope: 'itemscope'}.tap do |attributes|
@@ -132,7 +136,7 @@ module Crichton
 
         def add_transitions(options)
           @object.each_link_transition(options) do |transition|
-            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition)
+            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition, options)
           end
 
           @object.each_embedded_transition(options) { |transition| add_transition(transition) }
@@ -154,12 +158,23 @@ module Crichton
           raise_abstract('add_control_transition')
         end
 
-        def add_transition(transition)
-          logger.warn("URL is nil for transition #{transition.name}!") if transition.url.blank?
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition.url}) if transition.url
+        def add_transition(transition, options)
+          if transition.name == 'self' && options[:top_level] && self.object.target["self_link"]
+            transition_url = self.object.target["self_link"]
+          else
+            transition_url = transition.url
+          end
+          logger.warn("URL is nil for transition #{transition.name}!") if transition_url.blank?
+          @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) if transition_url
         end
 
         def add_semantics(options)
+          if options[:top_level]
+            @markup_builder.a('previous', {rel: "previous", href: object.target["prev_link"]}) if object.target["prev_link"]
+            @markup_builder.a('next', {rel: "next", href: object.target["next_link"]}) if object.target["next_link"]
+          end
+
+
           @object.each_data_semantic(options) do |semantic|
             add_semantic(semantic, options)
           end
@@ -257,7 +272,7 @@ module Crichton
           end
         end
 
-        def add_transition(transition)
+        def add_transition(transition, options={})
           return unless transition.url
           
           @markup_builder.li do
