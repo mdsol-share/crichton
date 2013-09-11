@@ -35,9 +35,9 @@ module Crichton
         #  Crichton::Representor::Serializer.registered_media_types[:other_media_type]  #=> %w(application/other_media_type)
         #
         def media_types(types)
-          if types[default_media_type].nil?
-            raise ArgumentError,
-                  "The first media type in the list of available media_types should be #{self.default_media_type}"
+          unless types[default_media_type]
+            raise(ArgumentError,
+              "The first media type in the list of available media_types should be #{self.default_media_type}")
           end
 
           types.each do |media_type, content_types|
@@ -94,8 +94,10 @@ module Crichton
                 if obj.is_a?(Crichton::Representor)
                   obj.to_media_type(type, options)
                 else
-                  raise ArgumentError, "The object #{obj.inspect} is not a Crichton::Representor. " <<
-                      "Please include in #{obj.class.name} class Crichton::Representor::State."
+                  raise(ArgumentError,
+                    "The object #{obj.inspect} is not a Crichton::Representor. " <<
+                    "Please include module Crichton::Representor or Cricthon::Representor::State in your object" <<
+                    "or use Crichton::Representor::Factory to decorate your object as a representor.")
                 end
               end
             end
@@ -103,10 +105,10 @@ module Crichton
 
         def register_mime_types(media_type, content_types)
           if Mime::Type.lookup_by_extension(media_type)
-            #log warning: Un-registering already defined constant Mime::#{media_type.to_s.upcase}
-            Mime::Type.unregister media_type
+            puts("Un-registering already defined mime type #{media_type.to_s.upcase}")
+            Mime::Type.unregister(Mime::Type.lookup_by_extension(media_type).to_sym)
           end
-          Mime::Type.register content_types.shift, media_type, content_types
+          Mime::Type.register(content_types.shift, media_type, content_types)
         end
       end
 
