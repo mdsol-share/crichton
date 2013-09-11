@@ -79,25 +79,14 @@ module Crichton
           @registered_media_types ||= {}
         end
 
-        def register_mime_types(&block)
-          if block_given?
-            block.call
-          else
-            if defined?(Rails)
-              registered_media_types.each do |media_type, content_types|
-                Mime::Type.register content_types.shift, media_type, content_types
-              end
-            end
-          end
-        end
-
         private
           def register_serializer(media_type, serializer)
             Serializer.registered_serializers[media_type] = serializer
           end
 
           def register_media_types(media_type, content_types)
-            registered_media_types[media_type] = content_types
+            Serializer.registered_media_types[media_type] = content_types
+            register_mime_types(media_type, content_types)
 
             if defined?(Rails)
               ActionController::Renderers.add media_type do |obj, options|
@@ -111,6 +100,14 @@ module Crichton
               end
             end
           end
+
+        def register_mime_types(media_type, content_types)
+          if Mime::Type.lookup_by_extension(media_type)
+            #log warning: Un-registering already defined constant Mime::#{media_type.to_s.upcase}
+            Mime::Type.unregister media_type
+          end
+          Mime::Type.register content_types.shift, media_type, content_types
+        end
       end
 
       ##

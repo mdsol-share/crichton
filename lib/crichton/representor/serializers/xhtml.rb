@@ -7,14 +7,6 @@ module Crichton
     class XHTMLSerializer < Serializer
       media_types xhtml: %w(application/xhtml+xml), html: %w(text/html)
 
-      register_mime_types do
-        if defined?(Rails)
-          Mime::Type.unregister :html
-          Mime::Type.register "text/html", :html
-          Mime::Type.register "application/xhtml+xml", :xhtml
-        end
-      end
-
       ##
       # Returns a representation of the object as xhtml.
       #
