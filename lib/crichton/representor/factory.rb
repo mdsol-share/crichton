@@ -83,10 +83,6 @@ module Crichton
 
             define_singleton_method(:state, lambda { state }) if state
           end
-
-          def target
-            @target
-          end
         end
       end
     end

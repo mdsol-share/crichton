@@ -117,10 +117,6 @@ module Crichton
           raise_abstract('element_tag')
         end
 
-        def object
-          @object
-        end
-
       private
         def element_attributes
           {itemscope: 'itemscope'}.tap do |attributes|
