@@ -221,7 +221,7 @@ module Crichton
       # @target will only be set in a Factory adapter instance.
       @target ||= self
     end
-    
+
     ##
     # Allows an object to define the method Crichton should use to determine the state. This prevents collisions
     # with, for example, an address object that includes a <tt>state</tt> attribute.

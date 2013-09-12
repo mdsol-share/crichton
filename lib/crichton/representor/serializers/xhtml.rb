@@ -155,13 +155,18 @@ module Crichton
         end
 
         def add_transition(transition, options)
-          if transition.name == 'self' && options[:top_level] && options[:links] && options[:links][:self]
-            transition_url = options[:links][:self]
-          else
-            transition_url = transition.url
-          end
+          transition_url = replace_link_from_links_option(options, transition.name, transition.url)
           logger.warn("URL is nil for transition #{transition.name}!") if transition_url.blank?
           @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) if transition_url
+        end
+
+
+        def replace_link_from_links_option(options, name, url)
+          if options[:links] && options[:links][name] && options[:top_level]
+            options[:links][name]
+          else
+            url
+          end
         end
 
         def add_semantics(options)
@@ -170,7 +175,7 @@ module Crichton
               @markup_builder.a('previous', {rel: "previous", href: options[:links][:previous]})
             end
             if options[:links][:next]
-              @markup_builder.a('previous', {rel: "next", href: options[:links][:next]})
+              @markup_builder.a('next', {rel: "next", href: options[:links][:next]})
             end
           end
 
