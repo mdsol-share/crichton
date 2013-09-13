@@ -155,18 +155,9 @@ module Crichton
         end
 
         def add_transition(transition, options)
-          transition_url = replace_overridden_links(options, transition.name, transition.url)
+          transition_url = transition.url
           logger.warn("URL is nil for transition #{transition.name}!") if transition_url.blank?
           @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) if transition_url
-        end
-
-
-        def replace_overridden_links(options, name, url)
-          if options[:override_links] && options[:override_links][name] && options[:top_level]
-            options[:override_links].delete(name)
-          else
-            url
-          end
         end
 
         def add_semantics(options)

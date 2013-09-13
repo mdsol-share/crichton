@@ -81,11 +81,16 @@ module Crichton
       ##
       # The fully-qualified URL for the transition.
       def url
-        @url ||= if protocol_descriptor
-          protocol_descriptor.url_for(@target)
+        # Replace links if they are in the override links section and on the top level.
+        if @options[:top_level] && @options[:override_links] && @options[:override_links][self.name]
+           @url ||= @options[:override_links].delete(self.name)
         else
-          logger.warn("The URL for the transition is not defined for #{@target.inspect}!")
-          nil
+           @url ||= if protocol_descriptor
+            protocol_descriptor.url_for(@target)
+          else
+            logger.warn("The URL for the transition is not defined for #{@target.inspect}!")
+            nil
+          end
         end
       end
 
