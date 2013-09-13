@@ -155,30 +155,28 @@ module Crichton
         end
 
         def add_transition(transition, options)
-          transition_url = replace_link_from_links_option(options, transition.name, transition.url)
+          transition_url = replace_overridden_links(options, transition.name, transition.url)
           logger.warn("URL is nil for transition #{transition.name}!") if transition_url.blank?
           @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) if transition_url
         end
 
 
-        def replace_link_from_links_option(options, name, url)
-          if options[:links] && options[:links][name] && options[:top_level]
-            options[:links][name]
+        def replace_overridden_links(options, name, url)
+          if options[:override_links] && options[:override_links][name] && options[:top_level]
+            options[:override_links].delete(name)
           else
             url
           end
         end
 
         def add_semantics(options)
-          if options[:top_level] && options[:links]
-            if options[:links][:previous]
-              @markup_builder.a('previous', {rel: "previous", href: options[:links][:previous]})
-            end
-            if options[:links][:next]
-              @markup_builder.a('next', {rel: "next", href: options[:links][:next]})
+          # TODO: Put it in representer if possible (in the enumerators)
+          if options[:top_level] && options[:additional_links]
+            options[:additional_links].each do |name, value|
+              # We don't use value because we want to clear out the data from the options
+              @markup_builder.a(name, {rel: name, href: options[:additional_links].delete(name)})
             end
           end
-
 
           @object.each_data_semantic(options) do |semantic|
             add_semantic(semantic, options)
