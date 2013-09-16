@@ -161,14 +161,6 @@ module Crichton
         end
 
         def add_semantics(options)
-          # TODO: Put it in representer if possible (in the enumerators)
-          if options[:top_level] && options[:additional_links]
-            options[:additional_links].each do |name, value|
-              # We don't use value because we want to clear out the data from the options
-              @markup_builder.a(name, {rel: name, href: options[:additional_links].delete(name)})
-            end
-          end
-
           @object.each_data_semantic(options) do |semantic|
             add_semantic(semantic, options)
           end
