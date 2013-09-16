@@ -100,7 +100,6 @@ module Crichton
     #
     # @return [Hash] The data.
     def each_data_semantic(options = nil, &block)
-      #each_data_semantic_enumerator(slice_known(options, :only, :except), &block)
       each_data_semantic_enumerator(options, &block)
     end
 
@@ -117,7 +116,6 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_semantic(options = nil, &block)
-      #each_embedded_semantic_enumerator(slice_known(options, :include, :exclude), &block)
       each_embedded_semantic_enumerator(options, &block)
     end
 
@@ -136,7 +134,6 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_transition(options = nil, &block)
-      #each_embedded_transition_enumerator(slice_known(options, :include, :exclude, :state, :conditions), &block)
       each_embedded_transition_enumerator(options, &block)
     end
 
@@ -157,7 +154,6 @@ module Crichton
     #
     # @return [Hash] The data.
     def each_link_transition(options = nil, &block)
-      #each_link_transition_enumerator(slice_known(options, :only, :except, :state, :conditions), &block)
       each_link_transition_enumerator(options, &block)
     end
     
