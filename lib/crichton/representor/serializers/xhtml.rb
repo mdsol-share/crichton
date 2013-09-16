@@ -135,7 +135,7 @@ module Crichton
             transition.templated? ? add_templated_transition(transition, options) : add_transition(transition, options)
           end
 
-          @object.each_embedded_transition(options) { |transition| add_transition(transition) }
+          @object.each_embedded_transition(options) { |transition| add_transition(transition, options) }
         end
 
         def add_templated_transition(transition, options)

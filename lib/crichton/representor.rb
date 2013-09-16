@@ -177,6 +177,9 @@ module Crichton
     
   private
     def each_enumerator(type, descriptor, options)
+      unless options.nil? || options.is_a?(Hash)
+        raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'."
+      end
       return to_enum("each_#{type}_#{descriptor}", options) unless block_given?
 
       filtered_descriptors(type, descriptor, options).each do |descriptor| 
