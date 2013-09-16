@@ -11,6 +11,9 @@ module Crichton
           options[:state] = @state unless @skip_state_option
           options[:conditions] = @conditions
           options[:protocol] = @protocol
+          options[:override_links] = @override_links if @override_links
+          # Yes, I want the .nil? as this could be true or false
+          options[:top_level] = @top_level unless @top_level.nil?
         end
       end
       let(:target) do
@@ -272,6 +275,29 @@ module Crichton
           it 'returns nil' do
             decorator.stub(:protocol_descriptor).and_return(nil)
             decorator.url.should be_nil
+          end
+        end
+
+        context 'with override_links in the options hash' do
+          it 'uses the override link instead of the regular URL' do
+            overridden_url = "OVERRIDDEN URL"
+            @override_links = {'self' => overridden_url}
+            @top_level = true
+            decorator.url.should be(overridden_url)
+          end
+
+          it 'uses regular URL if the name does not match' do
+            overridden_url = "OVERRIDDEN URL"
+            @override_links = {'wrong_name' => overridden_url}
+            @top_level = true
+            decorator.url.should_not be(overridden_url)
+          end
+
+          it 'uses the regular URL if it is not top_level' do
+            overridden_url = "OVERRIDDEN URL"
+            @override_links = {'self' => overridden_url}
+            @top_level = false
+            decorator.url.should_not be(overridden_url)
           end
         end
       end
