@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
 
 require 'rspec'
-#require 'debugger'
+require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
 
@@ -14,7 +14,7 @@ if ENV['COVERAGE']
   SimpleCov.start
 end
 
-#Debugger.start
+Debugger.start
 Bundler.setup
 
 if ENV['CONTROLLER_SPEC']
