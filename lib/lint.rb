@@ -1,6 +1,7 @@
 require 'yaml'
 require 'i18n'
-require 'crichton'
+require 'active_support/all'
+require 'crichton/descriptor'
 require 'lint/resource_descriptor_validator'
 require 'lint/states_validator'
 require 'lint/descriptors_validator'

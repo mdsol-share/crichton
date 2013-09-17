@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/dice_bag/template'
 
 module Crichton 
   module DiceBag

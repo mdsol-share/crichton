@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/descriptor/state_transition'
 
 module Crichton
   module Descriptor

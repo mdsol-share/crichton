@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/descriptor/base'
 
 module Crichton
   module Descriptor

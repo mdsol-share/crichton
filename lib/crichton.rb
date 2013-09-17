@@ -9,7 +9,7 @@ require 'crichton/alps/deserialization'
 
 if defined?(Rails)
   require 'crichton/rake_lint'
-  require 'crichton/core_ext/action_controller'
+  require 'crichton/core_ext/action_controller/responder'
 end
 
 module Crichton

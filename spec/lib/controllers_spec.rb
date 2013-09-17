@@ -3,33 +3,41 @@ require 'active_support'
 require 'action_dispatch'
 require 'action_controller/test_case'
 
-class Model
-  include Crichton::Representor::State
-end
+describe 'testing controller' do
+  before (:all) do
+    Object.const_set(:Rails, RSpec::Mocks::Mock.new('Rails'))
+    require 'crichton/representor'
+    require 'crichton/core_ext/action_controller/responder'
+    eval("class SampleTypeSerializer < Crichton::Representor::Serializer; " <<
+             " media_types sample_type: %w(application/sample_media_type); " <<
+         " end")
+  end
+  before do
+    @controller = TestController.new
+    @controller.request = ActionController::TestRequest.new
+    @controller.response = ActionController::TestResponse.new
+    @controller.request.accept = 'text/html'
+    @model = double('Model')
+  end
+  after (:all) do
+    Object.send(:remove_const, :Rails)
+  end
 
-describe 'test controller' do
-  describe 'respond_to :xhtml' do
-    before(:each) do
-      @request = ActionController::TestRequest.new
-      @response = ActionController::TestResponse.new
-      @controller = TestController.new
-      @request.accept = 'application/xhtml+xml'
-      @controller.request = @request
-      @controller.response = @response
+  context 'when it is not a crichton representor model' do
+    it 'should try to render html template' do
+      expect { @controller.show(@model) }.to raise_error { ActionView::MissingTemplate }
     end
+  end
 
-    context 'when it is not a crichton representor model' do
-      it 'should try to render xhtml template' do
-        expect { @controller.show(double('Model')) }.to raise_error { ActionView::MissingTemplate }
+  context 'when it is a crichton representor model' do
+    it 'should call to_media_type' do
+      @model.class_eval do
+        include Crichton::Representor::State
       end
-    end
 
-    context 'when it is a crichton representor model' do
-      it 'should call to_media_type' do
-        p = Model.new
-        p.should_receive(:to_media_type).and_return(anything())
-        @controller.show(p)
-      end
+      @controller.request.accept = 'application/sample_media_type'
+      @model.should_receive(:to_media_type).and_return(anything())
+      @controller.show(@model)
     end
   end
 end

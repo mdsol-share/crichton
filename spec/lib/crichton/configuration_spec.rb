@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/configuration'
 
 module Crichton
   describe Configuration do

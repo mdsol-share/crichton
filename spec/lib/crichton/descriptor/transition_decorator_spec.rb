@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/descriptor/transition_decorator'
 
 module Crichton
   module Descriptor
