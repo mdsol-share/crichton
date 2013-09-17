@@ -52,8 +52,22 @@ module Crichton
       end
       
       describe '#profile_link' do
+        it 'returns an absolute link' do
+          resource_descriptor.profile_link.href.should == 'http://alps.example.com/DRDs'
+        end
+
         it 'returns a link with the name profile' do
           resource_descriptor.profile_link.name.should == 'profile'
+        end
+      end
+
+      describe '#help_link' do
+        it 'returns an absolute link' do
+          resource_descriptor.help_link.href.should == 'http://docs.example.org/Things/DRDs'
+        end
+
+        it 'returns a link with the name profile' do
+          resource_descriptor.help_link.name.should == 'help'
         end
       end
 
