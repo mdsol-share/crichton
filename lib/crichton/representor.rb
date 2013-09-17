@@ -140,10 +140,10 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_transition(options = nil, &block)
-      return to_enum(each_embedded_transition, options) unless block_given?
-
-      each_embedded_transition_enumerator(options, &block)
+      #return to_enum(each_embedded_transition, options) unless block_given?
       each_additional_link_transition_enumerator(options, &block)
+      # Keep this order - the return values of this methods are relevant (for tests)
+      each_embedded_transition_enumerator(options, &block)
     end
 
     ##

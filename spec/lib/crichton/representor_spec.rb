@@ -221,6 +221,9 @@ module Crichton
         (@options || {}).tap do |options|
           options[:state] = @state
           options[:conditions] = @conditions
+          options[:additional_links] = @additional_links if @additional_links
+          # Yes, I want the .nil? as this could be true or false
+          options[:top_level] = @top_level unless @top_level.nil?
         end
       end
 
@@ -244,6 +247,18 @@ module Crichton
             item.instance_of?(Crichton::Descriptor::TransitionDecorator)
           end
         end
+
+        it 'yields the additional links' do
+          @top_level = true
+          @additional_links = {'first' => 'first_link', 'second' => 'second_link'}
+          results = []
+          simple_test_class.new.each_embedded_transition(options) do |item|
+            results << item
+          end
+          results[0..1].to_a.collect{|x| x.to_a }.should == [['first', 'first_link'], ['second', 'second_link']]
+        end
+
+
 
         it 'raises an error if options are passed that are not a hash' do
           expect { simple_test_class.new.each_link_transition(:options).to_a }.to raise_error(ArgumentError,
