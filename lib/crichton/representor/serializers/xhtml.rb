@@ -258,7 +258,7 @@ module Crichton
           end
         end
 
-        def add_transition(transition, options={})
+        def add_transition(transition, options = {})
           return unless transition.url
           
           @markup_builder.li do
