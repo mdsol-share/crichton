@@ -53,10 +53,15 @@ module Crichton
       # @return [Crichton::Descriptor::Link] The link.
       def profile_link
         @descriptors[:profile_link] ||= if self_link = links['self']
-          Crichton::Descriptor::Link.new(self, 'profile', self_link.href)
+        Crichton::Descriptor::Link.new(self, 'profile', absolute_link(self_link.href, 'profile'))
         end
       end
-      
+
+      def help_link
+        superlink = super
+        Crichton::Descriptor::Link.new(self, superlink.rel, absolute_link(superlink.href, superlink.rel))
+      end
+
       ##
       # Whether the specified protocol exists or not.
       #

@@ -89,7 +89,7 @@ module Crichton
       
       def type_link
         @descriptors[:type_link] ||= if semantic? && (self_link = links['self'])
-          Crichton::Descriptor::Link.new(resource_descriptor, 'type', self_link.href)
+          Crichton::Descriptor::Link.new(resource_descriptor, 'type', absolute_link(self_link.href, 'type'))
         end
       end
       
