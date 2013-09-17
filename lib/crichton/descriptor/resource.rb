@@ -58,10 +58,7 @@ module Crichton
       end
 
       def help_link
-        @helplink ||= begin
-          superlink = super
-          Crichton::Descriptor::Link.new(self, superlink.rel, superlink.absolute_href)
-        end
+        @helplink ||= Crichton::Descriptor::Link.new(self, super.rel, super.absolute_href)
       end
 
       ##
