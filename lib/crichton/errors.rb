@@ -8,4 +8,6 @@ module Crichton
 
   class ExternalProfileLoadError < StandardError; end
 
+  class DescriptorAlreadyRegisteredError < StandardError; end
+
 end

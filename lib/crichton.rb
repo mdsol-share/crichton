@@ -73,6 +73,18 @@ module Crichton
   end
 
   ##
+  # Returns the registered resources - toplevel version that does not have the local resources de-referenced.
+  #
+  # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
+  # descriptors in that location.
+  #
+  # @return [Hash] The registered resource descriptors, if any?
+  def self.raw_profile_registry
+    @registry ||= Crichton::Registry.new
+    @registry.raw_profile_registry
+  end
+
+  ##
   # Clears the config and config_directory so that they reset themselves.
   def self.clear_config
     @config = nil

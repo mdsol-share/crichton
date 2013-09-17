@@ -54,17 +54,24 @@ module Crichton
           descriptor.alps_elements.should == {
               'doc' => {'value' => 'Describes Leviathans.'},
               'ext' => [
-                {'href' => 'alps_base/Leviathans#leviathan/alt', 'value' => 'Alternate.'}
+                {'href' => 'http://alps.example.com/Leviathans#alt', 'value' => 'Alternate.'}
               ],
               'link' => [
-                  {'rel' => 'self', 'href' => 'alps_base/Leviathans'},
-                  {'rel' => 'help', 'href' => 'documentation_base/Things/Leviathans'}
+                  {'rel' => 'self', 'href' => 'http://alps.example.com/Leviathans'},
+                  {'rel' => 'help', 'href' => 'http://docs.example.org/Things/Leviathans'}
               ]
           }
         end
       end
 
       it_behaves_like 'it serializes to ALPS'
+
+
+      describe 'absolute_link' do
+        it 'returns the original link if it is already absolute' do
+          descriptor.send(:absolute_link, 'http://original.link.com', 'something').should == 'http://original.link.com'
+        end
+      end
     end
   end
 end

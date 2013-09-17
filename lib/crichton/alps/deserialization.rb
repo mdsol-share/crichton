@@ -7,12 +7,17 @@ module Crichton
     ##
     # Manages serialization to the Application-Level Profile Semantics (ALPS) specification JSON and XML formats.
     class Deserialization
-      def initialize(alps_data)
-        @hash = alps_xml_to_hash(alps_data)
+      def initialize(alps_data, data_type = nil)
+        @alps_data = alps_data
+        @data_type = data_type || guess_alps_data_type(@alps_data)
       end
 
       def to_hash
-        @hash
+        if @data_type == :xml
+          alps_xml_to_hash(@alps_data)
+        else
+          alps_json_to_hash(@alps_data)
+        end
       end
 
       def alps_xml_to_hash(alps_data)
@@ -20,7 +25,61 @@ module Crichton
         xml_node_to_hash(xml_data.root)
       end
 
+      def alps_json_to_hash(alps_data)
+        json_data = JSON.load(alps_data)
+        raw_node = json_node_to_hash(json_data)
+        raw_node['alps']
+      end
+
       private
+      def guess_alps_data_type(alps_data)
+        if alps_data.is_a?(File)
+          # Guess based on file name first
+          if alps_data.path.ends_with?('json')
+            data_type = :json
+          elsif alps_data.path.ends_with?('xml')
+            data_type = :xml
+          else
+            # Guess based on content second
+            data_type = alps_data.read(1000).strip.first == '{' ? :json : :xml
+            alps_data.rewind
+          end
+        else
+          # Plain string - take content
+          data_type = alps_data.strip.first == '{' ? :json : :xml
+        end
+        data_type
+      end
+
+      def json_node_to_hash(node)
+        return node unless node.is_a?(Hash)
+        result_hash = {}
+        node.each do |k, node_element|
+          if node_element.is_a?(Array)
+            # We can have either a data structure that uses IDs and then is put into a hash or lacking the IDs we end
+            # up having an array. The loop can handle both types and skips special logic to beforehand determine what
+            # kind of data it is.
+            array_result_hash = {}
+            array_result_array = []
+            node_element.each do |array_element|
+              if array_element.is_a?(Hash) && array_element.include?('id')
+                array_result_hash[array_element.delete('id')] = json_node_to_hash(array_element)
+              else
+                array_result_array << json_node_to_hash(array_element)
+              end
+            end
+            # I'm not quite sure about these. Pluralize is in the ActiveSupport package - but that may be a little
+            # heavyweight for what we want here. And adding a linguistics Gem for these may be too heavyweight.
+            # So for the cases that I ran into, this seems to work.
+            result_hash["#{k}s"] = array_result_hash unless array_result_hash.empty?
+            result_hash["#{k}s"] = array_result_array unless array_result_array.empty?
+          else
+            result_hash[k] = json_node_to_hash(node_element)
+          end
+        end
+        result_hash
+      end
+
       def xml_node_to_hash(node)
         # If we are at the root of the document, start the hash
         if node.element?
