@@ -81,7 +81,6 @@ module Crichton
       ##
       # The fully-qualified URL for the transition.
       def url
-        # Replace links if they are in the override links section and on the top level.
         if @options[:top_level] && @options[:override_links] && @options[:override_links][self.name]
            @url ||= @options[:override_links].delete(self.name)
         else

@@ -15,24 +15,18 @@ module Crichton
   #
   module Representor
     extend ActiveSupport::Concern
-    
+
     included do
       include Serialization::MediaType
     end
 
+    AdditionalTransition = Struct.new :name, :url
+
     ##
     # Used as minimal version of a transition in order to allow for adding additional links to the document.
-    class AdditionalLink
-      attr_reader :name
-      attr_reader :url
-
-      def initialize(name, url)
-        @name = name
-        @url = url
-      end
-    end
 
     module ClassMethods
+
       ##
       # The data-related semantic descriptors defined for the associated resource descriptor.
       #
@@ -146,17 +140,10 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_transition(options = nil, &block)
-      each_additional_link_transition_enumerator(options, &block)
-      each_embedded_transition_enumerator(options, &block)
-    end
+      return to_enum(each_embedded_transition, options) unless block_given?
 
-    def each_additional_link_transition_enumerator(options, &block)
-      if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
-        options[:additional_links].each do |name, value|
-          # We don't use value because we want to clear out the data from the options
-          yield AdditionalLink.new(name, value)
-        end
-      end
+      each_embedded_transition_enumerator(options, &block)
+      each_additional_link_transition_enumerator(options, &block)
     end
 
     ##
@@ -198,6 +185,15 @@ module Crichton
     end 
     
   private
+    def each_additional_link_transition_enumerator(options, &block)
+      if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
+        options[:additional_links].each do |relation, url|
+          # We don't use url because we want to clear out the data from the options
+          yield AdditionalTransition.new(relation, options[:additional_links].delete(relation))
+        end
+      end
+    end
+
     def each_enumerator(type, descriptor, options)
       unless options.nil? || options.is_a?(Hash)
         raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'."
