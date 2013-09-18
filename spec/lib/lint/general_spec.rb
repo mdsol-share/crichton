@@ -12,14 +12,14 @@ describe Lint do
     content.should == "#{I18n.t('aok')}\n"
   end
 
-  it "display a missing states section error when the states section is missing" do
+  it "displays a missing states section error when the states section is missing" do
     filename = lint_spec_filename('missing_sections', 'nostate_descriptor.yml')
     content = capture(:stdout) { Lint.validate(filename) }
     error = expected_output(:error, 'catastrophic.section_missing', section: 'states', filename: filename)
     content.should == error
   end
 
-  it "display missing descriptor errors when the descriptor section is missing" do
+  it "displays missing descriptor errors when the descriptor section is missing" do
     filename = lint_spec_filename('missing_sections', 'nodescriptors_descriptor.yml')
 
     errors = expected_output(:error, 'catastrophic.section_missing',
@@ -30,7 +30,7 @@ describe Lint do
     content.should == errors
   end
 
-  it "display a missing protocols section error when the protocols section is missing" do
+  it "displays a missing protocols section error when the protocols section is missing" do
     filename = lint_spec_filename('missing_sections', 'noprotocols_descriptor.yml')
     content = capture(:stdout) { Lint.validate(filename) }
     error = expected_output(:error, 'catastrophic.section_missing', section: 'protocols', filename: filename)

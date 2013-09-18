@@ -128,7 +128,7 @@ module Support
     end
 
     def load_lint_translation_file
-      I18n.load_path = [LINT_DIR+'/eng.yml']
+      I18n.load_path =  [File.join(LINT_DIR, 'eng.yml')]
       I18n.default_locale = 'eng'
     end
 

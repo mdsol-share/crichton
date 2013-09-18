@@ -38,37 +38,35 @@ module Lint
 
         # if a transition contains uri_source, then it implies an external resource...
         if transition.uri_source
-          external_resource_prop_check(transition.descriptor_document, options, transition_name)
+          external_resource_prop_check(transition.descriptor_document, options.merge(action: transition_name))
         else
-          protocol_transition_prop_check(transition, options, transition_name)
+          protocol_transition_prop_check(transition, options.merge(action: transition_name))
         end
       end
     end
 
     # check if an external resource has other properties besides 'uri_source'
-    def external_resource_prop_check(transition_hash, options, transition_name)
-      add_warning('protocols.extraneous_props', options.merge(action: transition_name)) if has_extraneous_properties?(transition_hash)
+    def external_resource_prop_check(transition_hash, options)
+      add_warning('protocols.extraneous_props', options) if extraneous_properties?(transition_hash)
     end
 
     # If a transition has 'uri_source' defined, all other properties are extraneous, since it refers to an external resource
-    def has_extraneous_properties?(transition_prop_hash)
+    def extraneous_properties?(transition_prop_hash)
       transition_prop_hash.keys.any? { |key| PROTOCOL_PROPERTIES.include?(key.to_s) }
     end
 
     # Assorted checks on various properties of a protocol transition
-    def protocol_transition_prop_check(transition, options, transition_name)
+    def protocol_transition_prop_check(transition, options)
       #47, 48, required properties uri and method
       %w(uri method).each do |property|
-        add_error('protocols.property_missing', options.merge(property: property).
-          merge(action: transition_name)) unless transition.send(property)
+        add_error('protocols.property_missing', options.merge(property: property)) unless transition.send(property)
       end
 
       #51, warn if status_codes is missing or if specified, any of the sub-properties are missing
       if transition.status_codes
-        check_status_codes_properties(transition.status_codes, options, transition_name)
+        check_status_codes_properties(transition.status_codes, options)
       else
-        add_warning('protocols.property_missing', options.merge(property: 'status_codes').
-          merge(action: transition_name))
+        add_warning('protocols.property_missing', options.merge(property: 'status_codes'))
       end
 
       # #49 for content_type, we check for missing, invalid content_type, and the
@@ -76,20 +74,17 @@ module Lint
       if transition.content_types
         # check for valid types we know of currently
         transition.content_types.each do |type|
-          add_error('protocols.invalid_content_type', options.merge(content_type: type).
-            merge(action: transition_name)) unless valid_content_type(type)
+          add_error('protocols.invalid_content_type', options.merge(content_type: type)) unless valid_content_type(type)
         end
       else
-        add_error('protocols.property_missing', options.merge(property: 'content_type').
-          merge(action: transition_name))
+        add_error('protocols.property_missing', options.merge(property: 'content_type'))
       end
 
       #53, slt warnings, warn if not existing, and check if it has valid child properties
       if transition.slt
-        check_slt_properties(transition.slt, options, transition_name)
+        check_slt_properties(transition.slt, options)
       else
-        add_warning('protocols.property_missing', options.merge(property: 'slt').
-          merge(action: transition_name)) unless transition.slt
+        add_warning('protocols.property_missing', options.merge(property: 'slt')) unless transition.slt
       end
     end
 
@@ -107,24 +102,26 @@ module Lint
 
     # for each status code key, check to see if it is a valid as per the protocol. Only have http currently.
     # Also check for description and notes sub-properties
-    def check_status_codes_properties(status_codes, options, transition_name)
+    def check_status_codes_properties(status_codes, options)
       status_codes.each do |code_name, code|
         # http codes have to be > 100
-        add_warning('protocols.invalid_status_code', options.merge(code: code_name).
-          merge(action: transition_name)) if options[:protocol] == 'http' && code_name.to_i < 100
+        if options[:protocol] == 'http' && code_name.to_i < 100
+          add_warning('protocols.invalid_status_code', options.merge(code: code_name))
+        end
         %w(description notes).each do |property|
-          add_warning('protocols.missing_status_codes_property', options.merge(property: property).
-            merge(action: transition_name)) unless code.keys.include?(property)
+          unless code.keys.include?(property)
+            add_warning('protocols.missing_status_codes_property', options.merge(property: property))
+          end
         end
       end
     end
 
     # If slt is defined, it should have the 3 properties below specified
-    def check_slt_properties(slt, options, transition_name)
+    def check_slt_properties(slt, options)
       %w(99th_percentile std_dev requests_per_second).each do |slt_prop|
-        add_warning('protocols.missing_slt_property', options.merge(property: slt_prop).
-          merge(action: transition_name)) unless slt.keys.include?(slt_prop)
-
+        unless slt.keys.include?(slt_prop)
+          add_warning('protocols.missing_slt_property', options.merge(property: slt_prop))
+        end
       end
     end
 
@@ -134,8 +131,10 @@ module Lint
       protocol.values.each do |transition|
         entry_point_count += 1 if transition.entry_point
       end
-      add_error('protocols.entry_point_error', error: (entry_point_count == 0) ? "No" : "Multiple",
-                protocol: protocol_name, filename: filename) if entry_point_count != 1
+      unless entry_point_count == 1
+        add_error('protocols.entry_point_error', error: (entry_point_count == 0) ? "No" : "Multiple",
+          protocol: protocol_name, filename: filename)
+      end
     end
 
     # 54 check if the list of transitions found in the protocol section match the transitions in the
@@ -148,14 +147,18 @@ module Lint
         proto_transition_list = build_protocol_transition_list(protocol)
         #first look for protocol transitions not found in the descriptor transitions
         descriptors_transitions.each do |transition|
-          add_error('protocols.descriptor_transition_not_found', transition: transition, protocol:protocol_name,
-                    filename: filename) unless proto_transition_list.include?(transition)
+          unless proto_transition_list.include?(transition)
+            add_error('protocols.descriptor_transition_not_found', transition: transition, protocol:protocol_name,
+              filename: filename)
+          end
         end
 
         # then check if there is a transition missing for any state transition specified in the states: section
         states_transition_list.each do |transition|
-          add_error('protocols.state_transition_not_found', transition: transition, protocol: protocol_name,
-                    filename: filename) unless proto_transition_list.include?(transition)
+          unless proto_transition_list.include?(transition)
+            add_error('protocols.state_transition_not_found', transition: transition, protocol: protocol_name,
+              filename: filename)
+          end
         end
       end
     end

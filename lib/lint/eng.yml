@@ -24,10 +24,10 @@ eng:
     phantom_next_property: "Next property pointing to a state that is not specified in resource '%{secondary_descriptor}', in state '%{state}', transition action '%{transition}', next state '%{next_state}' in file '%{filename}'"
     duplicate_state: "Duplicate state found in state section: '%{state}' for resource '%{resource}'"
   descriptors:
-    property_missing:  "Resource '%{resource}', descriptor section does not have a %{prop} property in file '%{filename}'"
-    doc_media_type_invalid:  "Resource '%{resource}', descriptor section, doc property media type '%{media_type}' is invalid in file '%{filename}'"
-    type_invalid:  "Resource '%{resource}', descriptor section, type property '%{type_prop}' is invalid in file '%{filename}'"
-    link_invalid:  "Resource '%{resource}', descriptor section, link property is invalid in file '%{filename}'"
+    property_missing:  "Resource '%{resource}' descriptor section does not have a %{prop} property in file '%{filename}'"
+    doc_media_type_invalid:  "Resource '%{resource}' descriptor section, doc property media type '%{media_type}' is invalid in file '%{filename}'"
+    type_invalid:  "Resource '%{resource}' descriptor section, type property '%{type_prop}' is invalid in file '%{filename}'"
+    link_invalid:  "Resource '%{resource}' descriptor section, link property is invalid in file '%{filename}'"
     no_descriptor_for_action: "No resource descriptor transition defined for protocol action '%{action}' in file '%{filename}'"
   protocols:
     no_protocol:  "No underlying protocol (e.g. 'http') defined in the protocol section in file '%{filename}'"

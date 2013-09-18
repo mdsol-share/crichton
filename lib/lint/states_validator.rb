@@ -16,9 +16,10 @@ module Lint
     def check_for_secondary_descriptor_states
       #7,8 Check for second level egregious errors
       resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
-        add_error('catastrophic.no_states', resource: secondary_descriptor_name,
-          filename: filename) if secondary_descriptor.empty?
-      end
+        if secondary_descriptor.empty?
+          add_error('catastrophic.no_states', resource: secondary_descriptor_name, filename: filename)
+        end
+       end
     end
 
 
@@ -82,9 +83,10 @@ module Lint
     # No need to check if the next transition points to an external resource (e.g. 'location')
     def check_for_phantom_state_transitions(states_list, resource_name, curr_state_name, curr_transition)
       curr_transition.next.each do |next_state|
-        add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
-          transition: curr_transition.name, next_state: next_state,
-          filename: filename) unless valid_next_state(states_list,curr_transition, next_state)
+        unless valid_next_state(states_list,curr_transition, next_state)
+          add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
+            transition: curr_transition.name, next_state: next_state, filename: filename)
+        end
       end
     end
 
