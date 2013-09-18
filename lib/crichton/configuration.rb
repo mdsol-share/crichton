@@ -29,7 +29,11 @@ module Crichton
       method = "#{attribute}_base_uri"
       define_method(method) { @config[method] }
     end
-    
+
+    def external_documents_cache_directory
+      @config['external_documents_cache_directory'] || 'external_documents_cache'
+    end
+
     ##
     # @param [Hash] config The configuration hash.
     # @option config [String] alps_base_uri
