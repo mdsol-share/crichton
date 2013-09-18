@@ -253,9 +253,9 @@ module Crichton
           @additional_links = {'first' => 'first_link', 'second' => 'second_link'}
           results = []
           simple_test_class.new.each_embedded_transition(options) do |item|
-            results << item
+            results << item.to_a if item.is_a?(Struct)
           end
-          results[2..3].to_a.collect{|x| x.to_a }.should == [['first', 'first_link'], ['second', 'second_link']]
+          results.should == [['first', 'first_link'], ['second', 'second_link']]
         end
 
 
