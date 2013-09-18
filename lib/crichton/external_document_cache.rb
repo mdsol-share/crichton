@@ -14,7 +14,8 @@ module Crichton
       filename = Digest::MD5.hexdigest(link_without_fragment)
       path = File.join(@cache_path, "#{filename}.cache")
       metapath = File.join(@cache_path, "#{filename}.meta")
-      if File.exists?(path)
+
+      if File.exists?(path) && Time.now - File.ctime(path) < 60*60
         File.open(path, 'rb') {|f| f.read }
       else
         data = Net::HTTP.get(URI(link_without_fragment))
