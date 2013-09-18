@@ -22,9 +22,6 @@ module Crichton
 
     AdditionalTransition = Struct.new :name, :url
 
-    ##
-    # Used as minimal version of a transition in order to allow for adding additional links to the document.
-
     module ClassMethods
 
       ##
@@ -140,10 +137,9 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_transition(options = nil, &block)
-      #return to_enum(each_embedded_transition, options) unless block_given?
-      each_additional_link_transition_enumerator(options, &block)
-      # Keep this order - the return values of this methods are relevant (for tests)
-      each_embedded_transition_enumerator(options, &block)
+      embedded_link_transitions = each_embedded_transition_enumerator(options, &block)
+      additional_link_transitions = each_additional_link_transition_enumerator(options, &block)
+      return concatenate_enums(additional_link_transitions.to_enum, embedded_link_transitions) unless block_given?
     end
 
     ##
@@ -185,12 +181,23 @@ module Crichton
     end 
     
   private
+    def concatenate_enums(enum1, enum2)
+      Enumerator.new do |y|
+        enum1.each { |e| y << e }
+        enum2.each { |e| y << e }
+      end
+    end
+
     def each_additional_link_transition_enumerator(options, &block)
       if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
-        options[:additional_links].each do |relation, url|
+        options[:additional_links].collect do |relation, url|
           # We don't use url because we want to clear out the data from the options
-          yield AdditionalTransition.new(relation, options[:additional_links].delete(relation))
+          transition = AdditionalTransition.new(relation, options[:additional_links].delete(relation))
+          yield transition if block_given?
+          transition
         end
+      else
+        []
       end
     end
 

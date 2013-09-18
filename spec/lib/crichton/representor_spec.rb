@@ -255,7 +255,7 @@ module Crichton
           simple_test_class.new.each_embedded_transition(options) do |item|
             results << item
           end
-          results[0..1].to_a.collect{|x| x.to_a }.should == [['first', 'first_link'], ['second', 'second_link']]
+          results[2..3].to_a.collect{|x| x.to_a }.should == [['first', 'first_link'], ['second', 'second_link']]
         end
 
 

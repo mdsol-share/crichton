@@ -279,25 +279,26 @@ module Crichton
         end
 
         context 'with override_links in the options hash' do
+          before do
+            @overridden_url = "OVERRIDDEN URL"
+          end
+
           it 'uses the override link instead of the regular URL' do
-            overridden_url = "OVERRIDDEN URL"
-            @override_links = {'self' => overridden_url}
+            @override_links = {'self' => @overridden_url}
             @top_level = true
-            decorator.url.should be(overridden_url)
+            decorator.url.should be(@overridden_url)
           end
 
           it 'uses regular URL if the name does not match' do
-            overridden_url = "OVERRIDDEN URL"
-            @override_links = {'wrong_name' => overridden_url}
+            @override_links = {'wrong_name' => @overridden_url}
             @top_level = true
-            decorator.url.should_not be(overridden_url)
+            decorator.url.should_not be(@overridden_url)
           end
 
           it 'uses the regular URL if it is not top_level' do
-            overridden_url = "OVERRIDDEN URL"
-            @override_links = {'self' => overridden_url}
+            @override_links = {'self' => @overridden_url}
             @top_level = false
-            decorator.url.should_not be(overridden_url)
+            decorator.url.should_not be(@overridden_url)
           end
         end
       end

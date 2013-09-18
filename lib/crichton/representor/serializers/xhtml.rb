@@ -156,8 +156,8 @@ module Crichton
 
         def add_transition(transition, options)
           transition_url = transition.url
-          logger.warn("URL is nil for transition #{transition.name}!") if transition_url.blank?
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) if transition_url
+          logger.warn("URL is blank for transition #{transition.name}!") if transition_url.blank?
+          @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) unless transition_url.blank?
         end
 
         def add_semantics(options)
