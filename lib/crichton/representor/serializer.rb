@@ -28,12 +28,13 @@ module Crichton
         #
         # @example
         #  class MediaTypeSerializer < Crichton::Representor::Serializer
-        #    media_types  media_type: %w(application/mediatype), other_media_type: %w(application/other_media_type)
+        #    media_types  media_type: %w(application/media_type), other_media_type: %w(application/other_media_type)
         #  end
         #
-        #  Crichton::Representor::Serializer.registered_media_types[:media_type] #=> %w(application/mediatype)
+        #  Crichton::Representor::Serializer.registered_media_types[:media_type] #=> %w(application/media_type)
         #  Crichton::Representor::Serializer.registered_media_types[:other_media_type]  #=> %w(application/other_media_type)
         #
+        # @param [Hash] of content types array keyed by media types
         def media_types(types)
           unless types[default_media_type]
             raise(ArgumentError,
@@ -96,7 +97,7 @@ module Crichton
                 else
                   raise(ArgumentError,
                     "The object #{obj.inspect} is not a Crichton::Representor. " <<
-                    "Please include module Crichton::Representor or Cricthon::Representor::State in your object" <<
+                    "Please include module Crichton::Representor or Crichton::Representor::State in your object" <<
                     "or use Crichton::Representor::Factory to decorate your object as a representor.")
                 end
               end
@@ -108,6 +109,7 @@ module Crichton
             puts("Un-registering already defined mime type #{media_type.to_s.upcase}")
             Mime::Type.unregister(Mime::Type.lookup_by_extension(media_type).to_sym)
           end
+          puts "Registering mime type #{media_type.to_s.upcase} with following content_types #{content_types}"
           Mime::Type.register(content_types.shift, media_type, content_types)
         end
       end

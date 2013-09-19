@@ -17,10 +17,10 @@ end
 Debugger.start
 Bundler.setup
 
+require 'crichton'
 load 'Rakefile'
 
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
-Dir["#{SPEC_DIR}/fixtures/*.rb"].each { |f| require f }
 
 Crichton::config_directory = File.join('spec', 'fixtures', 'config')
 
