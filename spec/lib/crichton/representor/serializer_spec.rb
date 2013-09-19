@@ -18,10 +18,8 @@ module Crichton
         serializer ||= :MediaTypeSerializer
         Crichton::Representor.send(:remove_const, serializer) if Representor.const_defined?(serializer)
         reset_serializers
-        
-        eval("class #{serializer} < Crichton::Representor::Serializer; " <<
-              " media_types media_type: %w(application/media_type), other_media_type: %w(application/other_media_type); " <<
-            " end")
+
+        eval(build_sample_serializer(serializer))
       end
 
       def reset_serializers(value = {})
@@ -59,7 +57,7 @@ module Crichton
           end
 
           it 'raises an error when the name of serializer does not match the name of first media type' do
-            @serializer = :TypeMediaSerializer
+            @serializer = :TypeMedia11Serializer
             expect { create_media_type_serializer(@serializer) }.to raise_error(ArgumentError,
               /The first media type in the list of .*/)
           end

@@ -1,6 +1,16 @@
 module Support
   module Helpers
 
+    def build_sample_serializer(name)
+      type = name.to_s.gsub(/(\d+|Serializer$)/, '').underscore.to_sym
+      sample_serializer = <<-SAMPLE
+      class #{name} < Crichton::Representor::Serializer
+        media_types #{type}: %w(application/#{type}), other_#{type}: %w(application/other_#{type})
+      end
+      SAMPLE
+      sample_serializer
+    end
+
     def build_configuration_files(env_vars, template_path)
       directory = File.join(DiceBag::Project.root, template_path)
       Dir::mkdir(directory) unless Dir.exists?(directory)
