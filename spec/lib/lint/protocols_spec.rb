@@ -106,5 +106,4 @@ describe Lint do
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
   end
-
 end

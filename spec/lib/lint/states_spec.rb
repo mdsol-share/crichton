@@ -41,4 +41,17 @@ describe Lint do
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
   end
+
+  it "displays errors when the states transition list does not match protocol and descriptor transitions" do
+    filename = lint_spec_filename('state_section_errors', 'missing_transitions.yml')
+
+    errors = expected_output(:error, 'states.descriptor_transition_not_found', transition: 'create',
+      filename: filename) <<
+      expected_output(:error, 'states.protocol_transition_not_found', transition: 'create',
+      filename: filename)
+
+    content = capture(:stdout) { Lint.validate(filename) }
+    content.should == errors
+  end
+
 end

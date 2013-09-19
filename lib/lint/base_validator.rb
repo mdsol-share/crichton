@@ -58,7 +58,7 @@ module Lint
     end
 
     def build_protocol_transition_list(protocol = nil)
-      protocol ||= @resource_descriptor.protocols.first
+      protocol ||= @resource_descriptor.protocols.first.last
       protocol.inject([]) { |a, protocol_obj| a << protocol_obj.first }
     end
 

@@ -9,6 +9,8 @@ module Lint
 
       #10, #11, #12, #13 check for the presence of required attributes for all transitions
       check_for_required_state_transition_properties
+
+      check_transition_equivalence
     end
 
     private
@@ -19,7 +21,7 @@ module Lint
         if secondary_descriptor.empty?
           add_error('catastrophic.no_states', resource: secondary_descriptor_name, filename: filename)
         end
-       end
+      end
     end
 
 
@@ -64,7 +66,7 @@ module Lint
     def check_resource_state_transitions(resource_name, curr_state, states_list)
       curr_state.transitions.values.each do |transition|
         options = {resource: resource_name, state: curr_state.name, transition: transition.id,
-          filename: filename}
+                   filename: filename}
         #9
         add_error('states.next_property_missing', options) unless transition.next
         #10 Transition next property has no value
@@ -72,8 +74,7 @@ module Lint
         #13 Transition conditions property has no value(s)
         add_error('states.no_conditions_values', options) if transition.missing_condition_item?
         #11
-        check_for_phantom_state_transitions(states_list, resource_name, curr_state.name,
-          transition) if transition.next
+        check_for_phantom_state_transitions(states_list, resource_name, curr_state.name, transition) if transition.next
         #14
         add_warning('states.no_self_property', options) if transition.is_specified_name_property_not_self?
       end
@@ -83,7 +84,7 @@ module Lint
     # No need to check if the next transition points to an external resource (e.g. 'location')
     def check_for_phantom_state_transitions(states_list, resource_name, curr_state_name, curr_transition)
       curr_transition.next.each do |next_state|
-        unless valid_next_state(states_list,curr_transition, next_state)
+        unless valid_next_state(states_list, curr_transition, next_state)
           add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
             transition: curr_transition.name, next_state: next_state, filename: filename)
         end
@@ -93,8 +94,26 @@ module Lint
     # Here we test if the next state of this transition exists in our pre-built list of all states
     # No need to test for next states that are external to this doc (e.g. having a location property)
     def valid_next_state(states_list, curr_transition, next_state)
-      return  true if curr_transition.is_next_state_a_location?
+      return true if curr_transition.is_next_state_a_location?
       states_list.include?(next_state)
+    end
+
+    #67, check for transitions missing from the states section that are found in the protocol and descriptor sections
+    def check_transition_equivalence
+      state_transitions = build_state_transition_list
+      #first look for protocol transitions not found in the descriptor transitions
+      build_descriptor_transition_list.each do |transition|
+        unless state_transitions.include?(transition)
+          add_error('states.descriptor_transition_not_found', transition: transition, filename: filename)
+        end
+      end
+
+      # then check if there is a transition missing for any state transition specified in the states: section
+      build_protocol_transition_list.each do |transition|
+        unless state_transitions.include?(transition)
+          add_error('states.protocol_transition_not_found', transition: transition,filename: filename)
+        end
+      end
     end
   end
 end
