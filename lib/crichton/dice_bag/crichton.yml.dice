@@ -3,6 +3,7 @@ common: &common
   deployment_base_uri: <%= configured.deployment_base_uri || 'http://localhost:3000' %>
   discovery_base_uri: <%= configured.discovery_base_uri || 'http://localhost:7000' %>
   documentation_base_uri: <%= configured.documentation_base_uri || 'http://example.org' %>
+  css_uri: <%= configured.css_uri || 'http://localhost:3000/resources/styles.css' %>
 production: *common
 development: *common
 test: *common

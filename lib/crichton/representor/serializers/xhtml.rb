@@ -252,6 +252,7 @@ module Crichton
 
       private
         def add_style
+          @markup_builder.tag!(:link, {rel: :stylesheet, href: Crichton.config.css_uri }) if Crichton.config.css_uri
           @markup_builder.style do |style|
             style << "*[itemprop]::before {\n  content: attr(itemprop) \": \";\n  text-transform: capitalize;\n}\n"
           end
