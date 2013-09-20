@@ -22,31 +22,37 @@ module Crichton
               "No representor serializer is registered that corresponds to the type '#{type}'.")
           end
         end
-        
+
         ##
-        # Define alternate media types that should return the same serializer.
-        # 
+        # Define content types arrays corresponding to media types registered with serializer.
+        #
         # @example
-        #  class XHTMLSerializer < Crichton::Representor::Serializer
-        #    alternate_media_types :html
+        #  class MediaTypeSerializer < Crichton::Representor::Serializer
+        #    media_types  media_type: %w(application/media_type), other_media_type: %w(application/other_media_type)
         #  end
         #
-        #  Crichton::Representor::Serializer.registered_serializers[:xhtml] #=> XHTMLSerializer
-        #  Crichton::Representor::Serializer.registered_serializers[:html]  #=> XHTMLSerializer
+        #  Crichton::Representor::Serializer.registered_media_types[:media_type] #=> %w(application/media_type)
+        #  Crichton::Representor::Serializer.registered_media_types[:other_media_type]  #=> %w(application/other_media_type)
         #
-        def alternate_media_types(*args)
-          @alternate_media_types ||= [] 
-          @alternate_media_types |= args.map(&:to_sym)
-          
-          @alternate_media_types.each { |media_type| register_serializer(media_type, self) }
+        # @param [Hash] of content types array keyed by media types
+        def media_types(types)
+          unless types[default_media_type]
+            raise(ArgumentError,
+              "The first media type in the list of available media_types should be #{self.default_media_type}")
+          end
+
+          types.each do |media_type, content_types|
+            register_serializer(media_type, self)
+            register_media_types(media_type, content_types)
+          end
         end
-        
+
         ##
         # Returns the media-type of the Serializer.
         #
         # @return [Symbol]
-        def media_type
-          @media_type ||= begin
+        def default_media_type
+          @default_media_type ||= begin
             name = self.name
             unless name =~ /\w+Serializer$/
               raise(Crichton::RepresentorError,
@@ -65,17 +71,47 @@ module Crichton
         def registered_serializers
           @registered_serializers ||= {}
         end
-        
-        # @private
-        # Subclasses self-register themselves
-        def inherited(subclass)
-          register_serializer(subclass.media_type, subclass)
+
+        ##
+        # The registered media types with content types.
+        #
+        # @return [Hash] The mapped content_types keyed by media-type.
+        def registered_media_types
+          @registered_media_types ||= {}
         end
-      
+
         private
           def register_serializer(media_type, serializer)
             Serializer.registered_serializers[media_type] = serializer
           end
+
+          def register_media_types(media_type, content_types)
+            Serializer.registered_media_types[media_type] = content_types
+
+            if defined?(Rails)
+              register_mime_types(media_type, content_types)
+              ActionController::Renderers.add media_type do |obj, options|
+                type = media_type
+                if obj.is_a?(Crichton::Representor)
+                  obj.to_media_type(type, options)
+                else
+                  raise(ArgumentError,
+                    "The object #{obj.inspect} is not a Crichton::Representor. " <<
+                    "Please include module Crichton::Representor or Crichton::Representor::State in your object" <<
+                    "or use Crichton::Representor::Factory to decorate your object as a representor.")
+                end
+              end
+            end
+          end
+
+        def register_mime_types(media_type, content_types)
+          if Mime::Type.lookup_by_extension(media_type)
+            puts "Un-registering already defined mime type #{media_type.to_s.upcase}"
+            Mime::Type.unregister(Mime::Type.lookup_by_extension(media_type).to_sym)
+          end
+          puts "Registering mime type #{media_type.to_s.upcase} with following content_types #{content_types}"
+          Mime::Type.register(content_types.shift, media_type, content_types)
+        end
       end
 
       ##

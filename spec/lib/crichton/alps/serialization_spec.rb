@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/alps/serialization'
 
 module Crichton
   module ALPS 

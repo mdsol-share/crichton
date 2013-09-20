@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/descriptor/http'
 
 module Crichton
   module Descriptor

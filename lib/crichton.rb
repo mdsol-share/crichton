@@ -7,7 +7,10 @@ require 'crichton/dice_bag/template'
 require 'crichton/representor'
 require 'crichton/alps/deserialization'
 
-require 'crichton/rake_lint' if defined?(Rails)
+if defined?(Rails)
+  require 'crichton/rake_lint'
+  require 'core_ext/action_controller/responder'
+end
 
 module Crichton
   ##

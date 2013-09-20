@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/descriptor/semantic_decorator'
 
 module Crichton
   module Descriptor

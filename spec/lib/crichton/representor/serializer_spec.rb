@@ -18,8 +18,8 @@ module Crichton
         serializer ||= :MediaTypeSerializer
         Crichton::Representor.send(:remove_const, serializer) if Representor.const_defined?(serializer)
         reset_serializers
-        
-        eval("class #{serializer} < Crichton::Representor::Serializer; end")
+
+        eval(build_sample_serializer(serializer))
       end
 
       def reset_serializers(value = {})
@@ -32,24 +32,20 @@ module Crichton
 
       context 'when subclassed' do
         context 'with serializer subclasses with well-formed names' do
-          it 'auto registers sublclassed serializers' do
+          before do
             create_media_type_serializer
+          end
+
+          it 'auto registers sublclassed serializers' do
             Serializer.registered_serializers[:media_type].should == MediaTypeSerializer
           end
-        end
 
-        context 'with alternate media types defined for the serializer' do
-          before do
-            eval("class MediaTypeSerializer < Crichton::Representor::Serializer; alternate_media_types " <<
-              ":alt_media_type, 'other_alt_media_type'; end")
-          end
-          
-          it 'auto registers alternate media types as symbols' do
-            Serializer.registered_serializers[:alt_media_type].should == MediaTypeSerializer
+          it 'auto registers other media types as symbols' do
+            Serializer.registered_serializers[:other_media_type].should == MediaTypeSerializer
           end
 
-          it 'auto registers alternate media types as strings' do
-            Serializer.registered_serializers[:other_alt_media_type].should == MediaTypeSerializer
+          it 'auto registers content types for media types' do
+            Serializer.registered_media_types[:media_type].should == ['application/media_type']
           end
         end
 
@@ -59,6 +55,13 @@ module Crichton
             expect { create_media_type_serializer(@serializer) }.to raise_error(Crichton::RepresentorError,
               /Subclasses .* must follow the naming convention OptionalModule::MediaTypeSerializer.*/)
           end
+
+          it 'raises an error when the name of serializer does not match the name of first media type' do
+            @serializer = :TypeMedia11Serializer
+            expect { create_media_type_serializer(@serializer) }.to raise_error(ArgumentError,
+              /The first media type in the list of .*/)
+          end
+
         end
       end
 
