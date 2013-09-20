@@ -1,3 +1,4 @@
+require 'yaml'
 require 'addressable/uri'
 
 module Crichton
@@ -8,21 +9,61 @@ module Crichton
     end
 
     def get(link)
+      metadata = read_meta(link)
+      if metadata
+        read_datafile(link)
+      else
+        response = Net::HTTP.get_response(URI(link_without_fragment(link)))
+        write_response(link, response)
+      end
+    end
+
+    private
+    def filename_base_for_link(link)
+      Digest::MD5.hexdigest(link_without_fragment(link))
+    end
+
+    def datafile_path(link)
+      File.join(@cache_path, "#{filename_base_for_link(link)}.cache")
+    end
+
+    def metafile_path(link)
+      File.join(@cache_path, "#{filename_base_for_link(link)}.meta.yaml")
+    end
+
+    def link_without_fragment(link)
       parsed_link = Addressable::URI.parse(link)
       parsed_link.fragment = nil
-      link_without_fragment = parsed_link.to_s
-      filename = Digest::MD5.hexdigest(link_without_fragment)
-      path = File.join(@cache_path, "#{filename}.cache")
-      metapath = File.join(@cache_path, "#{filename}.meta")
+      parsed_link.to_s
+    end
 
-      if File.exists?(path) && Time.now - File.ctime(path) < 60*60
+    def read_meta(link)
+      metapath = metafile_path(link)
+      if File.exists?(metapath)
+        YAML.parse_file(metapath).to_ruby
+      else
+        nil
+      end
+    end
+
+    def read_datafile(link)
+      path = datafile_path(link)
+      if File.exists?(path)
         File.open(path, 'rb') {|f| f.read }
       else
-        data = Net::HTTP.get(URI(link_without_fragment))
-        File.open(path, 'wb') {|f| f.write(data) }
-        File.open(metapath, 'wb') {|f| f.write(link_without_fragment) }
-        data
+        nil
       end
+    end
+
+    def write_response(link, response)
+      File.open(datafile_path(link), 'wb') {|f| f.write(response.body) }
+      metadata = {
+        link: link_without_fragment(link),
+        status: response.code,
+        headers: response.to_hash,
+        time: Time.now}
+      File.open(metafile_path(link), 'wb') {|f| f.write(metadata.to_yaml) }
+      response.body
     end
   end
 end
