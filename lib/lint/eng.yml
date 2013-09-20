@@ -26,13 +26,16 @@ eng:
     descriptor_transition_not_found: "No state transition defined for descriptor transition '%{transition}' in file '%{filename}'"
     protocol_transition_not_found: "No state transition defined for protocol transition '%{transition}' in file '%{filename}'"
   descriptors:
-    property_missing:  "Resource '%{resource}' descriptor section does not have a %{prop} property in file '%{filename}'"
+    property_missing:  "Resource '%{resource}' descriptor section does not have a '%{prop}' property in file '%{filename}'"
     doc_media_type_invalid:  "Resource '%{resource}' descriptor section, doc property media type '%{media_type}' is invalid in file '%{filename}'"
     type_invalid:  "Resource '%{resource}' descriptor section, type property '%{type_prop}' is invalid in file '%{filename}'"
-    link_invalid:  "Resource '%{resource}' descriptor section, link property is invalid in file '%{filename}'"
+    link_invalid:  "Resource '%{resource}' descriptor section, links property '%{link}' is invalid in file '%{filename}'"
     no_descriptor_for_action: "No resource descriptor transition defined for protocol transition '%{action}' in file '%{filename}'"
     state_transition_not_found: "No descriptor transition defined for state transition '%{transition}' in file '%{filename}'"
     protocol_transition_not_found: "No descriptor transition defined for protocol transition '%{transition}' in file '%{filename}'"
+    state_resource_not_found: "State resource named '%{resource}' not found in the descriptor section in file '%{filename}'"
+    descriptor_resource_not_found: "Descriptor resource named '%{resource}' not found in the states section in file '%{filename}'"
+    invalid_return_type: "Descriptor transition '%{resource}' contains an invalid return type '%{rt}' in file '%{filename}'"
   protocols:
     no_protocol:  "No underlying protocol (e.g. 'http') defined in the protocol section in file '%{filename}'"
     protocol_empty:  "Protocol '%{protocol}' has no content in file '%{filename}'"

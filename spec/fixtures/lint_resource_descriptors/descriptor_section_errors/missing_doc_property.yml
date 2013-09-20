@@ -17,20 +17,15 @@ states:
           name: self
           next:
             - collection
-        search:
-          next:
-            - collection
         create:
           conditions:
-            - can_create
+            - can_create 
             - can_do_anything
           next:
             - collection
 
 descriptors:
   drds:
-    doc: 
-      html: <p>A list of DRDs.</p>
     type: semantic
     links:
       self: DRDs#drds
@@ -53,13 +48,14 @@ descriptors:
         rt: drds
         descriptors:
           create-drd:
-            type: semantic
             doc: semantic data for creating a drd
+            type: semantic
             href: update-drd # Indicates that this should dereference update-drd
             links:
               self: DRDs#create-drd
               help: documentation_base/Forms/create-drd
             sample: 1
+
 
 # The protocol descriptors section defines the protocol affordances associated with the
 # application affordances. This decouples protocol specific information from the
@@ -78,7 +74,7 @@ protocols:
         - Content-Type
         - ETag
       status_codes:
-        100:
+        200:
           description: OK
           notes:
             - We have processed your request and returned the data you asked for.
@@ -97,25 +93,9 @@ protocols:
         201:
           description: OK
           notes:
-            - Object created
+            - Object created.
         403:
           description: Permission denied
           notes:
             - Object not created, insufficient permissions.
       slt: *slt1
-    search:
-      uri: drds
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        100:
-          description: OK
-          notes:
-            - We have processed your request and returned the data you asked for.
-      slt: &slt2
-        99th_percentile: 250ms
-        std_dev: 50ms
-        requests_per_second: 25
