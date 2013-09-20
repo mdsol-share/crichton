@@ -20,8 +20,6 @@ module Crichton
       include Serialization::MediaType
     end
 
-    AdditionalTransition = Struct.new :name, :url
-
     module ClassMethods
 
       ##
@@ -187,6 +185,10 @@ module Crichton
         enum2.each { |e| y << e }
       end
     end
+
+
+    AdditionalTransition = Struct.new :name, :url
+    private_constant :AdditionalTransition
 
     def each_additional_link_transition_enumerator(options, &block)
       if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
