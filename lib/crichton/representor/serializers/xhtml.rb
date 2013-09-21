@@ -79,6 +79,14 @@ module Crichton
           @logger ||= Crichton.logger
         end
 
+        ##
+        # Helper to access the Crichton configuration locally
+        #
+        # @return [Configuration] Configuration object
+        def config
+          @config ||= Crichton.config
+        end
+
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
         # @param [Crichton::Representor] object The object to build semantics for.
         # @param [Builder::XmlMarkup] markup_builder The primary builder.
@@ -115,6 +123,12 @@ module Crichton
         #   Returns the parent tag of a built element.
         def element_tag
           raise_abstract('element_tag')
+        end
+
+        # @!macro element_tag
+        #   Returns the parent tag of a built element.
+        def add_css
+          @markup_builder.tag!(:link, {rel: :stylesheet, href: config.css_uri }) if config.css_uri
         end
 
       private
@@ -252,7 +266,7 @@ module Crichton
 
       private
         def add_style
-          @markup_builder.tag!(:link, {rel: :stylesheet, href: Crichton.config.css_uri }) if Crichton.config.css_uri
+          add_css
           @markup_builder.style do |style|
             style << "*[itemprop]::before {\n  content: attr(itemprop) \": \";\n  text-transform: capitalize;\n}\n"
           end
