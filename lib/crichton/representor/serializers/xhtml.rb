@@ -125,12 +125,6 @@ module Crichton
           raise_abstract('element_tag')
         end
 
-        # @!macro element_tag
-        #   Returns the parent tag of a built element.
-        def add_css
-          @markup_builder.tag!(:link, {rel: :stylesheet, href: config.css_uri }) if config.css_uri
-        end
-
       private
         def element_attributes
           {itemscope: 'itemscope'}.tap do |attributes|
@@ -255,7 +249,7 @@ module Crichton
         def add_head
           @markup_builder.head do
             add_metadata_links
-            add_style
+            add_styles
           end
         end
 
@@ -265,8 +259,8 @@ module Crichton
         end
 
       private
-        def add_style
-          add_css
+        def add_styles
+          @markup_builder.tag!(:link, {rel: :stylesheet, href: config.css_uri }) if config.css_uri
           @markup_builder.style do |style|
             style << "*[itemprop]::before {\n  content: attr(itemprop) \": \";\n  text-transform: capitalize;\n}\n"
           end
