@@ -12,5 +12,11 @@ module Crichton
         end
       end
     end
+
+    describe '#css_uri' do
+      it 'returns css uri' do
+        configuration.css_uri.should == 'http://example.org/resources/styles.css'
+      end
+    end
   end
 end

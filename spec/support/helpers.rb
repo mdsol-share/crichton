@@ -44,9 +44,11 @@ module Support
     end
 
     def example_environment_config
-      %w(alps deployment discovery documentation).inject({}) do |h, attribute|
+      config = %w(alps deployment discovery documentation).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
       end
+      config['css_uri'] = 'http://example.org/resources/styles.css'
+      config
     end
 
     def leviathans_descriptor
