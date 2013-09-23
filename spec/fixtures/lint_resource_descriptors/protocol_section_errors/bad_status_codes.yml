@@ -122,3 +122,5 @@ protocols:
         99th_percentile: 250ms
         std_dev: 50ms
         requests_per_second: 25
+      status_codes:
+
