@@ -47,6 +47,10 @@ descriptors:
         name: self
         type: safe
         rt: drds
+      search:
+        doc: Returns a list of DRDs that satisfy the search term.
+        type: safe
+        rt: drds
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are

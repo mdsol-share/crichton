@@ -44,14 +44,16 @@ descriptors:
       create:
         doc: Creates a DRD.
         type: unsafe
-        rt: drd
+        rt: drds
         descriptors:
           create-drd:
+            doc: create a drd
             type: semantic
             href: update-drd # Indicates that this should dereference update-drd
             links:
               self: DRDs#create-drd
               help: documentation_base/Forms/create-drd
+            sample: DRDs#drds
       search:
         doc: Returns a list of DRDs that satisfy the search term.
         type: safe
@@ -61,7 +63,7 @@ descriptors:
             doc: The terms to search.
             type: semantic
             href: http://alps.io/schema.org/Text
-
+            sample: DRDs#drds
 
 # The protocol descriptors section defines the protocol affordances associated with the
 # application affordances. This decouples protocol specific information from the

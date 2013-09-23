@@ -56,6 +56,12 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: 1812
+      # Transitions
+      show:
+        doc: Shows a particular DRD.
+        name: self
+        type: safe
+        rt: drd
 
 protocols:
   http:
