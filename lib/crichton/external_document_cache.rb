@@ -15,8 +15,8 @@ module Crichton
     end
 
     private
-    def metadata_valid(metadata)
-      false
+    def metadata_valid(metadata, timeout = 600)
+      metadata_time(metadata) + timeout > Time.now
     end
 
     def metadata_etag(metadata)
@@ -32,7 +32,6 @@ module Crichton
     end
 
     def get_link_and_update_cache(link, metadata=nil)
-      #response = Net::HTTP.get_response(URI(link_without_fragment(link)))
       uri = URI(link_without_fragment(link))
       request = Net::HTTP::Get.new(uri.request_uri)
       if metadata
