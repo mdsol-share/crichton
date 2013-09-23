@@ -16,8 +16,6 @@ module Crichton
 
     private
     def metadata_valid(metadata)
-      #require 'pry'
-      #binding.pry
       false
     end
 
@@ -59,7 +57,6 @@ module Crichton
         File.open(metafile_path(link), 'wb') {|f| f.write(new_metadata.to_yaml) }
         response.body
       end
-
     end
 
     def filename_base_for_link(link)
