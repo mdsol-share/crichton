@@ -38,12 +38,23 @@ module Crichton
         request['If-Modified-Since'] = metadata_last_modified(metadata).first if metadata_last_modified(metadata)
         request['If-None-Match'] = metadata_etag(metadata).first if metadata_etag(metadata)
       end
-      response = Net::HTTP.start(uri.hostname, uri.port) {|http| http.request(request) }
+      begin
+        response = Net::HTTP.start(uri.hostname, uri.port) {|http| http.request(request) }
+      rescue Errno::ECONNREFUSED => e
+        puts "Log connection refused: #{uri.request_uri}"
+        return read_datafile(link)
+      rescue => e
+        puts "Error: #{e.message} while getting #{uri.request_uri}"
+        return read_datafile(link)
+      end
 
       if response.code == '304'
         # Unchanged
         metadata[:time] = Time.now
         File.open(metafile_path(link), 'wb') {|f| f.write(metadata.to_yaml) }
+        read_datafile(link)
+      elsif response.code == '404'
+        # not there
         read_datafile(link)
       else
         # Fetched data
