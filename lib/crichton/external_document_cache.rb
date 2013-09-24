@@ -10,8 +10,20 @@ module Crichton
 
     def get(link)
       metadata = read_meta(link)
-      return read_datafile(link) if metadata && metadata_valid(metadata)
-      get_link_and_update_cache(link, metadata)
+      if metadata && metadata_valid(metadata)
+        x = read_datafile(link)
+        if x
+          puts "read #{link} from cache"
+        end
+        return x
+      end
+      x = get_link_and_update_cache(link, metadata)
+      if x
+        puts "read #{link} from cache!"
+      else
+        puts "tried to read #{link} from cache"
+      end
+      x
     end
 
     private

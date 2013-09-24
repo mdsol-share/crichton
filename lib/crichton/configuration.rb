@@ -34,6 +34,10 @@ module Crichton
       @config['external_documents_cache_directory'] || 'external_documents_cache'
     end
 
+    def external_documents_store_directory
+      @config['external_documents_store_directory'] || 'external_documents_store'
+    end
+
     ##
     # @param [Hash] config The configuration hash.
     # @option config [String] alps_base_uri

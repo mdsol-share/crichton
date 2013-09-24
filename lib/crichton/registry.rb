@@ -1,5 +1,6 @@
 require 'crichton/descriptor/dereferencer'
 require 'crichton/external_document_cache'
+require 'crichton/external_document_store'
 
 module Crichton
   ##
@@ -185,15 +186,19 @@ module Crichton
       end
     end
 
-    def external_documents_cache
+    def external_document_cache
       @external_document_cache ||= Crichton::ExternalDocumentCache.new
+    end
+
+    def external_document_store
+      @external_document_store ||= Crichton::ExternalDocumentStore.new
     end
 
     def load_external_profile(link)
       # find and get profile
       unless (@external_descriptor_documents ||= {}).include?(link)
         begin
-          @external_descriptor_documents[link] = external_documents_cache.get(link)
+          @external_descriptor_documents[link] = external_document_store.get(link) || external_document_cache.get(link)
         rescue => e
           error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
           @logger.warn error_message
