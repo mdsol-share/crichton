@@ -200,7 +200,7 @@ module Crichton
         begin
           @external_descriptor_documents[link] = external_document_store.get(link) || external_document_cache.get(link)
         rescue => e
-          error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
+          error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}\n#{e.backtrace}"
           @logger.warn error_message
           raise(Crichton::ExternalProfileLoadError, error_message)
         end
