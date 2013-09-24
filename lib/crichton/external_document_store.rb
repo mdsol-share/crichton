@@ -2,7 +2,8 @@ module Crichton
   class ExternalDocumentStore
     def initialize(document_store_path = nil)
       @document_store_path = document_store_path || Crichton.config.external_documents_store_directory
-      Dir::mkdir(@document_store_path) unless Dir.exists?(@document_store_path)
+      require 'fileutils'
+      FileUtils.mkdir_p(@document_store_path) unless Dir.exists?(@document_store_path)
     end
 
     def get(link)

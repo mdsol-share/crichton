@@ -35,7 +35,7 @@ module Crichton
     end
 
     def external_documents_store_directory
-      @config['external_documents_store_directory'] || 'external_documents_store'
+      @config['external_documents_store_directory'] || 'api_descriptors/external_documents_store'
     end
 
     ##
