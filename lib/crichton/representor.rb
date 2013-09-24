@@ -192,7 +192,7 @@ module Crichton
 
     def each_additional_link_transition_enumerator(options, &block)
       if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
-        options[:additional_links].collect do |relation, url|
+        options[:additional_links].map do |relation, url|
           # We don't use url because we want to clear out the data from the options
           transition = AdditionalTransition.new(relation, options[:additional_links].delete(relation))
           yield transition if block_given?

@@ -85,7 +85,7 @@ module Crichton
           @options[:override_links].delete(self.name)
         else
           protocol_descriptor ? protocol_descriptor.url_for(@target) : nil
-        end.tap { logger.warn("The URL for the transition is not defined for #{@target.inspect}!") if @url.nil? }
+        end.tap { |url| logger.warn("The URL for the transition is not defined for #{@target.inspect}!") unless url }
       end
 
     private
