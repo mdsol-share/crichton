@@ -22,18 +22,15 @@ module Crichton
         cache_control_elements = metadata[:headers]['cache-control'].first.split(", ").map { |y| y.split('=') }
         max_age = cache_control_elements.assoc('max-age')
         timeout = max_age[1].to_i if max_age
+        # re-validate in case no cache or must-revalidate
         timeout = 0 if cache_control_elements.assoc('must-revalidate')
         timeout = 0 if cache_control_elements.assoc('no-cache')
       end
-      metadata_time(metadata) + timeout > Time.now
+      metadata[:time] + timeout > Time.now
     end
 
     def metadata_etag(metadata)
       metadata[:headers] && metadata[:headers]['etag']
-    end
-
-    def metadata_time(metadata)
-      metadata[:time]
     end
 
     def metadata_last_modified(metadata)
