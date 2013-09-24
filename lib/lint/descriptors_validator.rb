@@ -91,9 +91,9 @@ module Lint
     # check all rules surrounding transition based descriptors
     def semantic_properties_check(descriptor, options, level)
       if level != TOP_LEVEL
-        # all NON top level descriptors should have a sample entry
-        # TODO: look at rules for sample. For example, only single object based resources? Non list based transitions?
+        # all NON top level descriptors should have a sample and href entry
         add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
+        add_warning('descriptors.property_missing', options.merge({prop: 'href'})) unless descriptor.href
       end
     end
 

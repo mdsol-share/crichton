@@ -258,6 +258,7 @@ descriptors:
               self: DRDs#drd/update/update-drd
               help: documentation_base/Forms/update-drd
             sample : none
+            href: http://alps.io/schema.org
             descriptors:
               form-status:
                 type: semantic
