@@ -24,7 +24,7 @@ module Lint
     def check_descriptor_level(descriptors, options, level)
       descriptors.each do |descriptor|
 #        options = {resource: concat_descriptor_names(descriptor.name, options), filename: filename}
-        options = {resource: descriptor.name, filename: filename}
+        options = {resource: descriptor.id, filename: filename}
         descriptor_properties_check(descriptor, options, level)
         check_descriptor_level(descriptor.descriptors, options, level+1) if descriptor.descriptors
       end
@@ -109,6 +109,8 @@ module Lint
         else
           add_error('descriptors.property_missing', options.merge({prop: 'rt'}))
         end
+        check_protocol_method_and_type(descriptor.type, descriptor.decorate(self).method, options)
+
       end
     end
 
@@ -120,6 +122,19 @@ module Lint
 
     def rt_is_a_valid_subresource(return_type)
       resource_descriptor.states.include?(return_type)
+    end
+
+    def check_protocol_method_and_type(type, method, options)
+       case type
+        when 'safe'
+          if %w(PUT POST DELETE).include?(method)
+            add_error('descriptors.invalid_method', options.merge({mthd: method, type: type}))
+          end
+         when 'unsafe'
+          add_error('descriptors.invalid_method', options.merge({mthd: method, type: type})) unless method == 'POST'
+        when 'idempotent'
+          add_error('descriptors.invalid_method', options.merge({mthd: method, type: type})) if method == 'GET'
+      end
     end
 
     #60, the descriptor hash of subresources must equal the state hash

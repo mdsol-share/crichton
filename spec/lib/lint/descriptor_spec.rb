@@ -129,6 +129,17 @@ describe Lint do
     content.should == errors
   end
 
+  it "displays errors when the descriptor transition type is associated with an invalid protocol method" do
+    filename = lint_spec_filename('descriptor_section_errors', 'invalid_method.yml')
+
+    errors = expected_output(:error, 'descriptors.invalid_method', resource: 'list', type: 'safe', mthd: 'POST',
+      filename: filename) <<
+      expected_output(:error, 'descriptors.invalid_method', resource: 'create', type: 'unsafe', mthd: 'PUT',
+      filename: filename)
+
+    content = capture(:stdout) { Lint.validate(filename) }
+    content.should == errors
+  end
 end
 
 
