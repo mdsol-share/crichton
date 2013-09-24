@@ -57,8 +57,19 @@ module Crichton
         # not there
         read_datafile(link)
       else
+        datafilepath = datafile_path(link)
+        if File.exists?(datafilepath)
+          old_data = File.open(datafilepath, 'rb') {|f| f.read}
+          if old_data != response.body
+            puts "Data was modified for #{link}!"
+          end
+        else
+          if response.body
+            puts "Data appeared for #{link}"
+          end
+        end
         # Fetched data
-        File.open(datafile_path(link), 'wb') {|f| f.write(response.body) }
+        File.open(datafilepath, 'wb') {|f| f.write(response.body) }
         new_metadata = {
           link: link_without_fragment(link),
           status: response.code,
