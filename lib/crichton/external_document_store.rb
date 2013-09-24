@@ -21,6 +21,7 @@ module Crichton
 
     def read_datafile(link)
       path = datafile_path(link)
+      # This nil is important - it allows simple ||-ing of the store and cache.
       File.exists?(path) ? File.open(path, 'rb') {|f| f.read } : nil
     end
   end

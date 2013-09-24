@@ -40,6 +40,7 @@ module Crichton
     def get_link_and_update_cache(link, metadata=nil)
       uri = URI(link_without_fragment(link))
       request = Net::HTTP::Get.new(uri.request_uri)
+      # Conditional GET support - if we have the headers in the metadata then add the conditional GET request headers
       if metadata
         request['If-Modified-Since'] = metadata_last_modified(metadata).first if metadata_last_modified(metadata)
         request['If-None-Match'] = metadata_etag(metadata).first if metadata_etag(metadata)
@@ -47,15 +48,18 @@ module Crichton
       begin
         response = Net::HTTP.start(uri.hostname, uri.port) {|http| http.request(request) }
       rescue Errno::ECONNREFUSED => e
+        #TODO: Use logger
         puts "Log connection refused: #{uri.request_uri}"
+        # In case of failure, use the (old) cache anyway
         return read_datafile(link)
       rescue => e
         puts "Error: #{e.message} while getting #{uri.request_uri}"
+        # In case of failure, use the (old) cache anyway
         return read_datafile(link)
       end
 
       if response.code == '304'
-        # Unchanged
+        # Unchanged - just update time in metadata
         metadata[:time] = Time.now
         File.open(metafile_path(link), 'wb') {|f| f.write(metadata.to_yaml) }
         read_datafile(link)
@@ -63,30 +67,37 @@ module Crichton
         # not there
         read_datafile(link)
       else
-        datafilepath = datafile_path(link)
-        if File.exists?(datafilepath)
-          old_data = File.open(datafilepath, 'rb') {|f| f.read}
+        data_file_path = datafile_path(link)
+        # This block is for some debugging instrumentation: If the data changed, log it.
+        # That may indicate that some changes happened that need to be looked into.
+        if File.exists?(data_file_path)
+          old_data = File.open(data_file_path, 'rb') {|f| f.read}
           if old_data != response.body
+            #TODO: Use logger
             puts "Data was modified for #{link}!"
           end
         else
           if response.body
+            #TODO: Use logger
             puts "Data appeared for #{link}"
           end
         end
-        # Fetched data
-        File.open(datafilepath, 'wb') {|f| f.write(response.body) }
+        # Write the content
+        File.open(data_file_path, 'wb') {|f| f.write(response.body) }
+        # Write the metadata
         new_metadata = {
           link: link_without_fragment(link),
           status: response.code,
           headers: response.to_hash,
           time: Time.now}
         File.open(metafile_path(link), 'wb') {|f| f.write(new_metadata.to_yaml) }
-        response.body
+        return response.body
       end
     end
 
     def filename_base_for_link(link)
+      # The file names in the cache are just hashes of the URL. Should be safe enough. Or are we worried about
+      # malicious collisions here?
       Digest::MD5.hexdigest(link_without_fragment(link))
     end
 
