@@ -23,8 +23,8 @@ module Lint
 
     def check_descriptor_level(descriptors, options, level)
       descriptors.each do |descriptor|
-#        options = {resource: concat_descriptor_names(descriptor.name, options), filename: filename}
-        options = {resource: descriptor.id, filename: filename}
+#        options = {resource: concat_descriptor_names(descriptor.name, options)}
+        options = {resource: descriptor.id}
         descriptor_properties_check(descriptor, options, level)
         check_descriptor_level(descriptor.descriptors, options, level+1) if descriptor.descriptors
       end
@@ -148,7 +148,7 @@ module Lint
 
     def compare_with_other_hash(base_resources, others_resources, error)
       base_resources.keys.each do |resource_name|
-        add_error(error, resource: resource_name, filename: filename) unless others_resources.include?(resource_name)
+        add_error(error, resource: resource_name) unless others_resources.include?(resource_name)
       end
     end
 
@@ -158,14 +158,14 @@ module Lint
       #first look for protocol transitions not found in the descriptor transitions
       build_state_transition_list.each do |transition|
         unless descriptor_transitions.include?(transition)
-          add_error('descriptors.state_transition_not_found', transition: transition, filename: filename)
+          add_error('descriptors.state_transition_not_found', transition: transition)
         end
       end
 
       # then check if there is a transition missing for any state transition specified in the states: section
       build_protocol_transition_list.each do |transition|
         unless descriptor_transitions.include?(transition)
-          add_error('descriptors.protocol_transition_not_found', transition: transition, filename: filename)
+          add_error('descriptors.protocol_transition_not_found', transition: transition)
         end
       end
     end

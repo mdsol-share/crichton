@@ -9,7 +9,7 @@ describe Lint do
   it "displays a success statement when linting a clean resource descriptor file" do
     filename = lint_spec_filename('', 'clean_descriptor_file.yml')
     content = capture(:stdout) { Lint.validate(filename) }
-    content.should == "#{I18n.t('aok')}\n"
+    content.should == "In file '#{filename}':\n#{I18n.t('aok')}\n"
   end
 
   it "displays a missing states section error when the states section is missing" do
@@ -22,8 +22,7 @@ describe Lint do
   it "displays missing descriptor errors when the descriptor section is missing" do
     filename = lint_spec_filename('missing_sections', 'nodescriptors_descriptor.yml')
 
-    errors = expected_output(:error, 'catastrophic.section_missing',
-      section: 'descriptors', filename: filename) <<
+    errors = expected_output(:error, 'catastrophic.section_missing', section: 'descriptors', filename: filename) <<
       expected_output(:error, 'catastrophic.no_secondary_descriptors')
 
     content = capture(:stdout) { Lint.validate(filename) }

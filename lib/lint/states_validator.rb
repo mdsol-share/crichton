@@ -19,7 +19,7 @@ module Lint
       #7,8 Check for second level egregious errors
       resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
         if secondary_descriptor.empty?
-          add_error('catastrophic.no_states', resource: secondary_descriptor_name, filename: filename)
+          add_error('catastrophic.no_states', resource: secondary_descriptor_name)
         end
       end
     end
@@ -33,7 +33,7 @@ module Lint
 
       resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
         secondary_descriptor.each do |state_name, state|
-          options = {resource: secondary_descriptor_name, state: state_name, filename: filename}
+          options = {resource: secondary_descriptor_name, state: state_name}
           #16
           add_warning('states.doc_property_missing', options) unless state.doc
 
@@ -53,8 +53,7 @@ module Lint
       resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
         secondary_descriptor.keys.each do |state_name|
           if state_array.include?(state_name)
-            add_error('states.duplicate_state', resource: secondary_descriptor_name,
-              state: state_name, filename: filename)
+            add_error('states.duplicate_state', resource: secondary_descriptor_name, state: state_name)
           else
             state_array << state_name
           end
@@ -65,8 +64,7 @@ module Lint
 
     def check_resource_state_transitions(resource_name, curr_state, states_list)
       curr_state.transitions.values.each do |transition|
-        options = {resource: resource_name, state: curr_state.name, transition: transition.id,
-                   filename: filename}
+        options = {resource: resource_name, state: curr_state.name, transition: transition.id}
         #9
         add_error('states.next_property_missing', options) unless transition.next
         #10 Transition next property has no value
@@ -86,7 +84,7 @@ module Lint
       curr_transition.next.each do |next_state|
         unless valid_next_state(states_list, curr_transition, next_state)
           add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
-            transition: curr_transition.name, next_state: next_state, filename: filename)
+            transition: curr_transition.name, next_state: next_state)
         end
       end
     end
@@ -104,14 +102,14 @@ module Lint
       #first look for protocol transitions not found in the descriptor transitions
       build_descriptor_transition_list.each do |transition|
         unless state_transitions.include?(transition)
-          add_error('states.descriptor_transition_not_found', transition: transition, filename: filename)
+          add_error('states.descriptor_transition_not_found', transition: transition)
         end
       end
 
       # then check if there is a transition missing for any state transition specified in the states: section
       build_protocol_transition_list.each do |transition|
         unless state_transitions.include?(transition)
-          add_error('states.protocol_transition_not_found', transition: transition,filename: filename)
+          add_error('states.protocol_transition_not_found', transition: transition)
         end
       end
     end

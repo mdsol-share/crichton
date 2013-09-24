@@ -27,6 +27,8 @@ module Lint
     resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename)
     resource_validator.validate
 
+    puts "In file '"+filename+"':"
+
     if resource_validator.errors.any?
       # any errors caught at this point are so catastrophic that it won't be useful to continue
       resource_validator.report

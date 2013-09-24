@@ -11,8 +11,7 @@ describe Lint do
 
     warnings = expected_output(:warning, 'states.no_self_property', resource: 'drds',
       state: 'collection', transition: 'list',  filename: filename) <<
-      expected_output(:warning, 'states.doc_property_missing', resource: 'drd', state: 'activated',
-      filename: filename)
+      expected_output(:warning, 'states.doc_property_missing', resource: 'drd', state: 'activated',)
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == warnings
@@ -24,7 +23,7 @@ describe Lint do
     errors = expected_output(:error, 'states.empty_missing_next', resource: 'drds',
       state: 'collection', transition: 'list',  filename: filename) <<
       expected_output(:error, 'states.empty_missing_next', resource: 'drd',
-      state: 'activated', transition: 'show',  filename: filename)
+      state: 'activated', transition: 'show')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
@@ -36,7 +35,7 @@ describe Lint do
     errors = expected_output(:error, 'states.phantom_next_property', secondary_descriptor: 'drds',
       state: 'navigation', transition: 'self', next_state: 'navegation',  filename: filename) <<
       expected_output(:error, 'states.phantom_next_property', secondary_descriptor: 'drd',
-      state: 'activated', transition: 'self', next_state: 'activate',  filename: filename)
+      state: 'activated', transition: 'self', next_state: 'activate')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
@@ -47,8 +46,7 @@ describe Lint do
 
     errors = expected_output(:error, 'states.descriptor_transition_not_found', transition: 'create',
       filename: filename) <<
-      expected_output(:error, 'states.protocol_transition_not_found', transition: 'create',
-      filename: filename)
+      expected_output(:error, 'states.protocol_transition_not_found', transition: 'create')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors

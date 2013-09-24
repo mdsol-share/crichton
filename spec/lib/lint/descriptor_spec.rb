@@ -91,7 +91,7 @@ describe Lint do
 
     errors = expected_output(:error, 'descriptors.descriptor_resource_not_found', resource: 'dords',
       filename: filename) <<
-      expected_output(:error, 'descriptors.state_resource_not_found', resource: 'drds', filename: filename)
+      expected_output(:error, 'descriptors.state_resource_not_found', resource: 'drds')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
@@ -123,7 +123,7 @@ describe Lint do
 
     errors = expected_output(:error, 'descriptors.state_transition_not_found', transition: 'search',
       filename: filename) <<
-      expected_output(:error, 'descriptors.protocol_transition_not_found', transition: 'search', filename: filename)
+      expected_output(:error, 'descriptors.protocol_transition_not_found', transition: 'search')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
@@ -134,8 +134,7 @@ describe Lint do
 
     errors = expected_output(:error, 'descriptors.invalid_method', resource: 'list', type: 'safe', mthd: 'POST',
       filename: filename) <<
-      expected_output(:error, 'descriptors.invalid_method', resource: 'create', type: 'unsafe', mthd: 'PUT',
-      filename: filename)
+      expected_output(:error, 'descriptors.invalid_method', resource: 'create', type: 'unsafe', mthd: 'PUT')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors

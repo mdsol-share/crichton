@@ -18,7 +18,7 @@ module Lint
       add_error('protocols.no_protocol') unless resource_descriptor.protocols
 
       resource_descriptor.protocols.each do |protocol_name, protocol|
-        options = {protocol: protocol_name, filename: filename}
+        options = {protocol: protocol_name}
 
         #44 underlying protocol defined but has no content
         add_error('protocols.protocol_empty', options) if protocol.empty?
@@ -31,7 +31,7 @@ module Lint
     end
 
     def check_for_missing_and_empty_properties(protocol, protocol_name)
-      options = {protocol: protocol_name, filename: filename}
+      options = {protocol: protocol_name}
 
       # only http is supported now, but future may support multiple protocols
       protocol.each do |transition_name, transition|
@@ -133,7 +133,7 @@ module Lint
       end
       unless entry_point_count == 1
         add_error('protocols.entry_point_error', error: (entry_point_count == 0) ? "No" : "Multiple",
-          protocol: protocol_name, filename: filename)
+          protocol: protocol_name)
       end
     end
 
@@ -145,16 +145,14 @@ module Lint
         #first look for protocol transitions not found in the descriptor transitions
         build_descriptor_transition_list.each do |transition|
           unless proto_transition_list.include?(transition)
-            add_error('protocols.descriptor_transition_not_found', transition: transition, protocol:protocol_name,
-              filename: filename)
+            add_error('protocols.descriptor_transition_not_found', transition: transition, protocol:protocol_name)
           end
         end
 
         # then check if there is a transition missing for any state transition specified in the states: section
         build_state_transition_list.each do |transition|
           unless proto_transition_list.include?(transition)
-            add_error('protocols.state_transition_not_found', transition: transition, protocol: protocol_name,
-              filename: filename)
+            add_error('protocols.state_transition_not_found', transition: transition, protocol: protocol_name)
           end
         end
       end

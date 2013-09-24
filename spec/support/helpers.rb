@@ -133,10 +133,15 @@ module Support
     end
 
     def expected_output(error_or_warning, key, options = {})
-      ((error_or_warning == :error ? "\tERROR: " : "\tWARNING: ") << I18n.t(key, options) << "\n")
+      (generate_lint_file_line(options[:filename]) << (error_or_warning == :error ? "\tERROR: " : "\tWARNING: ") <<
+        I18n.t(key, options) << "\n")
     end
 
     private
+    def generate_lint_file_line(filename)
+      filename ? "In file '#{filename}':\n" : ""
+    end
+
     def environment_args(env_vars)
       env_vars.inject('') { |s, (k, v)| s << "#{k.upcase}=#{v} " }
     end

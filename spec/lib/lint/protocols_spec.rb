@@ -9,7 +9,7 @@ describe Lint do
   it "displays no protocol defined error if there are no protocol properties" do
     filename = lint_spec_filename('protocol_section_errors', 'no_protocol_defined.yml')
 
-    error =  expected_output(:error, 'protocols.protocol_empty', protocol: 'http',filename: filename)
+    error =  expected_output(:error, 'protocols.protocol_empty', protocol: 'http')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should include(error)
@@ -50,8 +50,7 @@ describe Lint do
 
     errors = expected_output(:error, 'protocols.property_missing', property: 'uri', protocol: 'http', action: 'list',
       filename: filename) <<
-      expected_output(:error, 'protocols.property_missing', property: 'method', protocol: 'http', action: 'list',
-      filename: filename)
+      expected_output(:error, 'protocols.property_missing', property: 'method', protocol: 'http', action: 'list')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
@@ -63,9 +62,9 @@ describe Lint do
     warnings = expected_output(:warning, 'protocols.invalid_status_code', code: '99', protocol: 'http', action: 'list',
       filename: filename) <<
       expected_output(:warning, 'protocols.missing_status_codes_property', property: 'notes', protocol: 'http',
-      action: 'create', filename: filename) <<
+      action: 'create') <<
       expected_output(:warning, 'protocols.property_missing', property: 'status_codes', protocol: 'http',
-      action: 'search', filename: filename)
+      action: 'search')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == warnings
@@ -77,7 +76,7 @@ describe Lint do
     errors = expected_output(:error, 'protocols.invalid_content_type', content_type: 'application/jason',
       protocol: 'http', action: 'list', filename: filename) <<
       expected_output(:error, 'protocols.property_missing', property: 'content_type', protocol: 'http',
-      action: 'create', filename: filename)
+      action: 'create')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
@@ -89,7 +88,7 @@ describe Lint do
     warnings = expected_output(:warning, 'protocols.missing_slt_property', property: 'std_dev', protocol: 'http',
       action: 'list', filename: filename) <<
       expected_output(:warning, 'protocols.property_missing', property: 'slt', protocol: 'http',
-      action: 'create', filename: filename)
+      action: 'create')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == warnings
@@ -100,8 +99,7 @@ describe Lint do
 
     errors = expected_output(:error, 'protocols.descriptor_transition_not_found', transition: 'search',
       protocol: 'http', filename: filename) <<
-      expected_output(:error, 'protocols.state_transition_not_found', transition: 'search', protocol: 'http',
-      filename: filename)
+      expected_output(:error, 'protocols.state_transition_not_found', transition: 'search', protocol: 'http')
 
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
