@@ -6,13 +6,7 @@ module Crichton
     end
 
     def get(link)
-      x = read_datafile(link)
-      if x
-        puts "read #{link} from store"
-      else
-        puts "tried to read #{link} from store - out of stock"
-      end
-      x
+      read_datafile(link)
     end
 
     private
