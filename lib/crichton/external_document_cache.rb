@@ -1,5 +1,6 @@
 require 'yaml'
 require 'addressable/uri'
+require 'net/http'
 
 module Crichton
   class ExternalDocumentCache
@@ -16,6 +17,14 @@ module Crichton
 
     private
     def metadata_valid(metadata, timeout = 600)
+      # The default timeout is to be used when no explicit timeout is set by the service
+      if metadata[:headers] && metadata[:headers]['cache-control']
+        cache_control_elements = metadata[:headers]['cache-control'].first.split(", ").map { |y| y.split('=') }
+        max_age = cache_control_elements.assoc('max-age')
+        timeout = max_age[1].to_i if max_age
+        timeout = 0 if cache_control_elements.assoc('must-revalidate')
+        timeout = 0 if cache_control_elements.assoc('no-cache')
+      end
       metadata_time(metadata) + timeout > Time.now
     end
 
