@@ -140,10 +140,10 @@ module Crichton
 
         def add_transitions(options)
           @object.each_link_transition(options) do |transition|
-            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition)
+            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition, options)
           end
 
-          @object.each_embedded_transition(options) { |transition| add_transition(transition) }
+          @object.each_embedded_transition(options) { |transition| add_transition(transition, options) }
         end
 
         def add_templated_transition(transition, options)
@@ -162,9 +162,10 @@ module Crichton
           raise_abstract('add_control_transition')
         end
 
-        def add_transition(transition)
-          logger.warn("URL is nil for transition #{transition.name}!") if transition.url.blank?
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition.url}) if transition.url
+        def add_transition(transition, options)
+          transition_url = transition.url
+          logger.warn("URL is blank for transition #{transition.name}!") if transition_url.blank?
+          @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) unless transition_url.blank?
         end
 
         def add_semantics(options)
@@ -266,7 +267,7 @@ module Crichton
           end
         end
 
-        def add_transition(transition)
+        def add_transition(transition, options = {})
           return unless transition.url
           
           @markup_builder.li do
