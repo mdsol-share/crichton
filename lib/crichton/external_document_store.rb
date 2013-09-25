@@ -1,9 +1,12 @@
 require 'fileutils'
+require 'crichton/config_helper'
 
 module Crichton
   class ExternalDocumentStore
+    include Crichton::Helpers::ConfigHelper
+
     def initialize(document_store_path = nil)
-      @document_store_path = document_store_path || Crichton.config.external_documents_store_directory
+      @document_store_path = document_store_path || config.external_documents_store_directory
       FileUtils.mkdir_p(@document_store_path) unless Dir.exists?(@document_store_path)
     end
 

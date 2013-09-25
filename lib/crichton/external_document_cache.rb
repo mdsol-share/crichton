@@ -2,11 +2,14 @@ require 'json'
 require 'addressable/uri'
 require 'net/http'
 require 'fileutils'
+require 'crichton/config_helper'
 
 module Crichton
   class ExternalDocumentCache
+    include Crichton::Helpers::ConfigHelper
+
     def initialize(cache_path = nil)
-      @cache_path = cache_path || Crichton.config.external_documents_cache_directory
+      @cache_path = cache_path || config.external_documents_cache_directory
       FileUtils.mkdir_p(@cache_path) unless Dir.exists?(@cache_path)
     end
 
