@@ -1,4 +1,4 @@
-require 'yaml'
+require 'json'
 require 'addressable/uri'
 require 'net/http'
 require 'fileutils'
@@ -19,23 +19,23 @@ module Crichton
     private
     def metadata_valid(metadata, timeout = 600)
       # The default timeout is to be used when no explicit timeout is set by the service
-      if metadata[:headers] && metadata[:headers]['cache-control']
-        cache_control_elements = metadata[:headers]['cache-control'].first.split(", ").map { |y| y.split('=') }
+      if metadata['headers'] && metadata['headers']['cache-control']
+        cache_control_elements = metadata['headers']['cache-control'].first.split(", ").map { |y| y.split('=') }
         max_age = cache_control_elements.assoc('max-age')
         timeout = max_age[1].to_i if max_age
         # re-validate in case no cache or must-revalidate
         timeout = 0 if cache_control_elements.assoc('must-revalidate')
         timeout = 0 if cache_control_elements.assoc('no-cache')
       end
-      metadata[:time] + timeout > Time.now
+      Time.parse(metadata['time']) + timeout > Time.now
     end
 
     def metadata_etag(metadata)
-      metadata[:headers] && metadata[:headers]['etag']
+      metadata['headers'] && metadata['headers']['etag']
     end
 
     def metadata_last_modified(metadata)
-      metadata[:headers] && metadata[:headers]['last-modified']
+      metadata['headers'] && metadata['headers']['last-modified']
     end
 
     def get_link_and_update_cache(link, metadata=nil)
@@ -62,7 +62,7 @@ module Crichton
       if response.code == '304'
         # Unchanged - just update time in metadata
         metadata[:time] = Time.now
-        File.open(metafile_path(link), 'wb') {|f| f.write(metadata.to_yaml) }
+        File.open(metafile_path(link), 'wb') {|f| f.write(metadata.to_json) }
         read_datafile(link)
       elsif response.code == '404'
         # not there
@@ -91,7 +91,7 @@ module Crichton
           status: response.code,
           headers: response.to_hash,
           time: Time.now}
-        File.open(metafile_path(link), 'wb') {|f| f.write(new_metadata.to_yaml) }
+        File.open(metafile_path(link), 'wb') {|f| f.write(new_metadata.to_json) }
         return response.body
       end
     end
@@ -107,7 +107,7 @@ module Crichton
     end
 
     def metafile_path(link)
-      File.join(@cache_path, "#{filename_base_for_link(link)}.meta.yaml")
+      File.join(@cache_path, "#{filename_base_for_link(link)}.meta.json")
     end
 
     def link_without_fragment(link)
@@ -119,7 +119,7 @@ module Crichton
     def read_meta(link)
       metapath = metafile_path(link)
       if File.exists?(metapath)
-        YAML.parse_file(metapath).to_ruby
+        File.open(metapath, 'rb') {|f| JSON.parse(f.read) }
       else
         nil
       end
