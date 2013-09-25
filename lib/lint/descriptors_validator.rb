@@ -23,16 +23,10 @@ module Lint
 
     def check_descriptor_level(descriptors, options, level)
       descriptors.each do |descriptor|
-#        options = {resource: concat_descriptor_names(descriptor.name, options)}
         options = {resource: descriptor.id}
         descriptor_properties_check(descriptor, options, level)
         check_descriptor_level(descriptor.descriptors, options, level+1) if descriptor.descriptors
       end
-    end
-
-    # TODO: Fix or remove
-    def concat_descriptor_names(name, options)
-      options[:resource] ? options[:resource] << ":" << name : name
     end
 
     # do checks for the properties common to both semantic and transition type descriptors
