@@ -31,7 +31,7 @@ module Crichton
     end
 
     def external_documents_cache_directory
-      @config['external_documents_cache_directory'] || 'external_documents_cache'
+      @config['external_documents_cache_directory'] || 'tmp/external_documents_cache'
     end
 
     def external_documents_store_directory
