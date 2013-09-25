@@ -105,6 +105,7 @@ describe Crichton do
       Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
       registry_obj = mock('Registry')
       registry_obj.stub(:descriptor_registry)
+      Crichton.stub(:config_directory).and_return(File.join('spec', 'fixtures', 'config'))
       # Initializes registry
       Crichton.descriptor_registry
       # Clears registry
