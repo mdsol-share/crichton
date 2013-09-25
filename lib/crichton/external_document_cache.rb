@@ -1,12 +1,13 @@
 require 'yaml'
 require 'addressable/uri'
 require 'net/http'
+require 'fileutils'
 
 module Crichton
   class ExternalDocumentCache
     def initialize(cache_path = nil)
       @cache_path = cache_path || Crichton.config.external_documents_cache_directory
-      Dir::mkdir(@cache_path) unless Dir.exists?(@cache_path)
+      FileUtils.mkdir_p(@cache_path) unless Dir.exists?(@cache_path)
     end
 
     def get(link)
