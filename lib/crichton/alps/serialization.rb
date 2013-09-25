@@ -1,12 +1,14 @@
 require 'json'
 require 'multi_json'
 require 'addressable/uri'
+require 'crichton/config_helper'
 
 module Crichton
   module ALPS
     ## 
     # Manages serialization to the Application-Level Profile Semantics (ALPS) specification JSON and XML formats.
     module Serialization
+      include Crichton::Helpers::ConfigHelper
       ##
       # ALPS specification attributes that can be serialized.
       ALPS_ATTRIBUTES = %w(id name type href rt)
@@ -155,10 +157,6 @@ module Crichton
             properties.each { |element_attributes| builder.tag!(alps_element, element_attributes) }
           end
         end
-      end
-
-      def config
-        @config ||= Crichton.config
       end
 
       def absolute_link(orig_link, rel)

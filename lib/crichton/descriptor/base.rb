@@ -1,3 +1,5 @@
+require 'crichton/config_helper'
+
 module Crichton
   module Descriptor
     # Manage base functionality for all descriptors that encapsulate a section of a resource descriptor document.
@@ -18,6 +20,8 @@ module Crichton
     #     descriptor_reader: id
     #   end
     class Base
+      include Crichton::Helpers::ConfigHelper
+
       # @private
       EXCLUDED_VARIABLES = %w(@descriptors @descriptor_document @resource_descriptor).map(&:to_sym)
 
@@ -77,14 +81,6 @@ module Crichton
       end
 
       ##
-      # Helper to access the Crichton logger locally.
-      #
-      # @return [Logger] Logger object
-      def logger
-        @logger ||= Crichton.logger
-      end
-
-      ##
       # @!attribute [r] name
       # The name of the descriptor.
       #
@@ -114,11 +110,6 @@ module Crichton
       end
       
     protected
-      # Make the configuration accessible to all descriptors
-      def config
-        Crichton.config
-      end
-      
       # Helper method to allow inheriting classes to set the ALPS id of the descriptor.
       def set_id(id)
         descriptor_document['id'] = id.to_s if id
