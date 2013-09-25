@@ -47,7 +47,7 @@ module Crichton
         request['If-None-Match'] = metadata_etag(metadata).first if metadata_etag(metadata)
       end
       begin
-        response = Net::HTTP.start(uri.hostname, uri.port) {|http| http.request(request) }
+        response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(request) }
       rescue Errno::ECONNREFUSED => e
         #TODO: Use logger
         puts "Log connection refused: #{uri.request_uri}"
@@ -62,7 +62,7 @@ module Crichton
       if response.code == '304'
         # Unchanged - just update time in metadata
         metadata[:time] = Time.now
-        File.open(metafile_path(link), 'wb') {|f| f.write(metadata.to_json) }
+        File.open(metafile_path(link), 'wb') { |f| f.write(metadata.to_json) }
         read_datafile(link)
       elsif response.code == '404'
         # not there
@@ -72,7 +72,7 @@ module Crichton
         # This block is for some debugging instrumentation: If the data changed, log it.
         # That may indicate that some changes happened that need to be looked into.
         if File.exists?(data_file_path)
-          old_data = File.open(data_file_path, 'rb') {|f| f.read}
+          old_data = File.open(data_file_path, 'rb') { |f| f.read }
           if old_data != response.body
             #TODO: Use logger
             puts "Data was modified for #{link}!"
@@ -84,14 +84,14 @@ module Crichton
           end
         end
         # Write the content
-        File.open(data_file_path, 'wb') {|f| f.write(response.body) }
+        File.open(data_file_path, 'wb') { |f| f.write(response.body) }
         # Write the metadata
         new_metadata = {
           link: link_without_fragment(link),
           status: response.code,
           headers: response.to_hash,
           time: Time.now}
-        File.open(metafile_path(link), 'wb') {|f| f.write(new_metadata.to_json) }
+        File.open(metafile_path(link), 'wb') { |f| f.write(new_metadata.to_json) }
         return response.body
       end
     end
@@ -118,20 +118,12 @@ module Crichton
 
     def read_meta(link)
       metapath = metafile_path(link)
-      if File.exists?(metapath)
-        File.open(metapath, 'rb') {|f| JSON.parse(f.read) }
-      else
-        nil
-      end
+      File.exists?(metapath) ? File.open(metapath, 'rb') { |f| JSON.parse(f.read) } : nil
     end
 
     def read_datafile(link)
       path = datafile_path(link)
-      if File.exists?(path)
-        File.open(path, 'rb') {|f| f.read }
-      else
-        nil
-      end
+      File.exists?(path) ? File.open(path, 'rb') { |f| f.read } : nil
     end
   end
 end
