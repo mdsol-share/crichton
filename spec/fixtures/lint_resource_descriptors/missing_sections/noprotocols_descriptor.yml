@@ -4,8 +4,6 @@ doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: alps_base/DRDs
   help: documentation_base/Things/DRDs
- 
-
 states:
   drds:
     collection:
@@ -27,7 +25,6 @@ states:
     error:
       doc: An error has occured.
       location: http://alps.io/schema.org/Error
-
 descriptors:
   drds:
     doc: 

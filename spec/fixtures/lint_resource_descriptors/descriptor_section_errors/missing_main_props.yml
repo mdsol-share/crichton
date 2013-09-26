@@ -1,11 +1,9 @@
-
 id: DRDs
 version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: DRDs
   help: documentation_base/Things/DRDs
- 
 states:
   drds:
     collection:
@@ -27,14 +25,6 @@ states:
     error:
       doc: An error has occured.
       location: http://alps.io/schema.org/Error
-      
-# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
-# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
-# to generate sample representations of the a resource in different media-types.
-#
-# Transition descriptors represent application affordances and in the context of ALPS 
-# represent type='safe,unsafe,idempotent' descriptors. 
-
 descriptors:
   drds:
     doc:
@@ -202,11 +192,7 @@ descriptors:
                   - presence 
       delete:
         doc: Drops a DRD out an air-lock.
-        type: idempotent    
-
-# The protocol descriptors section defines the protocol affordances associated with the 
-# application affordances. This decouples protocol specific information from the 
-# semantic description of a resource and its affordances.
+        type: idempotent
 protocols:
   http:
     list:
@@ -298,11 +284,6 @@ protocols:
     leviathan-link: 
       uri_source: leviathan_url
       method: GET
-        
-# This optional section defines the route mapping for the resource that can be used in 
-# lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
-# application. It has nothing to do with the resource semantics per se, but is rather
-# a convenience for DRYing out routing in a service.
 routes:
   drds:
     list: &list

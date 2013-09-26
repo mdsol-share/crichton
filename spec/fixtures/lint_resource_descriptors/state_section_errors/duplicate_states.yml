@@ -4,7 +4,6 @@ doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: DRDs
   help: documentation_base/Things/DRDs
-
 states:
   drds:
     collection:
@@ -68,7 +67,6 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: 1812
-
 protocols:
   http:
     list:

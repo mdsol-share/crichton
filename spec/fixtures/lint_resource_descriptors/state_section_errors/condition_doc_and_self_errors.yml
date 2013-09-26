@@ -4,9 +4,8 @@ doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: alps_base/DRDs
   help: documentation_base/Things/DRDs
-
 # Here drds->collection->list->name is no_self (and no location property is specified)
-#    drds->collection->create->conditions is specified but has no values
+# drds->collection->create->conditions is specified but has no values
 states:
   drds:
     collection:
@@ -62,7 +61,6 @@ descriptors:
         name: self
         type: safe
         rt: drd
-
 protocols:
   http:
     list:

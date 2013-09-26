@@ -99,6 +99,7 @@ module Lint
     #67, check for transitions missing from the states section that are found in the protocol and descriptor sections
     def check_transition_equivalence
       state_transitions = build_state_transition_list
+
       #first look for protocol transitions not found in the descriptor transitions
       build_descriptor_transition_list.each do |transition|
         unless state_transitions.include?(transition)

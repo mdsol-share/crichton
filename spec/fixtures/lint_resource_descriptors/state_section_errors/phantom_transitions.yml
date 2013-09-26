@@ -4,8 +4,7 @@ doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: alps_base/DRDs
   help: documentation_base/Things/DRDs
-
-#Here transition of drds->collection->navigation->search->next is spelled 'navegation'
+# Here transition of drds->collection->navigation->search->next is spelled 'navegation'
 # drd->activated->show->next is spelled 'activate' not 'activated'
 states:
   drds:
@@ -32,7 +31,6 @@ states:
           name: self
           next:
             - activate
-
 descriptors:
   drds:
     doc:
@@ -76,7 +74,6 @@ descriptors:
         name: self
         type: safe
         rt: drd
-
 protocols:
   http:
     list:

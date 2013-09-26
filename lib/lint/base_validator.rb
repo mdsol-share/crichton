@@ -50,16 +50,17 @@ module Lint
     end
 
     def find_descriptor_transitions(descriptors, transition_list)
-      descriptors.each do |descriptor|
-        transition_list << descriptor.id if descriptor.transition?
-        find_descriptor_transitions(descriptor.descriptors, transition_list) if descriptor.descriptors
+      descriptors.inject(transition_list) do |a, descriptor|
+        a << descriptor.id if descriptor.transition?
+        descriptor.descriptors ? find_descriptor_transitions(descriptor.descriptors, a) : a
       end
-      transition_list
     end
 
-    def build_protocol_transition_list(protocol = nil)
-      protocol ||= @resource_descriptor.protocols.first.last
-      protocol.inject([]) { |a, protocol_obj| a << protocol_obj.first }
+    def build_protocol_transition_list(transition_list = [])
+      resource_descriptor.protocols.values.each do |protocol|
+        protocol.keys.inject(transition_list) { | tran_arr, key| tran_arr << key unless tran_arr.include?(key) }
+      end
+      transition_list
     end
 
     def build_state_transition_list
@@ -67,7 +68,7 @@ module Lint
       resource_descriptor.states.values.each do |secondary_descriptor|
          secondary_descriptor.values.each do |state|
             state.transitions.keys.each do |transition|
-             transition_list << transition unless transition_list.include?(transition[0])
+             transition_list << transition unless transition_list.include?(transition)
            end
          end
        end

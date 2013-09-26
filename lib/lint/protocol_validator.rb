@@ -2,7 +2,6 @@ require 'lint/base_validator'
 
 module Lint
   class ProtocolValidator < BaseValidator
-
     PROTOCOL_PROPERTIES = %w(uri entry_point method content_type headers status_codes slt)
 
     def validate
@@ -127,12 +126,9 @@ module Lint
 
     # Check to see there's one and only one entry point into the resource for a protocol
     def verify_single_entry_point(protocol, protocol_name)
-      entry_point_count = 0
-      protocol.values.each do |transition|
-        entry_point_count += 1 if transition.entry_point
-      end
+      entry_point_count = protocol.values.inject(0) { |i, transition| transition.entry_point ? i + 1 : i }
       unless entry_point_count == 1
-        add_error('protocols.entry_point_error', error: (entry_point_count == 0) ? "No" : "Multiple",
+        add_error('protocols.entry_point_error', error: entry_point_count == 0 ? "No" : "Multiple",
           protocol: protocol_name)
       end
     end
@@ -140,22 +136,22 @@ module Lint
     # 54 check if the list of transitions found in the protocol section match the transitions in the
     # states and descriptor sections
     def check_transition_equivalence
-      resource_descriptor.protocols.each do |protocol_name, protocol|
-        proto_transition_list = build_protocol_transition_list(protocol)
-        #first look for protocol transitions not found in the descriptor transitions
-        build_descriptor_transition_list.each do |transition|
-          unless proto_transition_list.include?(transition)
-            add_error('protocols.descriptor_transition_not_found', transition: transition, protocol:protocol_name)
-          end
-        end
+      protocol_transition_list = build_protocol_transition_list
 
-        # then check if there is a transition missing for any state transition specified in the states: section
-        build_state_transition_list.each do |transition|
-          unless proto_transition_list.include?(transition)
-            add_error('protocols.state_transition_not_found', transition: transition, protocol: protocol_name)
-          end
+      #first look for protocol transitions not found in the descriptor transitions
+      build_descriptor_transition_list.each do |transition|
+        unless protocol_transition_list.include?(transition)
+          add_error('protocols.descriptor_transition_not_found', transition: transition)
         end
       end
+
+      # then check if there is a transition missing for any state transition specified in the states: section
+      build_state_transition_list.each do |transition|
+        unless protocol_transition_list.include?(transition)
+          add_error('protocols.state_transition_not_found', transition: transition)
+        end
+      end
+
     end
   end
 end

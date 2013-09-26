@@ -1,11 +1,9 @@
-
 id: DRDs
 version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: alps_base/DRDs
   help: documentation_base/Things/DRDs
-
 descriptors:
   drds:
     doc: 
@@ -45,7 +43,6 @@ descriptors:
         name: self
         type: safe
         rt: drd
-
 protocols:
   http:
     list:

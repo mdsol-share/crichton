@@ -1,12 +1,9 @@
-
 id: DRDs
 version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: DRDs
   help: documentation_base/Things/DRDs
- 
-
 states:
   drds:
     collection:
@@ -20,7 +17,6 @@ states:
         search:
           next:
             - collection
-
 descriptors:
   drds:
     doc: 
@@ -64,7 +60,6 @@ descriptors:
             type: semantic
             href: http://alps.io/schema.org/Text
             sample: DRDs#drds
-
 # The protocol descriptors section defines the protocol affordances associated with the
 # application affordances. This decouples protocol specific information from the
 # semantic description of a resource and its affordances.

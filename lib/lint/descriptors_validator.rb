@@ -1,12 +1,9 @@
 require 'lint/base_validator'
 
-
 module Lint
   class DescriptorsValidator < BaseValidator
     TOP_LEVEL = 0
     VALID_MIME_TYPES = %w(html)
-    VALID_DESCRIPTOR_TYPES = Crichton::Descriptor::Profile::SEMANTIC_TYPES +
-      Crichton::Descriptor::Profile::TRANSITION_TYPES
 
     def validate
       check_descriptor_graph
@@ -25,7 +22,7 @@ module Lint
       descriptors.each do |descriptor|
         options = {resource: descriptor.id}
         descriptor_properties_check(descriptor, options, level)
-        check_descriptor_level(descriptor.descriptors, options, level+1) if descriptor.descriptors
+        check_descriptor_level(descriptor.descriptors, options, level + 1) if descriptor.descriptors
       end
     end
 
@@ -49,7 +46,7 @@ module Lint
 
       #22
       if descriptor.type
-        unless VALID_DESCRIPTOR_TYPES.include?(descriptor.type)
+        unless Crichton::Descriptor::Profile::DESCRIPTOR_TYPES.include?(descriptor.type)
           add_error('descriptors.type_invalid', options.merge({type_prop: descriptor.type}))
         end
       else
@@ -84,7 +81,7 @@ module Lint
 
     # check all rules surrounding transition based descriptors
     def semantic_properties_check(descriptor, options, level)
-      if level != TOP_LEVEL
+      if level > TOP_LEVEL
         # all NON top level descriptors should have a sample and href entry
         add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
         add_warning('descriptors.property_missing', options.merge({prop: 'href'})) unless descriptor.href
@@ -93,18 +90,17 @@ module Lint
 
     # check all rules surrounding transition based descriptors
     def transition_properties_check(descriptor, options, level)
-      if level != TOP_LEVEL
+      if level > TOP_LEVEL
         # all NON top level descriptors should have a rt (return type) property
         if descriptor.rt
           # check if the return type is a valid local type to this file or an external return type
           unless valid_return_type(descriptor.rt)
-             add_error('descriptors.invalid_return_type', options.merge({rt: descriptor.rt}))
+            add_error('descriptors.invalid_return_type', options.merge({rt: descriptor.rt}))
           end
         else
           add_error('descriptors.property_missing', options.merge({prop: 'rt'}))
         end
         check_protocol_method_and_type(descriptor.type, descriptor.decorate(self).method, options)
-
       end
     end
 
@@ -119,14 +115,14 @@ module Lint
     end
 
     def check_protocol_method_and_type(type, method, options)
-       case type
-        when 'safe'
+      case type.to_sym
+        when :safe
           if %w(PUT POST DELETE).include?(method)
             add_error('descriptors.invalid_method', options.merge({mthd: method, type: type}))
           end
-         when 'unsafe'
+        when :unsafe
           add_error('descriptors.invalid_method', options.merge({mthd: method, type: type})) unless method == 'POST'
-        when 'idempotent'
+        when :idempotent
           add_error('descriptors.invalid_method', options.merge({mthd: method, type: type})) if method == 'GET'
       end
     end
@@ -135,9 +131,9 @@ module Lint
     def compare_with_state_resources
       # TODO: change descriptor array into a hash with name as keys, or convert state names to an array of names
       compare_with_other_hash(resource_descriptor.descriptor_document['descriptors'], resource_descriptor.states,
-                              'descriptors.descriptor_resource_not_found')
+        'descriptors.descriptor_resource_not_found')
       compare_with_other_hash(resource_descriptor.states, resource_descriptor.descriptor_document['descriptors'],
-                              'descriptors.state_resource_not_found')
+        'descriptors.state_resource_not_found')
     end
 
     def compare_with_other_hash(base_resources, others_resources, error)
@@ -163,6 +159,5 @@ module Lint
         end
       end
     end
-
   end
 end

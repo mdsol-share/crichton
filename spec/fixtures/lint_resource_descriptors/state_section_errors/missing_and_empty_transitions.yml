@@ -4,10 +4,8 @@ doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: alps_base/DRDs
   help: documentation_base/Things/DRDs
-
 # HERE drds->collection->list transition has a next: with no value and
 # drd->activated->show transition is missing a next
-
 states:
   drds:
     collection:
@@ -23,7 +21,6 @@ states:
       transitions:
         show:
           name: self
-
 descriptors:
   drds:
     doc:
@@ -63,7 +60,6 @@ descriptors:
         name: self
         type: safe
         rt: drd
-
 protocols:
   http:
     list:

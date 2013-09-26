@@ -1,12 +1,9 @@
-
 id: DRDs
 version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: DRDs
   help: documentation_base/Things/DRDs
- 
-
 states:
   drds:
     collection:
@@ -23,7 +20,6 @@ states:
             - can_do_anything
           next:
             - collection
-
 descriptors:
   drds:
     type: idemportant
@@ -57,11 +53,6 @@ descriptors:
               self: DRDs#create-drd
               help: documentation_base/Forms/create-drd
             sample: 1
-
-
-# The protocol descriptors section defines the protocol affordances associated with the
-# application affordances. This decouples protocol specific information from the
-# semantic description of a resource and its affordances.
 protocols:
   http:
     list:
