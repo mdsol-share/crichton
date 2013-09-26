@@ -13,7 +13,10 @@ module Crichton
     
       # The types of transition descriptors.
       TRANSITION_TYPES = %w(safe unsafe idempotent)
-    
+
+      # Complete list of transition_descriptors
+      DESCRIPTOR_TYPES = SEMANTIC_TYPES + TRANSITION_TYPES
+
       ##
       # @!attribute descriptors [r]
       # The nested descriptors.

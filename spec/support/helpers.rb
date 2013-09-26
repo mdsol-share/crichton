@@ -122,15 +122,26 @@ module Support
       end
     end
 
-    def lint_spec_filename(folder, filename)
-      fixture_path('bad_resource_descriptors', folder, filename)
+    def lint_spec_filename(*args)
+      folder, filename = args.count == 1 ? ['', args.first] : args
+      fixture_path('lint_resource_descriptors', folder, filename)
+    end
+
+    def load_lint_translation_file
+      I18n.load_path =  [File.join(LINT_DIR, 'eng.yml')]
+      I18n.default_locale = 'eng'
     end
 
     def expected_output(error_or_warning, key, options = {})
-      ((error_or_warning == :error ? "\tERROR: " : "\tWARNING: ") << I18n.t(key, options) << "\n")
+      (generate_lint_file_line(options[:filename]) << (error_or_warning == :error ? "\tERROR: " : "\tWARNING: ") <<
+        I18n.t(key, options) << "\n")
     end
 
     private
+    def generate_lint_file_line(filename)
+      filename ? "In file '#{filename}':\n" : ""
+    end
+
     def environment_args(env_vars)
       env_vars.inject('') { |s, (k, v)| s << "#{k.upcase}=#{v} " }
     end

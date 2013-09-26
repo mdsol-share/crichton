@@ -1,0 +1,92 @@
+id: DRDs
+version: v1.0.0
+doc: Describes the semantics, states and state transitions associated with DRDs.
+links:
+  self: DRDs
+  help: documentation_base/Things/DRDs
+states:
+  drds:
+    collection:
+      doc: The entry point state for interacting with DRDs.
+      location: entry
+      transitions:
+        list:
+          name: self
+          next:
+            - collection
+        create:
+          conditions:
+            - can_create 
+            - can_do_anything
+          next:
+            - collection
+descriptors:
+  drds:
+    type: semantic
+    links:
+      self: DRDs#drds
+    descriptors:
+      # Semantics
+      total_count:
+        doc: The total count of DRDs.
+        type: semantic
+        href: http://alps.io/schema.org/Integer
+        sample: 1
+      # Transitions
+      list:
+        doc: Returns a list of DRDs.
+        name: self
+        type: safe
+        rt: drds
+      create:
+        doc: Creates a DRD.
+        type: unsafe
+        rt: drds
+        descriptors:
+          create-drd:
+            doc: semantic data for creating a drd
+            type: semantic
+            href: update-drd # Indicates that this should dereference update-drd
+            links:
+              self: DRDs#create-drd
+              help: documentation_base/Forms/create-drd
+            sample: 1
+protocols:
+  http:
+    list:
+      uri: drds
+      entry_point: drds # Indicates this endpoint is a resource entry point for the protocol.
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+        - application/xhtml+xml
+      headers:
+        - Content-Type
+        - ETag
+      status_codes:
+        200:
+          description: OK
+          notes:
+            - We have processed your request and returned the data you asked for.
+      slt: &slt1
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50 
+    create:
+      uri: drds
+      method: POST
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+        201:
+          description: OK
+          notes:
+            - Object created.
+        403:
+          description: Permission denied
+          notes:
+            - Object not created, insufficient permissions.
+      slt: *slt1

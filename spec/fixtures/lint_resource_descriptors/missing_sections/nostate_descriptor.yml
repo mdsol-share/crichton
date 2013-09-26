@@ -4,30 +4,6 @@ doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: alps_base/DRDs
   help: documentation_base/Things/DRDs
- 
-
-states:
-  drds:
-    collection:
-      doc: The entry point state for interacting with DRDs.
-      location: entry
-      transitions:
-        list:
-          name: self
-          next:
-            - collection
-  drd:
-    activated :
-      doc: The default state of a DRD.
-      transitions:
-        show:
-          name: self
-          next:
-            - item
-    error:
-      doc: An error has occured.
-      location: http://alps.io/schema.org/Error
-
 descriptors:
   drds:
     doc: 
@@ -36,6 +12,7 @@ descriptors:
     links:
       self: alps_base/DRDs#drds
     descriptors:
+      # Transitions
       list:
         doc: Returns a list of DRDs.
         name: self
@@ -66,3 +43,29 @@ descriptors:
         name: self
         type: safe
         rt: drd
+protocols:
+  http:
+    list:
+      uri: drds
+      entry_point: drds # Indicates this endpoint is a resource entry point for the protocol.
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+        - application/xhtml+xml
+      headers:
+        - Content-Type
+        - ETag
+      status_codes:
+        200:
+          status: OK
+          definitions:
+            - We have processed your request and returned the data you asked for.
+    show:
+      uri: drds/{uuid}
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:

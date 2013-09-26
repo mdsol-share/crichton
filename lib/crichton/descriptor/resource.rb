@@ -10,6 +10,8 @@ module Crichton
     # Manages Resource Descriptor parsing and consumption for decorating service responses or interacting with
     # Hypermedia types.
     class Resource < Profile
+      # The types of supported protocols.
+      PROTOCOL_TYPES = %w(http)
       ##
       # Constructor
       #
@@ -76,10 +78,11 @@ module Crichton
       def protocols
         @descriptors[:protocol] ||= begin
           (descriptor_document['protocols'] || {}).inject({}) do |h, (protocol, protocol_transitions)|
+            unless PROTOCOL_TYPES.include?(protocol)
+              raise "Unknown protocol #{protocol} defined in resource descriptor document #{id}."
+            end
             klass = case protocol
                     when 'http' then Http
-                    else
-                      raise "Unknown protocol #{protocol} defined in resource descriptor document #{id}."
                     end
             h[protocol] = (protocol_transitions || {}).inject({}) do |transitions, (transition, transition_descriptor)|
               transitions.tap { |hash| hash[transition] = klass.new(self, transition_descriptor, transition) }

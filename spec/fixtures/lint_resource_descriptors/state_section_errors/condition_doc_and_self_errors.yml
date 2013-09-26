@@ -1,11 +1,28 @@
-
 id: DRDs
 version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: alps_base/DRDs
   help: documentation_base/Things/DRDs
-
+# Here drds->collection->list->name is no_self (and no location property is specified)
+# drds->collection->create->conditions is specified but has no values
+states:
+  drds:
+    collection:
+      doc: The entry point state for interacting with DRDs.
+      location: entry
+      transitions:
+        list:
+          name: not_self
+          next:
+            - collection
+  drd:
+    activated:
+      transitions:
+        show:
+          name: self
+          next:
+            - activated
 descriptors:
   drds:
     doc: 
@@ -14,7 +31,6 @@ descriptors:
     links:
       self: alps_base/DRDs#drds
     descriptors:
-      # Transitions
       list:
         doc: Returns a list of DRDs.
         name: self
@@ -45,7 +61,6 @@ descriptors:
         name: self
         type: safe
         rt: drd
-
 protocols:
   http:
     list:
@@ -61,9 +76,13 @@ protocols:
         - ETag
       status_codes:
         200:
-          status: OK
-          definitions:
+          description: OK
+          notes:
             - We have processed your request and returned the data you asked for.
+      slt: &slt1
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
     show:
       uri: drds/{uuid}
       method: GET
@@ -72,3 +91,12 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+        200:
+          description: OK
+          notes:
+            - We have processed your request and returned the data you asked for.
+      slt: &slt1
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
+
