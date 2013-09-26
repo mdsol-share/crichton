@@ -58,18 +58,15 @@ module Lint
 
     def build_protocol_transition_list(transition_list = [])
       resource_descriptor.protocols.values.each do |protocol|
-        protocol.keys.inject(transition_list) { | tran_arr, key| tran_arr << key unless tran_arr.include?(key) }
+        protocol.keys.each_with_object(transition_list) { | key, a| a << key unless a.include?(key) }
       end
       transition_list
     end
 
-    def build_state_transition_list
-      transition_list = []
+    def build_state_transition_list(transition_list = [])
       resource_descriptor.states.values.each do |secondary_descriptor|
          secondary_descriptor.values.each do |state|
-            state.transitions.keys.each do |transition|
-             transition_list << transition unless transition_list.include?(transition)
-           end
+           state.transitions.keys.each_with_object(transition_list) { |key, a| a << key unless a.include?(key) }
          end
        end
       transition_list
