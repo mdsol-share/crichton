@@ -7,18 +7,32 @@ Bundler.setup
 
 require 'optparse'
 
-$options = {}
+options = {}
 optparse = OptionParser.new do |opts|
-  opts.banner = "Usage: rdlint <descriptor file name>"
+  opts.banner = "Usage: rdlint [options] <descriptor file name>"
+  options[:suppress_warnings] = false
+  options[:strict] = false
+  options[:version] = false
+
+  opts.on('-h', '--help', 'Display this screen') do
+    puts opts
+    exit
+  end
+  opts.on('-w', '--suppress_warnings', 'Suppress lint warnings') do
+    options[:suppress_warnings] = true
+  end
+  opts.on('-s', '--strict', 'Return true/false pass analysis') do
+    options[:strict] = true
+  end
+  opts.on('-v', '--version', 'Display Crichton version') do
+    options[:version] = true
+  end
 end
 
-require File.expand_path('../lib/lint', __FILE__)
+require File.expand_path('../lib/lint', File.dirname(__FILE__))
 
 optparse.parse!
-# go for single file linting for now...
-unless ARGV.length == 1
-	abort optparse.to_s
-end
 
-# lint the individual file
-Lint.validate ARGV[0]
+ARGV.each do |file|
+  Lint.validate file, options
+end
