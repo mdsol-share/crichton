@@ -10,7 +10,7 @@ module Crichton
     # Manages Resource Descriptor parsing and consumption for decorating service responses or interacting with
     # Hypermedia types.
     class Resource < Profile
-      # The types supported protocols.
+      # The types of supported protocols.
       PROTOCOL_TYPES = %w(http)
       ##
       # Constructor
