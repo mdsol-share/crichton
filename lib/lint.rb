@@ -10,7 +10,12 @@ require 'lint/protocol_validator'
 module Lint
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
   def self.validate(filename, options)
-    puts "OPTIONS ARE #{options.inspect}" unless options.nil?
+
+    if options[:version]
+      puts "Crichton version: #{Crichton::VERSION::STRING}"
+      exit
+    end
+
     # Initialize lint messages
     I18n.load_path = [File.dirname(__FILE__)+'/lint/eng.yml']
     I18n.default_locale = 'eng'
