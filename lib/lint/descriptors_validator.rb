@@ -106,7 +106,7 @@ module Lint
 
     def valid_return_type(return_type)
       # if external, valid, assume http as only valid external for now
-      return true if return_type[/\Ahttp/] == 'http'
+      return true if  Crichton::Descriptor::Resource::PROTOCOL_TYPES.include?(return_type[/\Ahttp/])
       rt_is_a_valid_subresource(return_type)
     end
 

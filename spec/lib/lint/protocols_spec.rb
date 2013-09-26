@@ -15,7 +15,7 @@ describe Lint do
     content.should include(error)
   end
 
-  it "display error when multiple entry points are specified" do
+  it "displays error when multiple entry points are specified" do
     filename = lint_spec_filename('protocol_section_errors', 'multiple_entry_points.yml')
 
     error = expected_output(:error, 'protocols.entry_point_error', error: 'Multiple', protocol: 'http',
@@ -25,7 +25,7 @@ describe Lint do
     content.should == error
   end
 
-  it "display error when no entry points are specified" do
+  it "displays error when no entry points are specified" do
     filename = lint_spec_filename('protocol_section_errors', 'no_entry_points.yml')
 
     error = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
@@ -35,7 +35,7 @@ describe Lint do
     content.should == error
   end
 
-  it "display a warning when an external resource action has properties other than uri_source" do
+  it "displays a warning when an external resource action has properties other than uri_source" do
     filename = lint_spec_filename('protocol_section_errors', 'extraneous_properties.yml')
 
     warning = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link',
@@ -45,7 +45,7 @@ describe Lint do
     content.should == warning
   end
 
-  it "display errors when uri and method are not specified for a protocol action" do
+  it "displays errors when uri and method are not specified for a protocol action" do
     filename = lint_spec_filename('protocol_section_errors', 'missing_required_properties.yml')
 
     errors = expected_output(:error, 'protocols.property_missing', property: 'uri', protocol: 'http', action: 'list',
@@ -104,4 +104,10 @@ describe Lint do
     content = capture(:stdout) { Lint.validate(filename) }
     content.should == errors
   end
+
+  it "displays an exception error when an invalid protocol is specified" do
+    filename = lint_spec_filename('protocol_section_errors', 'invalid_protocol.yml')
+    expect {Lint.validate(filename)}.to raise_error "Unknown protocol ftp defined in resource descriptor document DRDs."
+  end
+
 end
