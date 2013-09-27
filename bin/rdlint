@@ -10,7 +10,7 @@ require 'optparse'
 options = {}
 optparse = OptionParser.new do |opts|
   opts.banner = "Usage: rdlint [options] descriptor_file1 descriptor_file2..."
-  options[:suppress_warnings] = false
+  options[:no_warnings] = false
   options[:strict] = false
   options[:version] = false
   options[:all] = false
@@ -20,9 +20,9 @@ optparse = OptionParser.new do |opts|
     exit
   end
   opts.on('-w', '--no_warnings', 'Suppress lint warnings') do
-    options[:suppress_warnings] = true
+    options[:no_warnings] = true
   end
-  opts.on('-s', '--strict', 'Return true/false pass analysis') do
+  opts.on('-s', '--strict', 'Return true/false pass/fail analysis') do
     options[:strict] = true
   end
   opts.on('-v', '--version', 'Display Crichton version') do

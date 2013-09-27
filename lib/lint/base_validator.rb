@@ -20,7 +20,7 @@ module Lint
 
     #When the dust settles, print out the results of the lint analysis, unless strict mode, which returns true / false
     def report
-      if options[:strict]
+      if @options[:strict]
         errors.any? ? false  : true
       else
         errors.each { |error| puts "\tERROR: " << error }
