@@ -10,11 +10,12 @@ module Lint
     attr_reader :resource_descriptor
     attr_reader :filename
 
-    def initialize(resource_descriptor, filename)
+    def initialize(resource_descriptor, filename, options)
       @warnings = []
       @errors = []
       @filename = filename
       @resource_descriptor = resource_descriptor
+      @options = options
     end
 
     #When the dust settles, print out the results of the lint analysis

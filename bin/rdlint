@@ -33,6 +33,8 @@ require File.expand_path('../lib/lint', File.dirname(__FILE__))
 
 optparse.parse!
 
+OPTS = options
+
 ARGV.each do |file|
   Lint.validate file, options
 end
