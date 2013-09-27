@@ -10,20 +10,21 @@ module Lint
     attr_reader :resource_descriptor
     attr_reader :filename
 
-    def initialize(resource_descriptor, filename)
+    def initialize(resource_descriptor, filename, options)
       @warnings = []
       @errors = []
       @filename = filename
       @resource_descriptor = resource_descriptor
+      @options = options
     end
 
-    #When the dust settles, print out the results of the lint analysis
+    #When the dust settles, print out the results of the lint analysis, unless strict mode, which returns true / false
     def report
-      if OPTS[:strict]
-        return errors.any? ? false  : true
+      if options[:strict]
+        errors.any? ? false  : true
       else
         errors.each { |error| puts "\tERROR: " << error }
-        warnings.each { |warning| puts "\tWARNING: " << warning } unless OPTS[:suppress_warnings]
+        warnings.each { |warning| puts "\tWARNING: " << warning } unless @options[:no_warnings]
       end
     end
 

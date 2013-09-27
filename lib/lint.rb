@@ -9,10 +9,10 @@ require 'lint/protocol_validator'
 
 module Lint
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
-  def self.validate(filename)
+  def self.validate(filename, options = {})
 
-    if OPTS[:version]
-      puts "Crichton version: #{Crichton::VERSION::STRING}"
+    if options[:version]
+      puts "Crichton version: #{Crichton::VERSION::STRING}\n\n"
       exit
     end
 
@@ -30,10 +30,10 @@ module Lint
     end
 
     # the resource descriptor validator checks a lot of top level resource issues
-    resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename)
+    resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename, options)
     resource_validator.validate
 
-    if OPTS[:strict]
+    if options[:strict]
       return true if resource_validator.errors.any?
     else
       puts "In file '#{filename}':"
@@ -47,21 +47,32 @@ module Lint
 
     validators = []
 
-    validators << StatesValidator.new(resource_descriptor, filename)
-    validators << DescriptorsValidator.new(resource_descriptor, filename)
-    validators << ProtocolValidator.new(resource_descriptor, filename)
+    validators << StatesValidator.new(resource_descriptor, filename, options)
+    validators << DescriptorsValidator.new(resource_descriptor, filename, options)
+    validators << ProtocolValidator.new(resource_descriptor, filename, options)
 
     validators.each do |validator|
       validator.validate
-      validator.report unless OPTS[:strict]
+      validator.report unless options[:strict]
     end
 
-    if OPTS[:strict]
+    if options[:strict]
       return true if resource_validator.errors.any?
     else
       puts I18n.t('aok') unless errors_and_warnings_found?(validators)
 
       validators << resource_validator
+    end
+  end
+
+  def self.validate_all(options = {})
+    if File.exists?(location = Crichton.descriptor_location)
+      Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
+        self.validate(f, options)
+        puts "\n"
+      end
+    else
+      raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
     end
   end
 
