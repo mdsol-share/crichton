@@ -9,10 +9,9 @@ require 'lint/protocol_validator'
 
 module Lint
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
-  def self.validate(filename, options = {})
-     puts "OPTS ARE #{OPTS.inspect}"
+  def self.validate(filename)
 
-    if options[:version]
+    if OPTS[:version]
       puts "Crichton version: #{Crichton::VERSION::STRING}"
       exit
     end
@@ -48,16 +47,18 @@ module Lint
 
     validators = []
 
-    validators << StatesValidator.new(resource_descriptor, filename, options)
-    validators << DescriptorsValidator.new(resource_descriptor, filename, options)
-    validators << ProtocolValidator.new(resource_descriptor, filename, options)
+    validators << StatesValidator.new(resource_descriptor, filename)
+    validators << DescriptorsValidator.new(resource_descriptor, filename)
+    validators << ProtocolValidator.new(resource_descriptor, filename)
 
     validators.each do |validator|
       validator.validate
-      validator.report
+      validator.report unless OPTS[:strict]
     end
 
-    unless options[:strict]
+    if options[:strict]
+      return true if resource_validator.errors.any?
+    else
       puts I18n.t('aok') unless errors_and_warnings_found?(validators)
 
       validators << resource_validator
