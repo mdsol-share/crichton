@@ -11,11 +11,6 @@ module Lint
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
   def self.validate(filename, options = {})
 
-    if options[:version]
-      puts "Crichton version: #{Crichton::VERSION::STRING}\n\n"
-      exit
-    end
-
     # Initialize lint messages
     I18n.load_path = [File.dirname(__FILE__)+'/lint/eng.yml']
     I18n.default_locale = 'eng'
@@ -74,6 +69,10 @@ module Lint
     else
       raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
     end
+  end
+
+  def version
+      puts "Crichton version: #{Crichton::VERSION::STRING}\n\n"
   end
 
   private

@@ -37,6 +37,9 @@ require File.expand_path('../lib/lint', File.dirname(__FILE__))
 
 optparse.parse!
 
+if options[:version]
+  Lint.version
+end
 if options[:all]
   Lint.validate_all(options)
 else

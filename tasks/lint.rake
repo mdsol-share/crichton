@@ -5,7 +5,10 @@ namespace :crichton do
   task :lint, :file_or_all, :lint_options do |t, args|
     require 'lint'
     begin
-      if :arg1 == 'all'
+      if :lint_options == :version ||
+        Lint.version
+      end
+      if :arg1 == :all
         puts "Linting all descriptor files with options: #{:lint_options.inspect}"
         Lint.validate_all[:lint_options]
       else
