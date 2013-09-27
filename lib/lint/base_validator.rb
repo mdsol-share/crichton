@@ -20,7 +20,7 @@ module Lint
     #When the dust settles, print out the results of the lint analysis
     def report
       if OPTS[:strict]
-        return errors.any? false : true
+        return errors.any? ? false  : true
       else
         errors.each { |error| puts "\tERROR: " << error }
         warnings.each { |warning| puts "\tWARNING: " << warning } unless OPTS[:suppress_warnings]
