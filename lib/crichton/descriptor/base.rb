@@ -1,4 +1,4 @@
-require 'crichton/config_helper'
+require 'crichton/helpers'
 
 module Crichton
   module Descriptor

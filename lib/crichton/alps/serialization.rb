@@ -1,7 +1,7 @@
 require 'json'
 require 'multi_json'
 require 'addressable/uri'
-require 'crichton/config_helper'
+require 'crichton/helpers'
 
 module Crichton
   module ALPS

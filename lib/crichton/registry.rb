@@ -122,7 +122,11 @@ module Crichton
     # De-references documents after loading all available documents
     def build_registry
       if File.exists?(location = Crichton.descriptor_location)
-        Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
+        files = Dir.glob(File.join(location, '*.{yml,yaml}'))
+        if files.empty?
+          raise "No resource descriptor directory exists or it is empty. Default is #{Crichton.descriptor_location}."
+        end
+        files.each do |f|
           register(YAML.load_file(f))
         end
         # The above register step works on a per-file basis. If a early file references a later file, it won't be
@@ -130,7 +134,7 @@ module Crichton
         # step. Not elegant, but should get the job done.
         dereference_queued_descriptor_hashes_and_build_registry
       else
-        raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
+        raise "No resource descriptor directory exists or it is empty. Default is #{Crichton.descriptor_location}."
       end
     end
 

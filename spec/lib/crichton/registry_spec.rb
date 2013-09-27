@@ -16,7 +16,7 @@ module Crichton
 
       context 'without a directory of resource descriptors specified' do
         it 'raises an error' do
-          expect { Registry.new.descriptor_registry }.to raise_error(/^No resource descriptor directory exists./)
+          expect { Registry.new.descriptor_registry }.to raise_error(/^No resource descriptor directory exists or it is empty./)
         end
       end
     end

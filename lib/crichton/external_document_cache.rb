@@ -2,7 +2,7 @@ require 'json'
 require 'addressable/uri'
 require 'net/http'
 require 'fileutils'
-require 'crichton/config_helper'
+require 'crichton/helpers'
 
 module Crichton
   class ExternalDocumentCache

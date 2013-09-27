@@ -1,5 +1,5 @@
 require 'fileutils'
-require 'crichton/config_helper'
+require 'crichton/helpers'
 
 module Crichton
   class ExternalDocumentStore
