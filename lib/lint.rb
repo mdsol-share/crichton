@@ -33,7 +33,7 @@ module Lint
     resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename)
     resource_validator.validate
 
-    if options[:strict]
+    if OPTS[:strict]
       return true if resource_validator.errors.any?
     else
       puts "In file '#{filename}':"
@@ -56,7 +56,7 @@ module Lint
       validator.report unless OPTS[:strict]
     end
 
-    if options[:strict]
+    if OPTS[:strict]
       return true if resource_validator.errors.any?
     else
       puts I18n.t('aok') unless errors_and_warnings_found?(validators)
