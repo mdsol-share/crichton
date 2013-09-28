@@ -107,7 +107,7 @@ describe Lint do
 
   it "displays an exception error when an invalid protocol is specified" do
     filename = lint_spec_filename('protocol_section_errors', 'invalid_protocol.yml')
-    expect {Lint.validate(filename)}.to raise_error "Unknown protocol ftp defined in resource descriptor document DRDs."
+    expect {capture(:stdout) { Lint.validate(filename) }}.to raise_error "Unknown protocol ftp defined in resource descriptor document DRDs."
   end
 
 end
