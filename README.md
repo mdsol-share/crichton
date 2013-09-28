@@ -124,7 +124,7 @@ For example:
 * `bundle exec rake crichton:lint[all,version]`
 
 For those unfamiliar with rake, arguments to rake require brackets. In zsh, you must escape
-the brackets with \[...\] . No spaces between the two parameters.
+the brackets with `\[...\]`. No spaces between the two parameters.
 
 ### Logging
 If you use Rails, then the ```Rails.logger``` should be configured automatically.
