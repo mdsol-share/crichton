@@ -28,7 +28,7 @@ module Lint
     resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename, options)
     resource_validator.validate
 
-    if options[:strict]
+    if options['strict']
       return true if resource_validator.errors.any?
     else
       puts "In file '#{filename}':"
@@ -48,10 +48,10 @@ module Lint
 
     validators.each do |validator|
       validator.validate
-      validator.report unless options[:strict]
+      validator.report unless options['strict']
     end
 
-    if options[:strict]
+    if options['strict']
       return no_errors?(validators)
     else
       puts I18n.t('aok') unless errors_and_warnings_found?(validators)
@@ -60,17 +60,17 @@ module Lint
     end
   end
 
-  def self.validate_all(options = {})
+  def self.validate_all(options = {}, validator_returns = [])
     if File.exists?(location = Crichton.descriptor_location)
       Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
-        retval = self.validate(f, options)
-        if options[:strict]
+        validator_returns << self.validate(f, options)
+        if options['strict']
           return false unless retval
         else
           puts "\n"
         end
       end
-     options[:strict]  ? true : retval
+     options['strict']  ? true : validator_returns
     else
       raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
     end

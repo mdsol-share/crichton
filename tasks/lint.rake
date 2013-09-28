@@ -2,22 +2,23 @@ require 'rake'
 
 desc "Generate lint validation of a resource descriptor file"
 namespace :crichton do
-  task :lint, :file_or_all, :lint_options do |t, args|
+  task :lint, [:file_or_all, :lint_options] => :environment do |t, args|
     require 'lint'
     begin
-      if :lint_options == :version ||
+      if args[:lint_options] == 'version'
         Lint.version
       end
-      if :arg1 == :all
-        puts "Linting all descriptor files with options: #{:lint_options.inspect}"
-        Lint.validate_all[:lint_options]
+      if args[:file_or_all] == 'all'
+        puts "Linting all descriptor files"
+        puts "Options: #{args[:lint_options]}" if args[:lint_options]
+        Lint.validate_all(args[:lint_options] ? args[:lint_options] : {})
       else
-        puts "Linting file:'#{+args[:file_or_all]}' with options: #{:lint_options.inspect}"
-        Lint.validate args[:file_or_all, :lint_options]
+        puts "Linting file:'#{args[:file_or_all]}'"
+        puts "Options: #{args[:lint_options]}" if args[:lint_options]
+        Lint.validate(args[:file_or_all], args[:lint_options] ? args[:lint_options] : {})
       end
     rescue StandardError => e
       puts "Lint exception: #{e.message}"
     end
   end
 end
-
