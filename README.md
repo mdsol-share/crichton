@@ -75,21 +75,54 @@ Lint can be invoked in two ways, once crichton is added to your project as a gem
 
 ### A lint gem ruby executable  (rdlint)
 
-`bundle exec rdlint <resource desciptor file>`
+`bundle exec rdlint <options> <resource desciptor file>`
 
-The file should be a path, which is relative to the root of the project. For example, if you're in the
-root of the project, you can run lint as:
+rdlint can validate a single descriotor file or, with a -all option, will validate all the descriptor files
+found in the current project (the location of descriptor files defaults to an api_descriptors directory).
 
-`bundle exec rdlint api_descriptors/my_resource_descriptor_file.yml` (api_descriptors is a
-possible standard folder to place descriptor files.)
+The options to rdlint are:
+
+* -v or --version: Display the version number of the crichton library
+* -w or --no_warnings: Suppress all warnings and display errors messages only, if any
+* -s or --strict: Strict mode, returns true for all validations passing, false if any descriptor file fails lint
+* -h or --help: Displays the standard usage dialog
+
+Some examples, run from the root of a project
+
+* `bundle exec rdlint api_descriptors/file.yml`  Lint validates a single file
+* `bundle exec rdlint -a (or -all) ` Lint validate all files in the resource descriptor directory
+* `bundle exec rdlint -w api_descriptors/file.yml` Lint single file and suppress warning messages
+* `bundle exec rdlint -aw` Lint all descriptor files and suppress warning messages
+* `bundle exec rdlint -v api_descriptors/file.yml` Display a version message and lint a single file
+* `bundle exec rdlint -s api_descriptors/file.yml` Lint a single file and return true or false (pass / fail)
+* `bundle exec rdlint -as` Lint all descriptor file and return true or false (pass / fail). Returns on the first fail.
+
+Mutual exclusive options:
+* -s takes precedence over -w, the warning option will be ignored if specified together with strict mode (e.g. -sw)
+* -a with a specified file name will ignore the file name, the "all" option takes precedence
 
 ### Running from rake
 
-lint is also a rake task within the crichton gem. You can invoke lint with:
- `bundle exec rake crichton:lint[<resource descriptor file>]`
+Projects bundled with the crichton gem can also lint validate resource descriptor files using rake.
+
+Rake takes two parameters with the following two invocation possibilities:
+
+1. <filename>, <"strict","no_warnings",or "version">
+2. "all",< "strict","no_warnings","version">
+
+For example:
+
+* bundle exec rake crichton:lint[<path_to_a_file>]
+* bundle exec rake crichton:lint[<path_to_a_file>,no_warnings]
+* bundle exec rake crichton:lint[<path_to_a_file>,strict]
+* bundle exec rake crichton:lint[<path_to_a_file>,version]
+* bundle exec rake crichton:lint[all]
+* bundle exec rake crichton:lint[all,no_warnings]
+* bundle exec rake crichton:lint[all,no_warnings]
+* bundle exec rake crichton:lint[all,version]
 
 For those unfamiliar with rake, arguments to rake require brackets. In zsh, you must escape
-the brackets with \[...\]
+the brackets with \[...\] . No spaces between the two parameters.
 
 ### Logging
 If you use Rails, then the ```Rails.logger``` should be configured automatically.
