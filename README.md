@@ -105,21 +105,23 @@ Mutual exclusive options:
 
 Projects bundled with the crichton gem can also lint validate resource descriptor files using rake.
 
-Rake takes two parameters with the following two invocation possibilities:
+Rake takes up to two parameters with the following invocation possibilities:
 
-1. <filename>, <"strict","no_warnings",or "version">
-2. "all",< "strict","no_warnings","version">
+1. "path_to_filename"
+2. "all"
+3. "path_to_filename", with options "strict"/"no_warnings"/"version"
+4. "all", with options "strict"/"no_warnings"/"version"
 
 For example:
 
-* bundle exec rake crichton:lint[<path_to_a_file>]
-* bundle exec rake crichton:lint[<path_to_a_file>,no_warnings]
-* bundle exec rake crichton:lint[<path_to_a_file>,strict]
-* bundle exec rake crichton:lint[<path_to_a_file>,version]
-* bundle exec rake crichton:lint[all]
-* bundle exec rake crichton:lint[all,no_warnings]
-* bundle exec rake crichton:lint[all,no_warnings]
-* bundle exec rake crichton:lint[all,version]
+* `bundle exec rake crichton:lint[<path_to_a_file>]`
+* `bundle exec rake crichton:lint[<path_to_a_file>,no_warnings]`
+* `bundle exec rake crichton:lint[<path_to_a_file>,strict]`
+* `bundle exec rake crichton:lint[<path_to_a_file>,version]`
+* `bundle exec rake crichton:lint[all]`
+* `bundle exec rake crichton:lint[all,no_warnings]`
+* `bundle exec rake crichton:lint[all,no_warnings]`
+* `bundle exec rake crichton:lint[all,version]`
 
 For those unfamiliar with rake, arguments to rake require brackets. In zsh, you must escape
 the brackets with \[...\] . No spaces between the two parameters.
