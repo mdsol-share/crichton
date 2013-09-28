@@ -65,7 +65,7 @@ module Lint
       Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
         validator_returns << self.validate(f, options)
         if options['strict']
-          return false unless retval
+          return false unless validator_returns
         else
           puts "\n"
         end
