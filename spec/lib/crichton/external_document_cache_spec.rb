@@ -101,6 +101,102 @@ module Crichton
           # In the before, the time is set to a VERY early time - so if it's within 5 seconds then we're good
           (Time.parse(json_data['time']) - Time.now).abs.should < 5
         end
+
+        it 'handles a connection refused error by returning the cached data' do
+          @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
+          edc = ExternalDocumentCache.new(@pathname)
+          Net::HTTP.should_receive(:start).and_raise(Errno::ECONNREFUSED)
+          edc.get(@link).should == "Testfile #{@link}"
+        end
+
+        it 'handles a connection refused error by logging a warning' do
+          @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
+          Crichton.logger.should_receive(:warn).with("Log connection refused: #{@link}")
+          edc = ExternalDocumentCache.new(@pathname)
+          Net::HTTP.should_receive(:start).and_raise(Errno::ECONNREFUSED)
+          edc.get(@link)
+        end
+
+        it 'handles other errorsby returning the cached data' do
+          @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
+          edc = ExternalDocumentCache.new(@pathname)
+          Net::HTTP.should_receive(:start).and_raise(Errno::EADDRINUSE)
+          edc.get(@link).should == "Testfile #{@link}"
+        end
+
+        it 'handles other errorsby returning the cached data' do
+          @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
+          Crichton.logger.should_receive(:warn).with("Address already in use while getting #{@link}")
+          edc = ExternalDocumentCache.new(@pathname)
+          Net::HTTP.should_receive(:start).and_raise(Errno::EADDRINUSE)
+          edc.get(@link)
+
+        end
+
+      end
+
+      context 'metadata with cache control' do
+        it 'accepts data that is new enough' do
+          new_metadata = {
+              link: @link,
+              status: 200,
+              headers: {'cache-control' => ['max-age=20']},
+              time: Time.now - 2}
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          edc = ExternalDocumentCache.new(@pathname)
+          Net::HTTP.should_not_receive(:start)
+          edc.get(@link).should == "Testfile #{@link}"
+        end
+
+        it 're-validated data that is too old' do
+          new_metadata = {
+              link: @link,
+              status: 200,
+              headers: {'cache-control' => ['max-age=20']},
+              time: Time.now - 30}
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          edc = ExternalDocumentCache.new(@pathname)
+          response = double('response')
+          response.stub(:code).and_return('304')
+          Net::HTTP.should_receive(:start).and_return(response)
+          edc.get(@link).should == "Testfile #{@link}"
+        end
+
+        it 're-validated data that young enough but has the must-revalidate header set' do
+          new_metadata = {
+              link: @link,
+              status: 200,
+              headers: {'cache-control' => ['max-age=200, must-revalidate']},
+              time: Time.now - 30}
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          edc = ExternalDocumentCache.new(@pathname)
+          response = double('response')
+          response.stub(:code).and_return('304')
+          Net::HTTP.should_receive(:start).and_return(response)
+          edc.get(@link).should == "Testfile #{@link}"
+        end
+
+        it 're-validated data that young enough but has the no-cache header set' do
+          new_metadata = {
+              link: @link,
+              status: 200,
+              headers: {'cache-control' => ['max-age=200, no-cache']},
+              time: Time.now - 30}
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          edc = ExternalDocumentCache.new(@pathname)
+          response = double('response')
+          response.stub(:code).and_return('304')
+          Net::HTTP.should_receive(:start).and_return(response)
+          edc.get(@link).should == "Testfile #{@link}"
+        end
       end
 
       context 'with custom metadata' do
