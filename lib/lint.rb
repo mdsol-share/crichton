@@ -1,6 +1,7 @@
 require 'yaml'
 require 'i18n'
-require 'crichton'
+require 'active_support/all'
+require 'crichton/descriptor'
 require 'lint/resource_descriptor_validator'
 require 'lint/states_validator'
 require 'lint/descriptors_validator'
@@ -25,6 +26,8 @@ module Lint
     # the resource descriptor validator checks a lot of top level resource issues
     resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename)
     resource_validator.validate
+
+    puts "In file '#{filename}':"
 
     if resource_validator.errors.any?
       # any errors caught at this point are so catastrophic that it won't be useful to continue

@@ -15,12 +15,13 @@ module Crichton
   #
   module Representor
     extend ActiveSupport::Concern
-    
+
     included do
       include Serialization::MediaType
     end
-    
+
     module ClassMethods
+
       ##
       # The data-related semantic descriptors defined for the associated resource descriptor.
       #
@@ -100,7 +101,7 @@ module Crichton
     #
     # @return [Hash] The data.
     def each_data_semantic(options = nil, &block)
-      each_data_semantic_enumerator(slice_known(options, :only, :except), &block)
+      each_data_semantic_enumerator(options, &block)
     end
 
     ##
@@ -116,7 +117,7 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_semantic(options = nil, &block)
-      each_embedded_semantic_enumerator(slice_known(options, :include, :exclude), &block)
+      each_embedded_semantic_enumerator(options, &block)
     end
 
     ##
@@ -134,7 +135,9 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_transition(options = nil, &block)
-      each_embedded_transition_enumerator(slice_known(options, :include, :exclude, :state, :conditions), &block)
+      embedded_link_transitions = each_embedded_transition_enumerator(options, &block)
+      additional_link_transitions = each_additional_link_transition_enumerator(options, &block)
+      return concatenate_enums(additional_link_transitions.to_enum, embedded_link_transitions) unless block_given?
     end
 
     ##
@@ -154,7 +157,7 @@ module Crichton
     #
     # @return [Hash] The data.
     def each_link_transition(options = nil, &block)
-      each_link_transition_enumerator(slice_known(options, :only, :except, :state, :conditions), &block)
+      each_link_transition_enumerator(options, &block)
     end
     
     ##
@@ -176,7 +179,34 @@ module Crichton
     end 
     
   private
+    def concatenate_enums(enum1, enum2)
+      Enumerator.new do |y|
+        enum1.each { |e| y << e }
+        enum2.each { |e| y << e }
+      end
+    end
+
+
+    AdditionalTransition = Struct.new :name, :url
+    private_constant :AdditionalTransition
+
+    def each_additional_link_transition_enumerator(options, &block)
+      if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
+        options[:additional_links].map do |relation, url|
+          # We don't use url because we want to clear out the data from the options
+          transition = AdditionalTransition.new(relation, options[:additional_links].delete(relation))
+          yield transition if block_given?
+          transition
+        end
+      else
+        []
+      end
+    end
+
     def each_enumerator(type, descriptor, options)
+      unless options.nil? || options.is_a?(Hash)
+        raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'."
+      end
       return to_enum("each_#{type}_#{descriptor}", options) unless block_given?
 
       filtered_descriptors(type, descriptor, options).each do |descriptor| 
@@ -221,7 +251,7 @@ module Crichton
       # @target will only be set in a Factory adapter instance.
       @target ||= self
     end
-    
+
     ##
     # Allows an object to define the method Crichton should use to determine the state. This prevents collisions
     # with, for example, an address object that includes a <tt>state</tt> attribute.

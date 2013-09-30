@@ -6,8 +6,8 @@ module Crichton
     ##
     # Manages the serialization of a Crichton::Representor to an application/xhtml+xml media-type.
     class XHTMLSerializer < Serializer
-      alternate_media_types :html
-      
+      media_types xhtml: %w(application/xhtml+xml), html: %w(text/html)
+
       ##
       # Returns a representation of the object as xhtml.
       #
@@ -53,7 +53,7 @@ module Crichton
                   MicrodataSemanticBuilder
                 end
         
-        @semantic_builder = klass.new(self.class.media_type, @object, @markup_builder)
+        @semantic_builder = klass.new(self.class.default_media_type, @object, @markup_builder)
       end
       
       def add_head
@@ -73,6 +73,14 @@ module Crichton
       # serialization per ALPS media-type guidance specs for HTML.
       class BaseSemanticBuilder
         include Crichton::Helpers::ConfigHelper
+
+        ##
+        # Helper to access the Crichton configuration locally
+        #
+        # @return [Configuration] Configuration object
+        def config
+          @config ||= Crichton.config
+        end
 
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
         # @param [Crichton::Representor] object The object to build semantics for.
@@ -127,10 +135,10 @@ module Crichton
 
         def add_transitions(options)
           @object.each_link_transition(options) do |transition|
-            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition)
+            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition, options)
           end
 
-          @object.each_embedded_transition(options) { |transition| add_transition(transition) }
+          @object.each_embedded_transition(options) { |transition| add_transition(transition, options) }
         end
 
         def add_templated_transition(transition, options)
@@ -149,9 +157,10 @@ module Crichton
           raise_abstract('add_control_transition')
         end
 
-        def add_transition(transition)
-          logger.warn("URL is nil for transition #{transition.name}!") if transition.url.blank?
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition.url}) if transition.url
+        def add_transition(transition, options)
+          transition_url = transition.url
+          logger.warn("URL is blank for transition #{transition.name}!") if transition_url.blank?
+          @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) unless transition_url.blank?
         end
 
         def add_semantics(options)
@@ -236,7 +245,7 @@ module Crichton
         def add_head
           @markup_builder.head do
             add_metadata_links
-            add_style
+            add_styles
           end
         end
 
@@ -246,13 +255,14 @@ module Crichton
         end
 
       private
-        def add_style
+        def add_styles
+          @markup_builder.tag!(:link, {rel: :stylesheet, href: config.css_uri }) if config.css_uri
           @markup_builder.style do |style|
             style << "*[itemprop]::before {\n  content: attr(itemprop) \": \";\n  text-transform: capitalize;\n}\n"
           end
         end
 
-        def add_transition(transition)
+        def add_transition(transition, options = {})
           return unless transition.url
           
           @markup_builder.li do

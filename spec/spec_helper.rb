@@ -1,5 +1,6 @@
 SPEC_DIR = File.expand_path("..", __FILE__)
 lib_dir = File.expand_path("../lib", SPEC_DIR)
+LINT_DIR = File.expand_path("../lib/lint", SPEC_DIR)
 
 $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
@@ -35,11 +36,10 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random' unless ENV['RANDOMIZE'] == 'false'
-  
+
   config.include Support::Helpers
   config.include Support::ALPS
-end
+  config.include Support::Controllers
 
-Spec::Runner.configure do |config|
   config.before(:each) { Crichton::config_directory = File.join('spec', 'fixtures', 'config') }
 end

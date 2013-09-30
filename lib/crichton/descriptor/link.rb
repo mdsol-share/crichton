@@ -1,4 +1,5 @@
 require 'crichton/descriptor/base'
+require 'addressable/uri'
 
 module Crichton
   module Descriptor
@@ -21,6 +22,14 @@ module Crichton
       # The attributes of the link.
       def attributes
         {rel: rel, href: href}
+      end
+
+      def absolute_href
+        if href.nil? || Addressable::URI.parse(href).absolute?
+          href
+        else
+          "#{rel == 'help' ? config.documentation_base_uri : config.alps_base_uri}/#{href}"
+        end
       end
     end
   end

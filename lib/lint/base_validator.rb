@@ -43,6 +43,34 @@ module Lint
     def secondary_descriptors
       resource_descriptor.descriptors
     end
+
+    # used by subclasses to perform transition equivalency tests
+    def build_descriptor_transition_list
+      find_descriptor_transitions(@resource_descriptor.descriptors, [])
+    end
+
+    def find_descriptor_transitions(descriptors, transition_list)
+      descriptors.inject(transition_list) do |a, descriptor|
+        a << descriptor.id if descriptor.transition?
+        descriptor.descriptors ? find_descriptor_transitions(descriptor.descriptors, a) : a
+      end
+    end
+
+    def build_protocol_transition_list(transition_list = [])
+      resource_descriptor.protocols.values.each do |protocol|
+        protocol.keys.each_with_object(transition_list) { | key, a| a << key unless a.include?(key) }
+      end
+      transition_list
+    end
+
+    def build_state_transition_list(transition_list = [])
+      resource_descriptor.states.values.each do |secondary_descriptor|
+         secondary_descriptor.values.each do |state|
+           state.transitions.keys.each_with_object(transition_list) { |key, a| a << key unless a.include?(key) }
+         end
+       end
+      transition_list
+    end
   end
 end
 

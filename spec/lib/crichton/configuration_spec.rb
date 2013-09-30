@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'crichton/configuration'
 
 module Crichton
   describe Configuration do
@@ -9,6 +10,12 @@ module Crichton
         it "returns the #{attribute} base URI" do
           configuration.send("#{attribute}_base_uri").should == "http://#{attribute}.example.org"
         end
+      end
+    end
+
+    describe '#css_uri' do
+      it 'returns css uri' do
+        configuration.css_uri.should == 'http://example.org/resources/styles.css'
       end
     end
   end

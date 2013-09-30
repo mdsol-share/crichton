@@ -4,10 +4,6 @@ doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
   self: alps_base/DRDs
   help: documentation_base/Things/DRDs
-
-# HERE drds->collection->list transition has a next: with no value and
-# drd->activated->show transition is missing a next
-
 states:
   drds:
     collection:
@@ -17,22 +13,26 @@ states:
         list:
           name: self
           next:
+            - collection
   drd:
-    activated:
+    activated :
       doc: The default state of a DRD.
       transitions:
         show:
           name: self
-
+          next:
+            - item
+    error:
+      doc: An error has occured.
+      location: http://alps.io/schema.org/Error
 descriptors:
   drds:
-    doc:
+    doc: 
       html: <p>A list of DRDs.</p>
     type: semantic
     links:
       self: alps_base/DRDs#drds
     descriptors:
-      # Transitions
       list:
         doc: Returns a list of DRDs.
         name: self
@@ -51,7 +51,7 @@ descriptors:
         doc: The UUID of the DRD.
         type: semantic
         href: http://alps.io/schema.org/Text
-        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
+        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
       name:
         doc: The name of the DRD.
         type: semantic
@@ -63,30 +63,3 @@ descriptors:
         name: self
         type: safe
         rt: drd
-
-protocols:
-  http:
-    list:
-      uri: drds
-      entry_point: drds # Indicates this endpoint is a resource entry point for the protocol.
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-        - application/xhtml+xml
-      headers:
-        - Content-Type
-        - ETag
-      status_codes:
-        200:
-          status: OK
-          definitions:
-            - We have processed your request and returned the data you asked for.
-    show:
-      uri: drds/{uuid}
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
