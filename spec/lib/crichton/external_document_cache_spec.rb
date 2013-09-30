@@ -98,13 +98,72 @@ module Crichton
           Net::HTTP.stub(:start).and_return(response)
           edc.get(@link)
           json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
-          # In the befoer, the time is set to a VERY early time - so if it's within 5 seconds then we're good
+          # In the before, the time is set to a VERY early time - so if it's within 5 seconds then we're good
           (Time.parse(json_data['time']) - Time.now).abs.should < 5
         end
+      end
 
-        # TODO: Add miss and write case
-        # TODO: Add Etag case of conditional GET
-        # TODO: Add Last-Modified case of conditional GET
+      context 'with custom metadata' do
+        it 'sends the ETAG along in the request' do
+          new_metadata = {
+              link: @link,
+              status: 200,
+              headers: {'etag' => ['1234']},
+              time: Time.now - 100000}
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          edc = ExternalDocumentCache.new(@pathname)
+          response = double('response')
+          response.stub(:code).and_return('304')
+          req = {}
+          Net::HTTP::Get.stub(:new).and_return(req)
+          Net::HTTP.stub(:start).and_return(response)
+          edc.get(@link)
+          req.should == { "If-None-Match" => "1234"}
+        end
+
+        it 'sends the last modified along in the request' do
+          new_metadata = {
+              link: @link,
+              status: 200,
+              headers: {'last-modified' => ['1234']},
+              time: Time.now - 100000}
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          edc = ExternalDocumentCache.new(@pathname)
+          response = double('response')
+          response.stub(:code).and_return('304')
+          req = {}
+          Net::HTTP::Get.stub(:new).and_return(req)
+          Net::HTTP.stub(:start).and_return(response)
+          edc.get(@link)
+          req.should == { "If-Modified-Since" => "1234"}
+        end
+
+        it 'in case of a cache miss, writes the received data to the cache' do
+          @pathname = File.join('spec', 'fixtures', 'external_documents_cache')
+          FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.delete(@metafilename) if File.exist?(@metafilename)
+          #@datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          #File.delete(@datafilename) if File.exist?(@datafilename)
+          edc = ExternalDocumentCache.new(@pathname)
+          response = double('response')
+          response.stub(:code).and_return('200')
+          response.stub(:body).and_return('Data')
+          headers = double('headers')
+          headers.stub('to_hash').and_return({'Headers' => 'Headerdata'})
+          response.stub(:to_hash).and_return(headers)
+          Net::HTTP.stub(:start).and_return(response)
+          edc.get(@link)
+          json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
+          json_data.should include(
+            {
+              "link" => "http://some.url:1234/somepath",
+              "status" => "200",
+              "headers" => {"Headers" => "Headerdata"}
+            })
+        end
       end
     end
   end
