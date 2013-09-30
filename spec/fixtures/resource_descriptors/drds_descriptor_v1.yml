@@ -171,6 +171,7 @@ descriptors:
             doc: The terms to search.
             type: semantic
             href: http://alps.io/schema.org/Text
+            field_type: text
       create:
         doc: Creates a DRD.
         type: unsafe

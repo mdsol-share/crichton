@@ -217,7 +217,7 @@ module Crichton
         end
 
         def add_control(semantic)
-          method_name = 'add_control_' + semantic.field_type
+          method_name = 'add_control_' + semantic.input_type
           if respond_to?(method_name, true)
             self.send(method_name.to_sym, semantic)
           else
@@ -307,7 +307,7 @@ module Crichton
         end
 
         def add_query_transition(transition)
-          add_control_transition(transition, :search)
+          add_control_transition(transition)
         end
         
         # Builds a form control
