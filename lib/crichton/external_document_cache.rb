@@ -15,7 +15,7 @@ module Crichton
 
     def get(link)
       metadata = read_meta(link)
-      read_datafile(link) if metadata && metadata_valid(metadata)
+      return read_datafile(link) if metadata && metadata_valid(metadata)
       get_link_and_update_cache(link, metadata)
     end
 
@@ -53,11 +53,11 @@ module Crichton
         response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(request) }
       rescue Errno::ECONNREFUSED => e
         #TODO: Use logger
-        puts "Log connection refused: #{uri.request_uri}"
+        logger.warn("Log connection refused: #{uri}")
         # In case of failure, use the (old) cache anyway
         return read_datafile(link)
       rescue => e
-        puts "Error: #{e.message} while getting #{uri.request_uri}"
+        logger.warn("#{e.message} while getting #{uri}")
         # In case of failure, use the (old) cache anyway
         return read_datafile(link)
       end
