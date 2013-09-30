@@ -190,8 +190,8 @@ descriptors:
                 type: semantic
                 href: http://alps.io/schema.org/Text
                 field_type: input
-                validators:
-                  - presence
+                attributes:
+                  - required: required
               form-leviathan_uuid:
                 name: leviathan_uuid
                 doc: The UUID of the creator Leviathan.
@@ -200,8 +200,8 @@ descriptors:
                 field_type: select
                 enum:
                   href: Leviathans#list
-                validators:
-                  - presence     
+                attributes:
+                  - required: required
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
@@ -291,8 +291,8 @@ descriptors:
                   - working
                   - renegade
                   - broken
-                validators:
-                  - presence
+                attributes:
+                  - required: required
               form-kind:
                 type: semantic
                 name: kind
@@ -302,8 +302,8 @@ descriptors:
                 enum:
                   - standard
                   - sentinel
-                validators:
-                  - presence 
+                attributes:
+                  - required: required
       delete:
         doc: Drops a DRD out an air-lock.
         type: idempotent    
