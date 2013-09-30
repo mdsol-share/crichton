@@ -19,7 +19,13 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :type
-      
+
+      # @!macro array_reader
+      descriptor_reader :attributes
+
+      # @!macro string_reader
+      descriptor_reader :field_type
+
       ##
       # Constructs a new instance of BaseDocumentDescriptor.
       #
@@ -92,7 +98,23 @@ module Crichton
           Crichton::Descriptor::Link.new(resource_descriptor, 'type', self_link.absolute_href)
         end
       end
-      
+
+      ##
+      # Returns field type of descriptor, specified in resource descriptor document.
+      #
+      # @return [String] Input field type of descriptor.
+      def input_type
+        field_type
+      end
+
+      ##
+      # Returns attributes associated with descriptor.
+      #
+      # @return [Hash] Attributes.
+      def descriptor_attributes
+        attributes ? (attributes.reduce Hash.new, :merge) : {}
+      end
+
     private
       def decorator_class
         @decorator_class ||= begin
