@@ -77,7 +77,7 @@ describe Lint do
   end
 
   describe ".all_option" do
-     # stub does not work in a new shell apparently, so a forced copy to the default api_descriptor dir is made
+    # stub does not work in a new shell apparently, so a forced copy to the default api_descriptor dir is made
     before(:all) do
       %x(mkdir api_descriptors)
       %x(cp spec/fixtures/lint_resource_descriptors/missing_sections/* api_descriptors)
