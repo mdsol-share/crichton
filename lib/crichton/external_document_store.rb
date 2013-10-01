@@ -14,6 +14,7 @@ module Crichton
       read_datafile(link)
     end
 
+    # These three methods are intended for managing the store - in particular by rake tasks.
     def download(link)
       uri = URI(link_without_fragment(link))
       request = Net::HTTP::Get.new(uri.request_uri)
