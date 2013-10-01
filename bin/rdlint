@@ -10,26 +10,26 @@ require 'optparse'
 options = {}
 optparse = OptionParser.new do |opts|
   opts.banner = "Usage: rdlint [options] descriptor_file1 descriptor_file2..."
-  options[:no_warnings] = false
-  options[:strict] = false
-  options[:version] = false
-  options[:all] = false
+  options['no_warnings'] = false
+  options['strict'] = false
+  options['version'] = false
+  options['all'] = false
 
   opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit
   end
   opts.on('-w', '--no_warnings', 'Suppress lint warnings') do
-    options[:no_warnings] = true
+    options['no_warnings'] = true
   end
   opts.on('-s', '--strict', 'Return true/false pass/fail analysis') do
-    options[:strict] = true
+    options['strict'] = true
   end
   opts.on('-v', '--version', 'Display Crichton version') do
-    options[:version] = true
+    options['version'] = true
   end
   opts.on('-a', '--all', 'Lint all resource descriptor files') do
-    options[:all] = true
+    options['all'] = true
   end
 end
 
@@ -37,14 +37,22 @@ require File.expand_path('../lib/lint', File.dirname(__FILE__))
 
 optparse.parse!
 
-if options[:version]
+if options['version']
   Lint.version
 end
-if options[:all]
+if options['all']
   Lint.validate_all(options)
 else
   ARGV.each do |file|
-    Lint.validate(file, options)
-    puts "\n"
+    retval = Lint.validate(file, options)
+    if options['strict']
+      unless retval
+        puts retval.to_s << "\n"
+        exit
+      end
+    else
+      retval
+    end
   end
+  puts "true\n" if options['strict']
 end

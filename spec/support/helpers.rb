@@ -149,5 +149,9 @@ module Support
     def fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', args)
     end
+
+    def default_lint_descriptor_file(file)
+      File.join(Crichton.descriptor_location, file)
+    end
   end
 end
