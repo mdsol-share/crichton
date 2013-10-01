@@ -246,8 +246,12 @@ module Crichton
           end
         end
 
-        def add_control_input(semantic)
-          @markup_builder.input({itemprop: semantic.name, type: semantic.input_type, name: semantic.name}.merge(semantic.descriptor_attributes))
+        def add_control_input(input_type, semantic)
+          @markup_builder.input({itemprop: semantic.name, type: input_type, name: semantic.name}.merge(semantic.descriptor_validators))
+        end
+
+        def add_control_boolean(semantic)
+          add_control_input(:checkbox, semantic)
         end
 
         def add_control_select(semantic)
