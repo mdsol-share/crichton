@@ -1,6 +1,7 @@
 require 'rake'
 require 'rake/clean'
 require 'crichton/external_document_store'
+require 'diffy'
 
 begin
   namespace :alps do
@@ -30,7 +31,7 @@ begin
       store.write_data_to_store(args.link, new_data) if write_data
     end
 
-    desc "Download ALPS profile documents to the external document store"
+    desc "Compare ALPS profile documents to documents in the external document store"
     task :check_external_documents do |t|
       store = Crichton::ExternalDocumentStore.new
       link_list = store.get_list_of_stored_links
@@ -39,6 +40,7 @@ begin
         old_data = store.get(link)
         if old_data != new_data
           puts "Data of link #{link} has changed!"
+          puts  Diffy::Diff.new(old_data, new_data, :context => 2)
         end
       end
     end
