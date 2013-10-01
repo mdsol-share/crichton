@@ -164,5 +164,59 @@ data descriptor:
 
 * MUST have a corresponding State descriptor if it includes [Transition Descriptors](transition_descriptors.md).
 
+## Field types and validators
+Following field types are supported in resource descriptor document. Most of the field types were borrowed from HTML5 specification.
+* `text` and `search` - represents one line plain text edit control. [http://www.w3.org/html/wg/drafts/html/master/forms.html#text-(type=text)-state-and-search-state-(type=search)]
+  * `required` - is a boolean validator. When specified, the element is required.[http://www.w3.org/html/wg/drafts/html/master/forms.html#attr-input-required]
+  * `pattern` - is a regular expression against which the controls value, or, when the multiple attribute applies and is set. [http://www.w3.org/html/wg/drafts/html/master/forms.html#attr-input-pattern]
+  * `maxlength` - the value must be equal to or less than the elements maximum allowed value length. [http://www.w3.org/html/wg/drafts/html/master/forms.html#attr-input-maxlength]
+
+* `email` - represents a control for editing an e-mail address given in the elements value. [http://www.w3.org/html/wg/drafts/html/master/forms.html#e-mail-state-(type=email)]
+  * `required`
+  * `pattern`
+
+* `tel` - represents a control for editing a telephone number given in the elements value. [http://www.w3.org/html/wg/drafts/html/master/forms.html#telephone-state-(type=tel)]
+  * `required`
+  * `pattern`
+
+* `url` - represents a control for editing a single absolute URL given in the elements value. [http://www.w3.org/html/wg/drafts/html/master/forms.html#url-state-(type=url)]
+  * `required`
+  * `pattern`
+  * `maxlength`
+
+* `datetime`, `time` - represents a control for setting the elements value to a string representing a specific global date and time. [http://www.w3.org/html/wg/drafts/html/master/forms.html#date-and-time-state-(type=datetime)]
+  * `required`
+  * `min` and `max` - must have a value that is a valid global date and time string.
+
+* `date` - represents a control for setting the elements value to a string representing a specific date. [http://www.w3.org/html/wg/drafts/html/master/forms.html#date-state-(type=date)]
+  * `required`
+  * `min`, `max`
+
+* `month` - represents a control for setting the elements value to a string representing a specific month. [http://www.w3.org/html/wg/drafts/html/master/forms.html#month-state-(type=month)]
+  * `required`
+  * `min`, `max`
+
+* `week` - represents a control for setting the elements value to a string representing a specific week. [http://www.w3.org/html/wg/drafts/html/master/forms.html#week-state-(type=week)]
+  * `required`
+  * `min`, `max`
+
+* `time` - represents a control for setting the elements value to a string representing a specific time. [http://www.w3.org/html/wg/drafts/html/master/forms.html#time-state-(type=time)]
+  * `required`
+  * `min`, `max`
+
+* `datetime-local` - represents a control for setting the elements value to a string representing a local date and time, with no time-zone offset information. [http://www.w3.org/html/wg/drafts/html/master/forms.html#local-date-and-time-state-(type=datetime-local)] 
+  * `required`
+  * `min`, `max`
+
+* `number` - represents a control for setting the elements value to a string representing a number. [http://www.w3.org/html/wg/drafts/html/master/forms.html#number-state-(type=number)]
+  * `required`
+  * `min`, `max`
+
+* `boolean` - represents a two-state control. If the state is true, the control represents a positive selection and if it is a false, a negative selection.
+  * `required`
+
+* `select` - represents a control for selecting amongst a set of options. STILL TO DISCUSS
+  * `required` 
+
 [Back to Resource Descriptors](resource_descriptors.md)
 [Example Resource Descriptor]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
