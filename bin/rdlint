@@ -43,9 +43,11 @@ end
 if options['all']
   Lint.validate_all(options)
 else
+  retval = true
   ARGV.each do |file|
     retval = Lint.validate(file, options)
     if options['strict']
+      # strict mode is pass/fail, true/false. Go away once we encounter the first false return
       unless retval
         puts retval.to_s << "\n"
         exit
@@ -55,4 +57,5 @@ else
     end
   end
   puts "true\n" if options['strict']
+  retval
 end
