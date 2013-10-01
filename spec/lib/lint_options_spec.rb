@@ -149,16 +149,14 @@ describe Lint do
 
     it 'returns false on an rake invocation with the strict option' do
       filename = lint_spec_filename('protocol_section_errors', 'missing_protocol_actions.yml')
-      expected_rake_output = "Linting file:'#{filename}'\nOptions: strict\nfalse\n"
       execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[#{filename},strict]" }
-      execution_output.should == expected_rake_output
+      execution_output.should == "false\n"
     end
 
     it 'returns true in strict mode when a clean descriptor file is validated via rake' do
       filename = lint_spec_filename('protocol_section_errors', 'extraneous_properties.yml')
-      expected_rake_output = "Linting file:'#{filename}'\nOptions: strict\ntrue\n"
       execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[#{filename},strict]" }
-      execution_output.should == expected_rake_output
+      execution_output.should == "true\n"
     end
 
     describe "rake_all_option" do

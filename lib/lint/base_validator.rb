@@ -1,6 +1,7 @@
 require 'crichton'
 require 'lint'
 require 'i18n'
+require 'colorize'
 
 module Lint
   class BaseValidator
@@ -23,8 +24,8 @@ module Lint
       if @options['strict']
         errors.any? ? false  : true
       else
-        errors.each { |error| puts "\tERROR: " << error }
-        warnings.each { |warning| puts "\tWARNING: " << warning } unless @options['no_warnings']
+        errors.each { |error| puts "\tERROR: ".red << error.red }
+        warnings.each { |warning| puts "\tWARNING: ".yellow << warning.yellow } unless @options['no_warnings']
       end
     end
 

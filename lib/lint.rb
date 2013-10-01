@@ -6,6 +6,7 @@ require 'lint/resource_descriptor_validator'
 require 'lint/states_validator'
 require 'lint/descriptors_validator'
 require 'lint/protocol_validator'
+require 'colorize'
 
 module Lint
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
@@ -20,7 +21,7 @@ module Lint
       yml_output = YAML.load_file(filename)
       resource_descriptor = Crichton::Descriptor::Resource.new(yml_output)
     rescue StandardError => e
-      puts I18n.t('catastrophic.cant_load_file', filename: filename, exception_message: e.message)
+      puts I18n.t('catastrophic.cant_load_file'.red, filename: filename, exception_message: e.message)
       return
     end
 
@@ -31,7 +32,7 @@ module Lint
     if options['strict']
       return true if resource_validator.errors.any?
     else
-      puts "In file '#{filename}':"
+      puts "In file '#{filename}':" unless options['strict']
 
       if resource_validator.errors.any?
         # any errors caught at this point are so catastrophic that it won't be useful to continue
@@ -54,7 +55,7 @@ module Lint
     if options['strict']
       return no_errors?(validators)
     else
-      puts I18n.t('aok') unless errors_and_warnings_found?(validators)
+      puts I18n.t('aok').green unless errors_and_warnings_found?(validators)
 
       validators << resource_validator
     end
@@ -67,10 +68,10 @@ module Lint
         if options['strict']
           return false unless validator_returns
         else
-          puts "\n"
+          puts "\n" unless options['strict']
         end
       end
-     options['strict']  ? true : validator_returns
+      options['strict'] ? true : validator_returns
     else
       raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
     end
