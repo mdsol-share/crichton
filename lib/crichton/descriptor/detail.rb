@@ -21,7 +21,7 @@ module Crichton
       descriptor_reader :type
 
       # @!macro array_reader
-      descriptor_reader :attributes
+      descriptor_reader :validators
 
       # @!macro string_reader
       descriptor_reader :field_type
@@ -111,8 +111,8 @@ module Crichton
       # Returns attributes associated with descriptor.
       #
       # @return [Hash] Attributes.
-      def descriptor_attributes
-        attributes ? (attributes.reduce Hash.new, :merge) : {}
+      def descriptor_validators
+        validators ? (validators.reduce Hash.new, :merge) : {}
       end
 
     private

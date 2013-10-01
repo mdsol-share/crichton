@@ -221,7 +221,7 @@ module Crichton
           if respond_to?(method_name, true)
             self.send(method_name.to_sym, semantic)
           else
-            add_control_input(semantic)
+            add_control_input(semantic.input_type, semantic)
           end
         end
 
@@ -330,12 +330,16 @@ module Crichton
           end
         end
 
-        def add_control_input(semantic)
+        def add_control_input(input_type, semantic)
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) do
-              @markup_builder.input({type: semantic.input_type, name: semantic.name}.merge(semantic.descriptor_attributes))
+              @markup_builder.input({type: input_type, name: semantic.name}.merge(semantic.descriptor_validators))
             end
           end
+        end
+
+        def add_control_boolean(semantic)
+          add_control_input(:checkbox, semantic)
         end
 
         def add_control_select(semantic)
