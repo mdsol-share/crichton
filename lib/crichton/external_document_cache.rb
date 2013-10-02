@@ -30,15 +30,25 @@ module Crichton
 
     def metadata_valid?(metadata, timeout = 600)
       # The default timeout is to be used when no explicit timeout is set by the service
-      if metadata['headers'] && metadata['headers']['cache-control']
-        cache_control_elements = metadata['headers']['cache-control'].first.split(',').map { |y| y.strip.split('=') }
-        max_age = cache_control_elements.assoc('max-age')
-        timeout = max_age[1].to_i if max_age
-        # re-validate in case no cache or must-revalidate
-        timeout = 0 if cache_control_elements.assoc('must-revalidate')
-        timeout = 0 if cache_control_elements.assoc('no-cache')
-      end
+      timeout = determine_timeout(parsed_cache_control_header(metadata)) if cache_control_header_present?(metadata)
       Time.parse(metadata['time']) + timeout > Time.now
+    end
+
+    def cache_control_header_present?(metadata)
+      metadata['headers'] && metadata['headers']['cache-control']
+    end
+
+    def parsed_cache_control_header(metadata)
+      metadata['headers']['cache-control'].first.split(',').map { |y| y.strip.split('=') }
+    end
+
+    def determine_timeout(cache_control_elements)
+      max_age = cache_control_elements.assoc('max-age')
+      timeout = max_age[1].to_i if max_age
+      # re-validate in case no cache or must-revalidate
+      timeout = 0 if cache_control_elements.assoc('must-revalidate')
+      timeout = 0 if cache_control_elements.assoc('no-cache')
+      timeout
     end
 
   end
