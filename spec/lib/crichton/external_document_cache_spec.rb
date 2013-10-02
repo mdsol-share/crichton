@@ -5,24 +5,25 @@ require 'fileutils'
 module Crichton
   describe 'ExternalDocumentCache' do
     context '.new' do
+      before do
+          @pathname = 'test/path'
+      end
+
       it 'accepts a cache path' do
-        pathname = 'test/path'
-        Dir.should_receive(:exists?).with(pathname).and_return(true)
-        ExternalDocumentCache.new(pathname)
+        Dir.should_receive(:exists?).with(@pathname).and_return(true)
+        ExternalDocumentCache.new(@pathname)
       end
 
       it 'uses the configured cache path if none is explicitly passed into the new call' do
-        pathname = 'test/path'
-        Crichton.config.stub(:external_documents_store_directory).and_return(pathname)
-        Dir.should_receive(:exists?).with(pathname).and_return(true)
-        ExternalDocumentCache.new(pathname)
+        Crichton.config.stub(:external_documents_store_directory).and_return(@pathname)
+        Dir.should_receive(:exists?).with(@pathname).and_return(true)
+        ExternalDocumentCache.new(@pathname)
       end
 
       it 'creates the cache path if it does not exist' do
-        pathname = 'test/path'
         Dir.stub(:exists?).and_return(false)
-        FileUtils.should_receive(:mkdir_p).with(pathname).and_return(true)
-        ExternalDocumentCache.new(pathname)
+        FileUtils.should_receive(:mkdir_p).with(@pathname).and_return(true)
+        ExternalDocumentCache.new(@pathname)
       end
     end
 
