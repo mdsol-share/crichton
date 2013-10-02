@@ -3,6 +3,7 @@ require 'addressable/uri'
 require 'net/http'
 require 'fileutils'
 require 'crichton/helpers'
+require 'crichton/configuration'
 
 module Crichton
   class ExternalDocumentCache
@@ -15,15 +16,15 @@ module Crichton
 
     def get(link)
       metadata = read_meta(link)
-      return read_datafile(link) if metadata && metadata_valid(metadata)
+      return read_datafile(link) if metadata && metadata_valid?(metadata)
       get_link_and_update_cache(link, metadata)
     end
 
     private
-    def metadata_valid(metadata, timeout = 600)
+    def metadata_valid?(metadata, timeout = 600)
       # The default timeout is to be used when no explicit timeout is set by the service
       if metadata['headers'] && metadata['headers']['cache-control']
-        cache_control_elements = metadata['headers']['cache-control'].first.split(", ").map { |y| y.split('=') }
+        cache_control_elements = metadata['headers']['cache-control'].first.split(',').map { |y| y.strip.split('=') }
         max_age = cache_control_elements.assoc('max-age')
         timeout = max_age[1].to_i if max_age
         # re-validate in case no cache or must-revalidate
@@ -41,7 +42,8 @@ module Crichton
       metadata['headers'] && metadata['headers']['last-modified']
     end
 
-    def get_link_and_update_cache(link, metadata=nil)
+    def get_link_and_update_cache(link, metadata = nil)
+      # TODO: increase method calling overhead by splitting this into multiple methods
       uri = URI(link_without_fragment(link))
       request = Net::HTTP::Get.new(uri.request_uri)
       # Conditional GET support - if we have the headers in the metadata then add the conditional GET request headers
@@ -49,6 +51,7 @@ module Crichton
         request['If-Modified-Since'] = metadata_last_modified(metadata).first if metadata_last_modified(metadata)
         request['If-None-Match'] = metadata_etag(metadata).first if metadata_etag(metadata)
       end
+
       begin
         response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(request) }
       rescue Errno::ECONNREFUSED => e
@@ -126,7 +129,7 @@ module Crichton
 
     def read_datafile(link)
       path = datafile_path(link)
-      File.exists?(path) ? File.open(path, 'rb') { |f| f.read } : nil
+      File.open(path, 'rb') { |f| f.read } if File.exists?(path)
     end
   end
 end
