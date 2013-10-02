@@ -6,14 +6,14 @@ module Crichton
       it 'accepts a storage path' do
         pathname = 'test/path'
         Dir.should_receive(:exists?).with(pathname).and_return(true)
-        eds = ExternalDocumentStore.new(pathname)
+        ExternalDocumentStore.new(pathname)
       end
 
       it 'uses the configured storage path if none is explicitly passed into the new call' do
         pathname = 'test/path'
         Crichton.config.stub(:external_documents_store_directory).and_return(pathname)
         Dir.should_receive(:exists?).with(pathname).and_return(true)
-        ExternalDocumentStore.new(pathname)
+        ExternalDocumentStore.new
       end
 
       it 'creates the storage path if it does not exist' do
