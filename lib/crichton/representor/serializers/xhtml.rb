@@ -119,6 +119,17 @@ module Crichton
           end
         end
 
+        # @!macro add_control
+        #   Adds HTML tag of specific kind to its parent tag.
+        def add_control(semantic)
+          method_name = 'add_control_' + semantic.input_type
+          if respond_to?(method_name, true)
+            self.send(method_name.to_sym, semantic)
+          else
+            add_control_input(semantic.input_type, semantic)
+          end
+        end
+
         # @!macro element_tag
         #   Returns the parent tag of a built element.
         def element_tag
@@ -214,15 +225,6 @@ module Crichton
         # @!macro element_tag
         def element_tag
           :div
-        end
-
-        def add_control(semantic)
-          method_name = 'add_control_' + semantic.input_type
-          if respond_to?(method_name, true)
-            self.send(method_name.to_sym, semantic)
-          else
-            add_control_input(semantic.input_type, semantic)
-          end
         end
 
       private
@@ -340,10 +342,6 @@ module Crichton
               @markup_builder.input({type: input_type, name: semantic.name}.merge(semantic.descriptor_validators))
             end
           end
-        end
-
-        def add_control_boolean(semantic)
-          add_control_input(:checkbox, semantic)
         end
 
         def add_control_select(semantic)
