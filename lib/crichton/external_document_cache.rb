@@ -75,9 +75,7 @@ module Crichton
       begin
         response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(request) }
         if ['304', '404'].include?(response.code)
-          if response.code == '304'
-            write_metadata_with_updated_time(link, metadata)
-          end
+          write_metadata_with_updated_time(link, metadata) if response.code == '304'
           read_datafile(link)
         else
           log_changed_cache_data(link, response)
@@ -97,8 +95,6 @@ module Crichton
 
     def log_changed_cache_data(link, response)
       data_file_path = datafile_path(link)
-      # This method adds debugging instrumentation: If the data changed, log it.
-      # That may indicate that some changes happened that need to be looked into.
       if File.exists?(data_file_path)
         old_data = File.open(data_file_path, 'rb') { |f| f.read }
         logger.warn("Data was modified for #{link}!") if old_data != response.body
