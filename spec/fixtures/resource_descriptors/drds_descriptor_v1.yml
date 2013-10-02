@@ -192,12 +192,32 @@ descriptors:
                 field_type: text
                 validators:
                   - required: required
+                  - maxlength: 50
               form-leviathan_uuid:
                 name: leviathan_uuid
                 doc: The UUID of the creator Leviathan.
                 type: semantic
                 href: http://alps.io/schema.org/Text
                 field_type: text
+              form-leviathan_health_points:
+                name: leviathan_health_points
+                doc: The health points of Leviathan.
+                type: semantic
+                href: http://alps.io/schema.org/Integer
+                field_type: number
+                validators:
+                  - required: required
+                  - min: 0
+                  - max: 100
+              form-leviathan_email:
+                name: leviathan_email
+                doc: The Leviathan respond to email.
+                type: semantic
+                href: http://alps.io/schema.org/Integer
+                field_type: email
+                validators:
+                  - required: required
+                  - pattern: "^.+@.+$"
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are

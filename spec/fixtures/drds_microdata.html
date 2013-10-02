@@ -12,8 +12,10 @@
   <form action="http://deployment.example.org/drds" method="post" name="create">
     <input itemprop="status" type="text" name="status" required="required"/>
     <input itemprop="kind" type="checkbox" name="kind"/>
-    <input itemprop="name" type="text" name="name" required="required"/>
+    <input itemprop="name" type="text" name="name" required="required" maxlength="50"/>
     <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
+    <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="required" min="0" max="100"/>
+    <input itemprop="leviathan_email" type="email" name="leviathan_email" required="required" pattern="^.+@.+$"/>
     <input type="hidden" name="_method" value="POST"/>
     <input type="submit" value="create"/>
   </form>
