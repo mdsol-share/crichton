@@ -1,3 +1,5 @@
+require 'crichton/configuration'
+
 module Crichton
   module Helpers
     module ConfigHelper
