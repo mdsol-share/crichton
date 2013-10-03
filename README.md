@@ -70,7 +70,7 @@ Single or multiple descriptor files can be validated via lint through the rdlint
 
 `bundle exec rake crichton:lint[all]` Use rake to validate all files in the resource descriptor directory
 
-To understand all of the details of linting descriptors files, please view the [Lint Markdown page][doc/lint.md]
+To understand all of the details of linting descriptors files, please view the [Lint README Page](doc/lint.md])
 
 ### Logging
 If you use Rails, then the ```Rails.logger``` should be configured automatically.
