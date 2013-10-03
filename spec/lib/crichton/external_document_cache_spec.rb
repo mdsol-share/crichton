@@ -129,9 +129,7 @@ module Crichton
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_raise(Errno::EADDRINUSE)
           edc.get(@link)
-
         end
-
       end
 
       context 'metadata with cache control' do

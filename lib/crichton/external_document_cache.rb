@@ -73,7 +73,7 @@ module Crichton
       uri = URI(link_without_fragment(link))
       begin
         response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(assemble_request(metadata, uri)) }
-        if ['304', '404'].include?(response.code)
+        if %w(304 404).include?(response.code)
           write_metadata_with_updated_time(link, metadata) if response.code == '304'
           read_datafile(link)
         else
@@ -95,7 +95,7 @@ module Crichton
       data_file_path = datafile_path(link)
       if File.exists?(data_file_path)
         old_data = File.open(data_file_path, 'rb') { |f| f.read }
-        logger.warn("Data was modified for #{link}!") if old_data != response.body
+        logger.warn("Data was modified for #{link}!") unless old_data == response.body
       else
         logger.info("Data appeared for #{link}") if response.body
       end
