@@ -1,7 +1,7 @@
 ## Crichton Lint
 
-Crichton Lint is means to determine if a resource descriptor file is well structured and meets the requirements of
-Crichton.
+Crichton Lint is a means to determine if a resource descriptor file is well structured and meets the 
+requirements of Crichton.
 
 Since a resource descriptor document is a .yml file, it first must meet the requirements of a
 well-formed YAML file. This website is one of many to help check to see if the file is well
