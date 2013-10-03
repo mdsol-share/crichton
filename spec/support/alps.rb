@@ -192,4 +192,57 @@ module Support
       @alps_xml_string ||= File.open(fixture_path('leviathans_alps.xml'))
     end
   end
+
+  module ALPSSchema
+    AlpsInteger = <<-'HERE'
+    <alps>
+     <descriptor id="Integer" type="semantic" href="http://alps.io/schema.org/Number">
+      <doc format="html">
+       Data type: Integer.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsArray = <<-'HERE'
+    <alps>
+     <descriptor id="Array" type="semantic" href="http://alps.io/schema.org/Array">
+      <doc format="html">
+       Data type: Array.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsText = <<-'HERE'
+    <alps>
+     <descriptor id="Text" type="semantic" href="http://alps.io/schema.org/DataType">
+      <doc format="html">
+       Data type: Text.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsDateTime = <<-'HERE'
+    <alps>
+     <descriptor id="DateTime" type="semantic" href="http://alps.io/schema.org/DataType">
+      <doc format="html">
+       A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm] (see Chapter 5.4 of ISO 8601).
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsLeviathan = <<-'HERE'
+    <alps>
+     <descriptor id="Leviathan" type="semantic" href="http://alps.io/schema.org/Thing/Leviathan">
+      <doc format="html">
+       Data type: Leviathan.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+  end
+
 end
