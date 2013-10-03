@@ -61,9 +61,10 @@ module Crichton
       end
       
       describe '#as_media_type' do
+        let (:serializer) { XHTMLSerializer.new(DRD.all) }
+
         context 'without styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
-            serializer = XHTMLSerializer.new(DRD.all)
             serializer.as_media_type(conditions: 'can_do_anything').should be_equivalent_to(drds_microdata_html)
           end
         end
@@ -71,9 +72,28 @@ module Crichton
         context 'with styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
             options = {conditions: 'can_do_anything', semantics: :styled_microdata}
-            serializer = XHTMLSerializer.new(DRD.all)
             serializer.as_media_type(options).should be_equivalent_to(drds_styled_microdata_html)
           end
+        end
+      end
+
+      describe 'styled_microdata_semantic_builder' do
+        before do
+          serializer = XHTMLSerializer.new(DRD.all)
+          @semantic_builder = serializer.send(:configure_semantic_builder, {conditions: 'can_do_anything', semantics: :styled_microdata})
+          @create_drd = Crichton.descriptor_registry['drds'].transitions['create'].semantics['create-drd']
+        end
+
+        it 'calls add_control_input for text field' do
+          semantic = @create_drd.semantics['name']
+          @semantic_builder.should_receive(:add_control_input).and_return(anything())
+          @semantic_builder.send(:add_control, semantic)
+        end
+
+        it 'call add_control_boolean for boolean field' do
+          semantic = @create_drd.semantics['kind']
+          @semantic_builder.should_receive(:add_control_boolean).and_return(anything())
+          @semantic_builder.send(:add_control, semantic)
         end
       end
     end
