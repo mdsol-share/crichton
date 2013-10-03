@@ -15,10 +15,10 @@ namespace :crichton do
         puts "Options: #{option.keys.first.to_s}" unless option.empty?
       end
 
-      if args[:file_or_all] == 'all'
-        retval = Lint.validate_all(option)
+      retval = if args[:file_or_all] == 'all'
+        Lint.validate_all(option)
       else
-        retval = Lint.validate(args[:file_or_all], option)
+        Lint.validate(args[:file_or_all], option)
       end
       puts retval ? "#{retval}\n".green : "#{retval}\n".red if option[:strict]
     rescue StandardError => e
