@@ -163,6 +163,5 @@ module Support
         I18n.t(key, options).yellow
       end
     end
-
   end
 end

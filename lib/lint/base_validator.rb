@@ -21,11 +21,11 @@ module Lint
 
     #When the dust settles, print out the results of the lint analysis, unless strict mode, which returns true / false
     def report
-      if @options['strict']
-        errors.any? ? false  : true
+       if @options[:strict]
+        errors.empty?
       else
         errors.each { |error| puts "\tERROR: ".red << error.red }
-        warnings.each { |warning| puts "\tWARNING: ".yellow << warning.yellow } unless @options['no_warnings']
+        warnings.each { |warning| puts "\tWARNING: ".yellow << warning.yellow } unless @options[:no_warnings]
       end
     end
 
@@ -79,4 +79,3 @@ module Lint
     end
   end
 end
-

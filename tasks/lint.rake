@@ -2,25 +2,24 @@ require 'rake'
 
 desc "Generate lint validation of a resource descriptor file"
 namespace :crichton do
-  task :lint, [:file_or_all, :lint_options] => :environment do |t, args|
+  task :lint, [:file_or_all, :lint_option] => :environment do |t, args|
     require 'lint'
     begin
-      if args[:lint_options] == 'version'
-        Lint.version
-      end
+      option = args[:lint_option]  ? Hash[args[:lint_option].to_sym, true] : {}
 
-      unless  args[:lint_options] == 'strict'
+      Lint.version if option[:version]
+
+      unless option[:strict]
         puts args[:file_or_all] == 'all' ? "Linting all descriptor files" : "Linting file:'#{args[:file_or_all]}'"
-        puts "Options: #{args[:lint_options]}" if args[:lint_options]
+        puts "Options: #{option.keys.first.to_s}" unless option.empty?
       end
 
-      retval = nil
-      if args[:file_or_all] == 'all'
-        retval = Lint.validate_all(args[:lint_options] ? args[:lint_options] : {})
+      retval = if args[:file_or_all] == 'all'
+        retval = Lint.validate_all(option)
       else
-        retval = Lint.validate(args[:file_or_all], args[:lint_options] ? args[:lint_options] : {})
+        retval = Lint.validate(args[:file_or_all], option)
       end
-      puts retval.to_s if args[:lint_options] == 'strict'
+      puts retval.to_s if option[:strict]
       retval
     rescue StandardError => e
       puts "Lint exception: #{e.message}"
