@@ -84,10 +84,10 @@ module Crichton
       # In case of failure, use the (old) cache anyway
       rescue Errno::ECONNREFUSED => e
         logger.warn("Log connection refused: #{uri}")
-        return read_datafile(link)
+        read_datafile(link)
       rescue => e
         logger.warn("#{e.message} while getting #{uri}")
-        return read_datafile(link)
+        read_datafile(link)
       end
     end
 
