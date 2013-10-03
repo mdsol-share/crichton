@@ -1,4 +1,5 @@
 require 'rake'
+require 'colorize'
 
 desc "Generate lint validation of a resource descriptor file"
 namespace :crichton do
@@ -19,8 +20,9 @@ namespace :crichton do
       else
         retval = Lint.validate(args[:file_or_all], option)
       end
-      puts retval.to_s if option[:strict]
-      retval
+      if option[:strict]
+        puts retval ? "#{retval}\n".green : "#{retval}\n".red
+      end
     rescue StandardError => e
       puts "Lint exception: #{e.message}"
     end

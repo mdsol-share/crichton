@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'rake'
 require 'lint'
+require 'colorize'
 
 describe Lint do
   before do
@@ -21,21 +22,25 @@ describe Lint do
     Lint.validate(filename, {strict: true}).should be_true
   end
 
-  it 'returns false in strict mode when a descriptor file contains errors' do
-    filename = lint_spec_filename('protocol_section_errors', 'missing_protocol_actions.yml')
-    Lint.validate(filename, {strict: true}).should be_false
-  end
+  context "with_strict_mode_errors" do
+    after do
+      Lint.validate(@filename, {strict: true}).should be_false
+    end
 
-  it 'returns false in strict mode when a catastrophic error is found' do
-    filename = lint_spec_filename('missing_sections', 'nostate_descriptor.yml')
-    Lint.validate(filename, {strict: true}).should be_false
+    it 'returns false in strict mode when a descriptor file contains errors' do
+      @filename = lint_spec_filename('protocol_section_errors', 'missing_protocol_actions.yml')
+    end
+
+    it 'a catastrophic error is found' do
+      @filename = lint_spec_filename('missing_sections', 'nostate_descriptor.yml')
+    end
   end
 
   it "returns an expected value with the simplest rdlint invocation" do
     filename = lint_spec_filename('protocol_section_errors', 'no_entry_points.yml')
 
     expected_rdlint_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
-      filename: filename)
+                                             filename: filename)
 
     %x(bundle exec rdlint #{filename}).should == expected_rdlint_output
   end
@@ -57,19 +62,19 @@ describe Lint do
 
   it 'returns false on an rdlint invocation with the strict option' do
     filename = lint_spec_filename('protocol_section_errors', 'missing_protocol_actions.yml')
-    %x(bundle exec rdlint -s #{filename}).should == "false\n"
+    %x(bundle exec rdlint -s #{filename}).should == "false\n".red << "\n"
   end
 
   it 'returns false on an rdlint invocation with the strict option for multiple files, one clean, one dirty' do
     filename1 = lint_spec_filename('protocol_section_errors', 'missing_protocol_actions.yml')
     filename2 = lint_spec_filename('protocol_section_errors', 'extraneous_properties.yml')
-    %x(bundle exec rdlint -s #{filename1} #{filename2}).should == "false\n"
+    %x(bundle exec rdlint -s #{filename1} #{filename2}).should == "false\n".red << "\n"
   end
 
   it 'returns true on an rdlint invocation with the strict option for multiple files, both clean' do
     filename1 = lint_spec_filename('protocol_section_errors', 'extraneous_properties.yml')
     filename2 = lint_spec_filename('protocol_section_errors', 'extraneous_properties.yml')
-    %x(bundle exec rdlint -s #{filename1} #{filename2}).should == "true\n"
+    %x(bundle exec rdlint -s #{filename1} #{filename2}).should == "true\n".green << "\n"
   end
 
   describe "rdlint_all_option" do
@@ -83,7 +88,7 @@ describe Lint do
       %x(rm -rf api_descriptors)
     end
 
-    it 'invokes the all aption and processes all the files in the config folder' do
+    it 'processes all the files in the config folder' do
       execution_output = %x(bundle exec rdlint -a)
       %w(nostate_descriptor.yml noprotocols_descriptor.yml nodescriptors_descriptor.yml).all? { |file|
         execution_output.should include(file) }
@@ -132,7 +137,7 @@ describe Lint do
 
       expected_rake_output = capture(:stdout) { Lint.version } << "Linting file:'#{filename}'\nOptions: version\n" <<
         expected_output(:warning, 'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link',
-        filename: filename)
+                        filename: filename)
 
       execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[#{filename},version]" }
       execution_output.should == expected_rake_output
@@ -141,13 +146,13 @@ describe Lint do
     it 'returns false on an rake invocation with the strict option' do
       filename = lint_spec_filename('protocol_section_errors', 'missing_protocol_actions.yml')
       execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[#{filename},strict]" }
-      execution_output.should == "false\n"
+      execution_output.should == "false\n".red << "\n"
     end
 
     it 'returns true in strict mode when a clean descriptor file is validated via rake' do
       filename = lint_spec_filename('protocol_section_errors', 'extraneous_properties.yml')
       execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[#{filename},strict]" }
-      execution_output.should == "true\n"
+      execution_output.should == "true\n".green << "\n"
     end
 
     describe "rake_all_option" do
@@ -160,7 +165,7 @@ describe Lint do
         %x(rm -rf api_descriptors)
       end
 
-      it 'invokes the "all" aption and processes all the files in the config folder' do
+      it 'processes all the files in the config folder' do
         execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[all]" }
         %w(nostate_descriptor.yml noprotocols_descriptor.yml nodescriptors_descriptor.yml).all? { |file|
           execution_output.should include(file) }
