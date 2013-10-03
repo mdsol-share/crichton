@@ -1,6 +1,7 @@
 require 'crichton'
 require 'lint'
 require 'i18n'
+require 'colorize'
 
 module Lint
   class BaseValidator
@@ -10,17 +11,22 @@ module Lint
     attr_reader :resource_descriptor
     attr_reader :filename
 
-    def initialize(resource_descriptor, filename)
+    def initialize(resource_descriptor, filename, options)
       @warnings = []
       @errors = []
       @filename = filename
       @resource_descriptor = resource_descriptor
+      @options = options
     end
 
-    #When the dust settles, print out the results of the lint analysis
+    #When the dust settles, print out the results of the lint analysis, unless strict mode, which returns true / false
     def report
-      errors.each { |error| puts "\tERROR: " << error }
-      warnings.each { |warning| puts "\tWARNING: " << warning }
+       if @options[:strict]
+        errors.empty?
+      else
+        errors.each { |error| puts "\tERROR: ".red << error.red }
+        warnings.each { |warning| puts "\tWARNING: ".yellow << warning.yellow } unless @options[:no_warnings]
+      end
     end
 
     def validate(options = {})
@@ -73,4 +79,3 @@ module Lint
     end
   end
 end
-

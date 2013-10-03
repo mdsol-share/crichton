@@ -6,10 +6,12 @@ require 'lint/resource_descriptor_validator'
 require 'lint/states_validator'
 require 'lint/descriptors_validator'
 require 'lint/protocol_validator'
+require 'colorize'
 
 module Lint
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
-  def self.validate(filename)
+  def self.validate(filename, options = {})
+
     # Initialize lint messages
     I18n.load_path = [File.dirname(__FILE__)+'/lint/eng.yml']
     I18n.default_locale = 'eng'
@@ -19,36 +21,64 @@ module Lint
       yml_output = YAML.load_file(filename)
       resource_descriptor = Crichton::Descriptor::Resource.new(yml_output)
     rescue StandardError => e
-      puts I18n.t('catastrophic.cant_load_file', filename: filename, exception_message: e.message)
+      puts I18n.t('catastrophic.cant_load_file'.red, filename: filename, exception_message: e.message)
       return
     end
 
     # the resource descriptor validator checks a lot of top level resource issues
-    resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename)
+    resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename, options)
     resource_validator.validate
 
-    puts "In file '#{filename}':"
+    if options[:strict]
+      return false unless resource_validator.errors.empty?
+    else
+      puts "In file '#{filename}':" unless options[:strict]
 
-    if resource_validator.errors.any?
-      # any errors caught at this point are so catastrophic that it won't be useful to continue
-      resource_validator.report
-      return [resource_validator]
+      unless resource_validator.errors.empty?
+        # any errors caught at this point are so catastrophic that it won't be useful to continue
+        resource_validator.report
+        return [resource_validator]
+      end
     end
 
     validators = []
 
-    validators << StatesValidator.new(resource_descriptor, filename)
-    validators << DescriptorsValidator.new(resource_descriptor, filename)
-    validators << ProtocolValidator.new(resource_descriptor, filename)
+    validators << StatesValidator.new(resource_descriptor, filename, options)
+    validators << DescriptorsValidator.new(resource_descriptor, filename, options)
+    validators << ProtocolValidator.new(resource_descriptor, filename, options)
 
     validators.each do |validator|
       validator.validate
-      validator.report
+      validator.report unless options[:strict]
     end
 
-    puts I18n.t('aok') unless errors_and_warnings_found?(validators)
+    if options[:strict]
+      return validators.all? { |validator| validator.errors.empty? }
+    else
+      puts I18n.t('aok').green unless errors_and_warnings_found?(validators)
 
-    validators << resource_validator
+      validators << resource_validator
+    end
+  end
+
+  def self.validate_all(options = {}, validator_returns = [])
+    if File.exists?(location = Crichton.descriptor_location)
+      Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
+        validator_returns << self.validate(f, options)
+        if options[:strict]
+          return false unless validator_returns
+        else
+          puts "\n" unless options[:strict]
+        end
+      end
+      options[:strict] ? true : validator_returns
+    else
+      raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
+    end
+  end
+
+  def self.version
+    puts "Crichton version: #{Crichton::VERSION::STRING}\n\n"
   end
 
   private
