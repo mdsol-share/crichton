@@ -100,19 +100,11 @@ module Crichton
       end
 
       ##
-      # Returns field type of descriptor, specified in resource descriptor document.
-      #
-      # @return [String] Input field type of descriptor.
-      def input_type
-        field_type
-      end
-
-      ##
       # Returns attributes associated with descriptor.
       #
       # @return [Hash] Attributes.
       def descriptor_validators
-        validators ? (validators.reduce Hash.new, :merge) : {}
+        validators ? (validators.inject Hash.new, :update) : {}
       end
 
     private
