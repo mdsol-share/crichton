@@ -141,6 +141,12 @@ module Crichton
             { 'maxlength' => 50 }
           )
         end
+
+        it 'returns validators as hash' do
+          name.descriptor_validators.should include(
+            { 'required' => 'required', 'maxlength' => 50 }
+          )
+        end
       end
     end
   end
