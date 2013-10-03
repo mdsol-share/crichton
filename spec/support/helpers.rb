@@ -157,11 +157,7 @@ module Support
     end
 
     def build_colorized_lint_output(error_or_warning, key, options = {})
-      if error_or_warning == :error
-        I18n.t(key, options).red
-      else
-        I18n.t(key, options).yellow
-      end
+      I18n.t(key, options).send(error_or_warning == :error ? :red : :yellow)
     end
   end
 end
