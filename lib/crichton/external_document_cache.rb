@@ -71,9 +71,8 @@ module Crichton
     private
     def get_link_and_update_cache(link, metadata = nil)
       uri = URI(link_without_fragment(link))
-      request = assemble_request(metadata, uri)
       begin
-        response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(request) }
+        response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(assemble_request(metadata, uri)) }
         if ['304', '404'].include?(response.code)
           write_metadata_with_updated_time(link, metadata) if response.code == '304'
           read_datafile(link)
@@ -82,13 +81,12 @@ module Crichton
           write_data_to_cache_files(link, response)
           response.body
         end
+      # In case of failure, use the (old) cache anyway
       rescue Errno::ECONNREFUSED => e
         logger.warn("Log connection refused: #{uri}")
-        # In case of failure, use the (old) cache anyway
         return read_datafile(link)
       rescue => e
         logger.warn("#{e.message} while getting #{uri}")
-        # In case of failure, use the (old) cache anyway
         return read_datafile(link)
       end
     end
