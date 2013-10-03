@@ -29,10 +29,14 @@ associated transition that specifies its optional inclusion: OPTIONAL.
 The following properties are only used with semantic descriptors representing templates (media-type form, 
 in contrast to a link).
 
-* `field_type` - Defines the type of field for the form. Valid values are `input`, `boolean`, `select`, or 
-`multi-select`: REQUIRED.
+* `field_type` - Defines the type of field for the form. Most of the valied input types were borrowed from [HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). Following is the list of supported input types: `text`, `search`, `email`, `tel`, `url`, `datetime`, `time`, `date`, `month`, `week`, `time`, `datetime-local`, `number`, `boolean`(*), `select` 
+    * `boolean` is a generic input type used instead of `checkbox`. HTML5 `checkbox` type doesn't make sense in media-types other than HTML and therefore replaced with generic `boolean` type.
 * `enum` - Defines the options for select field types or references another profile associated with the enum: OPTIONAL.
-* `validators` - An array of validator objects associated with a field: OPTIONAL.
+* `validators` - Hash of validator objects associated with a field: OPTIONAL. Following validator objects are supported and can be applied to input types:
+    * `required` - text, search, email, tel, url, datetime, time, date, month, week, time, datetime-local, number, boolean, select
+    * `pattern` - text, search, email, tel, url
+    * `maxlength` - text, url
+    * `min`, `max` - datetime, time, date, month, week, time, datetime-local, number
 
 ## Examples
 The following example highlights a few parts of the [Example Resource Descriptor][] `descriptors` section associated
@@ -78,9 +82,9 @@ descriptors:
                 doc: The name of the DRD.
                 type: semantic
                 href: http://alps.io/schema.org/Text
-                field_type: input
+                field_type: text
                 validators:
-                  - presence
+                  - required: required
               form-leviathan_uuid: # Unique ID that does not collide with 'leviathan_uuid' descriptor.
                 name: leviathan_uuid # Name associated with the associated element in a hypermedia response.
                 doc: The UUID of the creator Leviathan.
@@ -90,7 +94,7 @@ descriptors:
                 enum:
                   href: http://alps.io.example.org/Leviathans#list 
                 validators:
-                  - presence  
+                  - required: required 
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
@@ -145,17 +149,17 @@ descriptors:
                   - renegade
                   - broken
                 validators:
-                  - presence
+                  - required: required
               form-kind: # Unique value to differentiate from 'kind' descriptor.
                 type: semantic
                 name: kind # Name associated with the associated element in a hypermedia response.doc: What kind is it.
                 href: http://alps.io/schema.org/Text
-                field_type: multi-select
+                field_type: select
                 enum:
                   - standard
                   - sentinel
                 validators:
-                  - presence 
+                  - required: required 
 ```
 
 ## Descriptor Dependencies
@@ -163,60 +167,6 @@ Data descriptors are directly related to [State Descriptors](data_descriptors.md
 data descriptor:
 
 * MUST have a corresponding State descriptor if it includes [Transition Descriptors](transition_descriptors.md).
-
-## Field types and validators
-Following field types are supported in resource descriptor document. Most of the field types were borrowed from HTML5 specification.
-* `text` and `search` - represents one line plain text edit control. [http://www.w3.org/html/wg/drafts/html/master/forms.html#text-(type=text)-state-and-search-state-(type=search)]
-  * `required` - is a boolean validator. When specified, the element is required.[http://www.w3.org/html/wg/drafts/html/master/forms.html#attr-input-required]
-  * `pattern` - is a regular expression against which the controls value, or, when the multiple attribute applies and is set. [http://www.w3.org/html/wg/drafts/html/master/forms.html#attr-input-pattern]
-  * `maxlength` - the value must be equal to or less than the elements maximum allowed value length. [http://www.w3.org/html/wg/drafts/html/master/forms.html#attr-input-maxlength]
-
-* `email` - represents a control for editing an e-mail address given in the elements value. [http://www.w3.org/html/wg/drafts/html/master/forms.html#e-mail-state-(type=email)]
-  * `required`
-  * `pattern`
-
-* `tel` - represents a control for editing a telephone number given in the elements value. [http://www.w3.org/html/wg/drafts/html/master/forms.html#telephone-state-(type=tel)]
-  * `required`
-  * `pattern`
-
-* `url` - represents a control for editing a single absolute URL given in the elements value. [http://www.w3.org/html/wg/drafts/html/master/forms.html#url-state-(type=url)]
-  * `required`
-  * `pattern`
-  * `maxlength`
-
-* `datetime`, `time` - represents a control for setting the elements value to a string representing a specific global date and time. [http://www.w3.org/html/wg/drafts/html/master/forms.html#date-and-time-state-(type=datetime)]
-  * `required`
-  * `min` and `max` - must have a value that is a valid global date and time string.
-
-* `date` - represents a control for setting the elements value to a string representing a specific date. [http://www.w3.org/html/wg/drafts/html/master/forms.html#date-state-(type=date)]
-  * `required`
-  * `min`, `max`
-
-* `month` - represents a control for setting the elements value to a string representing a specific month. [http://www.w3.org/html/wg/drafts/html/master/forms.html#month-state-(type=month)]
-  * `required`
-  * `min`, `max`
-
-* `week` - represents a control for setting the elements value to a string representing a specific week. [http://www.w3.org/html/wg/drafts/html/master/forms.html#week-state-(type=week)]
-  * `required`
-  * `min`, `max`
-
-* `time` - represents a control for setting the elements value to a string representing a specific time. [http://www.w3.org/html/wg/drafts/html/master/forms.html#time-state-(type=time)]
-  * `required`
-  * `min`, `max`
-
-* `datetime-local` - represents a control for setting the elements value to a string representing a local date and time, with no time-zone offset information. [http://www.w3.org/html/wg/drafts/html/master/forms.html#local-date-and-time-state-(type=datetime-local)] 
-  * `required`
-  * `min`, `max`
-
-* `number` - represents a control for setting the elements value to a string representing a number. [http://www.w3.org/html/wg/drafts/html/master/forms.html#number-state-(type=number)]
-  * `required`
-  * `min`, `max`
-
-* `boolean` - represents a two-state control. If the state is true, the control represents a positive selection and if it is a false, a negative selection.
-  * `required`
-
-* `select` - represents a control for selecting amongst a set of options. STILL TO DISCUSS
-  * `required` 
 
 [Back to Resource Descriptors](resource_descriptors.md)
 [Example Resource Descriptor]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
