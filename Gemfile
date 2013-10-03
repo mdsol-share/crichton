@@ -14,6 +14,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'webmock',        '~> 1.13.0'
   gem 'equivalent-xml', '~> 0.3.0'
   gem 'rspec',          '~> 2.13.0'
   gem 'simplecov',      '~> 0.7.1'
