@@ -127,6 +127,21 @@ module Crichton
           descriptor.type.should == descriptor_document['type']
         end
       end
+
+      describe '#create#create-drd#name' do
+        let(:name) { descriptor.transitions['create'].semantics['create-drd'].semantics['name'] }
+
+        it 'returns the descriptor field_type' do
+          name.field_type.should == 'text'
+        end
+
+        it 'contains validators' do
+          name.validators.should include(
+            { 'required' => 'required' },
+            { 'maxlength' => 50 }
+          )
+        end
+      end
     end
   end
 end
