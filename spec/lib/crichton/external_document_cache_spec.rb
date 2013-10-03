@@ -226,8 +226,27 @@ module Crichton
           FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.delete(@metafilename) if File.exist?(@metafilename)
-          #@datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
-          #File.delete(@datafilename) if File.exist?(@datafilename)
+          @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          File.delete(@datafilename) if File.exist?(@datafilename)
+          edc = ExternalDocumentCache.new(@pathname)
+          stub_request(:get, @link).to_return(:status => 200, :body => "Data", :headers => {'headers' => 'Headerdata'})
+          edc.get(@link)
+          json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
+          json_data.should include(
+            {
+              "link" => "http://some.url:1234/somepath",
+              "status" => "200",
+              "headers" => {"headers" => ["Headerdata"]}
+            })
+        end
+
+        it 'in case of a cache miss but en existing data file, logs the changed data' do
+          @pathname = File.join('spec', 'fixtures', 'external_documents_cache')
+          FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.delete(@metafilename) if File.exist?(@metafilename)
+          @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          File.open(@datafilename, 'wb') { |f| f.write('old junk')}
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_return(:status => 200, :body => "Data", :headers => {'headers' => 'Headerdata'})
           edc.get(@link)
