@@ -5,24 +5,25 @@ require 'fileutils'
 module Crichton
   describe 'ExternalDocumentCache' do
     context '.new' do
+      before do
+          @pathname = 'test/path'
+      end
+
       it 'accepts a cache path' do
-        pathname = 'test/path'
-        Dir.should_receive(:exists?).with(pathname).and_return(true)
-        ExternalDocumentCache.new(pathname)
+        Dir.should_receive(:exists?).with(@pathname).and_return(true)
+        ExternalDocumentCache.new(@pathname)
       end
 
       it 'uses the configured cache path if none is explicitly passed into the new call' do
-        pathname = 'test/path'
-        Crichton.config.stub(:external_documents_store_directory).and_return(pathname)
-        Dir.should_receive(:exists?).with(pathname).and_return(true)
-        ExternalDocumentCache.new(pathname)
+        Crichton.config.stub(:external_documents_store_directory).and_return(@pathname)
+        Dir.should_receive(:exists?).with(@pathname).and_return(true)
+        ExternalDocumentCache.new(@pathname)
       end
 
       it 'creates the cache path if it does not exist' do
-        pathname = 'test/path'
         Dir.stub(:exists?).and_return(false)
-        FileUtils.should_receive(:mkdir_p).with(pathname).and_return(true)
-        ExternalDocumentCache.new(pathname)
+        FileUtils.should_receive(:mkdir_p).with(@pathname).and_return(true)
+        ExternalDocumentCache.new(@pathname)
       end
     end
 
@@ -65,19 +66,16 @@ module Crichton
 
         it 'tries to verify the data and accepts a 304 response' do
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('304')
-          Net::HTTP.should_receive(:start).and_return(response)
+          stub = stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
           edc.get(@link)
+          stub.should have_been_requested
         end
 
         it 'tries to verify the data and returns the data from the file in case of a 304' do
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('304')
-          Net::HTTP.should_receive(:start).and_return(response)
+          stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
           edc.get(@link).should == "Testfile #{@link}"
         end
 
@@ -85,17 +83,13 @@ module Crichton
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('404')
-          Net::HTTP.should_receive(:start).and_return(response)
+          stub_request(:get, @link).to_return(:status => 404, :body => "", :headers => {})
           edc.get(@link).should == "Testfile #{@link}"
         end
 
         it 'tries to verify the data and updates the metadata in the file' do
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('304')
-          Net::HTTP.stub(:start).and_return(response)
+          stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
           edc.get(@link)
           json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
           # In the before, the time is set to a VERY early time - so if it's within 5 seconds then we're good
@@ -106,7 +100,7 @@ module Crichton
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
-          Net::HTTP.should_receive(:start).and_raise(Errno::ECONNREFUSED)
+          stub_request(:get, @link).to_raise(Errno::ECONNREFUSED)
           edc.get(@link).should == "Testfile #{@link}"
         end
 
@@ -115,7 +109,7 @@ module Crichton
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           Crichton.logger.should_receive(:warn).with("Log connection refused: #{@link}")
           edc = ExternalDocumentCache.new(@pathname)
-          Net::HTTP.should_receive(:start).and_raise(Errno::ECONNREFUSED)
+          stub_request(:get, @link).to_raise(Errno::ECONNREFUSED)
           edc.get(@link)
         end
 
@@ -123,16 +117,17 @@ module Crichton
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
-          Net::HTTP.should_receive(:start).and_raise(Errno::EADDRINUSE)
+          stub_request(:get, @link).to_raise(Errno::EADDRINUSE)
           edc.get(@link).should == "Testfile #{@link}"
         end
 
         it 'handles other errorsby returning the cached data' do
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
-          Crichton.logger.should_receive(:warn).with("Address already in use while getting #{@link}")
+          Crichton.logger.should_receive(:warn).
+              with("Address already in use - Exception from WebMock while getting #{@link}")
           edc = ExternalDocumentCache.new(@pathname)
-          Net::HTTP.should_receive(:start).and_raise(Errno::EADDRINUSE)
+          stub_request(:get, @link).to_raise(Errno::EADDRINUSE)
           edc.get(@link)
 
         end
@@ -148,9 +143,10 @@ module Crichton
               time: Time.now - 2}
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          stub = stub_request(:get, @link).to_return(status: 404)
           edc = ExternalDocumentCache.new(@pathname)
-          Net::HTTP.should_not_receive(:start)
           edc.get(@link).should == "Testfile #{@link}"
+          stub.should have_not_been_made
         end
 
         it 're-validated data that is too old' do
@@ -161,11 +157,10 @@ module Crichton
               time: Time.now - 30}
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          stub = stub_request(:get, @link).to_return(status: 304)
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('304')
-          Net::HTTP.should_receive(:start).and_return(response)
-          edc.get(@link).should == "Testfile #{@link}"
+          edc.get(@link)
+          stub.should have_been_made
         end
 
         it 're-validated data that young enough but has the must-revalidate header set' do
@@ -177,9 +172,7 @@ module Crichton
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('304')
-          Net::HTTP.should_receive(:start).and_return(response)
+          stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
           edc.get(@link).should == "Testfile #{@link}"
         end
 
@@ -192,9 +185,7 @@ module Crichton
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('304')
-          Net::HTTP.should_receive(:start).and_return(response)
+          stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
           edc.get(@link).should == "Testfile #{@link}"
         end
       end
@@ -208,14 +199,11 @@ module Crichton
               time: Time.now - 100000}
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          stub = stub_request(:get, @link).with(headers: {"If-None-Match" => "1234"}).
+            to_return(:status => 304, :body => "", :headers => {})
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('304')
-          req = {}
-          Net::HTTP::Get.stub(:new).and_return(req)
-          Net::HTTP.stub(:start).and_return(response)
           edc.get(@link)
-          req.should == { "If-None-Match" => "1234"}
+          stub.should have_been_requested
         end
 
         it 'sends the last modified along in the request' do
@@ -226,14 +214,11 @@ module Crichton
               time: Time.now - 100000}
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          stub = stub_request(:get, @link).with(headers: {'If-Modified-Since'=>'1234'}).
+            to_return(:status => 304, :body => "", :headers => {})
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('304')
-          req = {}
-          Net::HTTP::Get.stub(:new).and_return(req)
-          Net::HTTP.stub(:start).and_return(response)
           edc.get(@link)
-          req.should == { "If-Modified-Since" => "1234"}
+          stub.should have_been_requested
         end
 
         it 'in case of a cache miss, writes the received data to the cache' do
@@ -241,23 +226,36 @@ module Crichton
           FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.delete(@metafilename) if File.exist?(@metafilename)
-          #@datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
-          #File.delete(@datafilename) if File.exist?(@datafilename)
+          @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          File.delete(@datafilename) if File.exist?(@datafilename)
           edc = ExternalDocumentCache.new(@pathname)
-          response = double('response')
-          response.stub(:code).and_return('200')
-          response.stub(:body).and_return('Data')
-          headers = double('headers')
-          headers.stub('to_hash').and_return({'Headers' => 'Headerdata'})
-          response.stub(:to_hash).and_return(headers)
-          Net::HTTP.stub(:start).and_return(response)
+          stub_request(:get, @link).to_return(:status => 200, :body => "Data", :headers => {'headers' => 'Headerdata'})
           edc.get(@link)
           json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
           json_data.should include(
             {
               "link" => "http://some.url:1234/somepath",
               "status" => "200",
-              "headers" => {"Headers" => "Headerdata"}
+              "headers" => {"headers" => ["Headerdata"]}
+            })
+        end
+
+        it 'in case of a cache miss but en existing data file, logs the changed data' do
+          @pathname = File.join('spec', 'fixtures', 'external_documents_cache')
+          FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
+          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+          File.delete(@metafilename) if File.exist?(@metafilename)
+          @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
+          File.open(@datafilename, 'wb') { |f| f.write('old junk')}
+          edc = ExternalDocumentCache.new(@pathname)
+          stub_request(:get, @link).to_return(:status => 200, :body => "Data", :headers => {'headers' => 'Headerdata'})
+          edc.get(@link)
+          json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
+          json_data.should include(
+            {
+              "link" => "http://some.url:1234/somepath",
+              "status" => "200",
+              "headers" => {"headers" => ["Headerdata"]}
             })
         end
       end
