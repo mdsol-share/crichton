@@ -103,7 +103,7 @@ descriptors:
                 href: http://alps.io/schema.org/Text
                 field_type: text
                 validators:
-                  - required: required
+                  - required
               form-leviathan_uuid: # Unique ID that does not collide with 'leviathan_uuid' descriptor.
                 name: leviathan_uuid # Name associated with the associated element in a hypermedia response.
                 doc: The UUID of the creator Leviathan.
@@ -113,7 +113,7 @@ descriptors:
                 enum:
                   href: http://alps.io.example.org/Leviathans#list 
                 validators:
-                  - required: required 
+                  - required
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
@@ -168,7 +168,7 @@ descriptors:
                   - renegade
                   - broken
                 validators:
-                  - required: required
+                  - required
               form-kind: # Unique value to differentiate from 'kind' descriptor.
                 type: semantic
                 name: kind # Name associated with the associated element in a hypermedia response.doc: What kind is it.
@@ -178,7 +178,7 @@ descriptors:
                   - standard
                   - sentinel
                 validators:
-                  - required: required 
+                  - required
 ```
 
 ## Descriptor Dependencies
