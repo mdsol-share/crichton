@@ -39,7 +39,7 @@ module Lint
         @errors = expected_output(:error, 'states.phantom_next_property', secondary_descriptor: 'drds',
           state: 'navigation', transition: 'self', next_state: 'navegation', filename: filename) <<
           expected_output(:error, 'states.phantom_next_property', secondary_descriptor: 'drd',
-                          state: 'activated', transition: 'self', next_state: 'activate')
+          state: 'activated', transition: 'self', next_state: 'activate')
       end
 
       it 'displays errors when states transitions does not match protocol or descriptor transitions' do

@@ -25,7 +25,6 @@ describe "rdlint" do
 
     it 'displays empty output when all warnings are suppressed on a warnings only result' do
       @filename = %w(protocol_section_errors extraneous_properties.yml)
-
       @expected_rdlint_output = "In file '#{filename}':\n"
       @option = "-w"
     end
