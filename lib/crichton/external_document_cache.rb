@@ -12,8 +12,7 @@ module Crichton
     end
 
     def filename_base_for_link(link)
-      # The file names in the cache are just hashes of the URL. Should be safe enough. Or are we worried about
-      # malicious collisions here?
+      # The file names in the cache are just hashes of the URL. Should be safe enough absent malicious collisions.
       Digest::MD5.hexdigest(link_without_fragment(link))
     end
 
@@ -26,6 +25,16 @@ module Crichton
 
   class MetaData
     include Crichton::ExternalDocumentFilenameHelpers
+
+    def self.build_from_link_and_response(link, response)
+      {
+        link:    link,
+        status:  response.code,
+        headers: response.to_hash,
+        time:    Time.now
+      }.to_json
+    end
+
     def initialize(link, cache_path)
       @cache_path = cache_path
       metapath = metafile_path(link)
@@ -49,24 +58,23 @@ module Crichton
     end
 
     def present?
-      !@metadata.nil?
+      @metadata.present?
     end
 
     def valid?(timeout = 600)
       return false unless @metadata
       # The default timeout is to be used when no explicit timeout is set by the service
-      timeout = determine_timeout if cache_control_header_present?
+      timeout = determine_timeout(timeout) if cache_control_header_present?
       Time.parse(@metadata['time']) + timeout > Time.now
     end
 
     private
-    def determine_timeout
+    def determine_timeout(timeout)
       cache_control_elements = @headers['cache-control'].first.split(',').map { |y| y.strip.split('=') }
       max_age = cache_control_elements.assoc('max-age')
       timeout = max_age[1].to_i if max_age
       # re-validate in case no cache or must-revalidate
-      timeout = 0 if cache_control_elements.assoc('must-revalidate')
-      timeout = 0 if cache_control_elements.assoc('no-cache')
+      timeout = 0 if cache_control_elements.assoc('must-revalidate') || cache_control_elements.assoc('no-cache')
       timeout
     end
 
@@ -126,12 +134,8 @@ module Crichton
     def write_data_to_cache_files(link, response)
       File.open(datafile_path(link), 'wb') { |f| f.write(response.body) }
       # Write the metadata
-      new_metadata = {
-          link:    link_without_fragment(link),
-          status:  response.code,
-          headers: response.to_hash,
-          time:    Time.now }
-      File.open(metafile_path(link), 'wb') { |f| f.write(new_metadata.to_json) }
+      link_wof = link_without_fragment(link)
+      File.open(metafile_path(link), 'wb') { |f| f.write(MetaData.build_from_link_and_response(link_wof, response)) }
     end
 
     def assemble_request(metadata, uri)
