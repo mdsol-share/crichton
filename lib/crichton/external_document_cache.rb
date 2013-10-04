@@ -27,6 +27,15 @@ module Crichton
   class MetaData
     include Crichton::ExternalDocumentFilenameHelpers
 
+    def self.build_from_link_and_response(link, response)
+      {
+        link:    link,
+        status:  response.code,
+        headers: response.to_hash,
+        time:    Time.now
+      }.to_json
+    end
+
     def initialize(link, cache_path)
       @cache_path = cache_path
       metapath = metafile_path(link)
@@ -126,12 +135,8 @@ module Crichton
     def write_data_to_cache_files(link, response)
       File.open(datafile_path(link), 'wb') { |f| f.write(response.body) }
       # Write the metadata
-      new_metadata = {
-        link:    link_without_fragment(link),
-        status:  response.code,
-        headers: response.to_hash,
-        time:    Time.now }
-      File.open(metafile_path(link), 'wb') { |f| f.write(new_metadata.to_json) }
+      link_wof = link_without_fragment(link)
+      File.open(metafile_path(link), 'wb') { |f| f.write(MetaData.build_from_link_and_response(link_wof, response)) }
     end
 
     def assemble_request(metadata, uri)
