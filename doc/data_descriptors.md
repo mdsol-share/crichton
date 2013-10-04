@@ -29,14 +29,32 @@ associated transition that specifies its optional inclusion: OPTIONAL.
 The following properties are only used with semantic descriptors representing templates (media-type form, 
 in contrast to a link).
 
-* `field_type` - Defines the type of field for the form. Most of the valied input types were borrowed from [HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). Following is the list of supported input types: `text`, `search`, `email`, `tel`, `url`, `datetime`, `time`, `date`, `month`, `week`, `time`, `datetime-local`, `number`, `boolean`(*), `select` 
-    * `boolean` is a generic input type used instead of `checkbox`. HTML5 `checkbox` type doesn't make sense in media-types other than HTML and therefore replaced with generic `boolean` type.
+* `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
+[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
 * `enum` - Defines the options for select field types or references another profile associated with the enum: OPTIONAL.
-* `validators` - Hash of validator objects associated with a field: OPTIONAL. Following validator objects are supported and can be applied to input types:
-    * `required` - text, search, email, tel, url, datetime, time, date, month, week, time, datetime-local, number, boolean, select
-    * `pattern` - text, search, email, tel, url
-    * `maxlength` - text, url
-    * `min`, `max` - datetime, time, date, month, week, time, datetime-local, number
+* `validators` - Hash of validator objects associated with a field: OPTIONAL.
+
+Following table defines list of supported input types and validators which can be applied to it:
+
+| Input types / attributes | required | pattern | maxlength | min/max |
+|:----------------:|:----------:|:---------:|:-----------:|:---------:|
+| text           | x        | x       | x         |         |
+| search         | x        | x       |           |         |
+| email          | x        | x       |           |         |
+| tel            | x        | x       |           |         |
+| url            | x        | x       | x         |         |
+| datetime       | x        |         |           | x       |
+| time           | x        |         |           | x       |
+| date           | x        |         |           | x       |
+| month          | x        |         |           | x       |
+| week           | x        |         |           | x       |
+| time           | x        |         |           | x       |
+| datetime-local | x        |         |           | x       |
+| number         | x        |         |           | x       |
+| boolean(*)     | x        |         |           |         |
+| select         | x        |         |           |         |
+
+* `boolean` is a generic input type used instead of `checkbox`. HTML5 `checkbox` type doesn't make sense in media-types other than HTML and therefore replaced with generic `boolean` type.
 
 ## Examples
 The following example highlights a few parts of the [Example Resource Descriptor][] `descriptors` section associated
