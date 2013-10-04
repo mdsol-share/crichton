@@ -16,7 +16,7 @@ end
 
 module Crichton
   describe ExternalDocumentCache do
-    context '.new' do
+    describe '.new' do
       before do
           @pathname = 'test/path'
       end
