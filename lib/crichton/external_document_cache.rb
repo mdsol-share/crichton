@@ -26,6 +26,7 @@ module Crichton
 
   class MetaData
     include Crichton::ExternalDocumentFilenameHelpers
+
     def initialize(link, cache_path)
       @cache_path = cache_path
       metapath = metafile_path(link)
@@ -49,7 +50,7 @@ module Crichton
     end
 
     def present?
-      !@metadata.nil?
+      @metadata.present?
     end
 
     def valid?(timeout = 600)
@@ -65,8 +66,7 @@ module Crichton
       max_age = cache_control_elements.assoc('max-age')
       timeout = max_age[1].to_i if max_age
       # re-validate in case no cache or must-revalidate
-      timeout = 0 if cache_control_elements.assoc('must-revalidate')
-      timeout = 0 if cache_control_elements.assoc('no-cache')
+      timeout = 0 if cache_control_elements.assoc('must-revalidate') || cache_control_elements.assoc('no-cache')
       timeout
     end
 
