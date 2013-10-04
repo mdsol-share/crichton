@@ -207,7 +207,7 @@ module Crichton
             @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           end
 
-          it 'in case of a cache miss, writes the received data to the cache' do
+          it 'writes the received data to the cache' do
             File.delete(@datafilename) if File.exist?(@datafilename)
             edc = ExternalDocumentCache.new(@pathname)
             stub_request(:get, @link).to_return(status: 200, body: 'Data', headers: {'headers' => 'Headerdata'})
