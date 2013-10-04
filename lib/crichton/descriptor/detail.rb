@@ -23,9 +23,6 @@ module Crichton
       # @!macro string_reader
       descriptor_reader :type
 
-      # @!macro array_reader
-      descriptor_reader :validators
-
       ##
       # Constructs a new instance of BaseDocumentDescriptor.
       #
@@ -103,12 +100,8 @@ module Crichton
       # Returns attributes associated with descriptor.
       #
       # @return [Hash] Attributes.
-      def descriptor_validators
-        @descriptor_validators ||= if validators
-          validators.map { |v| v.is_a?(String) ? { v => nil } : v }.inject({}, :update)
-        else
-          {}
-        end
+      def validators
+        @validators ||= [*descriptor_document['validators']].map { |v| v.is_a?(String) ? { v => nil } : v }.inject({}, :update)
       end
 
     private

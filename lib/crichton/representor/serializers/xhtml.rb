@@ -252,7 +252,7 @@ module Crichton
 
         def add_control_input(semantic, field_type = nil)
           field_type ||= semantic.field_type
-          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name}.merge(semantic.descriptor_validators))
+          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name}.merge(semantic.validators))
         end
 
         def add_control_boolean(semantic)
@@ -343,7 +343,7 @@ module Crichton
           field_type ||= semantic.field_type
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) do
-              @markup_builder.input({type: field_type, name: semantic.name}.merge(semantic.descriptor_validators))
+              @markup_builder.input({type: field_type, name: semantic.name}.merge(semantic.validators))
             end
           end
         end

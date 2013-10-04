@@ -144,16 +144,14 @@ module Crichton
         end
 
         it 'returns validators as hash' do
-          name_semantic.descriptor_validators.should include(
+          name_semantic.validators.should include(
             { 'required' => nil, 'maxlength' => 50 }
           )
         end
 
-        it 'returns memoized validators' do
-          name_semantic.should_receive(:validators).once
-          2.times do
-            name_semantic.descriptor_validators
-          end
+        it 'memoizes' do
+          validators = name_semantic.validators
+          name_semantic.validators.object_id == validators.object_id
         end
       end
     end
