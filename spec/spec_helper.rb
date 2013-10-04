@@ -9,6 +9,7 @@ require 'rspec'
 require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
+require 'webmock/rspec'
 
 if ENV['COVERAGE']
   require 'simplecov'

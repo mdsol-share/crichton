@@ -30,6 +30,14 @@ module Crichton
       define_method(method) { @config[method] }
     end
 
+    def external_documents_cache_directory
+      @config['external_documents_cache_directory'] || 'tmp/external_documents_cache'
+    end
+
+    def external_documents_store_directory
+      @config['external_documents_store_directory'] || 'api_descriptors/external_documents_store'
+    end
+
     ##
     # @!attribute [r] css_uri
     # The URI where CSS is hosted.

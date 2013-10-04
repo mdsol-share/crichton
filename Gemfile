@@ -10,7 +10,12 @@ gem 'i18n',          '~> 0.6'
 gem 'rake',          '~> 0.9'
 gem 'colorize',      '~> 0.6.0'
 
+group :development, :test do
+  gem 'pry'
+end
+
 group :test do
+  gem 'webmock',        '~> 1.13.0'
   gem 'equivalent-xml', '~> 0.3.0'
   gem 'rspec',          '~> 2.13.0'
   gem 'simplecov',      '~> 0.7.1'

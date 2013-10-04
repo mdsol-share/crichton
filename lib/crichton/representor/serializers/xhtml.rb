@@ -1,4 +1,5 @@
 require 'crichton/representor/serializer'
+require 'crichton/helpers'
 
 module Crichton
   module Representor
@@ -71,13 +72,7 @@ module Crichton
       # Manages Abstract Base functionality for semantic Builders that implement the specifics of Hypermedia 
       # serialization per ALPS media-type guidance specs for HTML.
       class BaseSemanticBuilder
-        ##
-        # Helper to access the Crichton logger locally.
-        #
-        # @return [Logger] Logger object
-        def logger
-          @logger ||= Crichton.logger
-        end
+        include Crichton::Helpers::ConfigHelper
 
         ##
         # Helper to access the Crichton configuration locally

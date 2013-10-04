@@ -13,7 +13,9 @@ module Crichton
       end
 
       def to_hash
-        if @data_type == :xml
+        if @data_type == :no_data
+          {}
+        elsif @data_type == :xml
           alps_xml_to_hash(@alps_data)
         else
           alps_json_to_hash(@alps_data)
@@ -33,7 +35,9 @@ module Crichton
 
       private
       def guess_alps_data_type(alps_data)
-        if alps_data.is_a?(File)
+        if alps_data.nil?
+          data_type = :no_data
+        elsif alps_data.is_a?(File)
           # Guess based on file name first
           if alps_data.path.ends_with?('json')
             data_type = :json
