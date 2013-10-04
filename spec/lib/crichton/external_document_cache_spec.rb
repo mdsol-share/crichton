@@ -222,7 +222,7 @@ module Crichton
               })
           end
 
-          it 'in case of a cache miss but en existing data file, writes the new data' do
+          it ' but en existing data file, writes the new data' do
             File.open(@datafilename, 'wb') { |f| f.write('old junk')}
             edc = ExternalDocumentCache.new(@pathname)
             stub_request(:get, @link).to_return(status: 200, body: 'Data', headers: {'headers' => 'Headerdata'})
