@@ -39,7 +39,7 @@ module Crichton
       end
     end
 
-    context '.get' do
+    describe '#get' do
       before do
         @pathname = File.join('spec', 'fixtures', 'external_documents_cache')
         FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
@@ -68,7 +68,7 @@ module Crichton
 
         it 'tries to verify the data and accepts a 304 response' do
           edc = ExternalDocumentCache.new(@pathname)
-          stub = stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
+          stub = stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
           edc.get(@link)
           stub.should have_been_requested
         end
@@ -77,7 +77,7 @@ module Crichton
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
-          stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
+          stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
           edc.get(@link).should == "Testfile #{@link}"
         end
 
@@ -85,13 +85,13 @@ module Crichton
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
-          stub_request(:get, @link).to_return(:status => 404, :body => "", :headers => {})
+          stub_request(:get, @link).to_return(status: 404, body: '', headers: {})
           edc.get(@link).should == "Testfile #{@link}"
         end
 
         it 'tries to verify the data and updates the metadata in the file' do
           edc = ExternalDocumentCache.new(@pathname)
-          stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
+          stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
           edc.get(@link)
           json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
           # In the before, the time is set to a VERY early time - so if it's within 5 seconds then we're good
@@ -158,7 +158,7 @@ module Crichton
           @headers = {'cache-control' => ['max-age=200, must-revalidate']}
           prepare_metadata_file
           edc = ExternalDocumentCache.new(@pathname)
-          stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
+          stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
           edc.get(@link).should == "Testfile #{@link}"
         end
 
@@ -166,7 +166,7 @@ module Crichton
           @headers = {'cache-control' => ['max-age=200, no-cache']}
           prepare_metadata_file
           edc = ExternalDocumentCache.new(@pathname)
-          stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
+          stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
           edc.get(@link).should == "Testfile #{@link}"
         end
       end
@@ -179,8 +179,8 @@ module Crichton
         it 'sends the ETAG along in the request' do
           @headers = {'etag' => ['1234']}
           prepare_metadata_file
-          stub = stub_request(:get, @link).with(headers: {"If-None-Match" => "1234"}).
-            to_return(:status => 304, :body => "", :headers => {})
+          stub = stub_request(:get, @link).with(headers: {'If-None-Match' => '1234'}).
+            to_return(status: 304, body: '', headers: {})
           edc = ExternalDocumentCache.new(@pathname)
           edc.get(@link)
           stub.should have_been_requested
@@ -192,7 +192,7 @@ module Crichton
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
           stub = stub_request(:get, @link).with(headers: {'If-Modified-Since'=>'1234'}).
-            to_return(:status => 304, :body => "", :headers => {})
+            to_return(:status => 304, :body => '', headers: {})
           edc = ExternalDocumentCache.new(@pathname)
           edc.get(@link)
           stub.should have_been_requested
@@ -206,14 +206,14 @@ module Crichton
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.delete(@datafilename) if File.exist?(@datafilename)
           edc = ExternalDocumentCache.new(@pathname)
-          stub_request(:get, @link).to_return(:status => 200, :body => "Data", :headers => {'headers' => 'Headerdata'})
+          stub_request(:get, @link).to_return(status: 200, body: 'Data', headers: {'headers' => 'Headerdata'})
           edc.get(@link)
           json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
           json_data.should include(
             {
-              "link" => "http://some.url:1234/somepath",
-              "status" => "200",
-              "headers" => {"headers" => ["Headerdata"]}
+              'link' => 'http://some.url:1234/somepath',
+              'status' => '200',
+              'headers' => {'headers' => ['Headerdata']}
             })
         end
 
@@ -225,14 +225,14 @@ module Crichton
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write('old junk')}
           edc = ExternalDocumentCache.new(@pathname)
-          stub_request(:get, @link).to_return(:status => 200, :body => "Data", :headers => {'headers' => 'Headerdata'})
+          stub_request(:get, @link).to_return(status: 200, body: 'Data', headers: {'headers' => 'Headerdata'})
           edc.get(@link)
           json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
           json_data.should include(
             {
-              "link" => "http://some.url:1234/somepath",
-              "status" => "200",
-              "headers" => {"headers" => ["Headerdata"]}
+              'link' => 'http://some.url:1234/somepath',
+              'status' => '200',
+              'headers' => {'headers' => ['Headerdata']}
             })
         end
       end
