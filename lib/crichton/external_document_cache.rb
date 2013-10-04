@@ -12,8 +12,7 @@ module Crichton
     end
 
     def filename_base_for_link(link)
-      # The file names in the cache are just hashes of the URL. Should be safe enough. Or are we worried about
-      # malicious collisions here?
+      # The file names in the cache are just hashes of the URL. Should be safe enough absent malicious collisions.
       Digest::MD5.hexdigest(link_without_fragment(link))
     end
 

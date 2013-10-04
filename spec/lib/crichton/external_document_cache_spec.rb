@@ -115,7 +115,7 @@ module Crichton
           edc.get(@link)
         end
 
-        it 'handles other errorsby returning the cached data' do
+        it 'handles other errors by returning the cached data' do
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
@@ -123,7 +123,7 @@ module Crichton
           edc.get(@link).should == "Testfile #{@link}"
         end
 
-        it 'handles other errorsby returning the cached data' do
+        it 'handles other errors by returning the cached data' do
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           Crichton.logger.should_receive(:warn).
