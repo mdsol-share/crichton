@@ -3,7 +3,6 @@ require 'spec_helper'
 require 'fileutils'
 require 'crichton/external_document_cache'
 
-
 module Crichton
   describe ExternalDocumentCache do
     def prepare_metadata_file
