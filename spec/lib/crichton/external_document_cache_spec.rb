@@ -3,19 +3,19 @@ require 'spec_helper'
 require 'fileutils'
 require 'crichton/external_document_cache'
 
-def prepare_metadata_file
-  new_metadata  = {
-      link:    @link,
-      status:  200,
-      headers: @headers || {},
-      time:    @time || (Time.now - 30) }
-  @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
-  File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
-  new_metadata
-end
-
 module Crichton
   describe ExternalDocumentCache do
+    def prepare_metadata_file
+      new_metadata  = {
+          link:    @link,
+          status:  200,
+          headers: @headers || {},
+          time:    @time || (Time.now - 30) }
+      @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+      File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+      new_metadata
+    end
+
     describe '.new' do
       before do
           @pathname = 'test/path'
@@ -207,7 +207,7 @@ module Crichton
             @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           end
 
-          it 'in case of a cache miss, writes the received data to the cache' do
+          it 'writes the received data to the cache' do
             File.delete(@datafilename) if File.exist?(@datafilename)
             edc = ExternalDocumentCache.new(@pathname)
             stub_request(:get, @link).to_return(status: 200, body: 'Data', headers: {'headers' => 'Headerdata'})
@@ -221,7 +221,7 @@ module Crichton
               })
           end
 
-          it 'in case of a cache miss but en existing data file, writes the new data' do
+          it ' but en existing data file, writes the new data' do
             File.open(@datafilename, 'wb') { |f| f.write('old junk')}
             edc = ExternalDocumentCache.new(@pathname)
             stub_request(:get, @link).to_return(status: 200, body: 'Data', headers: {'headers' => 'Headerdata'})
