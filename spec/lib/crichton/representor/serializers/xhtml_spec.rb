@@ -76,26 +76,6 @@ module Crichton
           end
         end
       end
-
-      describe 'styled_microdata_semantic_builder' do
-        before do
-          serializer = XHTMLSerializer.new(DRD.all)
-          @semantic_builder = serializer.send(:configure_semantic_builder, {conditions: 'can_do_anything', semantics: :styled_microdata})
-          @create_drd = Crichton.descriptor_registry['drds'].transitions['create'].semantics['create-drd']
-        end
-
-        it 'calls add_control_input for text field' do
-          semantic = @create_drd.semantics['name']
-          @semantic_builder.should_receive(:add_control_input).and_return(anything())
-          @semantic_builder.send(:add_control, semantic)
-        end
-
-        it 'call add_control_boolean for boolean field' do
-          semantic = @create_drd.semantics['kind']
-          @semantic_builder.should_receive(:add_control_boolean).and_return(anything())
-          @semantic_builder.send(:add_control, semantic)
-        end
-      end
     end
   end
 end
