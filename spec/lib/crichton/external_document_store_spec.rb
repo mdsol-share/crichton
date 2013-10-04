@@ -1,8 +1,9 @@
 require 'spec_helper'
+require 'crichton/external_document_store'
 
 module Crichton
-  describe 'ExternalDocumentStore' do
-    context '.new' do
+  describe ExternalDocumentStore do
+    describe '.new' do
       before do
         @pathname = 'test/path'
       end
@@ -32,7 +33,7 @@ module Crichton
       end
     end
 
-    context '.get' do
+    describe '#get' do
       before do
         @pathname = 'pathname'
         Dir.stub(:exists?).and_return(true)
