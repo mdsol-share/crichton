@@ -159,5 +159,10 @@ module Support
     def build_colorized_lint_output(error_or_warning, key, options = {})
       I18n.t(key, options).send(error_or_warning == :error ? :red : :yellow)
     end
+
+    def build_dir_for_lint_rspec(config_dir, files_to_copy)
+      FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
+      FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
+    end
   end
 end

@@ -61,12 +61,11 @@ describe 'rake crichton.lint' do
 
   context "using the 'all' option'" do
     before(:all) do
-      %x(mkdir api_descriptors)
-      %x(cp spec/fixtures/lint_resource_descriptors/missing_sections/* api_descriptors)
+      build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
     end
 
     after(:all) do
-      %x(rm -rf api_descriptors)
+      FileUtils.rm_rf('api_descriptors')
     end
 
     it 'processes all the files in the config folder' do
