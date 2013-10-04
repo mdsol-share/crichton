@@ -135,12 +135,9 @@ module Crichton
         end
       end
 
-
       describe '#validators' do
         it 'returns a hash' do
-            name_semantic.validators.should include(
-            { 'required' => nil, 'maxlength' => 50 }
-          )
+          name_semantic.validators.should include({ 'required' => nil, 'maxlength' => 50 })
         end
 
         it 'memoizes' do

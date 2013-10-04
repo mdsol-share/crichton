@@ -123,12 +123,12 @@ module Crichton
         #   Adds HTML tag of specific kind to its parent tag.
         def add_control(semantic)
           case semantic.field_type.to_sym
-            when :select
-              add_control_select(semantic)
-            when :boolean
-              add_control_boolean(semantic)
-            else
-              add_control_input(semantic)
+          when :select
+            add_control_select(semantic)
+          when :boolean
+            add_control_boolean(semantic)
+          else
+            add_control_input(semantic)
           end
         end
 
