@@ -12,7 +12,8 @@ module Crichton
         descriptor
       end
       let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, 'drds') }
-  
+      let(:name_semantic) { descriptor.transitions['create'].semantics['create-drd'].semantics['name'] }
+
       describe '.new' do
         it 'returns a subclass of Profile' do
           descriptor.should be_a(Profile)
@@ -125,6 +126,23 @@ module Crichton
       describe '#type' do
         it 'returns semantic' do
           descriptor.type.should == descriptor_document['type']
+        end
+      end
+
+      describe '#field_type' do
+        it 'returns the descriptor field_type' do
+          name_semantic.field_type.should == 'text'
+        end
+      end
+
+      describe '#validators' do
+        it 'returns a hash' do
+          name_semantic.validators.should include({ 'required' => nil, 'maxlength' => 50 })
+        end
+
+        it 'memoizes' do
+          validators = name_semantic.validators
+          name_semantic.validators.object_id == validators.object_id
         end
       end
     end

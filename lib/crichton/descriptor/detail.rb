@@ -12,6 +12,9 @@ module Crichton
       descriptor_reader :embed
 
       # @!macro string_reader
+      descriptor_reader :field_type
+
+      # @!macro string_reader
       descriptor_reader :rt
 
       # @!macro object_reader
@@ -19,7 +22,7 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :type
-      
+
       ##
       # Constructs a new instance of BaseDocumentDescriptor.
       #
@@ -92,7 +95,15 @@ module Crichton
           Crichton::Descriptor::Link.new(resource_descriptor, 'type', self_link.absolute_href)
         end
       end
-      
+
+      ##
+      # Returns attributes associated with descriptor.
+      #
+      # @return [Hash] Attributes.
+      def validators
+        @validators ||= [*descriptor_document['validators']].map { |v| v.is_a?(String) ? { v => nil } : v }.inject({}, :update)
+      end
+
     private
       def decorator_class
         @decorator_class ||= begin
