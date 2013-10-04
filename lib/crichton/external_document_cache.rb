@@ -127,10 +127,10 @@ module Crichton
       File.open(datafile_path(link), 'wb') { |f| f.write(response.body) }
       # Write the metadata
       new_metadata = {
-          link:    link_without_fragment(link),
-          status:  response.code,
-          headers: response.to_hash,
-          time:    Time.now }
+        link:    link_without_fragment(link),
+        status:  response.code,
+        headers: response.to_hash,
+        time:    Time.now }
       File.open(metafile_path(link), 'wb') { |f| f.write(new_metadata.to_json) }
     end
 
