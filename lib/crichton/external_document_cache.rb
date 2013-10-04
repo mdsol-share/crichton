@@ -55,12 +55,12 @@ module Crichton
     def valid?(timeout = 600)
       return false unless @metadata
       # The default timeout is to be used when no explicit timeout is set by the service
-      timeout = determine_timeout if cache_control_header_present?
+      timeout = determine_timeout(timeout) if cache_control_header_present?
       Time.parse(@metadata['time']) + timeout > Time.now
     end
 
     private
-    def determine_timeout
+    def determine_timeout(timeout)
       cache_control_elements = @headers['cache-control'].first.split(',').map { |y| y.strip.split('=') }
       max_age = cache_control_elements.assoc('max-age')
       timeout = max_age[1].to_i if max_age
