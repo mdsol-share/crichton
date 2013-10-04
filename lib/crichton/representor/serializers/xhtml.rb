@@ -122,11 +122,13 @@ module Crichton
         # @!macro add_control
         #   Adds HTML tag of specific kind to its parent tag.
         def add_control(semantic)
-          method_name = "add_control_#{semantic.field_type}"
-          if respond_to?(method_name, true)
-            self.send(method_name, semantic)
-          else
-            add_control_input(semantic.field_type, semantic)
+          case semantic.field_type.to_sym
+            when :select
+              add_control_select(semantic)
+            when :boolean
+              add_control_boolean(semantic)
+            else
+              add_control_input(semantic)
           end
         end
 
@@ -248,12 +250,13 @@ module Crichton
           end
         end
 
-        def add_control_input(field_type, semantic)
+        def add_control_input(semantic, field_type = nil)
+          field_type ||= semantic.field_type
           @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name}.merge(semantic.descriptor_validators))
         end
 
         def add_control_boolean(semantic)
-          add_control_input(:checkbox, semantic)
+          add_control_input(semantic, :checkbox)
         end
 
         def add_control_select(semantic)
@@ -336,7 +339,8 @@ module Crichton
           end
         end
 
-        def add_control_input(field_type, semantic)
+        def add_control_input(semantic, field_type = nil)
+          field_type ||= semantic.field_type
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) do
               @markup_builder.input({type: field_type, name: semantic.name}.merge(semantic.descriptor_validators))

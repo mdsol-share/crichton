@@ -12,6 +12,9 @@ module Crichton
       descriptor_reader :embed
 
       # @!macro string_reader
+      descriptor_reader :field_type
+
+      # @!macro string_reader
       descriptor_reader :rt
 
       # @!macro object_reader
@@ -22,9 +25,6 @@ module Crichton
 
       # @!macro array_reader
       descriptor_reader :validators
-
-      # @!macro string_reader
-      descriptor_reader :field_type
 
       ##
       # Constructs a new instance of BaseDocumentDescriptor.
@@ -104,7 +104,11 @@ module Crichton
       #
       # @return [Hash] Attributes.
       def descriptor_validators
-        validators ? (validators.inject Hash.new, :update) : {}
+        @descriptor_validators ||= if validators
+          validators.map { |v| v.is_a?(String) ? { v => nil } : v }.inject({}, :update)
+        else
+          {}
+        end
       end
 
     private

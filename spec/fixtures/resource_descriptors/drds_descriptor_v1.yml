@@ -191,7 +191,7 @@ descriptors:
                 href: http://alps.io/schema.org/Text
                 field_type: text
                 validators:
-                  - required: required
+                  - required
                   - maxlength: 50
               form-leviathan_uuid:
                 name: leviathan_uuid
@@ -206,7 +206,7 @@ descriptors:
                 href: http://alps.io/schema.org/Integer
                 field_type: number
                 validators:
-                  - required: required
+                  - required
                   - min: 0
                   - max: 100
               form-leviathan_email:
@@ -216,7 +216,7 @@ descriptors:
                 href: http://alps.io/schema.org/Integer
                 field_type: email
                 validators:
-                  - required: required
+                  - required
                   - pattern: "^.+@.+$"
   drd:
     doc: |
@@ -304,7 +304,7 @@ descriptors:
                 name: status
                 field_type: text
                 validators:
-                  - required: required
+                  - required
               form-kind:
                 type: semantic
                 name: kind
