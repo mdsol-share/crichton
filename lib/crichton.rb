@@ -101,7 +101,7 @@ module Crichton
       environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
       Configuration.new(YAML.load_file(config_file)[environment])
     else
-      raise "No crichton.yml file found in the configuration directory: #{config_directory}."
+      raise "No crichton.yml file found in the configuration directory: #{config_directory}. Tried #{config_file}."
     end
   end
 
