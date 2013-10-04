@@ -2,6 +2,17 @@ require 'json'
 require 'spec_helper'
 require 'fileutils'
 
+def prepare_metadata_file
+  new_metadata  = {
+      link:    @link,
+      status:  200,
+      headers: @headers || {},
+      time:    @time || (Time.now - 30) }
+  @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
+  File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+  new_metadata
+end
+
 module Crichton
   describe 'ExternalDocumentCache' do
     context '.new' do
@@ -55,13 +66,8 @@ module Crichton
 
       context 'in case of outdated metadata' do
         before do
-          new_metadata = {
-              link: @link,
-              status: 200,
-              headers: {},
-              time: Time.now - 100000}
-          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
-          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          @time =  Time.now - 100000
+          prepare_metadata_file
         end
 
         it 'tries to verify the data and accepts a 304 response' do
@@ -134,13 +140,9 @@ module Crichton
 
       context 'metadata with cache control' do
         it 'accepts data that is new enough' do
-          new_metadata = {
-              link: @link,
-              status: 200,
-              headers: {'cache-control' => ['max-age=20']},
-              time: Time.now - 2}
-          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
-          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          @headers = {'cache-control' => ['max-age=20']}
+          @time =  Time.now - 2
+          prepare_metadata_file()
           stub = stub_request(:get, @link).to_return(status: 404)
           edc = ExternalDocumentCache.new(@pathname)
           edc.get(@link).should == "Testfile #{@link}"
@@ -148,13 +150,8 @@ module Crichton
         end
 
         it 're-validated data that is too old' do
-          new_metadata = {
-              link: @link,
-              status: 200,
-              headers: {'cache-control' => ['max-age=20']},
-              time: Time.now - 30}
-          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
-          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          @headers = {'cache-control' => ['max-age=20']}
+          prepare_metadata_file()
           stub = stub_request(:get, @link).to_return(status: 304)
           edc = ExternalDocumentCache.new(@pathname)
           edc.get(@link)
@@ -162,26 +159,16 @@ module Crichton
         end
 
         it 're-validated data that young enough but has the must-revalidate header set' do
-          new_metadata = {
-              link: @link,
-              status: 200,
-              headers: {'cache-control' => ['max-age=200, must-revalidate']},
-              time: Time.now - 30}
-          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
-          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          @headers = {'cache-control' => ['max-age=200, must-revalidate']}
+          prepare_metadata_file()
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
           edc.get(@link).should == "Testfile #{@link}"
         end
 
         it 're-validated data that young enough but has the no-cache header set' do
-          new_metadata = {
-              link: @link,
-              status: 200,
-              headers: {'cache-control' => ['max-age=200, no-cache']},
-              time: Time.now - 30}
-          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
-          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          @headers = {'cache-control' => ['max-age=200, no-cache']}
+          prepare_metadata_file()
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_return(:status => 304, :body => "", :headers => {})
           edc.get(@link).should == "Testfile #{@link}"
@@ -189,14 +176,13 @@ module Crichton
       end
 
       context 'with custom metadata' do
+        before do
+          @time =  Time.now - 100000
+        end
+
         it 'sends the ETAG along in the request' do
-          new_metadata = {
-              link: @link,
-              status: 200,
-              headers: {'etag' => ['1234']},
-              time: Time.now - 100000}
-          @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
-          File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
+          @headers = {'etag' => ['1234']}
+          prepare_metadata_file()
           stub = stub_request(:get, @link).with(headers: {"If-None-Match" => "1234"}).
             to_return(:status => 304, :body => "", :headers => {})
           edc = ExternalDocumentCache.new(@pathname)
@@ -205,11 +191,8 @@ module Crichton
         end
 
         it 'sends the last modified along in the request' do
-          new_metadata = {
-              link: @link,
-              status: 200,
-              headers: {'last-modified' => ['1234']},
-              time: Time.now - 100000}
+          @headers = {'last-modified' => ['1234']}
+          new_metadata = prepare_metadata_file()
           @metafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.meta.json")
           File.open(@metafilename, 'wb') { |f| f.write(new_metadata.to_json) }
           stub = stub_request(:get, @link).with(headers: {'If-Modified-Since'=>'1234'}).
