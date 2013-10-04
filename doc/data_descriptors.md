@@ -54,7 +54,8 @@ Following table defines list of supported input types and validators which can b
 | boolean(*)     | x        |         |           |         |
 | select         | x        |         |           |         |
 
-(*) `boolean` is a generic input type used instead of `checkbox`. HTML5 `checkbox` type doesn't make sense in media-types other than HTML and therefore replaced with generic `boolean` type.
+(*) `boolean` is a generic input type used instead of `checkbox`.
+ HTML5 `checkbox` type doesn't make sense in media-types other than HTML and therefore replaced with generic `boolean` type.
 
 ## Examples
 The following example highlights a few parts of the [Example Resource Descriptor][] `descriptors` section associated
