@@ -48,7 +48,6 @@ module Crichton
       end
     end
 
-
     def present?
       !@metadata.nil?
     end
@@ -60,7 +59,7 @@ module Crichton
       Time.parse(@metadata['time']) + timeout > Time.now
     end
 
-
+    private
     def determine_timeout
       cache_control_elements = @headers['cache-control'].first.split(',').map { |y| y.strip.split('=') }
       max_age = cache_control_elements.assoc('max-age')
@@ -71,7 +70,6 @@ module Crichton
       timeout
     end
 
-    private
     def cache_control_header_present?
       @headers['cache-control']
     end
@@ -80,7 +78,6 @@ module Crichton
   class ExternalDocumentCache
     include Crichton::Helpers::ConfigHelper
     include Crichton::ExternalDocumentFilenameHelpers
-
 
     def initialize(cache_path = nil)
       @cache_path = cache_path || config.external_documents_cache_directory
