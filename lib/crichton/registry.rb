@@ -69,6 +69,12 @@ module Crichton
       descriptor_registry.any?
     end
 
+    ##
+    # external_descriptor_documents
+    def external_descriptor_documents
+      @external_descriptor_documents
+    end
+
     private
 
     ##

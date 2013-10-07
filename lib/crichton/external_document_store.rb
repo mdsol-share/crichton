@@ -14,18 +14,28 @@ module Crichton
     def compare_stored_documents_with_their_original_documents
       output = []
       stored_links.each do |link|
-        new_data = download(link)
-        old_data = get(link)
-        unless old_data == new_data
-          output << "Data of link #{link} has changed!"
-          output <<  Diffy::Diff.new(old_data, new_data, :context => 2)
+        new_code, new_data = download(link)
+        if new_code == '200'
+          old_data = get(link)
+          unless old_data == new_data
+            output << "Data of link #{link} has changed!"
+            output <<  Diffy::Diff.new(old_data, new_data, :context => 2)
+          end
+        else
+          output << "Retrieving link #{link} resulted in HTTP code #{new_code}"
         end
       end
       output.join("\n")
     end
 
+    def store_all_external_documents
+      urls = Crichton.external_descriptor_document_urls
+      urls.each { |url| download_link_and_store_in_document_store(url) }
+    end
+
     def download_link_and_store_in_document_store(link)
-      new_data = download(link)
+      new_code, new_data = download(link)
+      return unless new_code == '200'
       old_data = get(link)
       write_data = true
       if old_data && old_data != new_data
@@ -45,7 +55,7 @@ module Crichton
       uri = URI(link_without_fragment(link))
       request = Net::HTTP::Get.new(uri.request_uri)
       response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(request) }
-      response.body
+      return response.code, response.body
     end
 
     def write_data_to_store(link, data)

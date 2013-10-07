@@ -25,5 +25,10 @@ begin
     task :check_external_documents do |t|
       puts Crichton::ExternalDocumentStore.new.compare_stored_documents_with_their_original_documents
     end
+
+    desc 'Store all external documents in external document store'
+    task :store_all_external_documents do
+      Crichton::ExternalDocumentStore.new.store_all_external_documents
+    end
   end
 end
