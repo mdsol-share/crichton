@@ -1,9 +1,35 @@
 require 'fileutils'
 require 'crichton/helpers'
+require 'diffy'
 
 module Crichton
   class ExternalDocumentStore
     include Crichton::Helpers::ConfigHelper
+
+    def self.compare_stored_documents_with_their_original_documents
+      store = Crichton::ExternalDocumentStore.new
+      store.get_list_of_stored_links.each do |link|
+        new_data = store.download(link)
+        old_data = store.get(link)
+        if old_data != new_data
+          puts "Data of link #{link} has changed!"
+          puts  Diffy::Diff.new(old_data, new_data, :context => 2)
+        end
+      end
+    end
+
+    def self.download_link_and_store_in_document_store(link)
+      store = Crichton::ExternalDocumentStore.new
+      new_data = store.download(link)
+      old_data = store.get(link)
+      write_data = true
+      if old_data && old_data != new_data
+        STDOUT.puts "The existing and downloaded data doesn't match. Are you sure you want to overwrite it? (y/n)"
+        input = STDIN.gets.strip
+        write_data = false unless input == 'y'
+      end
+      store.write_data_to_store(link, new_data) if write_data
+    end
 
     def initialize(document_store_path = nil)
       @document_store_path = document_store_path || config.external_documents_store_directory
