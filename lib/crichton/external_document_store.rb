@@ -16,7 +16,7 @@ module Crichton
       stored_links.each do |link|
         new_data = download(link)
         old_data = get(link)
-        if old_data != new_data
+        unless old_data == new_data
           output << "Data of link #{link} has changed!"
           output <<  Diffy::Diff.new(old_data, new_data, :context => 2)
         end

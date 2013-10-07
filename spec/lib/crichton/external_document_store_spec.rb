@@ -116,23 +116,27 @@ module Crichton
         @pathname = File.join('spec', 'fixtures', 'external_documents_store')
         FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
         FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
-        @requests = {}
         @fixturelist = %w(test1 test2 test3)
         @fixturelist.each do |fn|
           link = "http://www.#{fn}.com/#{fn}"
           File.open(File.join(metafile_path(@pathname, link)), 'wb') { |f| f.write(link) }
           File.open(File.join(datafile_path(@pathname, link)), 'wb') { |f| f.write("#{fn}\n") }
-          @requests[fn] = stub_request(:get, link).to_return(status: 200, body: "#{fn}\n", headers: {})
         end
       end
 
       it 'makes a request to every link it finds a file for' do
+        request = stub_request(:get, /^http:\/\/www\.test.\.com\/test.$/).to_return(status: 200, body: "testX\n", headers: {})
         eds = ExternalDocumentStore.new(@pathname)
         eds.compare_stored_documents_with_their_original_documents
-        @requests.each { |_, v| v.should have_been_made }
+        request.should have_been_made.times(3)
       end
 
       it 'complains about changed file content' do
+        @requests = {}
+        @fixturelist.each do |fn|
+          link = "http://www.#{fn}.com/#{fn}"
+          @requests[fn] = stub_request(:get, link).to_return(status: 200, body: "#{fn}\n", headers: {})
+        end
         eds = ExternalDocumentStore.new(@pathname)
         link = "http://www.#{@requests.keys.first}.com/#{@requests.keys.first}"
         File.open(File.join(datafile_path(@pathname, link)), 'wb') do |f|
