@@ -3,9 +3,10 @@ require 'rake'
 require 'lint'
 require 'colorize'
 
-describe "rdlint" do
+describe 'rdlint' do
   let(:filename) { lint_spec_filename(*@filename) }
-  let (:filenames) { lint_spec_filename(*@filename1) << " " <<  lint_spec_filename(*@filename2) }
+  let (:filenames) { "#{lint_spec_filename(*@filename1)} #{lint_spec_filename(*@filename2)}" }
+  let (:false_string) { "false\n"}
 
   before do
     load_lint_translation_file
@@ -16,51 +17,51 @@ describe "rdlint" do
       %x(bundle exec rdlint #{@option} #{filename}).should == @expected_rdlint_output
     end
 
-    it 'outputs an expected value with the simplest invocation' do
+    it 'reports an expected value with the simplest invocation' do
       @filename = %w(protocol_section_errors no_entry_points.yml)
       @expected_rdlint_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
         filename: filename)
-      @option = ""
+      @option = ''
     end
 
     it 'displays empty output when all warnings are suppressed on a warnings only result' do
       @filename = %w(protocol_section_errors extraneous_properties.yml)
       @expected_rdlint_output = "In file '#{filename}':\n"
-      @option = "-w"
+      @option = '-w'
     end
 
-    it 'outputs an expected value with the no warning option' do
+    it 'reports an expected value with the no warning option' do
       @filename = %w(protocol_section_errors extraneous_properties.yml)
       @expected_rdlint_output = "In file '#{filename}':\n"
-      @option = "-w"
+      @option = '-w'
     end
 
-    it 'outputs a version number with the version option' do
+    it 'reports a version number with the version option' do
       @filename = %w(protocol_section_errors extraneous_properties.yml)
       @expected_rdlint_output = capture(:stdout) { Lint.version } << expected_output(:warning,
         'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename)
-      @option = "-v"
+      @option = '-v'
     end
   end
 
-  context "in strict mode" do
-     it 'outputs false when errors occur' do
+  context 'with the --strict option' do
+     it 'reports false when errors occur' do
       @filename = %w(protocol_section_errors missing_protocol_actions.yml)
-      %x(bundle exec rdlint -s #{filename}).should == "false\n".red << "\n"
+      %x(bundle exec rdlint -s #{filename}).should == %Q(#{false_string.red}\n)
     end
 
-    context "with multiple files" do
+    context 'with multiple files' do
       after do
-        %x(bundle exec rdlint -s #{filenames}).should == @output << "\n"
+        %x(bundle exec rdlint -s #{filenames}).should == %Q(#{@output}\n)
       end
 
-      it 'outputs false when one clean is clean, one dirty' do
+      it 'reports false when one clean is clean, one dirty' do
         @filename1 = %w(protocol_section_errors missing_protocol_actions.yml)
         @filename2 = %w(protocol_section_errors extraneous_properties.yml)
         @output = "false\n".red
       end
 
-      it 'outputs true all are clean' do
+      it 'reports true all are clean' do
         @filename1 = %w(protocol_section_errors extraneous_properties.yml)
         @filename2 = %w(protocol_section_errors extraneous_properties.yml)
         @output = "true\n".green
@@ -68,7 +69,7 @@ describe "rdlint" do
     end
   end
 
-  context "with the 'all' option" do
+  context 'with the --all option' do
     # stub does not work in a new shell apparently, so a forced copy to the default api_descriptor dir is made
     before(:all) do
       build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
@@ -80,8 +81,12 @@ describe "rdlint" do
 
     it 'processes all the files in the config folder' do
       execution_output = %x(bundle exec rdlint -a)
-      %w(nostate_descriptor.yml noprotocols_descriptor.yml nodescriptors_descriptor.yml).all? { |file|
-        execution_output.should include(file) }
+      all_files_processed = %w(nostate_descriptor.yml noprotocols_descriptor.yml
+        nodescriptors_descriptor.yml).all? do |file|
+          execution_output.include?(file)
+        end
+
+      all_files_processed.should be_true
     end
   end
 end
