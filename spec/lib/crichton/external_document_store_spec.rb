@@ -124,8 +124,13 @@ module Crichton
         end
       end
 
+      after do
+        FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
+      end
+
       it 'makes a request to every link it finds a file for' do
-        request = stub_request(:get, /^http:\/\/www\.test.\.com\/test.$/).to_return(status: 200, body: "testX\n", headers: {})
+        request = stub_request(:get, /^http:\/\/www\.test.\.com\/test.$/).
+            to_return(status: 200, body: "testX\n", headers: {})
         eds = ExternalDocumentStore.new(@pathname)
         eds.compare_stored_documents_with_their_original_documents
         request.should have_been_made.times(3)
@@ -144,10 +149,6 @@ module Crichton
         end
         eds.compare_stored_documents_with_their_original_documents.should ==
             "Data of link http://www.test1.com/test1 has changed!\n-Xtest1\n+test1\n"
-      end
-
-      after do
-        FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
       end
     end
   end
