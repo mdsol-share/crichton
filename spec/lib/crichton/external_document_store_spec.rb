@@ -151,5 +151,34 @@ module Crichton
             "Data of link http://www.test1.com/test1 has changed!\n-Xtest1\n+test1\n"
       end
     end
+
+    describe '.store_all_external_documents' do
+      before do
+        Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
+        @pathname = File.join('spec', 'fixtures', 'external_documents_store')
+        stub_request(:get, "http://alps.io/schema.org/Integer").to_return(:status => 200, :body => Support::ALPSSchema::AlpsInteger, :headers => {})
+        stub_request(:get, "http://alps.io/schema.org/Text").to_return(:status => 200, :body => Support::ALPSSchema::AlpsText, :headers => {})
+        stub_request(:get, "http://alps.io/schema.org/Array").to_return(:status => 200, :body => Support::ALPSSchema::AlpsArray, :headers => {})
+        stub_request(:get, "http://alps.io/schema.org/DateTime").to_return(:status => 200, :body => Support::ALPSSchema::AlpsDateTime, :headers => {})
+        stub_request(:get, "http://alps.io/schema.org/Thing/Leviathan").
+            to_return(:status => 200, :body => Support::ALPSSchema::AlpsLeviathan, :headers => {})
+        FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
+        FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
+        FileUtils.rm Dir.glob(File.join(@pathname, '*.profile'))
+      end
+
+      after do
+        FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
+        FileUtils.rm Dir.glob(File.join(@pathname, '*.profile'))
+      end
+
+      it 'loads external documents' do
+        eds = ExternalDocumentStore.new(@pathname)
+        eds.store_all_external_documents
+        files = Dir.glob(File.join([@pathname, '*'])).collect {|f| f.split('schema_org_').last}
+        files.should == ["Array.meta", "Array.profile", "DateTime.meta", "DateTime.profile", "Integer.meta",
+          "Integer.profile", "Text.meta", "Text.profile", "Thing_Leviathan.meta", "Thing_Leviathan.profile"]
+      end
+    end
   end
 end
