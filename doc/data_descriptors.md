@@ -29,10 +29,33 @@ associated transition that specifies its optional inclusion: OPTIONAL.
 The following properties are only used with semantic descriptors representing templates (media-type form, 
 in contrast to a link).
 
-* `field_type` - Defines the type of field for the form. Valid values are `input`, `boolean`, `select`, or 
-`multi-select`: REQUIRED.
+* `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
+[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
 * `enum` - Defines the options for select field types or references another profile associated with the enum: OPTIONAL.
-* `validators` - An array of validator objects associated with a field: OPTIONAL.
+* `validators` - Hash of validator objects associated with a field: OPTIONAL.
+
+Following table defines list of supported input types and validators which can be applied to it:
+
+| Input types / attributes | required | pattern | maxlength | min/max |
+|:----------------:|:----------:|:---------:|:-----------:|:---------:|
+| text           | x        | x       | x         |         |
+| search         | x        | x       |           |         |
+| email          | x        | x       |           |         |
+| tel            | x        | x       |           |         |
+| url            | x        | x       | x         |         |
+| datetime       | x        |         |           | x       |
+| time           | x        |         |           | x       |
+| date           | x        |         |           | x       |
+| month          | x        |         |           | x       |
+| week           | x        |         |           | x       |
+| time           | x        |         |           | x       |
+| datetime-local | x        |         |           | x       |
+| number         | x        |         |           | x       |
+| boolean(*)     | x        |         |           |         |
+| select         | x        |         |           |         |
+
+(*) `boolean` is a generic input type used instead of `checkbox`.
+ HTML5 `checkbox` type doesn't make sense in media-types other than HTML and therefore replaced with generic `boolean` type.
 
 ## Examples
 The following example highlights a few parts of the [Example Resource Descriptor][] `descriptors` section associated
@@ -78,9 +101,9 @@ descriptors:
                 doc: The name of the DRD.
                 type: semantic
                 href: http://alps.io/schema.org/Text
-                field_type: input
+                field_type: text
                 validators:
-                  - presence
+                  - required
               form-leviathan_uuid: # Unique ID that does not collide with 'leviathan_uuid' descriptor.
                 name: leviathan_uuid # Name associated with the associated element in a hypermedia response.
                 doc: The UUID of the creator Leviathan.
@@ -90,7 +113,7 @@ descriptors:
                 enum:
                   href: http://alps.io.example.org/Leviathans#list 
                 validators:
-                  - presence  
+                  - required
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
@@ -145,17 +168,17 @@ descriptors:
                   - renegade
                   - broken
                 validators:
-                  - presence
+                  - required
               form-kind: # Unique value to differentiate from 'kind' descriptor.
                 type: semantic
                 name: kind # Name associated with the associated element in a hypermedia response.doc: What kind is it.
                 href: http://alps.io/schema.org/Text
-                field_type: multi-select
+                field_type: select
                 enum:
                   - standard
                   - sentinel
                 validators:
-                  - presence 
+                  - required
 ```
 
 ## Descriptor Dependencies

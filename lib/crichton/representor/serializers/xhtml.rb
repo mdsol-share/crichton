@@ -114,6 +114,19 @@ module Crichton
           end
         end
 
+        # @!macro add_control
+        #   Adds HTML tag of specific kind to its parent tag.
+        def add_control(semantic)
+          case semantic.field_type.to_sym
+          when :select
+            add_control_select(semantic)
+          when :boolean
+            add_control_boolean(semantic)
+          else
+            add_control_input(semantic)
+          end
+        end
+
         # @!macro element_tag
         #   Returns the parent tag of a built element.
         def element_tag
@@ -210,30 +223,39 @@ module Crichton
         def element_tag
           :div
         end
-        
+
       private
         def add_semantic(semantic, options)
-          @markup_builder.span(semantic.value, itemprop: semantic.name)
+          @markup_builder.span(semantic.value.to_s, itemprop: semantic.name)
         end
 
-        def add_control_transition(transition, input_type = :text)
+        def add_control_transition(transition)
           method = transition.safe? ? transition.method : :post
           @markup_builder.form({action: transition.url, method: method, name: transition.name}) do
             transition.semantics.values.each do |semantic|
               # If this is a form semantic, pick up its attributes
               if semantic.semantics.any?
-                semantic.semantics.values.each { |form_semantic| add_control_input(form_semantic, input_type) }
+                semantic.semantics.values.each { |form_semantic| add_control(form_semantic) }
               else
-                add_control_input(semantic, input_type)
+                add_control(semantic)
               end
             end
             @markup_builder.input({type: :hidden, name: '_method', value: transition.method}) unless transition.safe?
             @markup_builder.input({type: :submit, value: transition.name})
           end
         end
-        
-        def add_control_input(semantic, input_type)
-          @markup_builder.input({itemprop: semantic.name, type: input_type, name: semantic.name})
+
+        def add_control_input(semantic, field_type = nil)
+          field_type ||= semantic.field_type
+          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name}.merge(semantic.validators))
+        end
+
+        def add_control_boolean(semantic)
+          add_control_input(semantic, :checkbox)
+        end
+
+        def add_control_select(semantic)
+          #TODO: Need to implement <select /> HTML control here
         end
       end
 
@@ -289,20 +311,20 @@ module Crichton
         end
 
         def add_query_transition(transition)
-          add_control_transition(transition, :search)
+          add_control_transition(transition)
         end
         
         # Builds a form control
-        def add_control_transition(transition, input_type = :text)
+        def add_control_transition(transition)
           method = transition.safe? ? transition.method : :post
           @markup_builder.li do
             @markup_builder.form({action: transition.url, method: method}) do
               @markup_builder.ul do
                 transition.semantics.values.each do |semantic|
                   if semantic.semantics.any?
-                    semantic.semantics.values.each { |form_semantic| add_control_input(form_semantic, input_type) }
+                    semantic.semantics.values.each { |form_semantic| add_control(form_semantic) }
                   else
-                    add_control_input(semantic, input_type)
+                    add_control(semantic)
                   end
                 end
               end
@@ -312,12 +334,17 @@ module Crichton
           end
         end
 
-        def add_control_input(semantic, input_type)
+        def add_control_input(semantic, field_type = nil)
+          field_type ||= semantic.field_type
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) do
-              @markup_builder.input({type: input_type, name: semantic.name})
+              @markup_builder.input({type: field_type, name: semantic.name}.merge(semantic.validators))
             end
           end
+        end
+
+        def add_control_select(semantic)
+          #TODO: Need to implement <select /> HTML control here
         end
       end
     end
