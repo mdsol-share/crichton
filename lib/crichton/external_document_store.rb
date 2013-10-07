@@ -6,41 +6,41 @@ module Crichton
   class ExternalDocumentStore
     include Crichton::Helpers::ConfigHelper
 
-    def self.compare_stored_documents_with_their_original_documents
-      store = Crichton::ExternalDocumentStore.new
-      store.get_list_of_stored_links.each do |link|
-        new_data = store.download(link)
-        old_data = store.get(link)
-        if old_data != new_data
-          puts "Data of link #{link} has changed!"
-          puts  Diffy::Diff.new(old_data, new_data, :context => 2)
-        end
-      end
+    def initialize(document_store_path = nil)
+      @document_store_path = document_store_path || config.external_documents_store_directory
+      FileUtils.mkdir_p(@document_store_path) unless Dir.exists?(@document_store_path)
     end
 
-    def self.download_link_and_store_in_document_store(link)
-      store = Crichton::ExternalDocumentStore.new
-      new_data = store.download(link)
-      old_data = store.get(link)
+    def compare_stored_documents_with_their_original_documents
+      output = []
+      stored_links.each do |link|
+        new_data = download(link)
+        old_data = get(link)
+        if old_data != new_data
+          output << "Data of link #{link} has changed!"
+          output <<  Diffy::Diff.new(old_data, new_data, :context => 2)
+        end
+      end
+      output.join("\n")
+    end
+
+    def download_link_and_store_in_document_store(link)
+      new_data = download(link)
+      old_data = get(link)
       write_data = true
       if old_data && old_data != new_data
         STDOUT.puts "The existing and downloaded data doesn't match. Are you sure you want to overwrite it? (y/n)"
         input = STDIN.gets.strip
         write_data = false unless input == 'y'
       end
-      store.write_data_to_store(link, new_data) if write_data
-    end
-
-    def initialize(document_store_path = nil)
-      @document_store_path = document_store_path || config.external_documents_store_directory
-      FileUtils.mkdir_p(@document_store_path) unless Dir.exists?(@document_store_path)
+      write_data_to_store(link, new_data) if write_data
     end
 
     def get(link)
       read_datafile(link)
     end
 
-    # These three methods are intended for managing the store - in particular by rake tasks.
+    private
     def download(link)
       uri = URI(link_without_fragment(link))
       request = Net::HTTP::Get.new(uri.request_uri)
@@ -53,11 +53,10 @@ module Crichton
       File.open(datafile_path(link), 'wb') { |f| f.write(data) }
     end
 
-    def get_list_of_stored_links
+    def stored_links
       Dir.glob(File.join([@document_store_path, '*.meta'])).map { |n| File.open(n, 'rb') {|f| f.read}}
     end
 
-    private
     def datafile_path(link)
       url = URI.parse(link)
       host_port_and_path = "#{url.host}:#{url.port.to_s}#{url.path}"
