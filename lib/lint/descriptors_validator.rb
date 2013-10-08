@@ -145,14 +145,14 @@ module Lint
     end
 
     def check_id_uniqueness
-      review_descriptor_ids(@resource_descriptor.descriptors, {})
+      review_descriptor_ids(@resource_descriptor.descriptors, '', {})
     end
 
-    def review_descriptor_ids(descriptors, id_hash)
+    def review_descriptor_ids(descriptors, parent_id, id_hash)
       descriptors.each do |descriptor|
-        add_error('descriptors.non_unique_descriptor', id: descriptor.id) if id_hash[descriptor.id]
+        add_error('descriptors.non_unique_descriptor', id: descriptor.id, parent: parent_id) if id_hash[descriptor.id]
         id_hash[descriptor.id] = descriptor.id unless id_hash[descriptor.id]
-        review_descriptor_ids(descriptor.descriptors, id_hash) if descriptor.descriptors
+        review_descriptor_ids(descriptor.descriptors, descriptor.id, id_hash) if descriptor.descriptors
       end
     end
 

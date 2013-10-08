@@ -48,7 +48,7 @@ descriptors:
         type: unsafe
         rt: drds
         descriptors:
-          create:
+          create-drd:
             type: semantic
             doc: semantic data for creating a drd
             href: update-drd # Indicates that this should dereference update-drd
@@ -56,17 +56,31 @@ descriptors:
               self: DRDs#create-drd
               help: documentation_base/Forms/create-drd
             sample: 1
+            descriptors:
+              filter:
+                doc: The filter being used.
+                type: semantic
+                href: http://alps.io/schema.org/Text
+                field_type: text
+                sample: all
       search:
         doc: Returns a list of DRDs that satisfy the search term.
         type: safe
         rt: drds
         descriptors:
-          search:
+          form-search:
             doc: The terms to search.
             type: semantic
             href: http://alps.io/schema.org/Text
             field_type: text
             sample: 1
+            descriptors:
+              filter:
+                doc: The filter being used.
+                type: semantic
+                href: http://alps.io/schema.org/Text
+                field_type: text
+                sample: all
 protocols:
   http:
     list:
