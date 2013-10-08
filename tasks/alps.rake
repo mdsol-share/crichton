@@ -18,7 +18,7 @@ begin
 
     desc "Download ALPS profile documents to the external document store"
     task :store_external_document, :link do |t, args|
-      store = Crichton::ExternalDocumentStore.new.download_link_and_store_in_document_store(args.link)
+      Crichton::ExternalDocumentStore.new.download_link_and_store_in_document_store(args.link)
     end
 
     desc "Compare ALPS profile documents to documents in the external document store"

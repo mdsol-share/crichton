@@ -243,6 +243,14 @@ module Support
      </descriptor>
     </alps>
     HERE
+
+    StubUrls = {
+      'http://alps.io/schema.org/Integer' => AlpsInteger,
+      'http://alps.io/schema.org/Text' => AlpsText,
+      'http://alps.io/schema.org/Array' => AlpsArray,
+      'http://alps.io/schema.org/DateTime' => AlpsDateTime,
+      'http://alps.io/schema.org/Thing/Leviathan' => AlpsLeviathan
+    }
   end
 
 end

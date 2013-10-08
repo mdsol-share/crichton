@@ -156,12 +156,9 @@ module Crichton
       before do
         Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
         @pathname = File.join('spec', 'fixtures', 'external_documents_store')
-        stub_request(:get, "http://alps.io/schema.org/Integer").to_return(:status => 200, :body => Support::ALPSSchema::AlpsInteger, :headers => {})
-        stub_request(:get, "http://alps.io/schema.org/Text").to_return(:status => 200, :body => Support::ALPSSchema::AlpsText, :headers => {})
-        stub_request(:get, "http://alps.io/schema.org/Array").to_return(:status => 200, :body => Support::ALPSSchema::AlpsArray, :headers => {})
-        stub_request(:get, "http://alps.io/schema.org/DateTime").to_return(:status => 200, :body => Support::ALPSSchema::AlpsDateTime, :headers => {})
-        stub_request(:get, "http://alps.io/schema.org/Thing/Leviathan").
-            to_return(:status => 200, :body => Support::ALPSSchema::AlpsLeviathan, :headers => {})
+        Support::ALPSSchema::StubUrls.each do |url, body|
+          stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
+        end
         FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
         FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
         FileUtils.rm Dir.glob(File.join(@pathname, '*.profile'))

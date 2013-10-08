@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'crichton'
 require 'crichton/helpers'
 require 'diffy'
 
@@ -64,7 +65,9 @@ module Crichton
     end
 
     def stored_links
-      Dir.glob(File.join([@document_store_path, '*.meta'])).map { |n| File.open(n, 'rb') {|f| f.read}}
+      Dir.glob(File.join([@document_store_path, '*.meta'])).map do |n|
+        File.open(n, 'rb') {|f| f.read }
+      end
     end
 
     def datafile_path(link)
