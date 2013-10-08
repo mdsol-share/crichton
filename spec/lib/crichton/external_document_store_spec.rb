@@ -156,8 +156,8 @@ module Crichton
       before do
         Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
         @pathname = File.join('spec', 'fixtures', 'external_documents_store')
-        Support::ALPSSchema::StubUrls.each do |url, body|
-          stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
+        Support::ALPSSchema::StubUrls.each do |url, body_data|
+          stub_request(:get, url).to_return(:status => 200, :body => body_data, :headers => {})
         end
         FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
         FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
