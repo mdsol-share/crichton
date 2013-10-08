@@ -171,6 +171,7 @@ descriptors:
             doc: The terms to search.
             type: semantic
             href: http://alps.io/schema.org/Text
+            field_type: text
       create:
         doc: Creates a DRD.
         type: unsafe
@@ -188,19 +189,35 @@ descriptors:
                 doc: The name of the DRD.
                 type: semantic
                 href: http://alps.io/schema.org/Text
-                field_type: input
+                field_type: text
                 validators:
-                  - presence
+                  - required
+                  - maxlength: 50
               form-leviathan_uuid:
                 name: leviathan_uuid
                 doc: The UUID of the creator Leviathan.
                 type: semantic
                 href: http://alps.io/schema.org/Text
-                field_type: select
-                enum:
-                  href: Leviathans#list
+                field_type: text
+              form-leviathan_health_points:
+                name: leviathan_health_points
+                doc: The health points of Leviathan.
+                type: semantic
+                href: http://alps.io/schema.org/Integer
+                field_type: number
                 validators:
-                  - presence     
+                  - required
+                  - min: 0
+                  - max: 100
+              form-leviathan_email:
+                name: leviathan_email
+                doc: The Leviathan respond to email.
+                type: semantic
+                href: http://alps.io/schema.org/Integer
+                field_type: email
+                validators:
+                  - required
+                  - pattern: "^.+@.+$"
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
@@ -285,24 +302,15 @@ descriptors:
                 doc: How is the DRD.
                 href: http://alps.io/schema.org/Text
                 name: status
-                field_type: select
-                enum:
-                  - working
-                  - renegade
-                  - broken
+                field_type: text
                 validators:
-                  - presence
+                  - required
               form-kind:
                 type: semantic
                 name: kind
                 doc: What kind is it.
                 href: http://alps.io/schema.org/Text
-                field_type: multi-select
-                enum:
-                  - standard
-                  - sentinel
-                validators:
-                  - presence 
+                field_type: boolean
       delete:
         doc: Drops a DRD out an air-lock.
         type: idempotent    

@@ -22,7 +22,7 @@
       <ul>
         <li>
           <label itemprop="search_term">
-            <input type="search" name="search_term"/>
+            <input type="text" name="search_term"/>
           </label>
         </li>
       </ul>
@@ -34,22 +34,32 @@
       <ul>
         <li>
           <label itemprop="status">
-            <input type="text" name="status"/>
+            <input type="text" name="status" required=""/>
           </label>
         </li>
         <li>
           <label itemprop="kind">
-            <input type="text" name="kind"/>
+            <input type="checkbox" name="kind"/>
           </label>
         </li>
         <li>
           <label itemprop="name">
-            <input type="text" name="name"/>
+            <input type="text" name="name" required="" maxlength="50"/>
           </label>
         </li>
         <li>
           <label itemprop="leviathan_uuid">
             <input type="text" name="leviathan_uuid"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="leviathan_health_points">
+              <input type="number" name="leviathan_health_points" required="" min="0" max="100"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="leviathan_email">
+              <input type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
           </label>
         </li>
       </ul>
@@ -75,12 +85,12 @@
               <ul>
                 <li>
                   <label itemprop="status">
-                    <input type="text" name="status"/>
+                    <input type="text" name="status" required=""/>
                   </label>
                 </li>
                 <li>
                   <label itemprop="kind">
-                    <input type="text" name="kind"/>
+                    <input type="checkbox" name="kind"/>
                   </label>
                 </li>
               </ul>
@@ -124,12 +134,12 @@
               <ul>
                 <li>
                   <label itemprop="status">
-                    <input type="text" name="status"/>
+                    <input type="text" name="status" required=""/>
                   </label>
                 </li>
                 <li>
                   <label itemprop="kind">
-                    <input type="text" name="kind"/>
+                    <input type="checkbox" name="kind"/>
                   </label>
                 </li>
               </ul>

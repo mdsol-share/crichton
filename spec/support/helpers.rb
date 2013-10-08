@@ -1,3 +1,5 @@
+require 'colorize'
+
 module Support
   module Helpers
 
@@ -128,13 +130,13 @@ module Support
     end
 
     def load_lint_translation_file
-      I18n.load_path =  [File.join(LINT_DIR, 'eng.yml')]
+      I18n.load_path = [File.join(LINT_DIR, 'eng.yml')]
       I18n.default_locale = 'eng'
     end
 
     def expected_output(error_or_warning, key, options = {})
-      (generate_lint_file_line(options[:filename]) << (error_or_warning == :error ? "\tERROR: " : "\tWARNING: ") <<
-        I18n.t(key, options) << "\n")
+      (generate_lint_file_line(options[:filename]) << (error_or_warning == :error ?
+        "\tERROR: ".red : "\tWARNING: ".yellow) << build_colorized_lint_output(error_or_warning, key, options) << "\n")
     end
 
     private
@@ -148,6 +150,19 @@ module Support
 
     def fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', args)
+    end
+
+    def default_lint_descriptor_file(file)
+      File.join(Crichton.descriptor_location, file)
+    end
+
+    def build_colorized_lint_output(error_or_warning, key, options = {})
+      I18n.t(key, options).send(error_or_warning == :error ? :red : :yellow)
+    end
+
+    def build_dir_for_lint_rspec(config_dir, files_to_copy)
+      FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
+      FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
   end
 end

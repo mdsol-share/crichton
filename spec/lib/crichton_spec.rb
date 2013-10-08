@@ -160,6 +160,10 @@ describe Crichton do
       before do
         @app = mock('app')
       end
+      
+      after do
+        Crichton.clear_config
+      end
 
       context 'when Rails' do
         after do
