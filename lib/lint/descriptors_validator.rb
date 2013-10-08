@@ -150,8 +150,8 @@ module Lint
 
     def review_descriptor_ids(descriptors, id_hash)
       descriptors.each do |descriptor|
-        add_error('descriptors.non_unique_descriptor', transition: descriptor.name) if id_hash[descriptor.id]
-        id_hash[descriptor.id] = descriptor.name unless id_hash[descriptor.id]
+        add_error('descriptors.non_unique_descriptor', id: descriptor.id) if id_hash[descriptor.id]
+        id_hash[descriptor.id] = descriptor.id unless id_hash[descriptor.id]
         review_descriptor_ids(descriptor.descriptors, id_hash) if descriptor.descriptors
       end
     end
