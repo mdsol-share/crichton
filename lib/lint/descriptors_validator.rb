@@ -10,6 +10,8 @@ module Lint
 
       compare_with_state_resources
 
+      check_id_uniqueness
+
       check_transition_equivalence
     end
 
@@ -139,6 +141,18 @@ module Lint
     def compare_with_other_hash(base_resources, others_resources, error)
       base_resources.keys.each do |resource_name|
         add_error(error, resource: resource_name) unless others_resources.include?(resource_name)
+      end
+    end
+
+    def check_id_uniqueness
+      review_descriptor_ids(@resource_descriptor.descriptors, '', {})
+    end
+
+    def review_descriptor_ids(descriptors, parent_id, id_hash)
+      descriptors.each do |descriptor|
+        add_error('descriptors.non_unique_descriptor', id: descriptor.id, parent: parent_id) if id_hash[descriptor.id]
+        id_hash[descriptor.id] = descriptor.id unless id_hash[descriptor.id]
+        review_descriptor_ids(descriptor.descriptors, descriptor.id, id_hash) if descriptor.descriptors
       end
     end
 
