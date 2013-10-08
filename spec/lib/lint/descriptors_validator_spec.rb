@@ -94,7 +94,14 @@ module Lint
         @errors = expected_output(:error, 'descriptors.invalid_method', resource: 'list', type: 'safe', mthd: 'POST',
           filename: filename) <<
           expected_output(:error, 'descriptors.invalid_method', resource: 'create', type: 'unsafe', mthd: 'PUT')
-     end
+      end
+
+      it 'reports errors when the descriptor ids are not unique' do
+        @filename = %w(descriptor_section_errors non_unique_ids.yml)
+        @errors = expected_output(:error, 'descriptors.non_unique_descriptor', element: 'create',
+          filename: filename) <<
+          expected_output(:error, 'descriptors.non_unique_descriptor', element: 'search')
+      end
     end
   end
 end

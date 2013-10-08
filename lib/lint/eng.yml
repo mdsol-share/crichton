@@ -37,6 +37,7 @@ eng:
     descriptor_resource_not_found: "Descriptor resource named '%{resource}' not found in the states section"
     invalid_return_type: "Descriptor transition '%{resource}' contains an invalid return type '%{rt}'"
     invalid_method: "Descriptor transition '%{resource}' of type '%{type}' uses an incorrect protocol method '%{mthd}'"
+    non_unique_descriptor: "Descriptor element '%{element}' is not unique. Please change or use the name: property"
   protocols:
     no_protocol:  "No underlying protocol (e.g. 'http') defined in the protocol section"
     protocol_empty:  "Protocol '%{protocol}' has no content"
