@@ -69,6 +69,12 @@ module Crichton
       descriptor_registry.any?
     end
 
+    ##
+    # external_descriptor_documents
+    def external_descriptor_documents
+      @external_descriptor_documents
+    end
+
     private
 
     ##
@@ -126,9 +132,7 @@ module Crichton
         if files.empty?
           raise "No resource descriptor directory exists or it is empty. Default is #{Crichton.descriptor_location}."
         end
-        files.each do |f|
-          register(YAML.load_file(f))
-        end
+        files.each { |f| register(YAML.load_file(f)) }
         # The above register step works on a per-file basis. If a early file references a later file, it won't be
         # able to dereference the data. So in order to handle this, the de-referencing needs to be done in a later
         # step. Not elegant, but should get the job done.
