@@ -173,8 +173,8 @@ module Crichton
         eds = ExternalDocumentStore.new(@pathname)
         eds.store_all_external_documents
         files = Dir.glob(File.join([@pathname, '*'])).collect {|f| f.split('schema_org_').last}
-        files.should == %w(Array.meta Array.profile DateTime.meta DateTime.profile Integer.meta
-          Integer.profile Text.meta Text.profile Thing_Leviathan.meta Thing_Leviathan.profile)
+        files.sort.should == %w(Array.meta Array.profile DateTime.meta DateTime.profile Integer.meta
+          Integer.profile Text.meta Text.profile Thing_Leviathan.meta Thing_Leviathan.profile).sort
       end
     end
   end
