@@ -10,7 +10,12 @@ formed: [yaml parser] (http://yaml-online-parser.appspot.com/)
 Crichton lint works to validate the logic of a single resource descriptor file, outputting errors, warning
 and hints to help generate an optimal document.
 
-Lint can be invoked in two ways, once crichton is added to your project as a gem:
+Lint can be used to help you build a clean resource descriptor file, and once a clean file is created, lint can
+be invoked using rspec to make sure that any changes to the file or new requirements to Crichton result do not
+inadvertently results in a error laden document. It is highly recommended to generate an Rspec file with Crichton lint
+for continuous integration purposes.
+
+Lint can be invoked in 2 ways, once crichton is added to your project as a gem:
 
 ### A lint gem ruby executable  (rdlint)
 
@@ -71,3 +76,26 @@ For native ruby access to lint validation, you can do the following (provided th
 the crichton/lib/lint folder). This will return a pure ruby true / false return value.
 
 `Lint.validate(<filename>, {strict: true})  # => true or false`
+
+## Generating Rspec files for Crichton Lint
+
+In the Crichton project, the file spec/lib/resource_descriptors/drds_descriptor.rb can be used as a template to
+create an rspec test for your project.
+
+The file uses a path to a resource descriptor file specific to the Crichton project, but you can update the
+following line for your project:
+
+  #   let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }
+
+The rspec spec for Crichton employs 5 simple tests:
+
+1. Makes sure that the resource descriptor file specified is correct.
+2. Tests for an error count
+3. Tests for a warning count
+4. Does a pass/fail test (returning true or false) using the --strict option
+5. Does a pass/fail test for all resource descriptor files in the Crichton config folder (defaults to /api_descriptors
+in your project). Returns true if all resource descriptor files in the config file are clean. This, of course, ignores
+the individual file specified.
+
+
+
