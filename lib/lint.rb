@@ -13,8 +13,8 @@ module Lint
   def self.validate(filename, options = {})
 
     # Initialize lint messages
-    I18n.load_path = [File.dirname(__FILE__)+'/lint/eng.yml']
-    I18n.default_locale = 'eng'
+    I18n.load_path = [File.dirname(__FILE__)+'/lint/en.yml']
+    I18n.default_locale = 'en'
 
     # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.
     begin
@@ -79,6 +79,14 @@ module Lint
 
   def self.version
     puts "Crichton version: #{Crichton::VERSION::STRING}\n\n"
+  end
+
+  def self.error_count(validators)
+    error_count = validators.inject(0) { |i, validator| i + validator.errors.count }
+  end
+
+  def self.warning_count(validators)
+    warning_count = validators.inject(0) { |i, validator| i + validator.warnings.count }
   end
 
   private
