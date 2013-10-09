@@ -1,4 +1,4 @@
-eng:
+en:
   catastrophic:
     no_secondary_descriptors: "At least one resource type must be defined (e.g. object, collection, etc.) in states: and descriptors: sections"
     no_states: "No states defined for resource '%{resource}'"
