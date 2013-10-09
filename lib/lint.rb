@@ -13,8 +13,7 @@ module Lint
   def self.validate(filename, options = {})
 
     # Initialize lint messages
-    I18n.load_path = [File.dirname(__FILE__)+'/lint/en.yml']
-    I18n.default_locale = 'en'
+    load_lint_translation_file
 
     # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.
     begin
@@ -75,6 +74,11 @@ module Lint
     else
       raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
     end
+  end
+
+  def self.load_lint_translation_file
+    I18n.load_path = [File.dirname(__FILE__)+'/lint/en.yml']
+    I18n.default_locale = 'en'
   end
 
   def self.version
