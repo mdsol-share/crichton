@@ -62,7 +62,7 @@ module Crichton
       ##
       # Determines how embedded elements should be embedded
       #
-      # @return [:embed, :link, :nil]
+      # @return [Symbol, NilClass] Either :embed, :link or nil
       def embed_type(options)
         if %w(single multiple).include?(embed)
           :embed
