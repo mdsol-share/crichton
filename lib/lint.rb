@@ -9,11 +9,9 @@ require 'lint/protocol_validator'
 require 'colorize'
 
 module Lint
+
   # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
   def self.validate(filename, options = {})
-
-    # Initialize lint messages
-    load_lint_translation_file
 
     # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.
     begin
@@ -28,12 +26,15 @@ module Lint
     resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename, options)
     resource_validator.validate
 
-    if options[:strict]
-      return false unless resource_validator.errors.empty?
-    else
-      puts "In file '#{filename}':" unless options[:strict]
+    # output filename unless there are no non-text options (strict, error_count, warning_count)
+    puts "In file '#{filename}':" unless non_output?(options)
 
-      unless resource_validator.errors.empty?
+    unless resource_validator.errors.empty?
+      if options[:strict]
+        return false
+      elsif options[:error_count]
+        return error_count(resource_validator)
+      else
         # any errors caught at this point are so catastrophic that it won't be useful to continue
         resource_validator.report
         return [resource_validator]
@@ -48,11 +49,15 @@ module Lint
 
     validators.each do |validator|
       validator.validate
-      validator.report unless options[:strict]
+      validator.report unless non_output?(options)
     end
 
     if options[:strict]
       return validators.all? { |validator| validator.errors.empty? }
+    elsif options[:error_count]
+      error_count(validators)
+    elsif options[:warning_count]
+      warning_count(validators)
     else
       puts I18n.t('aok').green unless errors_and_warnings_found?(validators)
 
@@ -67,34 +72,44 @@ module Lint
         if options[:strict]
           return false unless validator_returns
         else
-          puts "\n" unless options[:strict]
+          puts "\n" unless non_output?(options)
         end
       end
-      options[:strict] ? true : validator_returns
+      non_output?(options) ? all_option_return(validator_returns, options) : validator_returns
     else
       raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
     end
-  end
-
-  def self.load_lint_translation_file
-    I18n.load_path = [File.dirname(__FILE__)+'/lint/en.yml']
-    I18n.default_locale = 'en'
   end
 
   def self.version
     puts "Crichton version: #{Crichton::VERSION::STRING}\n\n"
   end
 
+  private
   def self.error_count(validators)
-    error_count = validators.inject(0) { |i, validator| i + validator.errors.count }
+    validators.map(&:error_count).reduce(0, :+)
   end
 
   def self.warning_count(validators)
-    warning_count = validators.inject(0) { |i, validator| i + validator.warnings.count }
+    validators.map(&:warning_count).reduce(0, :+)
   end
 
-  private
   def self.errors_and_warnings_found?(validators)
     validators.any? { |validator| validator.issues? }
   end
+
+  def self.non_output?(options)
+    options[:strict] || options[:error_count] || options[:warning_count]
+  end
+
+  def self.all_option_return(validators, options)
+    options[:strict] ? true : options[:error_count] ? error_count(validators) : warning_count(validators)
+  end
+
+  def self.load_translation_file
+    I18n.load_path = [File.join(File.dirname(__FILE__),'/lint/en.yml')]
+    I18n.default_locale = 'en'
+  end
+
+  Lint.load_translation_file
 end

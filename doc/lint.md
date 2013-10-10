@@ -11,9 +11,9 @@ Crichton lint works to validate the logic of a single resource descriptor file, 
 and hints to help generate an optimal document.
 
 Lint can be used to help you build a clean resource descriptor file, and once a clean file is created, lint can
-be invoked using rspec to make sure that any changes to the file or new requirements to Crichton result do not
-inadvertently results in a error laden document. It is highly recommended to generate an Rspec file with Crichton lint
-for continuous integration purposes.
+be invoked using rspec to make sure that any changes to the file or new requirements to Crichton do not inadvertently
+result in an error. It is highly recommended to generate an Rspec file with Crichton lint for continuous integration
+purposes.
 
 Lint can be invoked in 2 ways, once crichton is added to your project as a gem:
 
@@ -21,7 +21,7 @@ Lint can be invoked in 2 ways, once crichton is added to your project as a gem:
 
 `bundle exec rdlint <options> <resource desciptor file>`
 
-rdlint can validate a single descriotor file or, with a -all option, will validate all the descriptor files
+rdlint can validate a single descriptor file or, with a --all option, will validate all the descriptor files
 found in the current project (the location of descriptor files defaults to an api_descriptors directory).
 
 The options to rdlint are:
@@ -76,6 +76,14 @@ For native ruby access to lint validation, you can do the following (provided th
 the crichton/lib/lint folder). This will return a pure ruby true / false return value.
 
 `Lint.validate(<filename>, {strict: true})  # => true or false`
+
+### Warning Count and Error Count mode
+
+Available in native ruby access to lint validation are two addition options, error_count and warning_count, which can
+invoked as an optional hash, similar to the strict mode above:
+
+`Lint.validate(<filename>, {error_count: true})  # => # of errors found
+`Lint.validate(<filename>, {warning_count: true})  # => # of warnings found
 
 ## Generating Rspec files for Crichton Lint
 

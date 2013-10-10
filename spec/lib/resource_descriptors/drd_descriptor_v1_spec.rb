@@ -14,21 +14,18 @@ describe 'validate' do
 
   describe 'inspects the return value' do
     # Lint reports information to stdout. Add the following method if you do not want to see Lint output
-    #
     before do
       $stdout.stub(:write)
     end
 
     it 'to match on an error count' do
-      validators = validator.validate(filename)
       # Should change when we fix up drds_descriptor_v1.yml
-      Lint.error_count(validators).should == 6
+      validator.validate(filename, {error_count: true}).should == 6
     end
 
     it 'to match on a warning count' do
-      validators = validator.validate(filename)
       # Should change when we fix up drds_descriptor_v1.yml
-      Lint.warning_count(validators).should == 20
+      validator.validate(filename, {warning_count: true}).should == 20
     end
 
     it 'performing a pass/fails test with the --strict option' do

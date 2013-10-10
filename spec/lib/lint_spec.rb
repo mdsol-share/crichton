@@ -11,7 +11,7 @@ describe Lint do
   end
 
   describe '.validate' do
-    context 'without the --strict option' do
+    context 'with no options' do
       after do
         validation_report.should == (@errors || @message)
       end
@@ -43,12 +43,42 @@ describe Lint do
       end
     end
 
+    context 'with the error_count or warning_count option' do
+      after do
+        Lint.validate(filename, @option).should == @count
+      end
+
+      it 'returns no errors for a clean descriptor file' do
+        @filename = %w(clean_descriptor_file.yml)
+        @option = {error_count: true}
+        @count = 0
+      end
+
+      it 'returns no warnings for a clean descriptor file' do
+        @filename = %w(clean_descriptor_file.yml)
+        @option = {warning_count: true}
+        @count = 0
+      end
+
+      it 'returns an expected number of errors for a descriptor file' do
+        @filename = %w(protocol_section_errors missing_required_properties.yml)
+        @option = {error_count: true}
+        @count = 2
+      end
+
+      it 'returns an expected number of warnings for a descriptor file' do
+        @filename = %w(protocol_section_errors bad_status_codes.yml)
+        @option = {warning_count: true}
+        @count = 3
+      end
+    end
+
     context 'with the --strict option' do
       after do
         Lint.validate(filename, {strict: true}).should @retval ? be_true : be_false
       end
 
-      it 'returns true  when a clean descriptor file is validated' do
+      it 'returns true when a clean descriptor file is validated' do
         @filename = %w(protocol_section_errors extraneous_properties.yml)
         @retval = true
       end
@@ -58,9 +88,28 @@ describe Lint do
         @retval = false
       end
 
-      it 'returns false  when a catastrophic error is found' do
+      it 'returns false when a catastrophic error is found' do
         @filename = %w(missing_sections nostate_descriptor.yml)
         @return_val = false
+      end
+    end
+
+    context 'when both --strict and other options are set' do
+      after do
+        Lint.validate(filename, @option).should be_false
+      end
+
+      # error_count > 0, therefore cannot be false
+      it 'the strict option takes precedence over the error_count option' do
+        @filename = %w(missing_sections nodescriptors_descriptor.yml)
+        @option = {strict: true, error_count: true}
+        @retval = false
+      end
+
+      it 'the strict option takes precedence over the no_warnings option' do
+        @filename = %w(missing_sections nodescriptors_descriptor.yml)
+        @option = {strict: true, no_warnings: true}
+        @retval = false
       end
     end
   end
