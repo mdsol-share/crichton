@@ -58,7 +58,23 @@ module Crichton
       def embeddable?
         !!embed
       end
-      
+
+      ##
+      # Determines how embedded elements should be embedded
+      #
+      # @return [:embed, :link, :nil]
+      def embed_type(options)
+        if %w(single multiple).include?(embed)
+          :embed
+        elsif %w(single-link multiple-link).include?(embed)
+          :link
+        elsif %w(single-optional multiple-optional).include?(embed)
+          options[:optional_embed_mode]
+        else
+          nil
+        end
+      end
+
       ##
       # Returns an array of the profile, type and help links associated with the descriptor.
       #

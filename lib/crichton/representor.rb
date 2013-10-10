@@ -86,7 +86,7 @@ module Crichton
         resource_descriptor.send(descriptors).values.send(filter) { |descriptor| descriptor.embeddable? }
       end
     end
-    
+
     ##
     # Returns a hash populated with the data related semantic keys and underlying descriptors for the represented
     # resource.
@@ -159,7 +159,19 @@ module Crichton
     def each_link_transition(options = nil, &block)
       each_link_transition_enumerator(options, &block)
     end
-    
+
+    SELF_STRING = 'self'
+
+    ##
+    # Find and return the self transition
+    #
+    # @return [Hash] The data.
+    def self_transition
+      s_trans = nil
+      each_link_transition { |l| s_trans = l if l.name == SELF_STRING }
+      s_trans
+    end
+
     ##
     # Returns the profile, type and help links of the associated descriptor.
     #
