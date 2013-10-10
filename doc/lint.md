@@ -82,8 +82,8 @@ the crichton/lib/lint folder). This will return a pure ruby true / false return 
 Available in native ruby access to lint validation are two addition options, error_count and warning_count, which can
 invoked as an optional hash, similar to the strict mode above:
 
-`Lint.validate(<filename>, {error_count: true})  # => # of errors found
-`Lint.validate(<filename>, {warning_count: true})  # => # of warnings found
+`Lint.validate(<filename>, {error_count: true})  # => # of errors found`
+`Lint.validate(<filename>, {warning_count: true})  # => # of warnings found`
 
 ## Generating Rspec files for Crichton Lint
 
