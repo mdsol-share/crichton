@@ -20,10 +20,12 @@ indicates the URI of the descriptor for top-level descriptors.
     * `href` - The underlying ALPS profile, either representing another resource or a primitive profile. See 
 [Primitive Profiles](primitive_profiles.md) for more information: REQUIRED.
     * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
-    * `embed` - Indicates that this resource should be embedded in a response. Valid values are `single`, `multiple`, 
-and `optional`. The default, if not specified, is `single`. The value `multiple` indicates the item should be embedded 
-as an array. The value `optional` indicates this property should only be included is specifically requested using an 
-associated transition that specifies its optional inclusion: OPTIONAL.
+    * `embed` - Indicates that this resource should be embedded in a response.
+    Valid values are `single`, `multiple`, `single-link`, `multiple-link`, `single-optional` and `multiple-optional`.
+    The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
+    embedded as an array. The values `single-optional` and `multiple-optional` indicate this property should only be
+    included if it is specifically requested.
+    The option `:optional_embed_mode` can be either `:embed`, `:link` or `nil`.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
