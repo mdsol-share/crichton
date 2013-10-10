@@ -93,7 +93,7 @@ create an rspec test for your project.
 The file uses a path to a resource descriptor file specific to the Crichton project, but you can update the
 following line for your project:
 
-  #   let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }
+  `#   let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }`
 
 The rspec spec for Crichton employs 5 simple tests:
 
