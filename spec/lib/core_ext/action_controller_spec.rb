@@ -24,6 +24,10 @@ describe 'ActionController' do
   end
 
   describe '#show' do
+    before do
+      @controller.action_name = 'show'
+    end
+
     context 'when it is not a crichton representor model' do
       it 'attempts to render html template and fails' do
         expect { @controller.show(@model) }.to raise_error { ActionView::MissingTemplate }
