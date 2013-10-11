@@ -37,6 +37,14 @@ module Lint
       errors.any? || warnings.any?
     end
 
+    def error_count
+      @errors.count
+    end
+
+    def warning_count
+      @warnings.count
+    end
+
     protected
     def add_error(message, options = {})
       @errors << I18n.t(message, options)
