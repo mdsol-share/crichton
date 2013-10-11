@@ -79,11 +79,11 @@ the crichton/lib/lint folder). This will return a pure ruby true / false return 
 
 ### Warning Count and Error Count mode
 
-Available in native ruby access to lint validation are two addition options, error_count and warning_count, which can
-invoked as an optional hash, similar to the strict mode above:
+Available in native ruby access to lint validation are two addition options, 'count: error' 'and count: warning', which
+can be invoked as an optional hash, similar to the strict mode above:
 
-`Lint.validate(<filename>, {error_count: true})  # => # of errors found`
-`Lint.validate(<filename>, {warning_count: true})  # => # of warnings found`
+`Lint.validate(<filename>, {count: :error})  # => # of errors found`
+`Lint.validate(<filename>, {count: :warning})  # => # of warnings found`
 
 ## Generating Rspec files for Crichton Lint
 
@@ -95,15 +95,12 @@ following line for your project:
 
   `#   let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }`
 
-The rspec spec for Crichton employs 5 simple tests:
+The rspec spec for Crichton employs 4 simple tests:
 
 1. Makes sure that the resource descriptor file specified is correct.
 2. Tests for an error count
 3. Tests for a warning count
 4. Does a pass/fail test (returning true or false) using the --strict option
-5. Does a pass/fail test for all resource descriptor files in the Crichton config folder (defaults to /api_descriptors
-in your project). Returns true if all resource descriptor files in the config file are clean. This, of course, ignores
-the individual file specified.
 
 
 

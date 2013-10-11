@@ -43,32 +43,32 @@ describe Lint do
       end
     end
 
-    context 'with the error_count or warning_count option' do
+    context 'with the count: :error or count: :warning option' do
       after do
         Lint.validate(filename, @option).should == @count
       end
 
       it 'returns no errors for a clean descriptor file' do
         @filename = %w(clean_descriptor_file.yml)
-        @option = {error_count: true}
+        @option = {count: :error}
         @count = 0
       end
 
       it 'returns no warnings for a clean descriptor file' do
         @filename = %w(clean_descriptor_file.yml)
-        @option = {warning_count: true}
+        @option = {count: :warning}
         @count = 0
       end
 
       it 'returns an expected number of errors for a descriptor file' do
         @filename = %w(protocol_section_errors missing_required_properties.yml)
-        @option = {error_count: true}
+        @option = {count: :error}
         @count = 2
       end
 
       it 'returns an expected number of warnings for a descriptor file' do
         @filename = %w(protocol_section_errors bad_status_codes.yml)
-        @option = {warning_count: true}
+        @option = {count: :warning}
         @count = 3
       end
     end
@@ -100,15 +100,15 @@ describe Lint do
       end
 
       # error_count > 0, therefore cannot be false
-      it 'the strict option takes precedence over the error_count option' do
+      it 'the strict option takes precedence over the count: :error option' do
         @filename = %w(missing_sections nodescriptors_descriptor.yml)
-        @option = {strict: true, error_count: true}
+        @option = {strict: true, count: :error}
         @retval = false
       end
 
       it 'the strict option takes precedence over the no_warnings option' do
         @filename = %w(missing_sections nodescriptors_descriptor.yml)
-        @option = {strict: true, no_warnings: true}
+        @option = {strict: true, count: :warning}
         @retval = false
       end
     end

@@ -32,7 +32,7 @@ module Lint
     unless resource_validator.errors.empty?
       if options[:strict]
         return false
-      elsif options[:error_count]
+      elsif options[:count] == :error
         return error_count(resource_validator)
       else
         # any errors caught at this point are so catastrophic that it won't be useful to continue
@@ -54,10 +54,8 @@ module Lint
 
     if options[:strict]
       return validators.all? { |validator| validator.errors.empty? }
-    elsif options[:error_count]
-      error_count(validators)
-    elsif options[:warning_count]
-      warning_count(validators)
+    elsif count_option?(options)
+      return error_or_warning_count(options, validators)
     else
       puts I18n.t('aok').green unless errors_and_warnings_found?(validators)
 
@@ -86,6 +84,14 @@ module Lint
   end
 
   private
+  def self.count_option?(options)
+    options[:count]  == :error || options[:count] == :warning
+  end
+
+  def self.error_or_warning_count(options, validators)
+     options[:count]  == :error ? error_count(validators) : warning_count(validators)
+   end
+
   def self.error_count(validators)
     validators.map(&:error_count).reduce(0, :+)
   end
@@ -99,11 +105,12 @@ module Lint
   end
 
   def self.non_output?(options)
-    options[:strict] || options[:error_count] || options[:warning_count]
+    options[:strict] || count_option?(options)
   end
 
   def self.all_option_return(validators, options)
-    options[:strict] ? true : options[:error_count] ? error_count(validators) : warning_count(validators)
+    return true if options[:strict]
+    error_or_warning_count(options, validators)
   end
 
   def self.load_translation_file
@@ -111,5 +118,5 @@ module Lint
     I18n.default_locale = 'en'
   end
 
-  Lint.load_translation_file
+  self.load_translation_file
 end
