@@ -101,6 +101,24 @@ module Lint
         @errors = expected_output(:error, 'descriptors.non_unique_descriptor', id: 'filter', parent: 'form-search',
           filename: filename)
       end
+
+      it 'reports errors when field_type names are not valid' do
+        @filename = %w(descriptor_section_errors invalid_field_type.yml)
+        @errors = expected_output(:error, 'descriptors.invalid_field_type', id: 'create-drd', field_type: 'textt',
+          filename: filename)
+      end
+
+      it 'reports errors when field_type validator names are not valid' do
+        @filename = %w(descriptor_section_errors invalid_field_validator.yml)
+        @errors = expected_output(:error, 'descriptors.invalid_field_validator', id: 'create-drd', field_type: 'text',
+          validator: 'maxlen', filename: filename)
+      end
+
+      it 'reports errors when a validator is not permitted for a field_type' do
+        @filename = %w(descriptor_section_errors disallowed_field_validator.yml)
+        @errors = expected_output(:error, 'descriptors.not_permitted_field_validator', id: 'create-drd', field_type:
+          'datetime', validator: 'maxlength', filename: filename)
+      end
     end
   end
 end
