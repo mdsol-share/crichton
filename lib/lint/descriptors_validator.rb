@@ -189,7 +189,7 @@ module Lint
     end
 
     def self.allowable_validators
-      @available_validators ||= {pattern: %w(text search email tel url), maxlength: %w(text url),
+      @allowable_validators ||= {pattern: %w(text search email tel url), maxlength: %w(text url),
         min: %w(datetime date time month week datetime-local number),
         max: %w(datetime date time month week datetime-local number),
         required: self.field_types}
