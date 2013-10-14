@@ -252,6 +252,7 @@ module Crichton
         []
       end
       if names_select.first
+        # the names may be in the form name:embed or name:link - this removes it and puts it into embed_optional
         parse_embed_optionals(names_select, options)
       end
       names_select.tap { |filters| filters[0] = Array.wrap(filters[0]).map(&:to_s) if filters.any? }
