@@ -73,7 +73,7 @@ module Crichton
         elsif SINGLE_LINK_MULTIPLE_LINK.include?(embed)
           :link
         elsif SINGLE_OPTIONAL_MULTIPLE_OPTIONAL.include?(embed)
-            options[:embed_optional] && options[:embed_optional][self.name]
+          options[:embed_optional] && options[:embed_optional][self.name]
         else
           :embed
         end
