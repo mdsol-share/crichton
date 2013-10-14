@@ -25,7 +25,14 @@ indicates the URI of the descriptor for top-level descriptors.
     The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
     embedded as an array. The values `single-optional` and `multiple-optional` indicate this property should only be
     included if it is specifically requested.
-    The option `:optional_embed_mode` can be either `:embed`, `:link` or `nil`.
+    The ActiveModel::Serialization#serializable_hash-like options `include`, `exclude`, `only` or `except` should
+    contain either a string or a symbol or an array with strings or symbols that match the names of the items to be
+    included or excluded. If the value of the embed property is one of the optional properties `single-optional` or
+    `multiple-optional` and the string contains a colon `:` then the first part of the string is the name and the part
+    after the colon is the instruction on how to embed it - it can be either `embed` or `link`.
+    If one does not want to use include/exclude etc., then it is possible to explicitly set the embedding option by
+    passing in a parameter `:embed_optional` which is to be a hash with string keys as the names and either `:embed` or
+    `:link` as the values.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
