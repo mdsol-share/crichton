@@ -87,7 +87,7 @@ module Lint
         FieldTypeValidator.validate_field_type(self, descriptor) if descriptor.field_type
 
         # all NON top level descriptors should have a sample and href entry
-          add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
+        add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
         add_warning('descriptors.property_missing', options.merge({prop: 'href'})) unless descriptor.href
       end
     end
@@ -135,9 +135,9 @@ module Lint
     def compare_with_state_resources
       # TODO: change descriptor array into a hash with name as keys, or convert state names to an array of names
       compare_with_other_hash(resource_descriptor.descriptor_document['descriptors'], resource_descriptor.states,
-                              'descriptors.descriptor_resource_not_found')
+        'descriptors.descriptor_resource_not_found')
       compare_with_other_hash(resource_descriptor.states, resource_descriptor.descriptor_document['descriptors'],
-                              'descriptors.state_resource_not_found')
+        'descriptors.state_resource_not_found')
     end
 
     def compare_with_other_hash(base_resources, others_resources, error)
@@ -190,28 +190,36 @@ module Lint
 
     def self.allowable_validators
       @available_validators ||= {pattern: %w(text search email tel url), maxlength: %w(text url),
-                       min: %w(datetime date time month week datetime-local number),
-                       max: %w(datetime date time month week datetime-local number),
-                       required: self.field_types}
+        min: %w(datetime date time month week datetime-local number),
+        max: %w(datetime date time month week datetime-local number),
+        required: self.field_types}
     end
 
     def self.validate_field_type(descriptor_validator, descriptor)
       if field_types.include?(descriptor.field_type)
-        descriptor.validators.keys.each do |validator|
-          if validator_types.include?(validator)
-            # test for allowable validator for this field_type
-            unless allowable_validators[validator.to_sym].include?(descriptor.field_type)
-              descriptor_validator.add_error('descriptors.not_permitted_field_validator', id: descriptor.id, field_type:
-                descriptor.field_type, validator: validator)
-            end
-          else
-            descriptor_validator.add_error('descriptors.invalid_field_validator', id: descriptor.id, field_type:
-              descriptor.field_type, validator: validator)
-          end
-        end
+        validate_field_validators(descriptor_validator, descriptor)
       else
         descriptor_validator.add_error('descriptors.invalid_field_type', id: descriptor.id, field_type:
           descriptor.field_type)
+      end
+    end
+
+    def self.validate_field_validators(descriptor_validator, descriptor)
+      descriptor.validators.keys.each do |validator|
+        if validator_types.include?(validator)
+          allowable_validators_check(descriptor_validator, descriptor, validator)
+        else
+          descriptor_validator.add_error('descriptors.invalid_field_validator', id: descriptor.id, field_type:
+            descriptor.field_type, validator: validator)
+        end
+      end
+    end
+
+    def self.allowable_validators_check(descriptor_validator, descriptor, validator)
+      # test for allowable validator for this field_type
+      unless allowable_validators[validator.to_sym].include?(descriptor.field_type)
+        descriptor_validator.add_error('descriptors.not_permitted_field_validator', id: descriptor.id, field_type:
+          descriptor.field_type, validator: validator)
       end
     end
   end
