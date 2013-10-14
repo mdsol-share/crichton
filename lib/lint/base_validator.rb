@@ -45,7 +45,6 @@ module Lint
       @warnings.count
     end
 
-    protected
     def add_error(message, options = {})
       @errors << I18n.t(message, options)
     end
@@ -54,6 +53,7 @@ module Lint
       @warnings << I18n.t(message, options)
     end
 
+    protected
     def secondary_descriptors
       resource_descriptor.descriptors
     end

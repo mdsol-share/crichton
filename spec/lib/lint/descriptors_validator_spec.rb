@@ -6,14 +6,14 @@ module Lint
     let(:validator) { Lint }
     let(:filename) { lint_spec_filename(*@filename) }
 
-   describe '#validate' do
+    describe '#validate' do
       after do
-         validation_report.should == (@errors || @warnings || @message)
-       end
+        validation_report.should == (@errors || @warnings || @message)
+      end
 
-       def validation_report
-         capture(:stdout) { validator.validate(filename) }
-       end
+      def validation_report
+        capture(:stdout) { validator.validate(filename) }
+      end
 
       it 'reports a missing doc property error if a resource doc property is not specified' do
         @filename = %w(descriptor_section_errors missing_doc_property.yml)
@@ -25,7 +25,7 @@ module Lint
         @filename = %w(descriptor_section_errors invalid_doc_property.yml)
         @errors = expected_output(:error, 'descriptors.doc_media_type_invalid', resource: 'drds', media_type: 'html5',
           filename: filename)
-     end
+      end
 
       it 'reports a doc property error if a resource doc property value is not specified' do
         @filename = %w(descriptor_section_errors empty_doc_property.yml)
@@ -55,7 +55,7 @@ module Lint
         @filename = %w(descriptor_section_errors invalid_self_link_property.yml)
         @errors = expected_output(:error, 'descriptors.link_invalid', resource: 'drds', link: 'selff',
           filename: filename)
-     end
+      end
 
       it 'reports an invalid link self property error if a link self property value is empty' do
         @filename = %w(descriptor_section_errors empty_self_link_property.yml)
@@ -71,7 +71,7 @@ module Lint
       end
 
       it 'reports an invalid return type error when the descriptor return type is not valid' do
-        @filename = %w(descriptor_section_errors invalid_return_type.yml)        
+        @filename = %w(descriptor_section_errors invalid_return_type.yml)
         @errors = expected_output(:error, 'descriptors.invalid_return_type', resource: 'create', rt: 'dord',
           filename: filename)
       end
@@ -100,6 +100,29 @@ module Lint
         @filename = %w(descriptor_section_errors non_unique_ids.yml)
         @errors = expected_output(:error, 'descriptors.non_unique_descriptor', id: 'filter', parent: 'form-search',
           filename: filename)
+      end
+
+      it 'reports errors when field_type names are not valid' do
+        @filename = %w(descriptor_section_errors invalid_field_type.yml)
+        @errors = expected_output(:error, 'descriptors.invalid_field_type', id: 'create-drd', field_type: 'textt',
+          filename: filename)
+      end
+
+      it 'reports errors when field_type validator names are not valid' do
+        @filename = %w(descriptor_section_errors invalid_field_validator.yml)
+        @errors = expected_output(:error, 'descriptors.invalid_field_validator', id: 'create-drd', field_type: 'text',
+          validator: 'maxlen', filename: filename)
+      end
+
+      it 'reports errors when a validator is not permitted for a field_type' do
+        @filename = %w(descriptor_section_errors disallowed_field_validator.yml)
+        @errors = expected_output(:error, 'descriptors.not_permitted_field_validator', id: 'create-drd', field_type:
+          'datetime', validator: 'maxlength', filename: filename)
+      end
+
+      it 'reports no errors with a descriptor file containing valid field_types and validators' do
+        @filename = %w(clean_descriptor_file.yml)
+        @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
       end
     end
   end
