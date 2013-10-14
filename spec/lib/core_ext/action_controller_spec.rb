@@ -40,7 +40,7 @@ describe 'ActionController' do
 
     context 'when it is a crichton representor model' do
       it 'calls to_media_type' do
-        @model.should_receive(:to_media_type).and_return(anything())
+        @model.should_receive(:to_media_type).and_return(anything)
         @controller.show(@model)
       end
     end
@@ -55,19 +55,19 @@ describe 'ActionController' do
     context 'when it is not a crichton representor model' do
       it 'redirects_to #show' do
         @controller.request.accept = 'text/html'
-        @controller.should_receive(:redirect_to).with('show').and_return(anything())
+        @controller.should_receive(:redirect_to).with('show').and_return(anything)
         @controller.create(double('model'))
       end
     end
 
     context 'when it is a crichton representor model' do
       it 'calls render method with 201 status code' do
-        @controller.should_receive(:render).with(hash_including(status: :created)).and_return(anything())
+        @controller.should_receive(:render).with(hash_including(status: :created)).and_return(anything)
         @controller.create(@model)
       end
 
       it 'calls to_media_type' do
-        @model.should_receive(:to_media_type).and_return(anything())
+        @model.should_receive(:to_media_type).and_return(anything)
         @controller.create(@model)
       end
     end
@@ -82,14 +82,14 @@ describe 'ActionController' do
     context 'when it is not a crichton representor model' do
       it 'redirects_to #show' do
         @controller.request.accept = 'text/html'
-        @controller.should_receive(:redirect_to).with('show').and_return(anything())
+        @controller.should_receive(:redirect_to).with('show').and_return(anything)
         @controller.update(double('model'))
       end
     end
 
     context 'when it is a crichton representor model' do
       it 'calls render method with 200 status code' do
-        @controller.should_receive(:render).with(hash_including(status: :ok)).and_return(anything())
+        @controller.should_receive(:render).with(hash_including(status: :ok)).and_return(anything)
         @controller.update(@model)
       end
     end

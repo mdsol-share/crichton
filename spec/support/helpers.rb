@@ -158,7 +158,7 @@ module Support
     end
 
     def tasks_path(*args)
-      File.join(DiceBag::Project.root, 'tasks', args)
+      File.join(Dir.pwd, 'tasks', args)
     end
 
     def default_lint_descriptor_file(file)
