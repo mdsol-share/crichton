@@ -167,7 +167,7 @@ module Crichton
     #
     # @return [Hash] The data.
     def self_transition
-      @self_transition_ ||= Crichton.descriptor_registry[self.class.resource_name].self_transition.decorate(self, {})
+      @_self_transition ||= Crichton.descriptor_registry[self.class.resource_name].self_transition.decorate(self, {})
     end
 
     ##
