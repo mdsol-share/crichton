@@ -1,4 +1,4 @@
-eng:
+en:
   catastrophic:
     no_secondary_descriptors: "At least one resource type must be defined (e.g. object, collection, etc.) in states: and descriptors: sections"
     no_states: "No states defined for resource '%{resource}'"
@@ -38,6 +38,9 @@ eng:
     invalid_return_type: "Descriptor transition '%{resource}' contains an invalid return type '%{rt}'"
     invalid_method: "Descriptor transition '%{resource}' of type '%{type}' uses an incorrect protocol method '%{mthd}'"
     non_unique_descriptor: "Descriptor ID '%{id}' is not unique. You can create a unique ID with concatenation, such as '%{parent}-%{id}' and adding a name property '%{id}'"
+    invalid_field_type: "Invalid field type '%{field_type}' for descriptor '%{id}' in descriptor section"
+    invalid_field_validator: "Invalid  validator '%{validator}' for field_type '%{field_type}' for descriptor '%{id}' in descriptor section"
+    not_permitted_field_validator: "Validator '%{validator}' for field_type '%{field_type}' not allowed for descriptor '%{id}' in descriptor section"
   protocols:
     no_protocol:  "No underlying protocol (e.g. 'http') defined in the protocol section"
     protocol_empty:  "Protocol '%{protocol}' has no content"

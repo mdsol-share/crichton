@@ -26,6 +26,6 @@ Gem::Specification.new do |s|
   s.add_dependency('dice_bag',      '~> 0.7.0')
   s.add_dependency('diffy',         '~> 3.0.1')
   s.add_dependency('colorize',      '~> 0.6.0')
-  s.add_dependency('i18n',          '>= 0.6.0')
+  s.add_dependency('i18n',          '>= 0.6.5')
   s.add_dependency('yard',          '~> 0.8.5')
 end
