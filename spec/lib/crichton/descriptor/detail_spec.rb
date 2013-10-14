@@ -97,8 +97,6 @@ module Crichton
         end
       end
 
-
-
       describe '#embeddable?' do
         it 'returns true if an embed value is set' do
           descriptor_document['embed'] = 'optional'

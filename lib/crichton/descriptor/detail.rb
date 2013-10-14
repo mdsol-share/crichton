@@ -59,16 +59,20 @@ module Crichton
         !!embed
       end
 
+      SINGLE_MULTIPLE = %w(single multiple)
+      SINGLE_LINK_MULTIPLE_LINK = %w(single-link multiple-link)
+      SINGLE_OPTIONAL_MULTIPLE_OPTIONAL = %w(single-optional multiple-optional)
+
       ##
       # Determines how embedded elements should be embedded
       #
       # @return [Symbol, NilClass] Either :embed, :link or nil
       def embed_type(options)
-        if %w(single multiple).include?(embed)
+        if SINGLE_MULTIPLE.include?(embed)
           :embed
-        elsif %w(single-link multiple-link).include?(embed)
+        elsif SINGLE_LINK_MULTIPLE_LINK.include?(embed)
           :link
-        elsif %w(single-optional multiple-optional).include?(embed)
+        elsif SINGLE_OPTIONAL_MULTIPLE_OPTIONAL.include?(embed)
             options[:embed_optional] && options[:embed_optional][self.name]
         else
           :embed
