@@ -20,7 +20,6 @@ Debugger.start
 Bundler.setup
 
 require 'crichton'
-load 'Rakefile'
 
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
 
