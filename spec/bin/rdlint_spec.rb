@@ -20,7 +20,7 @@ describe 'rdlint' do
     it 'reports an expected value with the simplest invocation' do
       @filename = %w(protocol_section_errors no_entry_points.yml)
       @expected_rdlint_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
-                                                filename: filename)
+        filename: filename)
       @option = ''
     end
 
@@ -39,7 +39,7 @@ describe 'rdlint' do
     it 'reports a version number with the version option' do
       @filename = %w(protocol_section_errors extraneous_properties.yml)
       @expected_rdlint_output = capture(:stdout) { Crichton::Lint.version } << expected_output(:warning,
-                                                                                               'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename)
+        'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename)
       @option = '-v'
     end
   end
