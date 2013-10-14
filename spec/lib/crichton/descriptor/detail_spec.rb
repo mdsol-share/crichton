@@ -68,25 +68,25 @@ module Crichton
 
         it 'returns :embed for single-optional with optional_embed_mode option set to :embed' do
           descriptor_document['embed'] = 'single-optional'
-          options = {optional_embed_mode: :embed}
+          options = {embed_optional: {'drds' => :embed}}
           descriptor.embed_type(options).should == :embed
         end
 
         it 'returns :embed for multiple-optional with optional_embed_mode option set to :embed' do
           descriptor_document['embed'] = 'multiple-optional'
-          options = {optional_embed_mode: :embed}
+          options = {embed_optional: {'drds' => :embed}}
           descriptor.embed_type(options).should == :embed
         end
 
         it 'returns :link for single-optional with optional_embed_mode option set to :link' do
           descriptor_document['embed'] = 'single-optional'
-          options = {optional_embed_mode: :link}
+          options = {embed_optional: {'drds' => :link}}
           descriptor.embed_type(options).should == :link
         end
 
         it 'returns :link for multiple-optional with optional_embed_mode option set to :link' do
           descriptor_document['embed'] = 'multiple-optional'
-          options = {optional_embed_mode: :link}
+          options = {embed_optional: {'drds' => :link}}
           descriptor.embed_type(options).should == :link
         end
       end

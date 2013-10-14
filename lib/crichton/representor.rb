@@ -261,8 +261,9 @@ module Crichton
 
     def parse_embed_optionals(names_select, options)
       options[:embed_optional] ||= {}
+      names_select[0] = [names_select[0]] unless names_select.first.is_a?(Array)
       names_select.first.each_with_index do |v, i|
-        names_select.first[i], type = v.split(':')
+        names_select.first[i], type = v.to_s.split(':')
         options[:embed_optional][names_select.first[i]] = EMBED_OPTIONAL_NAME_TO_SYM[type] if type
       end
     end
