@@ -24,14 +24,14 @@ module Crichton
       # @return [Array] The descriptor instances.
 
       def self_transition
-        descriptors unless @self_descriptor
-        @self_descriptor
+        descriptors unless @self_transition
+        @self_transition
       end
 
       def descriptors
         @descriptors[:all] ||= (descriptor_document['descriptors'] || {}).keys.map do |id|
           descriptor = Detail.new(resource_descriptor, self, id)
-          @self_descriptor = descriptor if descriptor.name == 'self' && TRANSITION_TYPES.include?(descriptor.type)
+          @self_transition = descriptor if descriptor.name == 'self' && descriptor.transition?
           descriptor
         end.freeze
       end
