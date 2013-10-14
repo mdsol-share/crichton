@@ -60,6 +60,12 @@ module Crichton
           descriptor.embed_type(options).should be_nil
         end
 
+        it 'returns :embed in case an unknown embed option is specified' do
+          descriptor_document['embed'] = 'junk-optional'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
         it 'returns nil for multiple-optional without optional_embed_mode option' do
           descriptor_document['embed'] = 'multiple-optional'
           options = {}
