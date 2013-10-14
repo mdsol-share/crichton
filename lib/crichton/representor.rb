@@ -233,14 +233,16 @@ module Crichton
       descriptors = self.class.send("#{type}_#{descriptor}_descriptors")
       names, select = filter_names(options)
       method = select ? :select : :reject
-      
+
       names ? descriptors.send(method) { |descriptor| names.include?(descriptor.name) } : descriptors
     end
-    
+
+    EMBED_OPTIONAL_NAME_TO_SYM = {'link' => :link, 'embed' => :embed}
+
     def filter_names(options = nil)
       options ||= {}
 
-      if only = options[:only]
+      names_select = if only = options[:only]
         [only, true]
       elsif except = options[:except]
         [except]
@@ -250,9 +252,21 @@ module Crichton
         [exclude]
       else
         []
-      end.tap { |filters| filters[0] = Array.wrap(filters[0]).map(&:to_s) if filters.any? }
+      end
+      if names_select.first
+        parse_embed_optionals(names_select, options)
+      end
+      names_select.tap { |filters| filters[0] = Array.wrap(filters[0]).map(&:to_s) if filters.any? }
     end
-    
+
+    def parse_embed_optionals(names_select, options)
+      options[:embed_optional] ||= {}
+      names_select.first.each_with_index do |v, i|
+        names_select.first[i], type = v.split(':')
+        options[:embed_optional][names_select.first[i]] = EMBED_OPTIONAL_NAME_TO_SYM[type] if type
+      end
+    end
+
     def slice_known(options, *known_options)
       options ||= {}
       raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'." unless options.is_a?(Hash)
