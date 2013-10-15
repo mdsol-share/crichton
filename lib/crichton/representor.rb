@@ -196,7 +196,6 @@ module Crichton
       end
     end
 
-
     AdditionalTransition = Struct.new :name, :url
     private_constant :AdditionalTransition
 
@@ -229,42 +228,27 @@ module Crichton
     
     def filtered_descriptors(type, descriptor, options)
       descriptors = self.class.send("#{type}_#{descriptor}_descriptors")
-      names, select = filter_names(options)
-      method = select ? :select : :reject
-
-      names ? descriptors.send(method) { |descriptor| names.include?(descriptor.name) } : descriptors
+      descriptors.collect { |descriptor| descriptor if descriptor_to_be_included(descriptor.name, options) }.compact
     end
 
-    EMBED_OPTIONAL_NAME_TO_SYM = {'link' => :link, 'embed' => :embed}
-
-    def filter_names(options = nil)
-      options ||= {}
-
-      names_select = if only = options[:only]
-        [only, true]
-      elsif except = options[:except]
-        [except]
-      elsif include = options[:include]
-        [include, true]
-      elsif exclude = options[:exclude]
-        [exclude]
-      else
-        []
-      end
-      if names_select.first
-        # the names may be in the form name:embed or name:link - this removes it and puts it into embed_optional
-        parse_embed_optionals(names_select, options)
-      end
-      names_select.tap { |filters| filters[0] = Array.wrap(filters[0]).map(&:to_s) if filters.any? }
+    def descriptor_to_be_included(name, options)
+      f_options = filtering_options(options)
+      return false if f_options[:only].present? && !f_options[:only].include?(name)
+      return true if f_options[:include].include?(name)
+      return false if f_options[:remove].include?(name)
+      return true # if not excluded
     end
 
-    def parse_embed_optionals(names_select, options)
-      options[:embed_optional] ||= {}
-      names_select[0] = [names_select[0]] unless names_select.first.is_a?(Array)
-      names_select.first.each_with_index do |v, i|
-        names_select.first[i], type = v.to_s.split(':')
-        options[:embed_optional][names_select.first[i]] = EMBED_OPTIONAL_NAME_TO_SYM[type] if type
-      end
+    def filtering_options(options)
+      @filtering_options ||= parse_filtering_options(options)
+    end
+
+    def parse_filtering_options(options = {})
+      {
+        include: options[:include] || [],
+        remove: ((options[:except] || []) + (options[:exclude] || [])).map(&:to_s),
+        only: (options[:only] || []).map(&:to_s)
+      }
     end
 
     def slice_known(options, *known_options)
