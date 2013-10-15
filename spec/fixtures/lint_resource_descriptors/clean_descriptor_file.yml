@@ -162,9 +162,10 @@ descriptors:
                 doc: The name of the DRD.
                 type: semantic
                 href: http://alps.io/schema.org/Text
-                field_type: input
+                field_type: text
                 validators:
-                  - presence
+                  - required
+                  - maxlength
                 sample: none
               form-leviathan_uuid:
                 name: leviathan_uuid
@@ -175,7 +176,7 @@ descriptors:
                 enum:
                   href: Leviathans#list
                 validators:
-                  - presence
+                  - required
                 sample: none
   drd:
     doc: |
@@ -267,19 +268,19 @@ descriptors:
                   - renegade
                   - broken
                 validators:
-                  - presence
+                  - required
                 sample: renegade
               form-kind:
                 type: semantic
                 name: kind
                 doc: What kind is it.
                 href: http://alps.io/schema.org/Text
-                field_type: multi-select
+                field_type: select
                 enum:
                   - standard
                   - sentinel
                 validators:
-                  - presence
+                  - required
                 sample: standard
       delete:
         rt: drd

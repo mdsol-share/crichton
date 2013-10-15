@@ -10,6 +10,8 @@ module Lint
 
       compare_with_state_resources
 
+      check_id_uniqueness
+
       check_transition_equivalence
     end
 
@@ -82,6 +84,8 @@ module Lint
     # check all rules surrounding transition based descriptors
     def semantic_properties_check(descriptor, options, level)
       if level > TOP_LEVEL
+        FieldTypeValidator.validate_field_type(self, descriptor) if descriptor.field_type
+
         # all NON top level descriptors should have a sample and href entry
         add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
         add_warning('descriptors.property_missing', options.merge({prop: 'href'})) unless descriptor.href
@@ -142,6 +146,18 @@ module Lint
       end
     end
 
+    def check_id_uniqueness
+      review_descriptor_ids(@resource_descriptor.descriptors, '', {})
+    end
+
+    def review_descriptor_ids(descriptors, parent_id, id_hash)
+      descriptors.each do |descriptor|
+        add_error('descriptors.non_unique_descriptor', id: descriptor.id, parent: parent_id) if id_hash[descriptor.id]
+        id_hash[descriptor.id] = descriptor.id unless id_hash[descriptor.id]
+        review_descriptor_ids(descriptor.descriptors, descriptor.id, id_hash) if descriptor.descriptors
+      end
+    end
+
     #61, descriptor transitions must match the transitions in the states and protocol sections
     def check_transition_equivalence
       descriptor_transitions = build_descriptor_transition_list
@@ -157,6 +173,53 @@ module Lint
         unless descriptor_transitions.include?(transition)
           add_error('descriptors.protocol_transition_not_found', transition: transition)
         end
+      end
+    end
+  end
+
+  # class to valid the integrity of field_type names, validator names and allowed validator per field_type
+  class FieldTypeValidator
+    def self.field_types
+      @field_types ||=
+        %w(text search email tel url datetime date time month week datetime-local number boolean select)
+    end
+
+    def self.validator_types
+      @val_types ||= %w(required pattern maxlength min max)
+    end
+
+    def self.allowable_validators
+      @allowable_validators ||= {pattern: %w(text search email tel url), maxlength: %w(text url),
+        min: %w(datetime date time month week datetime-local number),
+        max: %w(datetime date time month week datetime-local number),
+        required: self.field_types}
+    end
+
+    def self.validate_field_type(descriptor_validator, descriptor)
+      if field_types.include?(descriptor.field_type)
+        validate_field_validators(descriptor_validator, descriptor)
+      else
+        descriptor_validator.add_error('descriptors.invalid_field_type', id: descriptor.id, field_type:
+          descriptor.field_type)
+      end
+    end
+
+    def self.validate_field_validators(descriptor_validator, descriptor)
+      descriptor.validators.keys.each do |validator|
+        if validator_types.include?(validator)
+          allowable_validators_check(descriptor_validator, descriptor, validator)
+        else
+          descriptor_validator.add_error('descriptors.invalid_field_validator', id: descriptor.id, field_type:
+            descriptor.field_type, validator: validator)
+        end
+      end
+    end
+
+    def self.allowable_validators_check(descriptor_validator, descriptor, validator)
+      # test for allowable validator for this field_type
+      unless allowable_validators[validator.to_sym].include?(descriptor.field_type)
+        descriptor_validator.add_error('descriptors.not_permitted_field_validator', id: descriptor.id, field_type:
+          descriptor.field_type, validator: validator)
       end
     end
   end
