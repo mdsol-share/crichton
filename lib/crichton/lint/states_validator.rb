@@ -64,35 +64,37 @@ module Crichton
 
       def check_resource_state_transitions(resource_name, curr_state, states_list)
         curr_state.transitions.values.each do |transition|
+          transition_decorator = StateTransitionDecorator.new(transition)
           options = {resource: resource_name, state: curr_state.name, transition: transition.id}
           #9
           add_error('states.next_property_missing', options) unless transition.next
           #10 Transition next property has no value
           add_error('states.empty_missing_next', options) if transition.next && transition.next.empty?
           #13 Transition conditions property has no value(s)
-          add_error('states.no_conditions_values', options) if transition.missing_condition_item?
+          add_error('states.no_conditions_values', options) if transition_decorator.missing_condition_item?
           #11
-          check_for_phantom_state_transitions(states_list, resource_name, curr_state.name, transition) if transition.next
+          phantom_state_transition_check(states_list, resource_name, curr_state.name, transition_decorator) if
+            transition.next
           #14
-          add_warning('states.no_self_property', options) if transition.is_specified_name_property_not_self?
+          add_warning('states.no_self_property', options) if transition_decorator.is_specified_name_property_not_self?
         end
       end
 
       #11, check to see if any next transition maps to an existing state. Check for null values at every level.
       # No need to check if the next transition points to an external resource (e.g. 'location')
-      def check_for_phantom_state_transitions(states_list, resource_name, curr_state_name, curr_transition)
-        curr_transition.next.each do |next_state|
-          unless valid_next_state(states_list, curr_transition, next_state)
+      def phantom_state_transition_check(states_list, resource_name, curr_state_name, transition_decorator)
+        transition_decorator.next.each do |next_state|
+          unless valid_next_state(states_list, transition_decorator, next_state)
             add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
-              transition: curr_transition.name, next_state: next_state)
+              transition: transition_decorator.name, next_state: next_state)
           end
         end
       end
 
       # Here we test if the next state of this transition exists in our pre-built list of all states
       # No need to test for next states that are external to this doc (e.g. having a location property)
-      def valid_next_state(states_list, curr_transition, next_state)
-        return true if curr_transition.is_next_state_a_location?
+      def valid_next_state(states_list, transition_decorator, next_state)
+        return true if transition_decorator.is_next_state_a_location?
         states_list.include?(next_state)
       end
 
@@ -113,6 +115,25 @@ module Crichton
             add_error('states.protocol_transition_not_found', transition: transition)
           end
         end
+      end
+    end
+
+    class StateTransitionDecorator < Crichton::Descriptor::StateTransition
+      def initialize(transition)
+        super(transition.resource_descriptor, transition.descriptor_document, transition.id)
+      end
+
+      # distinguish non-existent condition statement from empty condition set
+      def missing_condition_item?
+        descriptor_document['conditions'] && conditions.empty?
+      end
+
+      def is_next_state_a_location?
+        self.next.any? { |next_state| next_state.is_a?(Hash) && next_state['location'] }
+      end
+
+      def is_specified_name_property_not_self?
+        id != name && name != 'self' && !is_next_state_a_location?
       end
     end
   end
