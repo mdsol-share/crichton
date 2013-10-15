@@ -25,7 +25,6 @@ module Crichton
         end
       end
 
-
       # core deep dive method looking for missing properties and other syntactical
       # errors down to the transitions of the states: section
       def check_for_required_state_transition_properties

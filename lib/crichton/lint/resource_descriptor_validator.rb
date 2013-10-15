@@ -2,7 +2,6 @@ require 'crichton/lint/base_validator'
 
 module Crichton
   module Lint
-
     class ResourceDescriptorValidator < BaseValidator
       MAJOR_SECTIONS = %w(states descriptors protocols)
 

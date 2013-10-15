@@ -23,7 +23,6 @@ module Crichton
             expected_output(:warning, 'states.doc_property_missing', resource: 'drd', state: 'activated')
         end
 
-
         it 'reports errors when next transitions are missing or empty' do
           @filename = %w(state_section_errors missing_and_empty_transitions.yml)
           @errors = expected_output(:error, 'states.empty_missing_next', resource: 'drds', state: 'collection',
