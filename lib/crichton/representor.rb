@@ -240,14 +240,14 @@ module Crichton
     end
 
     def filtering_options(options)
-      @filtering_options ||= parse_filtering_options(options)
+      @filtering_options ||= parse_filtering_options(options || {})
     end
 
     def parse_filtering_options(options = {})
       {
-        include: options[:include] || [],
-        remove: ((options[:except] || []) + (options[:exclude] || [])).map(&:to_s),
-        only: (options[:only] || []).map(&:to_s)
+        include: [options[:include] || []].flatten,
+        remove: [[options[:except] || []] + [options[:exclude] || []]].flatten.map(&:to_s),
+        only: [options[:only] || []].flatten.map(&:to_s)
       }
     end
 

@@ -266,9 +266,9 @@ module Crichton
         end
 
         shared_examples_for 'a filtered list of embedded transitions' do
-          context 'with :include option' do
+          context 'with :only option' do
             before do
-              @options = {include: :leviathan}
+              @options = {only: :leviathan}
             end
             
             it 'returns only the specified transition descriptors' do
@@ -285,6 +285,20 @@ module Crichton
               @options = {exclude: 'leviathan'}
             end
             
+            it 'excludes all the transition descriptors that were specified' do
+              embedded_transitions['leviathan-link'].should be_nil
+            end
+
+            it 'returns all other unspecified the transition descriptors' do
+              @comparison_links.each { |link| embedded_transitions[link].should_not be_nil }
+            end
+          end
+
+          context 'with :except option' do
+            before do
+              @options = {except: 'leviathan'}
+            end
+
             it 'excludes all the transition descriptors that were specified' do
               embedded_transitions['leviathan-link'].should be_nil
             end
