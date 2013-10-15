@@ -83,10 +83,10 @@ module Crichton
       #11, check to see if any next transition maps to an existing state. Check for null values at every level.
       # No need to check if the next transition points to an external resource (e.g. 'location')
       def phantom_state_transition_check(states_list, resource_name, curr_state_name, transition_decorator)
-        transition_decorator.transition.next.each do |next_state|
+        transition_decorator.next.each do |next_state|
           unless valid_next_state(states_list, transition_decorator, next_state)
             add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
-              transition: transition_decorator.transition.name, next_state: next_state)
+              transition: transition_decorator.name, next_state: next_state)
           end
         end
       end
@@ -118,26 +118,22 @@ module Crichton
       end
     end
 
-    class StateTransitionDecorator
-      def initialize(state_transition)
-         @state_transition = state_transition
-      end
-
-      def transition
-        @state_transition
+    class StateTransitionDecorator < Crichton::Descriptor::StateTransition
+      def initialize(transition)
+        super(transition.resource_descriptor, transition.descriptor_document, transition.id)
       end
 
       # distinguish non-existent condition statement from empty condition set
       def missing_condition_item?
-        @state_transition.descriptor_document['conditions'] && @state_transition.conditions.empty?
+        descriptor_document['conditions'] && conditions.empty?
       end
 
       def is_next_state_a_location?
-        @state_transition.next.any? { |next_state| next_state.is_a?(Hash) && next_state['location'] }
+        self.next.any? { |next_state| next_state.is_a?(Hash) && next_state['location'] }
       end
 
       def is_specified_name_property_not_self?
-        @state_transition.id != @state_transition.name && @state_transition.name != 'self' && !is_next_state_a_location?
+        id != name && name != 'self' && !is_next_state_a_location?
       end
     end
   end
