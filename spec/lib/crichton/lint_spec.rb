@@ -1,9 +1,9 @@
 require 'spec_helper'
-require 'lint'
+require 'crichton/lint'
 require 'colorize'
 
-describe Lint do
-  let(:validator) { Lint }
+describe Crichton::Lint do
+  let(:validator) { Crichton::Lint }
   let(:filename) { lint_spec_filename(*@filename) }
 
   before do
@@ -21,7 +21,7 @@ describe Lint do
       end
 
       it 'reports a success statement with a clean resource descriptor file' do
-        @filename = %w( clean_descriptor_file.yml)
+        @filename = %w(clean_descriptor_file.yml)
         @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
       end
 
@@ -45,7 +45,7 @@ describe Lint do
 
     context 'with the count: :error or count: :warning option' do
       after do
-        Lint.validate(filename, @option).should == @count
+        Crichton::Lint.validate(filename, @option).should == @count
       end
 
       it 'returns no errors for a clean descriptor file' do
@@ -75,7 +75,7 @@ describe Lint do
 
     context 'with the --strict option' do
       after do
-        Lint.validate(filename, {strict: true}).should @retval ? be_true : be_false
+        Crichton::Lint.validate(filename, {strict: true}).should @retval ? be_true : be_false
       end
 
       it 'returns true when a clean descriptor file is validated' do
@@ -96,7 +96,7 @@ describe Lint do
 
     context 'when both --strict and other options are set' do
       after do
-        Lint.validate(filename, @option).should be_false
+        Crichton::Lint.validate(filename, @option).should be_false
       end
 
       # error_count > 0, therefore cannot be false

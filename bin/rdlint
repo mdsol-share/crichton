@@ -33,17 +33,17 @@ optparse = OptionParser.new do |opts|
   end
 end
 
-require File.expand_path('../lib/lint', File.dirname(__FILE__))
+require File.expand_path('../lib/crichton/lint', File.dirname(__FILE__))
 
 optparse.parse!
 
-Lint.version if options[:version]
+Crichton::Lint.version if options[:version]
 
 if options[:all]
-  Lint.validate_all(options)
+  Crichton::Lint.validate_all(options)
 else
   ARGV.each do |file|
-    retval = Lint.validate(file, options)
+    retval = Crichton::Lint.validate(file, options)
     if options[:strict]
       # strict mode is pass/fail, true/false. Go away once we encounter the first false return
       unless retval
