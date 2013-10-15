@@ -228,7 +228,7 @@ module Crichton
     
     def filtered_descriptors(type, descriptor, options)
       descriptors = self.class.send("#{type}_#{descriptor}_descriptors")
-      descriptors.collect { |descriptor| descriptor if descriptor_to_be_included(descriptor.name, options) }.compact
+      descriptors.map { |descriptor| descriptor if descriptor_to_be_included(descriptor.name, options) }.compact
     end
 
     def descriptor_to_be_included(name, options)

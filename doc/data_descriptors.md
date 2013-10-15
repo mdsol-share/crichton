@@ -20,19 +20,12 @@ indicates the URI of the descriptor for top-level descriptors.
     * `href` - The underlying ALPS profile, either representing another resource or a primitive profile. See 
 [Primitive Profiles](primitive_profiles.md) for more information: REQUIRED.
     * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
-    * `embed` - Indicates that this resource should be embedded in a response.
+    * `embed` - Indicates that this resource should be embedded in a response either inline or as a link.
     Valid values are `single`, `multiple`, `single-link`, `multiple-link`, `single-optional` and `multiple-optional`.
     The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
-    embedded as an array. The values `single-optional` and `multiple-optional` indicate this property should only be
-    included if it is specifically requested.
-    The ActiveModel::Serialization#serializable_hash-like options `include`, `exclude`, `only` or `except` should
-    contain either a string or a symbol or an array with strings or symbols that match the names of the items to be
-    included or excluded. If the value of the embed property is one of the optional properties `single-optional` or
-    `multiple-optional` and the string contains a colon `:` then the first part of the string is the name and the part
-    after the colon is the instruction on how to embed it - it can be either `embed` or `link`.
-    If one does not want to use include/exclude etc., then it is possible to explicitly set the embedding option by
-    passing in a parameter `:embed_optional` which is to be a hash with string keys as the names and either `:embed` or
-    `:link` as the values.
+    embedded as an array. The values `single-optional` and `multiple-optional` indicate that the client can request the
+    way the item is to be embedded. The option `:embed_optional` - a hash with string keys as the names and either
+    `:embed` or `:link` as the values - allows setting the mode of embedding.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
