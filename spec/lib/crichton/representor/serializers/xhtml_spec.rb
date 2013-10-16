@@ -74,6 +74,11 @@ module Crichton
             options = {conditions: 'can_do_anything', semantics: :styled_microdata}
             serializer.as_media_type(options).should be_equivalent_to(drds_styled_microdata_html)
           end
+
+          it 'returns the resource represented as xhtml with linked resources' do
+            options = {conditions: 'can_do_anything', semantics: :styled_microdata, embed_optional: {'items' => :link}}
+            serializer.as_media_type(options).should be_equivalent_to(drds_styled_microdata_embed_html)
+          end
         end
       end
     end

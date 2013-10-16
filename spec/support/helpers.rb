@@ -45,6 +45,10 @@ module Support
       @drds_styled__microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata.html')))
     end
 
+    def drds_styled_microdata_embed_html
+      @drds_styled__microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata_embed.html')))
+    end
+
     def example_environment_config
       config = %w(alps deployment discovery documentation).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
