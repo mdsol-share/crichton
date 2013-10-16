@@ -1,7 +1,6 @@
 require 'active_support/all'
 require 'action_controller'
 require 'action_dispatch'
-require 'active_record'
 
 module Support
   module Controllers
@@ -47,4 +46,3 @@ module Support
     end
   end
 end
-
