@@ -21,11 +21,13 @@ indicates the URI of the descriptor for top-level descriptors.
 [Primitive Profiles](primitive_profiles.md) for more information: REQUIRED.
     * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
     * `embed` - Indicates that this resource should be embedded in a response either inline or as a link.
-    Valid values are `single`, `multiple`, `single-link`, `multiple-link`, `single-optional` and `multiple-optional`.
+    Valid values are `single`, `multiple`, `single-link`, `multiple-link`, `single-optional`, `multiple-optional`,
+    `single-optional-link` and `multiple-optional-link`.
     The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
-    embedded as an array. The values `single-optional` and `multiple-optional` indicate that the client can request the
-    way the item is to be embedded. The option `:embed_optional` - a hash with string keys as the names and either
-    `:embed` or `:link` as the values - allows setting the mode of embedding.
+    embedded as an array. The values that contain `optional` indicate that the client can request the
+    way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed' otherwise.
+    The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the
+    values - allows setting the mode of embedding.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
