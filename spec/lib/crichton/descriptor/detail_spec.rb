@@ -54,10 +54,10 @@ module Crichton
           descriptor.embed_type(options).should == :link
         end
 
-        it 'returns nil for single-optional without optional_embed_mode option' do
+        it 'returns :embed for single-optional without optional_embed_mode option' do
           descriptor_document['embed'] = 'single-optional'
           options = {}
-          descriptor.embed_type(options).should be_nil
+          descriptor.embed_type(options).should == :embed
         end
 
         it 'returns :embed in case an unknown embed option is specified' do
@@ -66,10 +66,10 @@ module Crichton
           descriptor.embed_type(options).should == :embed
         end
 
-        it 'returns nil for multiple-optional without optional_embed_mode option' do
+        it 'returns :embed for multiple-optional without optional_embed_mode option' do
           descriptor_document['embed'] = 'multiple-optional'
           options = {}
-          descriptor.embed_type(options).should be_nil
+          descriptor.embed_type(options).should == :embed
         end
 
         it 'returns :embed for single-optional with optional_embed_mode option set to :embed' do
