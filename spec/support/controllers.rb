@@ -5,14 +5,14 @@ require 'action_dispatch'
 module Support
   module Controllers
     class App
-      def env_config; {} end
+      def env_config
+        {} 
+      end
+      
       def routes
-        return @routes if defined?(@routes)
-        @routes = ActionDispatch::Routing::RouteSet.new
-        @routes.draw do
-          resource :model
+        @routes ||= ActionDispatch::Routing::RouteSet.new.tap do |r|
+          r.draw { resource :model }
         end
-        @routes
       end
     end
 
@@ -33,7 +33,7 @@ module Support
       end
 
       def update
-        respond_with(model, location: model_url)
+        respond_with(model)
       end
 
       def destroy
@@ -42,6 +42,7 @@ module Support
 
       private
       def model
+        # Index for spec stubbing
       end
     end
   end
