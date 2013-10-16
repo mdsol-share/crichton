@@ -160,8 +160,6 @@ module Crichton
       each_link_transition_enumerator(options, &block)
     end
 
-    SELF_STRING = 'self'
-
     ##
     # Find and return the self transition
     #
