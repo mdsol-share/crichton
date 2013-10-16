@@ -62,6 +62,7 @@ module Crichton
       SINGLE_MULTIPLE = %w(single multiple)
       SINGLE_LINK_MULTIPLE_LINK = %w(single-link multiple-link)
       SINGLE_OPTIONAL_MULTIPLE_OPTIONAL = %w(single-optional multiple-optional)
+      SINGLE_OPTIONAL_MULTIPLE_OPTIONAL_LINK = %w(single-optional-link multiple-optional-link)
 
       ##
       # Determines how embedded elements should be embedded
@@ -74,6 +75,8 @@ module Crichton
           :link
         elsif SINGLE_OPTIONAL_MULTIPLE_OPTIONAL.include?(embed)
           options[:embed_optional] && options[:embed_optional][self.name] || :embed
+        elsif SINGLE_OPTIONAL_MULTIPLE_OPTIONAL_LINK.include?(embed)
+          options[:embed_optional] && options[:embed_optional][self.name] || :link
         else
           :embed
         end

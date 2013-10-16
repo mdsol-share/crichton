@@ -72,6 +72,12 @@ module Crichton
           descriptor.embed_type(options).should == :embed
         end
 
+        it 'returns :embed for multiple-optional-link without optional_embed_mode option' do
+          descriptor_document['embed'] = 'multiple-optional-link'
+          options = {}
+          descriptor.embed_type(options).should == :link
+        end
+
         it 'returns :embed for single-optional with optional_embed_mode option set to :embed' do
           descriptor_document['embed'] = 'single-optional'
           options = {embed_optional: {'drds' => :embed}}
