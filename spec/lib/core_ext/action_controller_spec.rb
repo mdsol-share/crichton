@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'active_support'
 require 'action_dispatch'
 require 'action_controller/test_case'
+require 'active_model'
 
 describe 'ActionController' do
   before (:all) do
