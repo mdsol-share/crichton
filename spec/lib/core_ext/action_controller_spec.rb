@@ -5,10 +5,11 @@ require 'action_controller/test_case'
 
 class Model
   def to_param
+    'uuid'
   end
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, 'Model')
+    ActiveModel::Name.new(self)
   end
 end
 
