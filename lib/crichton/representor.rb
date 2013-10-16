@@ -228,27 +228,25 @@ module Crichton
     
     def filtered_descriptors(type, descriptor, options)
       descriptors = self.class.send("#{type}_#{descriptor}_descriptors")
-      descriptors.map { |descriptor| descriptor if descriptor_to_be_included(descriptor.name, options) }.compact
+      filter_options = parsed_filtering_options(options || {})
+      descriptors.map { |descriptor| descriptor if descriptor_to_be_included(descriptor.name, filter_options) }.compact
     end
 
-    def descriptor_to_be_included(name, options)
-      f_options = filtering_options(options)
-      return false if f_options[:only].present? && !f_options[:only].include?(name)
-      return true if f_options[:include].include?(name)
-      return false if f_options[:remove].include?(name)
+    def descriptor_to_be_included(name, filter_options)
+      return true if filter_options.nil?
+      return false if filter_options[:only].present? && !filter_options[:only].include?(name)
+      return true if filter_options[:include].include?(name)
+      return false if filter_options[:remove].include?(name)
       return true # if not excluded
     end
 
-    def filtering_options(options)
-      @filtering_options ||= parse_filtering_options(options || {})
-    end
-
-    def parse_filtering_options(options = {})
-      {
+    def parsed_filtering_options(options = {})
+      f_options = {
         include: [options[:include] || []].flatten,
         remove: [[options[:except] || []] + [options[:exclude] || []]].flatten.map(&:to_s),
         only: [options[:only] || []].flatten.map(&:to_s)
       }
+      f_options[:include].empty? && f_options[:remove].empty? && f_options[:only].empty? ? nil : f_options
     end
 
     def slice_known(options, *known_options)
