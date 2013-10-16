@@ -3,6 +3,12 @@ require 'active_support'
 require 'action_dispatch'
 require 'action_controller/test_case'
 
+class Model
+  def self.model_name
+    ActiveModel::Name.new(self)
+  end
+end
+
 describe 'ActionController' do
   before (:all) do
     Object.const_set(:Rails, RSpec::Mocks::Mock.new('Rails'))
@@ -12,14 +18,15 @@ describe 'ActionController' do
   end
 
   before do
-    @controller = Support::Controllers::TestController.new
+    @controller = Support::Controllers::ModelsController.new
     @controller.request = ActionController::TestRequest.new
     @controller.response = ActionController::TestResponse.new
     @controller.request.accept = 'application/sample_type'
-    @model = double('model')
+    @model = Model.new
     @model.class_eval do
       include Crichton::Representor
     end
+    @controller.stub(:model).and_return(@model)
   end
 
   after (:all) do
@@ -34,14 +41,15 @@ describe 'ActionController' do
     context 'when it is not a crichton representor model' do
       it 'attempts to render html template and fails' do
         @controller.request.accept = 'text/html'
-        expect { @controller.show(double('model')) }.to raise_error { ActionView::MissingTemplate }
+        @controller.stub(:model).and_return(Model.new)
+        expect { @controller.show }.to raise_error { ActionView::MissingTemplate }
       end
     end
 
     context 'when it is a crichton representor model' do
       it 'calls to_media_type' do
-        @model.should_receive(:to_media_type).and_return(anything)
-        @controller.show(@model)
+        @model.should_receive(:to_media_type).with(:sample_type, anything).and_return(anything)
+        @controller.show
       end
     end
   end
@@ -53,22 +61,18 @@ describe 'ActionController' do
     end
 
     context 'when it is not a crichton representor model' do
-      it 'redirects_to #show' do
+      it 'returns 302 status code' do
         @controller.request.accept = 'text/html'
-        @controller.should_receive(:redirect_to).with('show').and_return(anything)
-        @controller.create(double('model'))
+        @controller.stub(:model).and_return(Model.new)
+        @controller.create
+        @controller.response.status.should equal(302)
       end
     end
 
     context 'when it is a crichton representor model' do
-      it 'calls render method with 201 status code' do
-        @controller.should_receive(:render).with(hash_including(status: :created)).and_return(anything)
-        @controller.create(@model)
-      end
-
       it 'calls to_media_type' do
-        @model.should_receive(:to_media_type).and_return(anything)
-        @controller.create(@model)
+        @model.should_receive(:to_media_type).with(:sample_type, anything).and_return(anything)
+        @controller.create
       end
     end
   end
@@ -79,18 +83,11 @@ describe 'ActionController' do
       @controller.request.request_method = 'PUT'
     end
 
-    context 'when it is not a crichton representor model' do
-      it 'redirects_to #show' do
-        @controller.request.accept = 'text/html'
-        @controller.should_receive(:redirect_to).with('show').and_return(anything)
-        @controller.update(double('model'))
-      end
-    end
-
     context 'when it is a crichton representor model' do
       it 'calls render method with 200 status code' do
-        @controller.should_receive(:render).with(hash_including(status: :ok)).and_return(anything)
-        @controller.update(@model)
+        @controller.update
+        @controller.response.status.should equal(204)
+
       end
     end
   end
@@ -102,7 +99,7 @@ describe 'ActionController' do
     end
 
     it 'returns 204 status code' do
-      @controller.destroy(@model)
+      @controller.destroy
       @controller.response.status.should equal(204)
     end
   end
