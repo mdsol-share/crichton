@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'rake'
+require 'dice_bag/tasks'
 
 describe Crichton do
   before do

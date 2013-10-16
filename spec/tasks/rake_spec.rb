@@ -7,12 +7,13 @@ require 'colorize'
 describe 'rake crichton.lint' do
   let(:rake_filename) { lint_spec_filename(*@filename) }
 
+  before (:all) do
+    load lint_rake_path
+  end
+
   before do
     load_lint_translation_file
     Rake::Task.define_task(:environment)
-  end
-
-  before(:each) do
     Rake::Task['crichton:lint'].reenable
   end
 
