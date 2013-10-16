@@ -4,8 +4,11 @@ require 'action_dispatch'
 require 'action_controller/test_case'
 
 class Model
+  def to_param
+  end
+
   def self.model_name
-    ActiveModel::Name.new(self)
+    ActiveModel::Name.new(self, nil, 'Model')
   end
 end
 
