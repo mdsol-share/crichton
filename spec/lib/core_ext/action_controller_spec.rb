@@ -87,8 +87,17 @@ describe 'ActionController' do
       @controller.request.request_method = 'PUT'
     end
 
+    context 'when it is not a crichton representor model' do
+      it 'returns 302 status code' do
+        @controller.request.accept = 'text/html'
+        @controller.stub(:model).and_return(Model.new)
+        @controller.update
+        @controller.response.status.should equal(302)
+      end
+    end
+
     context 'when it is a crichton representor model' do
-      it 'calls render method with 200 status code' do
+      it 'calls head method with 204 status code' do
         @controller.update
         @controller.response.status.should equal(204)
       end
