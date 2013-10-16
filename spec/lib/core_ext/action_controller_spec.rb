@@ -91,7 +91,6 @@ describe 'ActionController' do
       it 'calls render method with 200 status code' do
         @controller.update
         @controller.response.status.should equal(204)
-
       end
     end
   end
