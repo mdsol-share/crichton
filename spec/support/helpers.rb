@@ -24,6 +24,10 @@ module Support
       system("bundle exec rake config:file[\"#{template_path}/crichton.yml.dice\"] #{environment_args(env_vars)}")
     end
 
+    def lint_rake_path
+      tasks_path('lint.rake')
+    end
+
     def drds_descriptor
       YAML.load_file(drds_filename)
     end
@@ -155,6 +159,10 @@ module Support
 
     def fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', args)
+    end
+
+    def tasks_path(*args)
+      File.join(Dir.pwd, 'tasks', args)
     end
 
     def default_lint_descriptor_file(file)

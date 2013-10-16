@@ -1,5 +1,6 @@
 .bundle
 
+gemfiles/*.lock
 Gemfile.lock
 coverage
 .rvmrc
