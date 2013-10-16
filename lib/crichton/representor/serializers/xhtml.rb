@@ -31,7 +31,12 @@ module Crichton
           add_embedded_element(options)
         end
       end
-      
+
+      def as_link(self_transition, options)
+        configure_markup_builder(options)
+        @markup_builder.tag!(:a, @object.uuid, href: self_transition.url)
+      end
+
     private
       def configure_markup_builder(options)
         require 'builder' unless defined?(::Builder)
@@ -186,18 +191,18 @@ module Crichton
             add_embedded_semantic(semantic, options)
           end
         end
-        
+
         def add_semantic(semantic, options)
           raise_abstract('add_semantic')
         end
-        
+
         def add_embedded_semantic(semantic, options)
           embedded_element_attributes = {itemscope: 'itemscope', itemtype: semantic.href, itemprop: semantic.name}
 
           @markup_builder.tag!(element_tag, embedded_element_attributes) do
             case embedded_object = semantic.value
             when Array
-              embedded_object.each { |object| add_embedded_object(object, options) }
+              embedded_object.each { |object| add_embedded_object(object, options, semantic)}
             when Crichton::Representor
               add_embedded_object(embedded_object, options)
             else
@@ -206,10 +211,10 @@ module Crichton
           end
         end
         
-        def add_embedded_object(object, options)
+        def add_embedded_object(object, options, semantic)
           object.as_media_type(@media_type, options)
         end
-        
+
         def raise_abstract(method)
           raise "##{method} is an abstract method that must be implemented."
         end
@@ -304,9 +309,14 @@ module Crichton
           end
         end
 
-        def add_embedded_object(object, options)
+        def add_embedded_object(object, options, semantic)
           @markup_builder.li do
-            object.as_media_type(@media_type, options)
+            case semantic.embed_type(options)
+            when :link
+              object.as_link(@media_type, options)
+            when :embed
+              object.as_media_type(@media_type, options)
+            end
           end
         end
 
