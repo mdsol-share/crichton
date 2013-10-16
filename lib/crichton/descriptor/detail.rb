@@ -66,14 +66,14 @@ module Crichton
       ##
       # Determines how embedded elements should be embedded
       #
-      # @return [Symbol, NilClass] Either :embed, :link or nil
+      # @return [Symbol, NilClass] Either :embed or :link
       def embed_type(options)
         if SINGLE_MULTIPLE.include?(embed)
           :embed
         elsif SINGLE_LINK_MULTIPLE_LINK.include?(embed)
           :link
         elsif SINGLE_OPTIONAL_MULTIPLE_OPTIONAL.include?(embed)
-          options[:embed_optional] && options[:embed_optional][self.name]
+          options[:embed_optional] && options[:embed_optional][self.name] || :embed
         else
           :embed
         end
