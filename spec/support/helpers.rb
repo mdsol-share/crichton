@@ -42,11 +42,11 @@ module Support
     end
 
     def drds_styled_microdata_html
-      @drds_styled__microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata.html')))
+      @drds_styled_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata.html')))
     end
 
     def drds_styled_microdata_embed_html
-      @drds_styled__microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata_embed.html')))
+      @drds_styled_embed_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata_embed.html')))
     end
 
     def example_environment_config

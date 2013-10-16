@@ -32,7 +32,6 @@ module Crichton
         end
       end
 
-
       def as_link(self_transition, options)
         configure_markup_builder(options)
         @markup_builder.tag!(:a, @object.uuid, href: self_transition.url)

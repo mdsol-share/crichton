@@ -241,12 +241,12 @@ module Crichton
     end
 
     def parsed_filtering_options(options = {})
-      f_options = {
+      filtering_options = {
         include: [options[:include] || []].flatten,
         remove: [[options[:except] || []] + [options[:exclude] || []]].flatten.map(&:to_s),
         only: [options[:only] || []].flatten.map(&:to_s)
       }
-      f_options[:include].empty? && f_options[:remove].empty? && f_options[:only].empty? ? nil : f_options
+      filtering_options.values.all? { |v| v.empty? } ? nil : filtering_options
     end
 
     def target
