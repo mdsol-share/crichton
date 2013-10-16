@@ -1,6 +1,6 @@
 SPEC_DIR = File.expand_path("..", __FILE__)
 lib_dir = File.expand_path("../lib", SPEC_DIR)
-LINT_DIR = File.expand_path("../lib/lint", SPEC_DIR)
+LINT_DIR = File.expand_path("../lib/crichton/lint", SPEC_DIR)
 
 $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!

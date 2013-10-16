@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'lint'
+require 'crichton/lint'
 
 describe 'DRDs resource descriptor' do
-  let(:validator) { Lint }
+  let(:validator) { Crichton::Lint }
   #   For users of the Crichton gem, change to this line and update <my descriptor_file>
   #   let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }
   #

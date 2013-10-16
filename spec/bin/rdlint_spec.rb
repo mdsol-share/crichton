@@ -1,12 +1,12 @@
 require 'spec_helper'
 require 'rake'
-require 'lint'
+require 'crichton/lint'
 require 'colorize'
 
 describe 'rdlint' do
   let(:filename) { lint_spec_filename(*@filename) }
-  let (:filenames) { "#{lint_spec_filename(*@filename1)} #{lint_spec_filename(*@filename2)}" }
-  let (:false_string) { "false\n"}
+  let (:filenames) {"#{lint_spec_filename(*@filename1)} #{lint_spec_filename(*@filename2)}"}
+  let (:false_string) {"false\n"}
 
   before do
     load_lint_translation_file
@@ -38,14 +38,14 @@ describe 'rdlint' do
 
     it 'reports a version number with the version option' do
       @filename = %w(protocol_section_errors extraneous_properties.yml)
-      @expected_rdlint_output = capture(:stdout) { Lint.version } << expected_output(:warning,
+      @expected_rdlint_output = capture(:stdout) { Crichton::Lint.version } << expected_output(:warning,
         'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename)
       @option = '-v'
     end
   end
 
   context 'with the --strict option' do
-     it 'reports false when errors occur' do
+    it 'reports false when errors occur' do
       @filename = %w(protocol_section_errors missing_protocol_actions.yml)
       %x(bundle exec rdlint -s #{filename}).should == %Q(#{false_string.red}\n)
     end
@@ -83,8 +83,8 @@ describe 'rdlint' do
       execution_output = %x(bundle exec rdlint -a)
       all_files_processed = %w(nostate_descriptor.yml noprotocols_descriptor.yml
         nodescriptors_descriptor.yml).all? do |file|
-          execution_output.include?(file)
-        end
+        execution_output.include?(file)
+      end
 
       all_files_processed.should be_true
     end

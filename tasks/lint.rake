@@ -4,11 +4,11 @@ require 'colorize'
 desc "Generate lint validation of a resource descriptor file"
 namespace :crichton do
   task :lint, [:file_or_all, :lint_option] => :environment do |t, args|
-    require 'lint'
+    require 'crichton/lint'
     begin
       option = args[:lint_option]  ? Hash[args[:lint_option].to_sym, true] : {}
 
-      Lint.version if option[:version]
+      Crichton::Lint.version if option[:version]
 
       unless option[:strict]
         puts args[:file_or_all] == 'all' ? "Linting all descriptor files" : "Linting file:'#{args[:file_or_all]}'"
@@ -16,9 +16,9 @@ namespace :crichton do
       end
 
       retval = if args[:file_or_all] == 'all'
-        Lint.validate_all(option)
+        Crichton::Lint.validate_all(option)
       else
-        Lint.validate(args[:file_or_all], option)
+        Crichton::Lint.validate(args[:file_or_all], option)
       end
       puts retval ? "#{retval}\n".green : "#{retval}\n".red if option[:strict]
     rescue StandardError => e

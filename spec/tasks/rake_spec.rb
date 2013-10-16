@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'rake'
-require 'lint'
+require 'crichton'
+require 'crichton/lint'
 require 'colorize'
 
 describe 'rake crichton.lint' do
@@ -19,7 +20,7 @@ describe 'rake crichton.lint' do
     after do
       rake_invocation = @option ? "crichton:lint[#{rake_filename},#{@option}]" : "crichton:lint[#{rake_filename}]"
       capture(:stdout) { Rake.application.invoke_task "#{rake_invocation}" }.should ==
-        (@option == 'version' ? capture(:stdout) { Lint.version } : "") <<
+        (@option == 'version' ? capture(:stdout) { Crichton::Lint.version } : "") <<
           "Linting file:'#{rake_filename}'\n#{(@option ? "Options: #{@option}\n" : "")}#{@expected_rake_output}"
     end
 
@@ -61,19 +62,21 @@ describe 'rake crichton.lint' do
 
   context 'with the --all option' do
     before(:all) do
+      Crichton.stub(:descriptor_location).and_return('api_descriptors')
       build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
     end
 
     after(:all) do
       FileUtils.rm_rf('api_descriptors')
+      Crichton.stub(:descriptor_location).and_return('test_directory')
     end
 
     it 'processes all the files in the config folder' do
       execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[all]" }
       all_files_processed = %w(nostate_descriptor.yml noprotocols_descriptor.yml
         nodescriptors_descriptor.yml).all? do |file|
-          execution_output.include?(file)
-         end
+        execution_output.include?(file)
+      end
 
       all_files_processed.should be_true
     end
