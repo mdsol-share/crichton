@@ -249,12 +249,6 @@ module Crichton
       f_options[:include].empty? && f_options[:remove].empty? && f_options[:only].empty? ? nil : f_options
     end
 
-    def slice_known(options, *known_options)
-      options ||= {}
-      raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'." unless options.is_a?(Hash)
-      options.slice(*known_options)
-    end
-    
     def target
       # @target will only be set in a Factory adapter instance.
       @target ||= self
