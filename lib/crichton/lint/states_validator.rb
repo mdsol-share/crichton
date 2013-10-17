@@ -84,18 +84,27 @@ module Crichton
       # No need to check if the next transition points to an external resource (e.g. 'location')
       def phantom_state_transition_check(states_list, resource_name, curr_state_name, transition_decorator)
         transition_decorator.next.each do |next_state|
-          unless valid_next_state(states_list, transition_decorator, next_state)
-            add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
-              transition: transition_decorator.name, next_state: next_state)
+          if transition_decorator.is_next_state_a_location?
+            validate_external_profile(resource_name, curr_state_name, transition_decorator)
+          else
+            unless states_list.include?(next_state)
+              add_error('states.phantom_next_property', secondary_descriptor: resource_name, state: curr_state_name,
+                transition: transition_decorator.name, next_state: next_state)
+            end
           end
         end
       end
 
-      # Here we test if the next state of this transition exists in our pre-built list of all states
-      # No need to test for next states that are external to this doc (e.g. having a location property)
-      def valid_next_state(states_list, transition_decorator, next_state)
-        return true if transition_decorator.is_next_state_a_location?
-        states_list.include?(next_state)
+      def validate_external_profile(resource_name, curr_state_name, transition_decorator)
+        external_document_store  = Crichton::ExternalDocumentStore.new('/Users/pservedio/work_ruby/crichton/spec/fixtures/external_documents_store')
+        return if external_document_store.get(transition_decorator.next_state_location)
+        response, body = external_document_store.send(:download,transition_decorator.next_state_location)
+        add_error('states.invalid_external_location', link: transition_decorator.next_state_location,
+          secondary_descriptor: resource_name, state: curr_state_name, transition: transition_decorator.name) unless
+          response == '200'
+        add_warning('states.download_external_profile', link: transition_decorator.next_state_location,
+          secondary_descriptor: resource_name, state: curr_state_name, transition: transition_decorator.name) if
+          response == '200'
       end
 
       #67, check for transitions missing from the states section that are found in the protocol and descriptor sections
@@ -134,6 +143,10 @@ module Crichton
 
       def is_specified_name_property_not_self?
         id != name && name != 'self' && !is_next_state_a_location?
+      end
+
+      def next_state_location
+        self.next.first['location']
       end
     end
   end
