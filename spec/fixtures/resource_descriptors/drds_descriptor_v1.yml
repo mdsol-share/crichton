@@ -242,11 +242,27 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: renegade
+        values:
+          id: drd_status_values
+          hash:
+            active: activated
+            inactive: deactivated
+            unknown: renegade
+      old_status:
+        doc: How was the DRD before the last change
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        values:
+          href: DRDs#drd_status_values
       kind:
         doc: What kind is it.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: standard
+        values:
+          list:
+            - standard
+            - sentinel
       leviathan_uuid:
         doc: The UUID of the creator Leviathan.
         type: semantic
@@ -262,6 +278,12 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Thing/Leviathan
         embed: optional
+      location:
+        doc: The area the DRD is currently in
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        values:
+          external_list: http://crichton.example.com/drd_location_list
       # Transitions
       show:
         doc: Shows a particular DRD.
