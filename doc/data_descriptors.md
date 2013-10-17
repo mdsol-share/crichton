@@ -28,6 +28,16 @@ indicates the URI of the descriptor for top-level descriptors.
     way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed' otherwise.
     The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the
     values - allows setting the mode of embedding.
+    * `values` - Provides a list of possible values for a select list or similar use. Below this key, the following
+    options can be used: (all are optional - but skipping all is pointless)
+      * `id` - Can be used to reference a particular list and include its values in another values entry.
+      * `href` - Include a referenced values entry
+      * `list` - Contains an array of values
+      * `hash` - Contains a hash of key-value pairs
+      * `external_list` - Retrieve a list form an external source
+      * `external_hash` - Retrieve a hash from an external source
+     Only one of `list`, `hash`, `external_list`or `external_hash` may be present this applies also for included href
+     entries.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
