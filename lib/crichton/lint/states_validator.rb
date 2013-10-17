@@ -95,16 +95,18 @@ module Crichton
         end
       end
 
-      def validate_external_profile(resource_name, curr_state_name, transition_decorator)
+      def validate_external_profile(resource_name, state_name, transition_decorator)
         external_document_store  = Crichton::ExternalDocumentStore.new
         return if external_document_store.get(transition_decorator.next_state_location)
-        response, body = external_document_store.send(:download,transition_decorator.next_state_location)
-        add_error('states.invalid_external_location', link: transition_decorator.next_state_location,
-          secondary_descriptor: resource_name, state: curr_state_name, transition: transition_decorator.name) unless
-          response == '200'
-        add_warning('states.download_external_profile', link: transition_decorator.next_state_location,
-          secondary_descriptor: resource_name, state: curr_state_name, transition: transition_decorator.name) if
-          response == '200'
+        response, body = external_document_store.send(:download, transition_decorator.next_state_location)
+        unless response == '200'
+          add_error('states.invalid_external_location', link: transition_decorator.next_state_location,
+            secondary_descriptor: resource_name, state: state_name, transition: transition_decorator.name)
+        end
+        if response == '200'
+          add_warning('states.download_external_profile', link: transition_decorator.next_state_location,
+            secondary_descriptor: resource_name, state: state_name, transition: transition_decorator.name)
+        end
       end
 
       #67, check for transitions missing from the states section that are found in the protocol and descriptor sections

@@ -122,6 +122,7 @@ module Crichton
         end
 
         it 'reports no errors with a descriptor file containing valid field_types and validators' do
+          Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
           @filename = %w(clean_descriptor_file.yml)
           @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
         end

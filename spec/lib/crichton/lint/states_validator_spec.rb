@@ -44,6 +44,37 @@ module Crichton
             filename: filename) <<
             expected_output(:error, 'states.protocol_transition_not_found', transition: 'create')
         end
+
+        context 'an external profile' do
+          before do
+            @external_url ='http://alps.io/schema.org/Leviathans'
+          end
+
+          it 'reports no errors when it is already downloaded to disk' do
+            Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+            @filename = %w(clean_descriptor_file.yml)
+            @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
+          end
+
+          it 'reports an error if its url points to an invalid address' do
+            stub_request(:get, @external_url).with(:headers => {'Accept' => '*/*', 'User-Agent' => 'Ruby'}).
+              to_return(:status => 404, :body => "", :headers => {})
+            StateTransitionDecorator.any_instance.stub(:next_state_location).and_return(@external_url)
+            @filename = %w(state_section_errors external_profile.yml)
+            @errors = expected_output(:error, 'states.invalid_external_location', link: @external_url,
+              secondary_descriptor: 'drd', state: 'activated', transition: 'self', filename: filename)
+
+          end
+
+          it 'reports a warning if its url has a valid address but is not downloaded to disk' do
+            stub_request(:get, @external_url).with(:headers => {'Accept' => '*/*', 'User-Agent' => 'Ruby'}).
+              to_return(:status => 200, :body => "", :headers => {})
+            StateTransitionDecorator.any_instance.stub(:next_state_location).and_return(@external_url)
+            @filename = %w(state_section_errors external_profile.yml)
+            @warnings = expected_output(:warning, 'states.download_external_profile', link: @external_url,
+              secondary_descriptor: 'drd', state: 'activated', transition: 'self', filename: filename)
+          end
+        end
       end
     end
   end

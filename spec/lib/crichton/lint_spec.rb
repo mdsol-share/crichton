@@ -21,6 +21,7 @@ describe Crichton::Lint do
       end
 
       it 'reports a success statement with a clean resource descriptor file' do
+        Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
         @filename = %w(clean_descriptor_file.yml)
         @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
       end
@@ -49,12 +50,14 @@ describe Crichton::Lint do
       end
 
       it 'returns no errors for a clean descriptor file' do
+        Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
         @filename = %w(clean_descriptor_file.yml)
         @option = {count: :error}
         @count = 0
       end
 
       it 'returns no warnings for a clean descriptor file' do
+        Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
         @filename = %w(clean_descriptor_file.yml)
         @option = {count: :warning}
         @count = 0
@@ -79,7 +82,8 @@ describe Crichton::Lint do
       end
 
       it 'returns true when a clean descriptor file is validated' do
-        @filename = %w(protocol_section_errors extraneous_properties.yml)
+        Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+        @filename = %w(clean_descriptor_file.yml)
         @retval = true
       end
 
