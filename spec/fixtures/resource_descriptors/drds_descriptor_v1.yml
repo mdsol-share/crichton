@@ -283,7 +283,9 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Text
         values:
-          external_list: http://crichton.example.com/drd_location_list
+          external_hash: http://crichton.example.com/drd_location_list#items
+          key_name: location_id
+          value_name: location_text
       # Transitions
       show:
         doc: Shows a particular DRD.

@@ -38,6 +38,12 @@ indicates the URI of the descriptor for top-level descriptors.
       * `external_hash` - Retrieve a hash from an external source
      Only one of `list`, `hash`, `external_list`or `external_hash` may be present, this applies also for included href
      entries.
+     In case of the `external_list` or `external_hash`, the link needs to contain a fragment to indicate what element
+     the list or hash is in and the attributes
+     * `key_name` - specifies the name of the attribute inside the element that the key will be taken from
+     * `value_name` - (only for hashes) specifies the attribute the value will be taken from
+     are used to specify the fields that are to be used to assemble the list or hash. In case of the list, the key
+     and value are identical so the `value_name` is not needed.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
