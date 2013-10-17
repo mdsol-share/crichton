@@ -36,7 +36,7 @@ indicates the URI of the descriptor for top-level descriptors.
       * `hash` - Contains a hash of key-value pairs
       * `external_list` - Retrieve a list form an external source
       * `external_hash` - Retrieve a hash from an external source
-     Only one of `list`, `hash`, `external_list`or `external_hash` may be present this applies also for included href
+     Only one of `list`, `hash`, `external_list`or `external_hash` may be present, this applies also for included href
      entries.
 
 ### Template Properties
