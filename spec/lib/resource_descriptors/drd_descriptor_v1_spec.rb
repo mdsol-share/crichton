@@ -19,7 +19,7 @@ describe 'DRDs resource descriptor' do
 
   it 'contains (6) errors' do
     Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
-     @filename = %w(clean_descriptor_file.yml)
+    @filename = %w(clean_descriptor_file.yml)
     # TODO should change when we fix up drds_descriptor_v1.yml
     validator.validate(filename, {count: :error}).should == 6
   end

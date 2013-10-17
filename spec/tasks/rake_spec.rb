@@ -65,7 +65,7 @@ describe 'rake crichton.lint' do
 
   context 'with the --all option' do
     before do
-       build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
+      build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
     end
 
     after do
