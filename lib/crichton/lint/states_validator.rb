@@ -96,7 +96,7 @@ module Crichton
       end
 
       def validate_external_profile(resource_name, curr_state_name, transition_decorator)
-        external_document_store  = Crichton::ExternalDocumentStore.new('/Users/pservedio/work_ruby/crichton/spec/fixtures/external_documents_store')
+        external_document_store  = Crichton::ExternalDocumentStore.new
         return if external_document_store.get(transition_decorator.next_state_location)
         response, body = external_document_store.send(:download,transition_decorator.next_state_location)
         add_error('states.invalid_external_location', link: transition_decorator.next_state_location,
