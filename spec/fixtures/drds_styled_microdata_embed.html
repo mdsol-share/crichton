@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <link rel="profile" href="http://alps.example.org/DRDs"/>
+  <link rel="type" href="http://alps.example.org/DRDs#drds"/>
+  <link rel="help" href="http://documentation.example.org/Things/DRDs"/>
+  <link rel="stylesheet" href="http://example.org/resources/styles.css"/>
+  <style>
+    *[itemprop]::before {
+      content: attr(itemprop) ": ";
+      text-transform: capitalize;
+    }
+  </style>
+</head>
+<body>
+<ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drds">
+  <li>
+    <a rel="self" href="http://deployment.example.org/drds">self</a>
+  </li>
+  <li>
+    <form action="http://deployment.example.org/drds" method="GET">
+      <ul>
+        <li>
+          <label itemprop="search_term">
+            <input type="text" name="search_term"/>
+          </label>
+        </li>
+      </ul>
+      <input type="submit" value="search"/>
+    </form>
+  </li>
+  <li>
+    <form action="http://deployment.example.org/drds" method="post">
+      <ul>
+        <li>
+          <label itemprop="status">
+            <input type="text" name="status" required=""/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="kind">
+            <input type="checkbox" name="kind"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="name">
+            <input type="text" name="name" required="" maxlength="50"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="leviathan_uuid">
+            <input type="text" name="leviathan_uuid"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="leviathan_health_points">
+              <input type="number" name="leviathan_health_points" required="" min="0" max="100"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="leviathan_email">
+              <input type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
+          </label>
+        </li>
+      </ul>
+      <input type="hidden" name="_method" value="POST"/>
+      <input type="submit" value="create"/>
+    </form>
+  </li>
+  <li>
+    <span itemprop="total_count">2</span>
+  </li>
+  <li>
+    <ul itemscope="itemscope" itemtype="http://alps.io/schema.org/Array" itemprop="items">
+      <li>
+        <a href="http://deployment.example.org/drds/0">0</a>
+      </li>
+      <li>
+        <a href="http://deployment.example.org/drds/1">1</a>
+      </li>
+    </ul>
+  </li>
+</ul>
+</body>
+</html>
