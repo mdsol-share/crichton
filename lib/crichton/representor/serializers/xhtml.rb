@@ -148,7 +148,11 @@ module Crichton
 
         def add_transitions(options)
           @object.each_link_transition(options) do |transition|
-            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition, options)
+            if transition.templated? || !transition.safe?
+              add_templated_transition(transition, options)
+            else
+              add_transition(transition, options)
+            end
           end
 
           @object.each_embedded_transition(options) { |transition| add_transition(transition, options) }
@@ -229,8 +233,7 @@ module Crichton
           @markup_builder.span(semantic.value.to_s, itemprop: semantic.name)
         end
 
-        def add_control_transition(transition)
-          method = transition.safe? ? transition.method : :post
+        def add_control_transition(transition, method = :post)
           @markup_builder.form({action: transition.url, method: method, name: transition.name}) do
             transition.semantics.values.each do |semantic|
               # If this is a form semantic, pick up its attributes
@@ -311,12 +314,11 @@ module Crichton
         end
 
         def add_query_transition(transition)
-          add_control_transition(transition)
+          add_control_transition(transition, transition.method)
         end
         
         # Builds a form control
-        def add_control_transition(transition)
-          method = transition.safe? ? transition.method : :post
+        def add_control_transition(transition, method = :post)
           @markup_builder.li do
             @markup_builder.form({action: transition.url, method: method}) do
               @markup_builder.ul do
@@ -335,10 +337,9 @@ module Crichton
         end
 
         def add_control_input(semantic, field_type = nil)
-          field_type ||= semantic.field_type
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) do
-              @markup_builder.input({type: field_type, name: semantic.name}.merge(semantic.validators))
+              super
             end
           end
         end
