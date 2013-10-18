@@ -58,6 +58,10 @@ module Crichton
       @raw_profile_registry ||= {}
     end
 
+    def values_registry
+      @values_registry ||= {}
+    end
+
     #TODO: Add
     # profile_registry and raw_profile_registry
 
@@ -178,6 +182,7 @@ module Crichton
 
     # Recursive descent
     def build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, id, hash)
+      add_values_to_values_registry(descriptor_name_prefix, hash)
       @ids_registry ||= {}
       descriptor_name = "#{descriptor_name_prefix}\##{id}"
       if id && @ids_registry.include?(descriptor_name)
@@ -191,6 +196,12 @@ module Crichton
         hash['descriptors'].each do |child_id, descriptor|
           build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, child_id, descriptor)
         end
+      end
+    end
+
+    def add_values_to_values_registry(descriptor_name_prefix, hash)
+      if hash.include?('values') && hash['values'].include?('id')
+        values_registry["#{descriptor_name_prefix}\##{hash['values']['id']}"] = hash['values']
       end
     end
 
