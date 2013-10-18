@@ -15,6 +15,10 @@ module Crichton
           built_serializer(media_type, self, options).as_media_type(options)
         end
 
+        def as_link(media_type, options = {})
+          built_serializer(media_type, self, options).as_link(self_transition, options)
+        end
+
         ##
         # Returns the final, serialized media-type for the response. This method differs from #as_media_type, which
         # returns a serialized object. It may be a hash or XML, for example. Serializers implement this method to 

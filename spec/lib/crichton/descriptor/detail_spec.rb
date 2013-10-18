@@ -24,8 +24,82 @@ module Crichton
 
       describe '#embed' do
         it 'returns the embed value for the descriptor' do
-          descriptor_document['embed'] = 'optional'
+          descriptor_document['embed'] = 'single-optional'
           descriptor.embed.should == descriptor_document['embed']
+        end
+      end
+
+      describe '#embed_type' do
+        it 'returns :embed for single' do
+          descriptor_document['embed'] = 'single'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed for multiple' do
+          descriptor_document['embed'] = 'multiple'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :link for single-link' do
+          descriptor_document['embed'] = 'single-link'
+          options = {}
+          descriptor.embed_type(options).should == :link
+        end
+
+        it 'returns :link for multiple-link' do
+          descriptor_document['embed'] = 'multiple-link'
+          options = {}
+          descriptor.embed_type(options).should == :link
+        end
+
+        it 'returns :embed for single-optional without optional_embed_mode option' do
+          descriptor_document['embed'] = 'single-optional'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed in case an unknown embed option is specified' do
+          descriptor_document['embed'] = 'junk-optional'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed for multiple-optional without optional_embed_mode option' do
+          descriptor_document['embed'] = 'multiple-optional'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed for multiple-optional-link without optional_embed_mode option' do
+          descriptor_document['embed'] = 'multiple-optional-link'
+          options = {}
+          descriptor.embed_type(options).should == :link
+        end
+
+        it 'returns :embed for single-optional with optional_embed_mode option set to :embed' do
+          descriptor_document['embed'] = 'single-optional'
+          options = {embed_optional: {'drds' => :embed}}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed for multiple-optional with optional_embed_mode option set to :embed' do
+          descriptor_document['embed'] = 'multiple-optional'
+          options = {embed_optional: {'drds' => :embed}}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :link for single-optional with optional_embed_mode option set to :link' do
+          descriptor_document['embed'] = 'single-optional'
+          options = {embed_optional: {'drds' => :link}}
+          descriptor.embed_type(options).should == :link
+        end
+
+        it 'returns :link for multiple-optional with optional_embed_mode option set to :link' do
+          descriptor_document['embed'] = 'multiple-optional'
+          options = {embed_optional: {'drds' => :link}}
+          descriptor.embed_type(options).should == :link
         end
       end
 

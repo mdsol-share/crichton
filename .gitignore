@@ -9,3 +9,6 @@ coverage
 tmp
 .yardoc
 yardoc
+spec/fixtures/external_documents_cache/
+spec/fixtures/external_documents_store/
+

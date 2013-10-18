@@ -86,7 +86,7 @@ module Crichton
         resource_descriptor.send(descriptors).values.send(filter) { |descriptor| descriptor.embeddable? }
       end
     end
-    
+
     ##
     # Returns a hash populated with the data related semantic keys and underlying descriptors for the represented
     # resource.
@@ -159,7 +159,15 @@ module Crichton
     def each_link_transition(options = nil, &block)
       each_link_transition_enumerator(options, &block)
     end
-    
+
+    ##
+    # Find and return the self transition
+    #
+    # @return [Hash] The data.
+    def self_transition
+      @_self_transition ||= Crichton.descriptor_registry[self.class.resource_name].self_transition.decorate(self, {})
+    end
+
     ##
     # Returns the profile, type and help links of the associated descriptor.
     #
@@ -185,7 +193,6 @@ module Crichton
         enum2.each { |e| y << e }
       end
     end
-
 
     AdditionalTransition = Struct.new :name, :url
     private_constant :AdditionalTransition
@@ -219,34 +226,27 @@ module Crichton
     
     def filtered_descriptors(type, descriptor, options)
       descriptors = self.class.send("#{type}_#{descriptor}_descriptors")
-      names, select = filter_names(options)
-      method = select ? :select : :reject
-      
-      names ? descriptors.send(method) { |descriptor| names.include?(descriptor.name) } : descriptors
+      filter_options = parsed_filtering_options(options || {})
+      descriptors.map { |descriptor| descriptor if descriptor_to_be_included(descriptor.name, filter_options) }.compact
     end
-    
-    def filter_names(options = nil)
-      options ||= {}
 
-      if only = options[:only]
-        [only, true]
-      elsif except = options[:except]
-        [except]
-      elsif include = options[:include]
-        [include, true]
-      elsif exclude = options[:exclude]
-        [exclude]
-      else
-        []
-      end.tap { |filters| filters[0] = Array.wrap(filters[0]).map(&:to_s) if filters.any? }
+    def descriptor_to_be_included(name, filter_options)
+      return true if filter_options.nil?
+      return false if filter_options[:only].present? && !filter_options[:only].include?(name)
+      return true if filter_options[:include].include?(name)
+      return false if filter_options[:remove].include?(name)
+      return true # if not excluded
     end
-    
-    def slice_known(options, *known_options)
-      options ||= {}
-      raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'." unless options.is_a?(Hash)
-      options.slice(*known_options)
+
+    def parsed_filtering_options(options = {})
+      filtering_options = {
+        include: [options[:include] || []].flatten,
+        remove: [[options[:except] || []] + [options[:exclude] || []]].flatten.map(&:to_s),
+        only: [options[:only] || []].flatten.map(&:to_s)
+      }
+      filtering_options.values.all? { |v| v.empty? } ? nil : filtering_options
     end
-    
+
     def target
       # @target will only be set in a Factory adapter instance.
       @target ||= self
