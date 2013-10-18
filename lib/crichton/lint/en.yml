@@ -25,6 +25,8 @@ en:
     duplicate_state: "Duplicate state found in state section: '%{state}' for resource '%{resource}'"
     descriptor_transition_not_found: "No state transition defined for descriptor transition '%{transition}'"
     protocol_transition_not_found: "No state transition defined for protocol transition '%{transition}'"
+    invalid_external_location: "Invalid external profile url '%{link}' found in resource '%{secondary_descriptor}', in state '%{state}', transition '%{transition}'"
+    download_external_profile: "External profile url '%{link}' exists in resource '%{secondary_descriptor}', in state '%{state}', transition '%{transition}', but is not downloaded. Please run 'rake alps:store_all_external_documents'"
   descriptors:
     property_missing:  "Resource '%{resource}' descriptor section does not have a '%{prop}' property"
     doc_media_type_invalid:  "Resource '%{resource}' descriptor section, doc property media type '%{media_type}' is invalid"

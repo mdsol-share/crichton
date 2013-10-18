@@ -25,19 +25,19 @@ describe 'rdlint' do
     end
 
     it 'displays empty output when all warnings are suppressed on a warnings only result' do
-      @filename = %w(protocol_section_errors extraneous_properties.yml)
+      @filename = %w(protocol_section_errors properties_failures.yml)
       @expected_rdlint_output = "In file '#{filename}':\n"
       @option = '-w'
     end
 
     it 'reports an expected value with the no warning option' do
-      @filename = %w(protocol_section_errors extraneous_properties.yml)
+      @filename = %w(protocol_section_errors properties_failures.yml)
       @expected_rdlint_output = "In file '#{filename}':\n"
       @option = '-w'
     end
 
     it 'reports a version number with the version option' do
-      @filename = %w(protocol_section_errors extraneous_properties.yml)
+      @filename = %w(protocol_section_errors properties_failures.yml)
       @expected_rdlint_output = capture(:stdout) { Crichton::Lint.version } << expected_output(:warning,
         'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename)
       @option = '-v'
@@ -62,8 +62,8 @@ describe 'rdlint' do
       end
 
       it 'reports true all are clean' do
-        @filename1 = %w(protocol_section_errors extraneous_properties.yml)
-        @filename2 = %w(protocol_section_errors extraneous_properties.yml)
+        @filename1 = %w(protocol_section_errors properties_failures.yml)
+        @filename2 = %w(protocol_section_errors properties_failures.yml)
         @output = "true\n".green
       end
     end

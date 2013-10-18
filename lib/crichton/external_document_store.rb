@@ -16,7 +16,7 @@ module Crichton
       output = []
       stored_links.each do |link|
         new_code, new_data = download(link)
-        if new_code == '200'
+        if new_code == 200
           old_data = get(link)
           unless old_data == new_data
             output << "Data of link #{link} has changed!"
@@ -36,7 +36,7 @@ module Crichton
 
     def download_link_and_store_in_document_store(link)
       new_code, new_data = download(link)
-      return unless new_code == '200'
+      return unless new_code == 200
       old_data = get(link)
       write_data = true
       if old_data && old_data != new_data
@@ -56,7 +56,7 @@ module Crichton
       uri = URI(link_without_fragment(link))
       request = Net::HTTP::Get.new(uri.request_uri)
       response = Net::HTTP.start(uri.hostname, uri.port) { |http| http.request(request) }
-      return response.code, response.body
+      return response.code.to_i, response.body
     end
 
     def write_data_to_store(link, data)

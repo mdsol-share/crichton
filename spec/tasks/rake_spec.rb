@@ -32,12 +32,14 @@ describe 'rake crichton.lint' do
     end
 
     it 'reports empty output when all warnings are suppressed with a warning free result' do
+      Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return("<alps></alps>")
       @filename = %w(protocol_section_errors extraneous_properties.yml)
       @expected_rake_output = "In file '#{rake_filename}':\n"
       @option = 'no_warnings'
     end
 
     it 'reports a version number when invoked with the version option' do
+      Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return("<alps></alps>")
       @filename = %w(protocol_section_errors extraneous_properties.yml)
       @expected_rake_output = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http',
         action: 'leviathan-link', filename: rake_filename)
@@ -56,23 +58,24 @@ describe 'rake crichton.lint' do
     end
 
     it 'reports true for a clean descriptor file' do
+      Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return("<alps></alps>")
       @filename = %w(protocol_section_errors extraneous_properties.yml)
       @result = %Q(#{"true\n".green}\n)
     end
   end
 
   context 'with the --all option' do
-    before(:all) do
-      Crichton.stub(:descriptor_location).and_return('api_descriptors')
+    before do
       build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
     end
 
-    after(:all) do
+    after do
       FileUtils.rm_rf('api_descriptors')
       Crichton.stub(:descriptor_location).and_return('test_directory')
     end
 
     it 'processes all the files in the config folder' do
+      Crichton.stub(:descriptor_location).and_return('api_descriptors')
       execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[all]" }
       all_files_processed = %w(nostate_descriptor.yml noprotocols_descriptor.yml
         nodescriptors_descriptor.yml).all? do |file|
