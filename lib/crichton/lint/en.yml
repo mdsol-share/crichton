@@ -38,6 +38,7 @@ en:
     state_resource_not_found: "State resource named '%{resource}' not found in the descriptor section"
     descriptor_resource_not_found: "Descriptor resource named '%{resource}' not found in the states section"
     invalid_return_type: "Descriptor transition '%{resource}' contains an invalid return type '%{rt}'"
+    missing_return_type: "Descriptor transition '%{resource}' does not have a return type. Please supply a valid type or 'none'"
     invalid_method: "Descriptor transition '%{resource}' of type '%{type}' uses an incorrect protocol method '%{mthd}'"
     non_unique_descriptor: "Descriptor ID '%{id}' is not unique. You can create a unique ID with concatenation, such as '%{parent}-%{id}' and adding a name property '%{id}'"
     invalid_field_type: "Invalid field type '%{field_type}' for descriptor '%{id}' in descriptor section"

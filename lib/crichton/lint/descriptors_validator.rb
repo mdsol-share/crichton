@@ -103,7 +103,7 @@ module Crichton
               add_error('descriptors.invalid_return_type', options.merge({rt: descriptor.rt}))
             end
           else
-            add_error('descriptors.property_missing', options.merge({prop: 'rt'}))
+            add_error('descriptors.missing_return_type', options)
           end
           check_protocol_method_and_type(descriptor.type, descriptor.decorate(self).method, options)
         end
@@ -112,6 +112,7 @@ module Crichton
       def valid_return_type(return_type)
         # if external, valid, assume http as only valid external for now
         return true if  Crichton::Descriptor::Resource::PROTOCOL_TYPES.include?(return_type[/\Ahttp/])
+        return true if return_type.downcase == 'none'
         rt_is_a_valid_subresource(return_type)
       end
 
