@@ -23,6 +23,25 @@ module Crichton
       # @!macro string_reader
       descriptor_reader :type
 
+      # @!macro string_reader
+      #descriptor_reader :values
+
+      ##
+      # Return de-referenced values attribute
+      def values
+        v = descriptor_document['values']
+        v.merge!(Crichton::values_registry[v.delete('href')]) if v && v.include?('href')
+        v
+      end
+
+      def values_iterator
+        if v = values
+          if v.include? 'hash'
+            v['hash'].each { |k, v| yield k, v }
+          end
+        end
+      end
+
       ##
       # Constructs a new instance of BaseDocumentDescriptor.
       #

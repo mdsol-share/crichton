@@ -354,6 +354,9 @@ module Crichton
         end
 
         def add_control_select(semantic)
+          @markup_builder.select do
+            semantic.values_iterator { |k, v| @markup_builder.option(v, value: k) }
+              end
           #TODO: Need to implement <select /> HTML control here
         end
       end
