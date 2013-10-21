@@ -25,13 +25,12 @@ describe 'DRDs resource descriptor' do
 
   it 'contains (14) warnings' do
     Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
-    # TODO should change when we fix up drds_descriptor_v1.yml
     validator.validate(filename, {count: :warning}).should == 14
   end
 
   it 'passes validation with the --strict option' do
     Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
     result = validator.validate(filename, {strict: true})
-    result.should be_true # should be_true when we fix up drds_descriptor_v1.yml
+    result.should be_true
   end
 end
