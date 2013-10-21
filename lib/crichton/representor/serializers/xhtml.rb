@@ -354,10 +354,22 @@ module Crichton
         end
 
         def add_control_select(semantic)
-          @markup_builder.select do
-            semantic.values_iterator { |k, v| @markup_builder.option(v, value: k) }
-              end
-          #TODO: Need to implement <select /> HTML control here
+          if semantic.values_is_internal_select?
+            @markup_builder.select(name: semantic.name) do
+              semantic.values_iterator { |k, v| @markup_builder.option(v, value: k) }
+            end
+          elsif semantic.values_is_external_select?
+            val = semantic.values
+            link_arguments = {type: :hash, href: val['external_hash'], key_name: val['key_name']}
+            if val.include?('external_hash')
+              description = 'external hash link'
+              link_arguments[:value_name] = val['value_name']
+            else
+              description = 'external list link'
+            end
+            @markup_builder.a(description, link_arguments)
+            @markup_builder.input(type: :text, name: semantic.name)
+          end
         end
       end
     end

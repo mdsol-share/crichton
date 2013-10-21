@@ -34,6 +34,14 @@ module Crichton
         v
       end
 
+      def values_is_internal_select?
+        (v = values) && (v.include?('hash') || v.include?('list'))
+      end
+
+      def values_is_external_select?
+        (v = values) && (v.include?('external_hash') || v.include?('external_list'))
+      end
+
       ##
       # Iterator allowing the generation of select lists from the values
       def values_iterator
