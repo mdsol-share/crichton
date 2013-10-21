@@ -75,7 +75,8 @@ module Crichton
       # The fully-qualified url for the transition, including a templated query, if any, per 
       # {http://tools.ietf.org/html/rfc6570 RFC 6570}.
       def templated_url
-        @templated_url ||=  url << (semantics.any? ? "{?#{semantics.values.map(&:name).join(',')}}" : '')
+        query = semantics.any? ? "{?#{semantics.values.map(&:name).join(',')}}" : ''
+        @templated_url ||=  url ? url << query : url
       end
       
       ##
