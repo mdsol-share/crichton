@@ -97,17 +97,13 @@ module Crichton
         # @!macro add_head
         #   Adds the head tag and any relevant child tags.
         def add_head
-          @markup_builder.head do
-            add_metadata_links
-          end
+          @markup_builder.head { add_metadata_links }
         end
 
         # @!macro add_body
         #   Adds the body tag and all child tags.
         def add_body(options)
-          @markup_builder.body do
-            add_embedded_element(options)
-          end
+          @markup_builder.body { add_embedded_element(options) }
         end
 
         # @!macro add_embedded_element
@@ -153,43 +149,29 @@ module Crichton
 
         def add_transitions(options)
           @object.each_link_transition(options) do |transition|
-            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition, options)
+            if transition.safe?
+              add_link_transition(transition)
+            else
+              add_form_transition(transition)
+            end
           end
 
-          @object.each_embedded_transition(options) { |transition| add_transition(transition, options) }
+          @object.each_embedded_transition(options) { |transition| add_link_transition(transition) }
         end
 
-        def add_templated_transition(transition, options)
-          if transition.safe?
-            add_query_transition(transition)
-          else
-            add_control_transition(transition)
-          end
+        def add_link_transition(transition)
+          @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url}) if transition.templated_url
         end
 
-        def add_query_transition(transition)
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url}) if transition.url
-        end
-
-        def add_control_transition(transition)
-          raise_abstract('add_control_transition')
-        end
-
-        def add_transition(transition, options)
-          transition_url = transition.url
-          logger.warn("URL is blank for transition #{transition.name}!") if transition_url.blank?
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) unless transition_url.blank?
+        def add_form_transition(transition)
+          raise_abstract('add_form_transition')
         end
 
         def add_semantics(options)
-          @object.each_data_semantic(options) do |semantic|
-            add_semantic(semantic, options)
-          end
+          @object.each_data_semantic(options) { |semantic| add_semantic(semantic, options) }
 
           options[:top_level] = false
-          @object.each_embedded_semantic(options) do |semantic|
-            add_embedded_semantic(semantic, options)
-          end
+          @object.each_embedded_semantic(options) { |semantic| add_embedded_semantic(semantic, options) }
         end
 
         def add_semantic(semantic, options)
@@ -234,8 +216,7 @@ module Crichton
           @markup_builder.span(semantic.value.to_s, itemprop: semantic.name)
         end
 
-        def add_control_transition(transition)
-          method = transition.safe? ? transition.method : :post
+        def add_form_transition(transition, method = :post)
           @markup_builder.form({action: transition.url, method: method, name: transition.name}) do
             transition.semantics.values.each do |semantic|
               # If this is a form semantic, pick up its attributes
@@ -289,24 +270,12 @@ module Crichton
           end
         end
 
-        def add_transition(transition, options = {})
-          return unless transition.url
-          
-          @markup_builder.li do
-            super
-          end
-        end
-        
         def add_semantic(semantic, options)
-          @markup_builder.li do
-            super
-          end
+          @markup_builder.li { super }
         end
 
         def add_embedded_semantic(semantic, options)
-          @markup_builder.li do
-            super
-          end
+          @markup_builder.li { super }
         end
 
         def add_embedded_object(object, options, semantic)
@@ -320,13 +289,16 @@ module Crichton
           end
         end
 
-        def add_query_transition(transition)
-          add_control_transition(transition)
+        def add_link_transition(transition)
+          if transition.templated?
+            add_form_transition(transition, transition.method)
+          elsif transition.url
+            @markup_builder.li { super }
+          end
         end
         
         # Builds a form control
-        def add_control_transition(transition)
-          method = transition.safe? ? transition.method : :post
+        def add_form_transition(transition, method = :post)
           @markup_builder.li do
             @markup_builder.form({action: transition.url, method: method}) do
               @markup_builder.ul do
@@ -345,11 +317,8 @@ module Crichton
         end
 
         def add_control_input(semantic, field_type = nil)
-          field_type ||= semantic.field_type
           @markup_builder.li do
-            @markup_builder.label({itemprop: semantic.name}) do
-              @markup_builder.input({type: field_type, name: semantic.name}.merge(semantic.validators))
-            end
+            @markup_builder.label({itemprop: semantic.name}) { super }
           end
         end
 
