@@ -1,5 +1,6 @@
 require 'crichton/representor/serializer'
 require "json"
+
 module Crichton
   module Representor
     ##
@@ -7,9 +8,8 @@ module Crichton
     class HALSerializer < Serializer
       media_types hal: %w(application/json+hal)
 
-
       ##
-      # Returns a representation of the object as xhtml.
+      # Returns a representation of the object as json.
       #
       # @param [Hash] options Optional configurations.
       #
@@ -18,9 +18,7 @@ module Crichton
         options ||= {}
         base_object = get_semantic_data(options)
         base_object[:_links] = get_links(options)
-        final_object = add_embedded(base_object, options)
-
-        base_object
+        add_embedded(base_object, options)
       end
 
       def to_media_type(options)
@@ -33,10 +31,10 @@ module Crichton
         embedded = get_embedded(options)
         if embedded
           base_object[:_embedded] = {:items => embedded }
-          base_object[:_links][:list] = embedded.map {|item|
+          base_object[:_links][:list] = embedded.map do |item|
             {href: item[:_links]["self"][:href],
              type: item[:_links]["type"][:href]}
-          }
+          end
         end
         base_object
       end
@@ -48,7 +46,7 @@ module Crichton
       end
 
       def get_data(semantic_element, transformation)
-        Hash[semantic_element.map &transformation]
+        Hash[semantic_element.map(&transformation)]
       end
 
       def get_semantic_data(options)
@@ -57,26 +55,31 @@ module Crichton
         get_data(semantic_data, each_pair)
       end
 
-      def get_link_transitions(options)
-        link_transitions = @object.each_link_transition(options)
-        relations = lambda {|transition|
+      def get_transitions(link_transitions, options)
+        relations = lambda do |transition|
           (transition.templated? ?
               [transition.name, {href: transition.templated_url, templated: true}] :
               [transition.name, {href: transition.url}])
-        }
-        get_data(link_transitions, relations)
+        end
+        get_data(link_transitions, relations).reject {|k, v| not v[:href]}
+      end
+
+      def get_link_transitions(options)
+        get_transitions(@object.each_link_transition(options), options)
       end
 
       def get_metadata_links(options)
         link_transitions = @object.metadata_links
-        relations = lambda {
-            |transition| [transition.name, {href: transition.url}]}
+        relations = lambda do |transition|
+          [transition.name, {href: transition.url}]
+        end
         get_data(link_transitions, relations)
       end
 
       def get_embedded(options)
-        @object.each_embedded_semantic.map { |semantic|
-          get_embedded_elements(semantic, options)    }.first
+        @object.each_embedded_semantic.map do |semantic|
+          get_embedded_elements(semantic, options)
+        end.first
       end
 
       def get_embedded_elements(semantic, options)
@@ -91,13 +94,7 @@ module Crichton
       end
 
       def get_embedded_transitions(options)
-        link_transitions = @object.each_embedded_transition
-        relations = lambda {|transition|
-          (transition.templated? ?
-              [transition.name, {href: transition.templated_url, templated: true}] :
-              [transition.name, {href: transition.url}])
-        }
-        get_data(link_transitions, relations).reject {|k, v| not v[:href]}
+        get_transitions(@object.each_embedded_transition(options), options)
       end
 
       def get_embedded_hal(object, options)
