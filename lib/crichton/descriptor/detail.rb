@@ -38,6 +38,10 @@ module Crichton
         if v = values
           if v.include? 'hash'
             v['hash'].each { |k, v| yield k, v }
+          elsif v.include? 'list'
+            v['list'].each { |k| yield k, k }
+          else
+            Crichton::logger.warn("did not find list or hash key in values data of #{name}: #{values.to_s}")
           end
         end
       end
