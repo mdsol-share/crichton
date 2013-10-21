@@ -3,6 +3,8 @@ require 'crichton/representor'
 require 'crichton/representor/factory'
 require 'crichton/representor/serializers/hal'
 require 'json_spec'
+
+#TODO: Create single Representor Test Class, and Merge this test with XHTML Test
 module Crichton
   module Representor
     describe HALSerializer do

@@ -12,39 +12,46 @@ module Crichton
       # Returns a representation of the object as xhtml.
       #
       # @param [Hash] options Optional configurations.
-      # @option options [Integer] :indent Sets indentation of the tags. Default is 2.
-      # @option options [Symbol] :semantics Indicates the semantic markup type to apply. Valid options are
-      #  :microdata and :styled_microdata. If not included, defaults to :microdata.
       #
       # @return [Hash] The built representation.
       def as_media_type(options = {})
         options ||= {}
-        base_object = get_semantic_data
-        base_object[:_links] = get_link_transitions(options)
-        base_object[:_links] = base_object[:_links].merge(get_metadata_links)
-        base_object[:_links] = base_object[:_links].merge(get_embedded_transitions)
-        embedded = get_embedded(options)
-        base_object[:_embedded] = {:items => embedded } if embedded
-        if base_object[:_embedded]
-          base_object[:_links][:list] = base_object[:_embedded][:items].map {|item| {href: item[:_links]["self"][:href], type:item[:_links]["type"][:href]}}#[:_links][:self]}
-        end
+        base_object = get_semantic_data(options)
+        base_object[:_links] = get_links(options)
+        final_object = add_embedded(base_object, options)
+
         base_object
       end
 
       def to_media_type(options)
-        base_object = as_media_type(options)
-        json_obj = base_object.as_json
-        json_obj = json_obj.to_json
-        json_obj
+        as_media_type(options).to_json
       end
 
       private
+
+      def add_embedded(base_object, options)
+        embedded = get_embedded(options)
+        if embedded
+          base_object[:_embedded] = {:items => embedded }
+          base_object[:_links][:list] = embedded.map {|item|
+            {href: item[:_links]["self"][:href],
+             type: item[:_links]["type"][:href]}
+          }
+        end
+        base_object
+      end
+
+      def get_links(options)
+        links = get_link_transitions(options)
+        links = links.merge(get_metadata_links(options))
+        links.merge(get_embedded_transitions(options))
+      end
 
       def get_data(semantic_element, transformation)
         Hash[semantic_element.map &transformation]
       end
 
-      def get_semantic_data
+      def get_semantic_data(options)
         semantic_data = @object.each_data_semantic
         each_pair = lambda {|descriptor| [descriptor.name, descriptor.value]}
         get_data(semantic_data, each_pair)
@@ -60,7 +67,7 @@ module Crichton
         get_data(link_transitions, relations)
       end
 
-      def get_metadata_links
+      def get_metadata_links(options)
         link_transitions = @object.metadata_links
         relations = lambda {
             |transition| [transition.name, {href: transition.url}]}
@@ -73,8 +80,7 @@ module Crichton
       end
 
       def get_embedded_elements(semantic, options)
-       #embedded_element_attributes = {itemscope: 'itemscope', itemtype: semantic.href, itemprop: semantic.name}
-        case embedded_object = semantic.value
+         case embedded_object = semantic.value
           when Array
             foo = embedded_object.map { |object| get_embedded_hal(object, options) }
           when Crichton::Representor
@@ -84,7 +90,7 @@ module Crichton
         end
       end
 
-      def get_embedded_transitions()
+      def get_embedded_transitions(options)
         link_transitions = @object.each_embedded_transition
         relations = lambda {|transition|
           (transition.templated? ?
