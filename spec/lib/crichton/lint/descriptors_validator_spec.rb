@@ -79,8 +79,7 @@ module Crichton
 
         it 'reports a missing return type error when the descriptor return type is missing' do
           @filename = %w(descriptor_section_errors missing_return_type.yml)
-          @errors = expected_output(:error, 'descriptors.property_missing', resource: 'create', prop: 'rt',
-            filename: filename)
+          @errors = expected_output(:error, 'descriptors.missing_return_type', resource: 'create', filename: filename)
         end
 
         it 'reports errors when the descriptor transitions list does not match state or protocol transitions' do
