@@ -302,11 +302,10 @@ module Crichton
         end
 
         def add_link_transition(transition)
-          return add_form_transition(transition, transition.method) if transition.templated?
-
-          return unless transition.templated_url
-          @markup_builder.li do
-            super
+          if transition.templated?
+            add_form_transition(transition, transition.method)
+          elsif transition.url
+            @markup_builder.li { super }
           end
         end
         
