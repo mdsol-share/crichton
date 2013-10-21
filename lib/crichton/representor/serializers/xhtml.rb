@@ -97,17 +97,13 @@ module Crichton
         # @!macro add_head
         #   Adds the head tag and any relevant child tags.
         def add_head
-          @markup_builder.head do
-            add_metadata_links
-          end
+          @markup_builder.head { add_metadata_links }
         end
 
         # @!macro add_body
         #   Adds the body tag and all child tags.
         def add_body(options)
-          @markup_builder.body do
-            add_embedded_element(options)
-          end
+          @markup_builder.body { add_embedded_element(options) }
         end
 
         # @!macro add_embedded_element
@@ -172,14 +168,10 @@ module Crichton
         end
 
         def add_semantics(options)
-          @object.each_data_semantic(options) do |semantic|
-            add_semantic(semantic, options)
-          end
+          @object.each_data_semantic(options) { |semantic| add_semantic(semantic, options) }
 
           options[:top_level] = false
-          @object.each_embedded_semantic(options) do |semantic|
-            add_embedded_semantic(semantic, options)
-          end
+          @object.each_embedded_semantic(options) { |semantic| add_embedded_semantic(semantic, options) }
         end
 
         def add_semantic(semantic, options)
@@ -279,15 +271,11 @@ module Crichton
         end
 
         def add_semantic(semantic, options)
-          @markup_builder.li do
-            super
-          end
+          @markup_builder.li { super }
         end
 
         def add_embedded_semantic(semantic, options)
-          @markup_builder.li do
-            super
-          end
+          @markup_builder.li { super }
         end
 
         def add_embedded_object(object, options, semantic)
@@ -330,9 +318,7 @@ module Crichton
 
         def add_control_input(semantic, field_type = nil)
           @markup_builder.li do
-            @markup_builder.label({itemprop: semantic.name}) do
-              super
-            end
+            @markup_builder.label({itemprop: semantic.name}) { super }
           end
         end
 
