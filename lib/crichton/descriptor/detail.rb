@@ -34,6 +34,8 @@ module Crichton
         v
       end
 
+      ##
+      # Iterator allowing the generation of select lists from the values
       def values_iterator
         if v = values
           if v.include? 'hash'
