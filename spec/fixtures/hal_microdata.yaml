@@ -1,0 +1,70 @@
+#HTTP HEADERS TEMPLATE
+#Link: <url>; type='application/HAL+JSON+medidata+v1; rel=drd.jsonpath(states.<url>.<state>.transitions.<method>); method=drd.jsonpath(protocols.http.<rel>.<method>)
+
+#HTTP HEADERS FOR http://deployment.example.org/drds
+#Link: <http://alps.example.org/DRDs>; type='application/HAL+JSON+medidata+v1; rel="profile"; method="GET"
+#Link: <http://alps.example.org/DRDs#drds>; type='application/HAL+JSON+medidata+v1; rel="type"; method="GET"
+#Link: <http://documentation.example.org/Things/DRDs>; type='application/HAL+JSON+medidata+v1; rel="help"; method="GET"
+#Link: <http://deployment.example.org/drds>; type='application/HAL+JSON+medidata+v1; rel="create"; method="POST"
+
+#HTTP HEADERS FOR http://deployment.example.org/drds/0
+#Link: <http://alps.example.org/DRDs>; type='application/HAL+JSON+medidata+v1; rel="profile"; method="GET"
+#Link: <http://alps.example.org/DRDs#drds>; type='application/HAL+JSON+medidata+v1; rel="type"; method="GET"
+#Link: <http://documentation.example.org/Things/DRDs>; type='application/HAL+JSON+medidata+v1; rel="help"; method="GET"
+#Link: <http://deployment.example.org/drds/0>; type='application/HAL+JSON+medidata+v1; rel="update"; method="PUT"
+
+
+_links:
+  self:
+    href: http://deployment.example.org/drds
+  profile:
+    href: http://alps.example.org/DRDs
+  type:
+    href: http://alps.example.org/DRDs#drds
+  help:
+    href: http://documentation.example.org/Things/DRDs
+  search:
+    href: http://deployment.example.org/drds{?search_term}
+    templated: true
+  list:
+    -
+      href: http://deployment.example.org/drds/0
+      type: http://alps.example.org/DRDs#drd
+    -
+      href: http://deployment.example.org/drds/1
+      type: http://alps.example.org/DRDs#drd
+
+total_count: 2
+
+_embedded:
+  items:
+    -
+      _links:
+        self:
+          href: http://deployment.example.org/drds/0
+          type: http://alps.example.org/DRDs#drd
+        deactivate:
+          href: http://deployment.example.org/drds/0/deactivate
+      uuid: 0
+      name: name_0
+      status: status_0
+      kind: kind_0
+      leviathan_uuid: leviathan_uuid_0
+      built_at: built_at_0
+    -
+      _links:
+        self:
+          href: http://deployment.example.org/drds/0
+          type: http://alps.example.org/DRDs#drd
+        deactivate:
+          href: http://deployment.example.org/drds/0/deactivate
+        leviathon:
+          href: http://example.org/leviathan/leviathan_uuid_1
+      uuid: 0
+      name: name_0
+      status: status_0
+      kind: kind_0
+      leviathan_uuid: leviathan_uuid_0
+      built_at: built_at_0
+
+

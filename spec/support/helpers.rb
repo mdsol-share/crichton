@@ -35,6 +35,10 @@ module Support
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
 
+    def drds_microdata_hal_json
+      @drds_microdata_hal_json ||= JSON.load(File.open(fixture_path('hal_microdata.json')))
+    end
+
     def drds_microdata_html
       @drds_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_microdata.html')))
     end
