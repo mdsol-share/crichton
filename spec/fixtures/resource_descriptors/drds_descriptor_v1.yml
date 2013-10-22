@@ -258,6 +258,7 @@ descriptors:
         doc: How was the DRD before the last change
         type: semantic
         href: http://alps.io/schema.org/Text
+        sample: renegade
         values:
           href: DRDs#drd_status_values
       kind:
@@ -288,6 +289,7 @@ descriptors:
         doc: The area the DRD is currently in
         type: semantic
         href: http://alps.io/schema.org/Text
+        sample: somewere
         values:
           external_hash: http://crichton.example.com/drd_location_list#items
           key_name: location_id
