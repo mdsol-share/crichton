@@ -25,9 +25,24 @@ module Crichton
         if @options[:strict]
           errors.empty?
         else
-          errors.each { |error| puts "\tERROR: ".red << error.red }
-          warnings.each { |warning| puts "\tWARNING: ".yellow << warning.yellow } unless @options[:no_warnings]
+          output_sub_header unless @options[:section] == :Catastrophic
+          puts "ERRORS:".red if errors.any?
+          errors.each { |error| puts "  #{error.red}\t" }
+          unless @options[:no_warnings]
+            puts "WARNINGS:".yellow  if warnings.any?
+            warnings.each { |warning| puts "  #{warning.yellow}\t" }
+          end
         end
+      end
+
+      def output_sub_header
+        if errors.any?
+           puts "\n#{@options[:section]} Section:"
+        else
+          unless @options[:no_warnings]
+            puts "\n#{@options[:section]} Section:" if warnings.any?
+          end
+         end
       end
 
       def validate(options = {})

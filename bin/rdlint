@@ -41,7 +41,7 @@ Crichton::Lint.version if options[:version]
 
 if options[:all]
   Crichton::Lint.validate_all(options)
-else
+elsif ARGV.any?
   ARGV.each do |file|
     retval = Crichton::Lint.validate(file, options)
     if options[:strict]
@@ -53,4 +53,6 @@ else
     end
   end
   puts "true\n".green if options[:strict]
+else
+  puts "No file(s) specified for lint. You must specify at least one file (except when using the -a/--all option)"
 end

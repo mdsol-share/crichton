@@ -28,33 +28,34 @@ module Crichton
           it 'reports an error when multiple entry points are specified' do
             @filename = %w(protocol_section_errors multiple_entry_points.yml)
             @errors = expected_output(:error, 'protocols.entry_point_error', error: 'Multiple', protocol: 'http',
-              filename: filename)
+              filename: filename, section: :Protocols, sub_header: :error)
           end
 
           it 'reports an error when no entry points are specified' do
             @filename = %w(protocol_section_errors no_entry_points.yml)
             @errors = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
-              filename: filename)
+              filename: filename, section: :Protocols, sub_header: :error)
           end
 
           it 'reports a warning when an external resource action has properties other than uri_source' do
             Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
             @filename = %w(protocol_section_errors extraneous_properties.yml)
-            @warnings = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link',
-              filename: filename)
+            @warnings = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http',
+              action: 'leviathan-link', filename: filename, section: :Protocols, sub_header: :warning)
           end
 
           it 'reports errors when uri and method are not specified for a protocol action' do
             @filename = %w(protocol_section_errors missing_required_properties.yml)
             @errors = expected_output(:error, 'protocols.property_missing', property: 'uri', protocol: 'http',
-              action: 'list', filename: filename) <<
-              expected_output(:error, 'protocols.property_missing', property: 'method', protocol: 'http', action: 'list')
+              action: 'list', filename: filename, section: :Protocols, sub_header: :error) <<
+              expected_output(:error, 'protocols.property_missing', property: 'method', protocol: 'http',
+                action: 'list')
           end
 
           it 'reports warnings when status codes are not specified properly or are missing' do
             @filename = %w(protocol_section_errors bad_status_codes.yml)
             @warnings = expected_output(:warning, 'protocols.invalid_status_code', code: '99', protocol: 'http',
-              action: 'list', filename: filename) <<
+              action: 'list', filename: filename, section: :Protocols, sub_header: :warning) <<
               expected_output(:warning, 'protocols.missing_status_codes_property', property: 'notes', protocol: 'http',
               action: 'create') <<
               expected_output(:warning, 'protocols.property_missing', property: 'status_codes', protocol: 'http',
@@ -64,15 +65,15 @@ module Crichton
           it 'reports errors when content type is not specified properly or are missing' do
             @filename = %w(protocol_section_errors bad_content_type.yml)
             @errors = expected_output(:error, 'protocols.invalid_content_type', content_type: 'application/jason',
-              protocol: 'http', action: 'list', filename: filename) <<
+              protocol: 'http', action: 'list', filename: filename, section: :Protocols, sub_header: :error) <<
               expected_output(:error, 'protocols.property_missing', property: 'content_type', protocol: 'http',
               action: 'create')
           end
 
           it 'reports warnings when slt properties are not specified properly or are missing' do
             @filename = %w(protocol_section_errors bad_slt_properties.yml)
-            @warnings = expected_output(:warning, 'protocols.missing_slt_property', property: 'std_dev', protocol: 'http',
-              action: 'list', filename: filename) <<
+            @warnings = expected_output(:warning, 'protocols.missing_slt_property', property: 'std_dev',
+              protocol: 'http', action: 'list', filename: filename, section: :Protocols, sub_header: :warning) <<
               expected_output(:warning, 'protocols.property_missing', property: 'slt', protocol: 'http',
               action: 'create')
           end
@@ -80,7 +81,7 @@ module Crichton
           it 'reports errors when the protocol actions list does not match state and descriptor transitions' do
             @filename = %w(protocol_section_errors missing_protocol_actions.yml)
             @errors = expected_output(:error, 'protocols.descriptor_transition_not_found', transition: 'search',
-              protocol: 'http', filename: filename) <<
+              protocol: 'http', filename: filename, section: :Protocols, sub_header: :error) <<
               expected_output(:error, 'protocols.state_transition_not_found', transition: 'search', protocol: 'http')
           end
         end

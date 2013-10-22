@@ -19,7 +19,7 @@ module Crichton
         # Using Yaml output, check for whoppers first
         MAJOR_SECTIONS.each do |section|
           unless resource_descriptor.descriptor_document[section]
-            add_error('catastrophic.section_missing', section: section)
+            add_error('catastrophic.section_missing', missing_section: section, section: :Catastrophic)
           end
         end
       end

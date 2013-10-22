@@ -23,7 +23,8 @@ module Crichton
       end
 
       # the resource descriptor validator checks a lot of top level resource issues
-      resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename, options)
+      resource_validator = ResourceDescriptorValidator.new(resource_descriptor, filename,
+        options.merge({section: :Catastrophic}))
       resource_validator.validate
 
       # output filename unless there are no non-text options (strict, error_count, warning_count)
@@ -43,9 +44,9 @@ module Crichton
 
       validators = []
 
-      validators << StatesValidator.new(resource_descriptor, filename, options)
-      validators << DescriptorsValidator.new(resource_descriptor, filename, options)
-      validators << ProtocolValidator.new(resource_descriptor, filename, options)
+      validators << StatesValidator.new(resource_descriptor, filename, options.merge({section: :States}))
+      validators << DescriptorsValidator.new(resource_descriptor, filename, options.merge({section: :Descriptors}))
+      validators << ProtocolValidator.new(resource_descriptor, filename, options.merge({section: :Protocols}))
 
       validators.each do |validator|
         validator.validate

@@ -28,19 +28,21 @@ describe Crichton::Lint do
 
       it 'reports a missing states section error when the states section is missing' do
         @filename = %w(missing_sections nostate_descriptor.yml)
-        @errors = expected_output(:error, 'catastrophic.section_missing', section: 'states', filename: filename)
+        @errors = expected_output(:error, 'catastrophic.section_missing', section: :Catastrophic, filename: filename,
+          missing_section: 'states', sub_header: :error)
       end
 
       it 'reports a missing descriptor errors when the descriptor section is missing' do
         @filename = %w(missing_sections nodescriptors_descriptor.yml)
-
-        @errors = expected_output(:error, 'catastrophic.section_missing', section: 'descriptors', filename: filename) <<
+        @errors = expected_output(:error, 'catastrophic.section_missing', section: :Catastrophic, filename: filename,
+          missing_section: 'descriptors', sub_header: :error) <<
           expected_output(:error, 'catastrophic.no_secondary_descriptors')
       end
 
       it 'reports a missing protocols section error when the protocols section is missing' do
         @filename = %w(missing_sections noprotocols_descriptor.yml)
-        @errors = expected_output(:error, 'catastrophic.section_missing', section: 'protocols', filename: filename)
+        @errors = expected_output(:error, 'catastrophic.section_missing', section: :Catastrophic, filename: filename,
+          missing_section: 'protocols',sub_header: :error)
       end
     end
 

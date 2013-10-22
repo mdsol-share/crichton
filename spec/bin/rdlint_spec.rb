@@ -5,8 +5,9 @@ require 'colorize'
 
 describe 'rdlint' do
   let(:filename) { lint_spec_filename(*@filename) }
-  let (:filenames) {"#{lint_spec_filename(*@filename1)} #{lint_spec_filename(*@filename2)}"}
-  let (:false_string) {"false\n"}
+  let(:filenames) { "#{lint_spec_filename(*@filename1)} #{lint_spec_filename(*@filename2)}" }
+  let(:false_string) {"false\n"}
+  let(:no_file_specified) { "No file(s) specified for lint." }
 
   before do
     load_lint_translation_file
@@ -20,7 +21,7 @@ describe 'rdlint' do
     it 'reports an expected value with the simplest invocation' do
       @filename = %w(protocol_section_errors no_entry_points.yml)
       @expected_rdlint_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
-        filename: filename)
+        filename: filename, section: :Protocols, sub_header: :error)
       @option = ''
     end
 
@@ -39,8 +40,28 @@ describe 'rdlint' do
     it 'reports a version number with the version option' do
       @filename = %w(protocol_section_errors properties_failures.yml)
       @expected_rdlint_output = capture(:stdout) { Crichton::Lint.version } << expected_output(:warning,
-        'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename)
+        'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename,
+        section: :Protocols, sub_header: :warning)
       @option = '-v'
+    end
+
+  end
+
+  context 'when a user does not specify a filename' do
+    it 'reports an error with no options' do
+      %x(bundle exec rdlint).should include(no_file_specified)
+    end
+
+    it 'reports an error with the --no_warnings option' do
+      %x(bundle exec rdlint -w).should include(no_file_specified)
+    end
+
+    it 'reports an error with the --strict option' do
+      %x(bundle exec rdlint -s).should include(no_file_specified)
+    end
+
+    it 'reports an error with the --version option' do
+      %x(bundle exec rdlint -v).should include(no_file_specified)
     end
   end
 
