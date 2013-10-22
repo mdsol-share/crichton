@@ -360,12 +360,13 @@ module Crichton
             end
           elsif semantic.values_is_external_select?
             val = semantic.values
-            link_arguments = {type: :hash, href: val['external_hash'], key_name: val['key_name']}
+            link_arguments = {key_name: val['key_name']}
             if val.include?('external_hash')
               description = 'external hash link'
-              link_arguments[:value_name] = val['value_name']
+              link_arguments.merge!({type: :hash, value_name: val['value_name'], href: val['external_hash']})
             else
               description = 'external list link'
+              link_arguments.merge!({type: :list, href: val['external_list']})
             end
             @markup_builder.a(description, link_arguments)
             @markup_builder.input(type: :text, name: semantic.name)
