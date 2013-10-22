@@ -29,9 +29,12 @@ module Crichton
       ##
       # Return de-referenced values attribute
       def values
-        v = descriptor_document['values']
-        v.merge!(Crichton::values_registry[v.delete('href')]) if v && v.include?('href')
-        v
+        descriptor_document.include?('ext') && vh = descriptor_document['ext'].find { |x| x.include?('values') }
+        if vh
+          v = vh['values']
+          v.merge!(Crichton::values_registry[v.delete('href')]) if v && v.include?('href')
+          v
+        end
       end
 
       def values_is_internal_select?
