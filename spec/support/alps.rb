@@ -234,6 +234,16 @@ module Support
     </alps>
     HERE
 
+    AlpsBoolean = <<-'HERE'
+    <alps>
+     <descriptor id="Boolean" type="semantic" href="http://alps.io/schema.org/Boolean">
+      <doc format="html">
+       A combination of Boolean.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
     AlpsLeviathan = <<-'HERE'
     <alps>
      <descriptor id="Leviathan" type="semantic" href="http://alps.io/schema.org/Thing/Leviathan">
@@ -249,6 +259,7 @@ module Support
       'http://alps.io/schema.org/Text' => AlpsText,
       'http://alps.io/schema.org/Array' => AlpsArray,
       'http://alps.io/schema.org/DateTime' => AlpsDateTime,
+      'http://alps.io/schema.org/Boolean' => AlpsBoolean,
       'http://alps.io/schema.org/Thing/Leviathan' => AlpsLeviathan
     }
   end
