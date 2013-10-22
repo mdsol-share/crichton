@@ -91,7 +91,7 @@
         "type": {
             "href": "http://alps.example.org/DRDs#drds"
         },
-        "list": [
+        "items": [
             {
                 "href": "http://deployment.example.org/drds/0",
                 "type": "http://alps.example.org/DRDs#drd"

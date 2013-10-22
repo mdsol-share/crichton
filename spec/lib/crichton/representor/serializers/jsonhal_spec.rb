@@ -7,7 +7,7 @@ require 'json_spec'
 #TODO: Create single Representor Test Class, and Merge this test with XHTML Test
 module Crichton
   module Representor
-    describe HALSerializer do
+    describe HalJsonSerializer do
       class ::DRD
         include Representor::State
         extend Representor::Factory
@@ -52,32 +52,21 @@ module Crichton
         stub_example_configuration
         Crichton.initialize_registry(drds_descriptor)
         DRD.apply_methods
+        @serializer = HalJsonSerializer
       end
 
-      it 'self-registers as a serializer for the json+hal media-type' do
-        p HALSerializer
-        Serializer.registered_serializers[:hal].should == HALSerializer
+      it 'self-registers as a serializer for the hal+json media-type' do
+        Serializer.registered_serializers[:hal_json].should == @serializer
       end
 
-      it 'self-registers as a serializer for the json+hal media-type' do
-        Serializer.registered_serializers[:hal].should == HALSerializer
-      end
 
       describe '#as_media_type' do
         context 'without styled interface for API surfing' do
-          it 'returns the resource represented as  json+hal' do
-            serializer = HALSerializer.new(DRD.all)
+          it 'returns the resource represented as hal+json' do
+            serializer = @serializer.new(DRD.all)
             exp = drds_microdata_hal_json
             x = serializer.to_media_type(conditions: 'can_do_anything')
             x.should be_json_eql(exp.to_json)
-          end
-        end
-
-        context 'with styled interface for API surfing' do
-          it 'returns the resource represented as  json+hal ' do
-            options = {conditions: 'can_do_anything', semantics: :styled_microdata}
-            serializer = HALSerializer.new(DRD.all)
-            serializer.to_media_type(options).should be_json_eql(drds_microdata_hal_json.to_json)
           end
         end
       end
