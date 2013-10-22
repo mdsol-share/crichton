@@ -86,12 +86,12 @@ states:
         leviathan-link:
           name: leviathan
           next:
-            - location: http://alps.io/schema.org/Leviathans#leviathan
+            - location: http://alps.io/schema.org/Thing
         repair-history:
           conditions:
             - can_repair
           next:
-            - location: http://alps.io/schema.org/Repais#history
+            - location: http://alps.io/schema.org/WarrantyPromise
     deactivated:
       doc: The DRD is shut down.
       transitions:
@@ -122,7 +122,7 @@ states:
         leviathan-link:
           name: leviathan
           next:
-            - location: http://alps.io/schema.org/Leviathans#leviathan
+            - location: http://alps.io/schema.org/Thing
     deleted:
       doc: The DRD is now free-floating in space.
       location: exit
@@ -172,12 +172,14 @@ descriptors:
             type: semantic
             href: http://alps.io/schema.org/Text
             field_type: text
+            sample: drd1
       create:
         doc: Creates a DRD.
         type: unsafe
         rt: drd
         descriptors:
           create-drd:
+            doc: drd attributes to create a drd object
             type: semantic
             href: update-drd # Indicates that this should dereference update-drd
             links:
@@ -193,12 +195,14 @@ descriptors:
                 validators:
                   - required
                   - maxlength: 50
+                sample: big_drone_drd
               form-leviathan_uuid:
                 name: leviathan_uuid
                 doc: The UUID of the creator Leviathan.
                 type: semantic
                 href: http://alps.io/schema.org/Text
                 field_type: text
+                sample: 1234-5678-9abc-def1
               form-leviathan_health_points:
                 name: leviathan_health_points
                 doc: The health points of Leviathan.
@@ -209,6 +213,7 @@ descriptors:
                   - required
                   - min: 0
                   - max: 100
+                sample: 42j
               form-leviathan_email:
                 name: leviathan_email
                 doc: The Leviathan respond to email.
@@ -218,6 +223,7 @@ descriptors:
                 validators:
                   - required
                   - pattern: "^.+@.+$"
+                sample: joe@grumpycat.org
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
@@ -314,8 +320,10 @@ descriptors:
       update:
         doc: Updates a DRD.
         type: idempotent
+        rt: none
         descriptors:
           update-drd:
+            doc: attributes to update an existing drd object
             type: semantic
             links:
               self: DRDs#drd/update/update-drd
@@ -329,15 +337,18 @@ descriptors:
                 field_type: text
                 validators:
                   - required
+                sample: activated
               form-kind:
                 type: semantic
                 name: kind
                 doc: What kind is it.
                 href: http://alps.io/schema.org/Text
                 field_type: boolean
+                sample: true
       delete:
         doc: Drops a DRD out an air-lock.
         type: idempotent    
+        rt: none
 
 # The protocol descriptors section defines the protocol affordances associated with the 
 # application affordances. This decouples protocol specific information from the 
@@ -372,6 +383,8 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+        200:
+          description: OK
       slt: &slt2
         99th_percentile: 250ms
         std_dev: 50ms
@@ -384,7 +397,11 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
-      slt: *slt2  
+        201:
+          description: Created
+        403:
+          description: Permission denied
+      slt: *slt2
     show:
       uri: drds/{uuid}
       method: GET
@@ -393,6 +410,8 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+        200:
+          description: OK
       slt: *slt1
     activate:
       uri: drds/{uuid}/activate
@@ -402,6 +421,8 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+        200:
+          description: OK
       slt: *slt1
     deactivate:
       uri: drds/{uuid}/deactivate
@@ -411,6 +432,8 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+        200:
+          description: OK
       slt: *slt1
     update:
       uri: drds/{uuid}
@@ -420,6 +443,8 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+        200:
+          description: Updated
       slt: *slt2
     delete:
       uri: drds/{uuid}
@@ -429,11 +454,16 @@ protocols:
         - application/hal+json
       headers:
       status_codes:
+        200:
+          description: Deleted
+        403:
+          description: Permission denied
       slt: *slt1
     leviathan-link: 
       uri_source: leviathan_url
-      method: GET
-        
+    repair-history:
+      uri_source: repair_history_url
+
 # This optional section defines the route mapping for the resource that can be used in 
 # lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
 # application. It has nothing to do with the resource semantics per se, but is rather

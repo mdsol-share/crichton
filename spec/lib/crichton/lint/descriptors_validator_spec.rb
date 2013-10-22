@@ -79,8 +79,7 @@ module Crichton
 
         it 'reports a missing return type error when the descriptor return type is missing' do
           @filename = %w(descriptor_section_errors missing_return_type.yml)
-          @errors = expected_output(:error, 'descriptors.property_missing', resource: 'create', prop: 'rt',
-            filename: filename)
+          @errors = expected_output(:error, 'descriptors.missing_return_type', resource: 'create', filename: filename)
         end
 
         it 'reports errors when the descriptor transitions list does not match state or protocol transitions' do
@@ -122,6 +121,7 @@ module Crichton
         end
 
         it 'reports no errors with a descriptor file containing valid field_types and validators' do
+          Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
           @filename = %w(clean_descriptor_file.yml)
           @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
         end

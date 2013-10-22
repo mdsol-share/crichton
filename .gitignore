@@ -1,5 +1,7 @@
 .bundle
 
+spec/fixtures/external_documents_*/
+api_descriptors/
 gemfiles/*.lock
 Gemfile.lock
 coverage

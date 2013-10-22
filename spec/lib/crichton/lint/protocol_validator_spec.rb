@@ -38,6 +38,7 @@ module Crichton
           end
 
           it 'reports a warning when an external resource action has properties other than uri_source' do
+            Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
             @filename = %w(protocol_section_errors extraneous_properties.yml)
             @warnings = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link',
               filename: filename)

@@ -17,19 +17,20 @@ describe 'DRDs resource descriptor' do
     File.exists?(filename).should be_true
   end
 
-  it 'contains (6) errors' do
-    # TODO should change when we fix up drds_descriptor_v1.yml
-    validator.validate(filename, {count: :error}).should == 6
+  it 'contains no errors' do
+    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+    @filename = %w(clean_descriptor_file.yml)
+     validator.validate(filename, {count: :error}).should == 0
   end
 
-  it 'contains (20) warnings' do
-    # TODO should change when we fix up drds_descriptor_v1.yml
-    validator.validate(filename, {count: :warning}).should == 20
+  it 'contains (14) warnings' do
+    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+    validator.validate(filename, {count: :warning}).should == 14
   end
 
   it 'passes validation with the --strict option' do
-    # TODO should change when we fix up drds_descriptor_v1.yml
+    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
     result = validator.validate(filename, {strict: true})
-    result.should be_false # should be_true when we fix up drds_descriptor_v1.yml
+    result.should be_true
   end
 end
