@@ -99,12 +99,16 @@ module Crichton
               # Collect links correctly
               result_hash['links'] ||= {}
               result_hash['links'][child.attributes['rel'].value] = child.attributes['href'].value
+            elsif child.name == 'ext'
+              decode_ext(result_hash, child)
             elsif child.name == 'doc'
               # Unpack the doc element correctly
               result_hash['doc'] = child.text.strip
             elsif child.name == 'descriptor'
               result_hash['descriptors'] ||= {}
               result_hash['descriptors'][child.attributes['id'].value] = result
+            elsif child.name == 'text'
+              # Intentionally do nothing
             elsif result_hash[child.name]
               if result_hash[child.name].is_a?(Array)
                 result_hash[child.name] << prepare(result)
@@ -118,6 +122,16 @@ module Crichton
           result_hash
         else
           return prepare(node.content.to_s)
+        end
+      end
+
+      def decode_ext(result_hash, child)
+        if child.has_attribute?('href') &&
+          child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_VALUES_LIST_URL
+          result_hash['ext'] = [] unless result_hash.include?('ext')
+          if child.has_attribute?('value')
+            result_hash['ext'] << {'values' => JSON.parse(child.attribute('value').value)}
+          end
         end
       end
 

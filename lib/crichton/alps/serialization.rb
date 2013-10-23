@@ -175,6 +175,8 @@ module Crichton
         ext_elem
       end
 
+      SERIALIZED_VALUES_LIST_URL = 'http://alps.io/extensions/serialized_values_list'
+
       def convert_ext_element_hash_hrefs_and_values(ext_elem)
         if ext_elem.is_a?(Hash)
           if ext_elem.include?('href')
@@ -182,7 +184,7 @@ module Crichton
           end
           if ext_elem.include?('values')
             ext_elem['value'] = ext_elem.delete('values').to_json
-            ext_elem['href'] = 'http://alps.io/extensions/serialized_values_list' unless ext_elem.include?('href')
+            ext_elem['href'] = SERIALIZED_VALUES_LIST_URL unless ext_elem.include?('href')
           end
         end
       end
