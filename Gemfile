@@ -3,7 +3,7 @@ gemspec
 
 gem 'rails',         '~> 3.2'
 gem 'awesome_print', '~> 1.1.0'
-#gem 'debugger',      '~> 1.5.0'
+gem 'debugger',      '~> 1.5.0'
 gem 'ruby-prof',     '~> 0.13'
 gem 'yard',          '~> 0.8.5'
 gem 'i18n',          '~> 0.6'
