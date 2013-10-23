@@ -24,6 +24,10 @@ module Crichton
         {rel: rel, href: href}
       end
 
+      def templated?
+        false
+      end
+
       def absolute_href
         if href.nil? || Addressable::URI.parse(href).absolute?
           href

@@ -16,8 +16,8 @@ module Crichton
       # @return [Hash] The built representation.
       def as_media_type(options = {})
         options ||= {}
-        base_object = get_semantic_data(options)
-        base_object[:_links] = get_links(options)
+        handle_non_representor
+        base_object = get_links(options).merge(get_semantic_data(options))
         add_embedded(base_object, options)
       end
 
@@ -33,40 +33,36 @@ module Crichton
 
       private
 
+      #Todo: Determine proper Exception handling for non Crichton::Representor object
+      def handle_non_representor
+        unless @object.is_a? Crichton::Representor
+          logger.warn("Semantic element should be either representor or array! Was #{@object.class.name}")
+        end
+      end
+
       def get_links(options)
-        links = get_link_transitions(options)
-        links = links.merge(get_metadata_links(options))
-        links.merge(get_embedded_transitions(options))
+        metadata_links = @object.metadata_links(options)
+        link_transitions = @object.each_link_transition(options)
+        embedded_transitions = @object.each_embedded_transition(options)
+        all_links = [metadata_links, link_transitions, embedded_transitions]
+        _links = all_links.reduce({}) { |hash, link_block| hash.merge(get_data(link_block, relations)) }
+        {_links: _links}
       end
 
-      def get_link_transitions(options)
-        get_transitions(@object.each_link_transition(options), options)
-      end
-
-      def get_transitions(link_transitions, options)
-        relations = lambda do |transition|
-          (transition.templated? ?
-              [transition.name, {href: transition.templated_url, templated: true}] :
-              [transition.name, {href: transition.url}])
+      def relations
+        ->(transition) do
+          link = if transition.templated?
+                   {href: transition.templated_url, templated: true}
+                 else
+                   {href: transition.url}
+                 end
+          link[:href] ? [transition.name, link] : nil
         end
-        get_data(link_transitions, relations).reject {|k, v| not v[:href]}
-      end
-
-      def get_embedded_transitions(options)
-        get_transitions(@object.each_embedded_transition(options), options)
-      end
-
-      def get_metadata_links(options)
-        link_transitions = @object.metadata_links
-        relations = lambda do |transition|
-          [transition.name, {href: transition.url}]
-        end
-        get_data(link_transitions, relations)
       end
 
       def get_semantic_data(options)
         semantic_data = @object.each_data_semantic(options)
-        each_pair = lambda {|descriptor| [descriptor.name, descriptor.value]}
+        each_pair = lambda { |descriptor| [descriptor.name, descriptor.value] }
         get_data(semantic_data, each_pair)
       end
 
@@ -76,39 +72,30 @@ module Crichton
 
       def add_embedded(base_object, options)
         embedded = get_embedded(options)
-        if embedded != {}
-          base_object[:_embedded] = embedded
-          base_object[:_links] = base_object[:_links].merge(embedded.inject({}) do |hash, k|
-            hash.merge({k[0] => get_self_links(k[1])})
-          end)
-        end
+        embedded_links = embedded.inject({}) { |hash, (k,v)| hash.merge({k => get_self_links(v)}) }
+        base_object[:_links] = base_object[:_links].merge( embedded_links )
+        base_object[:_embedded] = embedded unless embedded == {}
         base_object
       end
 
       def get_embedded(options)
-        esem = @object.each_embedded_semantic(options)
-        esem.inject({}) do |hash, semantic|
-          embedded_obj = {semantic.name => get_embedded_elements(semantic, options)}
-          hash.merge(embedded_obj)
-          end
+        @object.each_embedded_semantic(options).inject({}) do |hash, semantic|
+          hash.merge({ semantic.name => get_embedded_elements(semantic, options) })
+        end
       end
 
       def get_self_links(hal_obj)
-        hal_obj.map do |item|
-          {href: item[:_links]['self'][:href],
-           type: item[:_links]['type'][:href]}
-        end
+        hal_obj.map { |item| { href: item[:_links]['self'][:href], type: item[:_links]['type'][:href] } }
       end
 
+      #Todo: Move to a helpers.rb file
+      def map_or_apply(unknown_object, function)
+        unknown_object.is_a?(Array) ? unknown_object.map(&function) : transformation.call(unknown_object)
+      end
+
+      #Todo: Make Representor::xhtml refactored similarly
       def get_embedded_elements(semantic, options)
-         case embedded_object = semantic.value
-          when Array
-            foo = embedded_object.map { |object| get_embedded_hal(object, options) }
-          when Crichton::Representor
-            foo = get_embedded_hal(embedded_object, options)
-          else
-            logger.warn("Semantic element should be either representor or array! Was #{semantic}")
-        end
+        map_or_apply(semantic.value, ->(object) { get_embedded_hal(object, options) })
       end
 
       def get_embedded_hal(object, options)
