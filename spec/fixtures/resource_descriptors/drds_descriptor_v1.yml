@@ -262,7 +262,7 @@ descriptors:
         sample: renegade
         ext:
           - values:
-            href: DRDs#drd_status_values
+              href: DRDs#drd_status_values
       kind:
         doc: What kind is it.
         type: semantic
@@ -295,9 +295,9 @@ descriptors:
         sample: somewere
         ext:
           - values:
-            external_hash: http://crichton.example.com/drd_location_list#items
-            key_name: location_id
-            value_name: location_text
+              external_hash: http://crichton.example.com/drd_location_list#items
+              key_name: location_id
+              value_name: location_text
       destroyed:
         doc: This DRD has been destroyed
         type: semantic
@@ -351,7 +351,7 @@ descriptors:
                 sample: activated
                 ext:
                   - values:
-                    href: DRDs#drd_status_values
+                      href: DRDs#drd_status_values
               form-old_status:
                 type: semantic
                 doc: How is the DRD.

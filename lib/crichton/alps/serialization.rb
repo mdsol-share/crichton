@@ -169,15 +169,21 @@ module Crichton
 
       def convert_ext_element_hrefs(ext_elem)
         if ext_elem.is_a?(Array)
-          ext_elem.each {|eae| convert_ext_element_hash_hrefs(eae) }
+          ext_elem.each {|eae| convert_ext_element_hash_hrefs_and_values(eae) }
         end
-        convert_ext_element_hash_hrefs(ext_elem)
+        convert_ext_element_hash_hrefs_and_values(ext_elem)
         ext_elem
       end
 
-      def convert_ext_element_hash_hrefs(ext_elem)
-        if ext_elem.is_a?(Hash) && ext_elem.include?('href')
-          ext_elem['href'] = absolute_link(ext_elem['href'], nil)
+      def convert_ext_element_hash_hrefs_and_values(ext_elem)
+        if ext_elem.is_a?(Hash)
+          if ext_elem.include?('href')
+            ext_elem['href'] = absolute_link(ext_elem['href'], nil)
+          end
+          if ext_elem.include?('values')
+            ext_elem['value'] = ext_elem.delete('values').to_json
+            ext_elem['href'] = 'http://alps.io/extensions/serialized_values_list' unless ext_elem.include?('href')
+          end
         end
       end
 
