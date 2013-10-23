@@ -156,8 +156,8 @@ module Support
     end
 
     def generate_section_header(section)
-      return "" if section == :Catastrophic
-      section ? "\n#{section} Section:" << "\n" : ""
+      return "" if section == :catastrophic
+      section ? "\n#{section.capitalize} Section:" << "\n" : ""
     end
 
     def generate_sub_header(sub_header)

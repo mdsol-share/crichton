@@ -21,7 +21,7 @@ describe 'rdlint' do
     it 'reports an expected value with the simplest invocation' do
       @filename = %w(protocol_section_errors no_entry_points.yml)
       @expected_rdlint_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
-        filename: filename, section: :Protocols, sub_header: :error)
+        filename: filename, section: :protocols, sub_header: :error)
       @option = ''
     end
 
@@ -41,7 +41,7 @@ describe 'rdlint' do
       @filename = %w(protocol_section_errors properties_failures.yml)
       @expected_rdlint_output = capture(:stdout) { Crichton::Lint.version } << expected_output(:warning,
         'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename,
-        section: :Protocols, sub_header: :warning)
+        section: :protocols, sub_header: :warning)
       @option = '-v'
     end
 

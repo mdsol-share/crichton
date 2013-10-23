@@ -25,7 +25,7 @@ module Crichton
         if @options[:strict]
           errors.empty?
         else
-          output_sub_header unless @options[:section] == :Catastrophic
+          output_sub_header unless class_section == :catastrophic
           puts "ERRORS:".red if errors.any?
           errors.each { |error| puts "  #{error.red}\t" }
           unless @options[:no_warnings]
@@ -37,10 +37,10 @@ module Crichton
 
       def output_sub_header
         if errors.any?
-           puts "\n#{@options[:section]} Section:"
+           puts "\n#{class_section.capitalize} Section:"
         else
           unless @options[:no_warnings]
-            puts "\n#{@options[:section]} Section:" if warnings.any?
+            puts "\n#{class_section.capitalize} Section:" if warnings.any?
           end
          end
       end
@@ -100,6 +100,14 @@ module Crichton
           end
         end
         transition_list
+      end
+
+      def self.section(section)
+        @section = section
+      end
+
+      def class_section
+        self.class.instance_variable_get(:@section)
       end
     end
   end

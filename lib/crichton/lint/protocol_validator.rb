@@ -4,6 +4,7 @@ module Crichton
   module Lint
     class ProtocolValidator < BaseValidator
       PROTOCOL_PROPERTIES = %w(uri entry_point method content_type headers status_codes slt)
+      section :protocols
 
       def validate
         check_for_property_issues

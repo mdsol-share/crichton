@@ -5,6 +5,7 @@ module Crichton
     class DescriptorsValidator < BaseValidator
       TOP_LEVEL = 0
       VALID_MIME_TYPES = %w(html)
+      section :descriptors
 
       def validate
         check_descriptor_graph
