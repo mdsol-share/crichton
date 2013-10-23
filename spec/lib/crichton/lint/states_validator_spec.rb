@@ -19,21 +19,23 @@ module Crichton
         it 'reports warnings correlating to self: and doc: issues' do
           @filename = %w(state_section_errors condition_doc_and_self_errors.yml)
           @warnings = expected_output(:warning, 'states.no_self_property', resource: 'drds', state: 'collection',
-            transition: 'list', filename: filename) <<
+            transition: 'list', filename: filename, section: :states, sub_header: :warning) <<
             expected_output(:warning, 'states.doc_property_missing', resource: 'drd', state: 'activated')
         end
 
         it 'reports errors when next transitions are missing or empty' do
           @filename = %w(state_section_errors missing_and_empty_transitions.yml)
           @errors = expected_output(:error, 'states.empty_missing_next', resource: 'drds', state: 'collection',
-            transition: 'list', filename: filename) <<
-            expected_output(:error, 'states.empty_missing_next', resource: 'drd', state: 'activated', transition: 'show')
+            transition: 'list', filename: filename, section: :states, sub_header: :error) <<
+            expected_output(:error, 'states.empty_missing_next', resource: 'drd', state: 'activated',
+              transition: 'show')
         end
 
         it 'reports errors when next transitions are pointing to non-existent states' do
           @filename = %w(state_section_errors phantom_transitions.yml)
           @errors = expected_output(:error, 'states.phantom_next_property', secondary_descriptor: 'drds',
-            state: 'navigation', transition: 'self', next_state: 'navegation', filename: filename) <<
+            state: 'navigation', transition: 'self', next_state: 'navegation', filename: filename, section: :states,
+            sub_header: :error) <<
             expected_output(:error, 'states.phantom_next_property', secondary_descriptor: 'drd',
             state: 'activated', transition: 'self', next_state: 'activate')
         end
@@ -41,7 +43,7 @@ module Crichton
         it 'reports errors when states transitions does not match protocol or descriptor transitions' do
           @filename = %w(state_section_errors missing_transitions.yml)
           @errors = expected_output(:error, 'states.descriptor_transition_not_found', transition: 'create',
-            filename: filename) <<
+            filename: filename, section: :states, sub_header: :error) <<
             expected_output(:error, 'states.protocol_transition_not_found', transition: 'create')
         end
 
@@ -58,14 +60,16 @@ module Crichton
             stub_profile_request(404)
             @filename = %w(state_section_errors external_profile.yml)
             @errors = expected_output(:error, 'states.invalid_external_location', link: external_url,
-              secondary_descriptor: 'drd', state: 'activated', transition: 'self', filename: filename)
+              secondary_descriptor: 'drd', state: 'activated', transition: 'self', filename: filename, section: :states,
+              sub_header: :error)
           end
 
           it 'reports a warning if its url has a valid address but is not downloaded to disk' do
             stub_profile_request(200)
             @filename = %w(state_section_errors external_profile.yml)
             @warnings = expected_output(:warning, 'states.download_external_profile', link: external_url,
-              secondary_descriptor: 'drd', state: 'activated', transition: 'self', filename: filename)
+              secondary_descriptor: 'drd', state: 'activated', transition: 'self', filename: filename, section: :states,
+              sub_header: :warning)
           end
 
           def stub_profile_request(status)

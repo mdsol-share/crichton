@@ -4,6 +4,7 @@ module Crichton
   module Lint
     class ResourceDescriptorValidator < BaseValidator
       MAJOR_SECTIONS = %w(states descriptors protocols)
+      section :catastrophic
 
       def validate
         check_for_major_sections
@@ -19,7 +20,7 @@ module Crichton
         # Using Yaml output, check for whoppers first
         MAJOR_SECTIONS.each do |section|
           unless resource_descriptor.descriptor_document[section]
-            add_error('catastrophic.section_missing', section: section)
+            add_error('catastrophic.section_missing', missing_section: section, section: :catastrophic)
           end
         end
       end

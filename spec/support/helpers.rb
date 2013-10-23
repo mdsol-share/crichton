@@ -144,13 +144,25 @@ module Support
     end
 
     def expected_output(error_or_warning, key, options = {})
-      (generate_lint_file_line(options[:filename]) << (error_or_warning == :error ?
-        "\tERROR: ".red : "\tWARNING: ".yellow) << build_colorized_lint_output(error_or_warning, key, options) << "\n")
+      generate_lint_file_line(options[:filename]) <<
+        generate_section_header(options[:section])  <<
+        generate_sub_header(options[:sub_header]) <<
+        build_colorized_lint_output(error_or_warning, key, options) << "\t\n"
     end
 
     private
     def generate_lint_file_line(filename)
       filename ? "In file '#{filename}':\n" : ""
+    end
+
+    def generate_section_header(section)
+      return "" if section == :catastrophic
+      section ? "\n#{section.capitalize} Section:" << "\n" : ""
+    end
+
+    def generate_sub_header(sub_header)
+      return "  " if sub_header.nil?
+      sub_header == :error ? "ERRORS:".red << "\n  " : "WARNINGS:".yellow << "\n  "
     end
 
     def environment_args(env_vars)

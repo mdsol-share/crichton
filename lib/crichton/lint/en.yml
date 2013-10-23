@@ -5,7 +5,7 @@ en:
     no_descriptors: "No descriptors defined for resource '%{resource}'"
     no_protocols: "No protocol section found"
     cant_load_file: "Unable to load descriptor file '%{filename}': %{exception_message}"
-    section_missing: "'%{section}' section missing"
+    section_missing: "'%{missing_section}' section missing"
     cant_register: "Unable to process registry file '%{filename}': %{exception_message}"
     missing_main_id: "Top level id property is missing"
   profile:
