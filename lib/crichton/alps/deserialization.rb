@@ -59,7 +59,9 @@ module Crichton
         return node unless node.is_a?(Hash)
         result_hash = {}
         node.each do |k, node_element|
-          if node_element.is_a?(Array)
+          if k == 'ext'
+            result_hash[k] = decode_json_ext(node_element)
+          elsif node_element.is_a?(Array)
             # We can have either a data structure that uses IDs and then is put into a hash or lacking the IDs we end
             # up having an array. The loop can handle both types and skips special logic to beforehand determine what
             # kind of data it is.
@@ -84,6 +86,10 @@ module Crichton
         result_hash
       end
 
+      def decode_json_ext(node_element)
+        # TODO: Do it
+      end
+
       def xml_node_to_hash(node)
         # If we are at the root of the document, start the hash
         if node.element?
@@ -100,7 +106,7 @@ module Crichton
               result_hash['links'] ||= {}
               result_hash['links'][child.attributes['rel'].value] = child.attributes['href'].value
             elsif child.name == 'ext'
-              decode_ext(result_hash, child)
+              decode_xml_ext(result_hash, child)
             elsif child.name == 'doc'
               # Unpack the doc element correctly
               result_hash['doc'] = child.text.strip
@@ -125,13 +131,15 @@ module Crichton
         end
       end
 
-      def decode_ext(result_hash, child)
+      def decode_xml_ext(result_hash, child)
         if child.has_attribute?('href') &&
           child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_VALUES_LIST_URL
           result_hash['ext'] = [] unless result_hash.include?('ext')
           if child.has_attribute?('value')
             result_hash['ext'] << {'values' => JSON.parse(child.attribute('value').value)}
           end
+        else
+          result_hash['ext'] << child.attributes
         end
       end
 
