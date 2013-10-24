@@ -12,13 +12,13 @@ module Crichton
 
         it 'deserializes XML data' do
           deserializer = Deserialization.new(alps_xml_string)
-          deserializer.to_hash.keys.should == ["text", "doc", "ext", "links", "descriptors"]
+          deserializer.to_hash.keys.should == ["doc", "ext", "links", "descriptors"]
         end
 
         it 'deserializes JSON data' do
           xmldeserializer = Crichton::ALPS::Deserialization.new(alps_xml_string.read)
           deserializer = Deserialization.new("{\"alps\": #{xmldeserializer.to_json}}")
-          deserializer.to_hash.keys.should == ["texts", "doc", "ext", "links", "descriptors"]
+          deserializer.to_hash.keys.should == ["doc", "ext", "links", "descriptors"]
         end
       end
 
