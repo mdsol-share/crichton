@@ -132,9 +132,9 @@ module Crichton
       end
 
       def decode_xml_ext(result_hash, child)
+        result_hash['ext'] = [] unless result_hash.include?('ext')
         if child.has_attribute?('href') &&
           child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_VALUES_LIST_URL
-          result_hash['ext'] = [] unless result_hash.include?('ext')
           if child.has_attribute?('value')
             result_hash['ext'] << {'values' => JSON.parse(child.attribute('value').value)}
           end
