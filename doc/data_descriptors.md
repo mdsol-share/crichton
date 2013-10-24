@@ -25,7 +25,7 @@ indicates the URI of the descriptor for top-level descriptors.
     `single-optional-link` and `multiple-optional-link`.
     The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
     embedded as an array. The values that contain `optional` indicate that the client can request the
-    way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed' otherwise.
+    way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed` otherwise.
     The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the
     values - allows setting the mode of embedding.
     * `values` - Provides a list of possible values for a select list or similar use. Below this key, the following
