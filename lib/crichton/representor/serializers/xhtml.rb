@@ -241,17 +241,19 @@ module Crichton
         end
 
         def add_control_select(semantic)
+          svalues = semantic.values
           @markup_builder.li do
-            if semantic.values_is_internal_select?
+            if svalues.is_internal_select?
               @markup_builder.select(name: semantic.name) do
-                semantic.values_iterator { |k, v| @markup_builder.option(v, value: k) }
+                svalues.each { |k, v| @markup_builder.option(v, value: k) }
               end
-            elsif semantic.values_is_external_select?
-              val = semantic.values
-              link_arguments = {key_name: val['key_name']}
+            elsif svalues.is_external_select?
+              val = svalues.values
+              link_arguments = {value_attribute_name: val['value_attribute_name']}
               if val.include?('external_hash')
                 description = 'external hash link'
-                link_arguments.merge!({type: :hash, value_name: val['value_name'], href: val['external_hash']})
+                link_arguments.merge!({type: :hash, text_attribute_name: val['text_attribute_name'],
+                                       href: val['external_hash']})
               else
                 description = 'external list link'
                 link_arguments.merge!({type: :list, href: val['external_list']})
@@ -340,27 +342,27 @@ module Crichton
           end
         end
 
-        def add_control_select(semantic)
-          @markup_builder.li do
-            if semantic.values_is_internal_select?
-              @markup_builder.select(name: semantic.name) do
-                semantic.values_iterator { |k, v| @markup_builder.option(v, value: k) }
-              end
-            elsif semantic.values_is_external_select?
-              val = semantic.values
-              link_arguments = {value_attribute_name: val['value_attribute_name']}
-              if val.include?('external_hash')
-                description = 'external hash link'
-                link_arguments.merge!({type: :hash, text_attribute_name: val['text_attribute_name'], href: val['external_hash']})
-              else
-                description = 'external list link'
-                link_arguments.merge!({type: :list, href: val['external_list']})
-              end
-              @markup_builder.a(description, link_arguments)
-              @markup_builder.input(type: :text, name: semantic.name)
-            end
-          end
-        end
+        #def add_control_select(semantic)
+        #  @markup_builder.li do
+        #    if semantic.values_is_internal_select?
+        #      @markup_builder.select(name: semantic.name) do
+        #        semantic.values_iterator { |k, v| @markup_builder.option(v, value: k) }
+        #      end
+        #    elsif semantic.values_is_external_select?
+        #      val = semantic.values
+        #      link_arguments = {value_attribute_name: val['value_attribute_name']}
+        #      if val.include?('external_hash')
+        #        description = 'external hash link'
+        #        link_arguments.merge!({type: :hash, text_attribute_name: val['text_attribute_name'], href: val['external_hash']})
+        #      else
+        #        description = 'external list link'
+        #        link_arguments.merge!({type: :list, href: val['external_list']})
+        #      end
+        #      @markup_builder.a(description, link_arguments)
+        #      @markup_builder.input(type: :text, name: semantic.name)
+        #    end
+        #  end
+        #end
       end
     end
   end

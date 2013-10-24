@@ -2,6 +2,47 @@ require 'crichton/descriptor/profile'
 
 module Crichton
   module Descriptor
+
+    class ExtValues
+      def initialize(descriptor_document)
+        @val ||= begin
+          vh = nil
+          descriptor_document.include?('ext') && vh = descriptor_document['ext'].find { |x| x.include?('values') }
+          if vh
+            v = vh['values']
+            v.merge!(Crichton::values_registry[v.delete('href')]) if v && v.include?('href')
+            v
+          end
+        end
+      end
+
+      def values
+        @val
+      end
+
+      def is_internal_select?
+        @val && (@val.include?('hash') || @val.include?('list'))
+      end
+
+      def is_external_select?
+        @val && (@val.include?('external_hash') || @val.include?('external_list'))
+      end
+
+      ##
+      # Iterator allowing the generation of select lists from the values
+      def each
+        if v = @val
+          if v.include? 'hash'
+            v['hash'].each { |k, v| yield k, v }
+          elsif v.include? 'list'
+            v['list'].each { |k| yield k, k }
+          else
+            Crichton::logger.warn("did not find list or hash key in values data: #{@val.to_s}")
+          end
+        end
+      end
+    end
+
     ##
     # Manages detail information associated with descriptors.
     class Detail < Profile
@@ -26,37 +67,7 @@ module Crichton
       ##
       # Return de-referenced values attribute
       def values
-        val ||= begin
-          vh = nil
-          descriptor_document.include?('ext') && vh = descriptor_document['ext'].find { |x| x.include?('values') }
-          if vh
-            v = vh['values']
-            v.merge!(Crichton::values_registry[v.delete('href')]) if v && v.include?('href')
-            v
-          end
-        end
-      end
-
-      def values_is_internal_select?
-        (v = values) && (v.include?('hash') || v.include?('list'))
-      end
-
-      def values_is_external_select?
-        (v = values) && (v.include?('external_hash') || v.include?('external_list'))
-      end
-
-      ##
-      # Iterator allowing the generation of select lists from the values
-      def values_iterator
-        if v = values
-          if v.include? 'hash'
-            v['hash'].each { |k, v| yield k, v }
-          elsif v.include? 'list'
-            v['list'].each { |k| yield k, k }
-          else
-            Crichton::logger.warn("did not find list or hash key in values data of #{name}: #{values.to_s}")
-          end
-        end
+        @val = ExtValues.new(descriptor_document)
       end
 
       ##

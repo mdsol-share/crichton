@@ -296,8 +296,8 @@ descriptors:
         ext:
           - values:
               external_hash: http://crichton.example.com/drd_location_list#items
-              key_name: location_id
-              value_name: location_text
+              value_attribute_name: location_id
+              text_attribute_name: location_text
       destroyed:
         doc: This DRD has been destroyed
         type: semantic
@@ -389,8 +389,8 @@ descriptors:
                 ext:
                   - values:
                       external_list: http://crichton.example.com/drd_location_list#items
-                      key_name: location_id
-                      value_name: location_text
+                      value_attribute_name: location_id
+                      text_attribute_name: location_text
               form-destroyed:
                 doc: This DRD has been destroyed
                 type: semantic
