@@ -348,10 +348,10 @@ module Crichton
               end
             elsif semantic.values_is_external_select?
               val = semantic.values
-              link_arguments = {key_name: val['key_name']}
+              link_arguments = {value_attribute_name: val['value_attribute_name']}
               if val.include?('external_hash')
                 description = 'external hash link'
-                link_arguments.merge!({type: :hash, value_name: val['value_name'], href: val['external_hash']})
+                link_arguments.merge!({type: :hash, text_attribute_name: val['text_attribute_name'], href: val['external_hash']})
               else
                 description = 'external list link'
                 link_arguments.merge!({type: :list, href: val['external_list']})
