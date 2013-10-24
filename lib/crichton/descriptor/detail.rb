@@ -23,17 +23,17 @@ module Crichton
       # @!macro string_reader
       descriptor_reader :type
 
-      # @!macro string_reader
-      #descriptor_reader :values
-
       ##
       # Return de-referenced values attribute
       def values
-        descriptor_document.include?('ext') && vh = descriptor_document['ext'].find { |x| x.include?('values') }
-        if vh
-          v = vh['values']
-          v.merge!(Crichton::values_registry[v.delete('href')]) if v && v.include?('href')
-          v
+        val ||= begin
+          vh = nil
+          descriptor_document.include?('ext') && vh = descriptor_document['ext'].find { |x| x.include?('values') }
+          if vh
+            v = vh['values']
+            v.merge!(Crichton::values_registry[v.delete('href')]) if v && v.include?('href')
+            v
+          end
         end
       end
 
