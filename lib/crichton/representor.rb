@@ -140,7 +140,7 @@ module Crichton
 
     def each_additional_link_transition(options = nil, &block)
       additional_link_transition = each_additional_link_transition_enumerator(options, &block)
-      return additional_link_transition unless block_given?
+      return additional_link_transition.to_enum unless block_given?
     end
 
     ##
