@@ -119,7 +119,7 @@ state descriptor:
 * MUST have a related Semantic Descriptor whose ID (YAML key) is the same as the value of the \[state_resource\].
 
 State transitions are also directly related to [Transtion Descriptors](transition_descriptors.md) and indirectly to
-[Protocol Descriptors](transition_descriptors.md), which indicate implemenatation details of the transtions. Thus, a 
+[Protocol Descriptors](protocol_descriptors.md), which indicate implemenatation details of the transtions. Thus, a 
 state descriptor transition:
 
 * MUST have a related Transition Descriptor whose ID (YAML key) is the same as the state transition.

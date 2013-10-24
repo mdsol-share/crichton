@@ -10,7 +10,7 @@ The top-level of a _Resource Descriptor_ contains metadata associated with the p
 
 Note: If `self` and/or `help` links are included as relative links, they will be generated in ALPS profiles as
 fully-qualified URIs using `the alps_base_uri` and/or `documentation_base_uri` configuration variables see 
-[Crichton Configuration][]. Any other link included must specify a fully-qualified URI.
+[Crichton Configuration](crichton_configuration.md). Any other link included must specify a fully-qualified URI.
 
 `self` and `help` are used in accordance to [RFC 5988 - Web Linking](http://tools.ietf.org/html/rfc5988).
 
