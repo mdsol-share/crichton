@@ -239,7 +239,7 @@ module Crichton
         end
 
         it 'returns an enumerator' do
-          simple_test_class.new.each_link_transition.should be_a(Enumerable)
+          simple_test_class.new.each_embedded_transition.should be_a(Enumerable)
         end
 
         it 'yields decorated transition descriptors' do
@@ -248,20 +248,8 @@ module Crichton
           end
         end
 
-        it 'yields the additional links' do
-          @top_level = true
-          @additional_links = {'first' => 'first_link', 'second' => 'second_link'}
-          results = []
-          simple_test_class.new.each_embedded_transition(options) do |item|
-            results << item.to_a if item.is_a?(Struct)
-          end
-          results.should == [['first', 'first_link'], ['second', 'second_link']]
-        end
-
-
-
         it 'raises an error if options are passed that are not a hash' do
-          expect { simple_test_class.new.each_link_transition(:options).to_a }.to raise_error(ArgumentError,
+          expect { simple_test_class.new.each_embedded_transition(:options).to_a }.to raise_error(ArgumentError,
             /options must be nil or a hash. Received ':options'./)
         end
 
@@ -520,7 +508,33 @@ module Crichton
           end
         end
       end
-      
+
+      describe '#each_additional_links_transition' do
+        let(:additional_links_transitions) do
+          simple_test_class.new(@attributes).each_additional_link_transition(options).inject({}) do |h, descriptor|
+            h.tap { |hash| hash[descriptor.id] = descriptor }
+          end
+        end
+
+        before do
+          @resource_name = 'drd'
+        end
+
+        it 'returns an enumerator' do
+          simple_test_class.new.each_additional_link_transition.should be_a(Enumerable)
+        end
+
+        it 'yields additional links' do
+          @top_level = true
+          @additional_links = {'first' => 'first_link', 'second' => 'second_link'}
+          results = []
+          simple_test_class.new.each_additional_link_transition(options) do |item|
+            results << item.to_a
+          end
+          results.should == [['first', 'first_link'], ['second', 'second_link']]
+        end
+      end
+
       describe '#metadata_links' do
         it 'returns the metadata links associated with the represented resource' do
           @resource_name = 'drds'

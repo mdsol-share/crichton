@@ -135,9 +135,12 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_transition(options = nil, &block)
-      embedded_link_transitions = each_embedded_transition_enumerator(options, &block)
-      additional_link_transitions = each_additional_link_transition_enumerator(options, &block)
-      return concatenate_enums(additional_link_transitions.to_enum, embedded_link_transitions) unless block_given?
+      each_embedded_transition_enumerator(options, &block)
+    end
+
+    def each_additional_link_transition(options = nil, &block)
+      additional_link_transition = each_additional_link_transition_enumerator(options, &block)
+      return additional_link_transition unless block_given?
     end
 
     ##
@@ -158,6 +161,12 @@ module Crichton
     # @return [Hash] The data.
     def each_link_transition(options = nil, &block)
       each_link_transition_enumerator(options, &block)
+    end
+
+    def each_transition(options = nil, &block)
+      %w(link additional_link embedded).each do |type|
+        send("each_#{type}_transition", options, &block)
+      end
     end
 
     ##
@@ -184,16 +193,9 @@ module Crichton
       else
         super
       end
-    end 
-    
-  private
-    def concatenate_enums(enum1, enum2)
-      Enumerator.new do |y|
-        enum1.each { |e| y << e }
-        enum2.each { |e| y << e }
-      end
     end
 
+  private
     AdditionalTransition = Struct.new :name, :url
     private_constant :AdditionalTransition
 
