@@ -3,41 +3,47 @@ require 'crichton/descriptor/profile'
 module Crichton
   module Descriptor
 
-    class ExtValues
+    ##
+    # Manages options for select lists
+    class Options
+      OPTIONS = 'options'
+      HREF = 'href'
+      EXT = 'ext'
+      
       def initialize(descriptor_document)
-        @val ||= begin
-          vh = nil
-          descriptor_document.include?('ext') && vh = descriptor_document['ext'].find { |x| x.include?('values') }
-          if vh
-            v = vh['values']
-            v.merge!(Crichton::values_registry[v.delete('href')]) if v && v.include?('href')
-            v
+        @opts ||= begin
+          oh = nil
+          descriptor_document.include?(EXT) && oh = descriptor_document[EXT].find { |x| x.include?(OPTIONS) }
+          if oh
+            o = oh[OPTIONS]
+            o.merge!(Crichton::values_registry[o.delete(HREF)]) if o && o.include?(HREF)
+            o
           end
         end
       end
 
-      def values
-        @val
+      def options
+        @opts
       end
 
       def is_internal_select?
-        @val && (@val.include?('hash') || @val.include?('list'))
+        @opts && (@opts.include?('hash') || @opts.include?('list'))
       end
 
       def is_external_select?
-        @val && (@val.include?('external_hash') || @val.include?('external_list'))
+        @opts && (@opts.include?('external_hash') || @opts.include?('external_list'))
       end
 
       ##
       # Iterator allowing the generation of select lists from the values
       def each
-        if v = @val
-          if v.include? 'hash'
-            v['hash'].each { |k, v| yield k, v }
-          elsif v.include? 'list'
-            v['list'].each { |k| yield k, k }
+        if o = @opts
+          if o.include? 'hash'
+            o['hash'].each { |k, v| yield k, v }
+          elsif o.include? 'list'
+            o['list'].each { |k| yield k, k }
           else
-            Crichton::logger.warn("did not find list or hash key in values data: #{@val.to_s}")
+            Crichton::logger.warn("did not find list or hash key in options data: #{@opts.to_s}")
           end
         end
       end
@@ -66,8 +72,8 @@ module Crichton
 
       ##
       # Return de-referenced values attribute
-      def values
-        @val = ExtValues.new(descriptor_document)
+      def options
+        @val = Options.new(descriptor_document)
       end
 
       ##

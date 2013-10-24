@@ -241,22 +241,22 @@ module Crichton
         end
 
         def add_control_select(semantic)
-          svalues = semantic.values
+          options = semantic.options
           @markup_builder.li do
-            if svalues.is_internal_select?
+            if options.is_internal_select?
               @markup_builder.select(name: semantic.name) do
-                svalues.each { |k, v| @markup_builder.option(v, value: k) }
+                options.each { |k, v| @markup_builder.option(v, value: k) }
               end
-            elsif svalues.is_external_select?
-              val = svalues.values
-              link_arguments = {value_attribute_name: val['value_attribute_name']}
-              if val.include?('external_hash')
+            elsif options.is_external_select?
+              opts = options.options
+              link_arguments = {value_attribute_name: opts['value_attribute_name']}
+              if opts.include?('external_hash')
                 description = 'external hash link'
-                link_arguments.merge!({type: :hash, text_attribute_name: val['text_attribute_name'],
-                                       href: val['external_hash']})
+                link_arguments.merge!({type: :hash, text_attribute_name: opts['text_attribute_name'],
+                                       href: opts['external_hash']})
               else
                 description = 'external list link'
-                link_arguments.merge!({type: :list, href: val['external_list']})
+                link_arguments.merge!({type: :list, href: opts['external_list']})
               end
               @markup_builder.a(description, link_arguments)
               @markup_builder.input(type: :text, name: semantic.name)

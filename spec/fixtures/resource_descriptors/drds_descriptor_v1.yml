@@ -249,7 +249,7 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: renegade
         ext:
-         - values:
+         - options:
             id: drd_status_values
             hash:
               active: activated
@@ -261,7 +261,7 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: renegade
         ext:
-          - values:
+          - options:
               href: DRDs#drd_status_values
       kind:
         doc: What kind is it.
@@ -269,7 +269,7 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: standard
         ext:
-          - values:
+          - options:
               list:
                 - standard
                 - sentinel
@@ -294,7 +294,7 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: somewere
         ext:
-          - values:
+          - options:
               external_hash: http://crichton.example.com/drd_location_list#items
               value_attribute_name: location_id
               text_attribute_name: location_text
@@ -350,7 +350,7 @@ descriptors:
                   - required
                 sample: activated
                 ext:
-                  - values:
+                  - options:
                       href: DRDs#drd_status_values
               form-old_status:
                 type: semantic
@@ -362,7 +362,7 @@ descriptors:
                   - required
                 sample: activated
                 ext:
-                  - values:
+                  - options:
                       hash:
                         active: activated
                         inactive: deactivated
@@ -375,7 +375,7 @@ descriptors:
                 sample: true
                 field_type: select
                 ext:
-                  - values:
+                  - options:
                       list:
                         - standard
                         - sentinel
@@ -387,7 +387,7 @@ descriptors:
                 sample: some_location
                 field_type: select
                 ext:
-                  - values:
+                  - options:
                       external_list: http://crichton.example.com/drd_location_list#items
                       value_attribute_name: location_id
                       text_attribute_name: location_text
