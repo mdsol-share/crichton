@@ -121,6 +121,13 @@ module Crichton
             'datetime', validator: 'maxlength', filename: filename, section: :descriptors, sub_header: :error)
         end
 
+        it 'reports errors when invalid embedded types are found' do
+          @filename = %w(descriptor_section_errors invalid_embed_types.yml)
+          @errors = expected_output(:error, 'descriptors.invalid_embed_attribute', id: 'total_count',
+            embed_attr: 'single-optional-embed', filename: filename, section: :descriptors, sub_header: :error) <<
+            expected_output(:error, 'descriptors.invalid_embed_attribute', id: 'items', embed_attr: 'multple-optional')
+        end
+
         it 'reports no errors with a descriptor file containing valid field_types and validators' do
           Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
           @filename = %w(clean_descriptor_file.yml)

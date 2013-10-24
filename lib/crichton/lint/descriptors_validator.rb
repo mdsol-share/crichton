@@ -86,7 +86,8 @@ module Crichton
       # check all rules surrounding transition based descriptors
       def semantic_properties_check(descriptor, options, level)
         if level > TOP_LEVEL
-          FieldTypeValidator.validate_field_type(self, descriptor) if descriptor.field_type
+          FieldTypeValidator.validate(self, descriptor) if descriptor.field_type
+          EmbedValidator.validate(self, descriptor) if descriptor.embed
 
           # all NON top level descriptors should have a sample and href entry
           add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
@@ -198,7 +199,7 @@ module Crichton
           required: self.field_types}
       end
 
-      def self.validate_field_type(descriptor_validator, descriptor)
+      def self.validate(descriptor_validator, descriptor)
         if field_types.include?(descriptor.field_type)
           validate_field_validators(descriptor_validator, descriptor)
         else
@@ -223,6 +224,22 @@ module Crichton
         unless allowable_validators[validator.to_sym].include?(descriptor.field_type)
           descriptor_validator.add_error('descriptors.not_permitted_field_validator', id: descriptor.id, field_type:
             descriptor.field_type, validator: validator)
+        end
+      end
+    end
+
+    class EmbedValidator
+      def self.embed_attrs
+        @embed_attrs ||= Crichton::Descriptor::Detail::SINGLE_MULTIPLE +
+          Crichton::Descriptor::Detail::SINGLE_LINK_MULTIPLE_LINK +
+          Crichton::Descriptor::Detail::SINGLE_OPTIONAL_MULTIPLE_OPTIONAL +
+          Crichton::Descriptor::Detail::SINGLE_OPTIONAL_MULTIPLE_OPTIONAL_LINK
+      end
+
+      def self.validate(descriptor_validator, descriptor)
+        unless embed_attrs.include?(descriptor.embed)
+          descriptor_validator.add_error('descriptors.invalid_embed_attribute', id: descriptor.id, embed_attr:
+            descriptor.embed)
         end
       end
     end

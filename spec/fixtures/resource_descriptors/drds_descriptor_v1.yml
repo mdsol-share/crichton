@@ -267,7 +267,7 @@ descriptors:
         doc: The associated Leviathan resource.
         type: semantic
         href: http://alps.io/schema.org/Thing/Leviathan
-        embed: optional
+        embed: single-optional
       # Transitions
       show:
         doc: Shows a particular DRD.
