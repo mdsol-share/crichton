@@ -345,7 +345,7 @@ descriptors:
                 doc: How is the DRD.
                 href: http://alps.io/schema.org/Text
                 name: status
-                field_type: text
+                field_type: select
                 validators:
                   - required
                 sample: activated
