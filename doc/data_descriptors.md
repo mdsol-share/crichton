@@ -21,15 +21,15 @@ indicates the URI of the descriptor for top-level descriptors.
 [Primitive Profiles](primitive_profiles.md) for more information: REQUIRED.
     * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
     * `embed` - Indicates that this resource should be embedded in a response either inline or as a link.
-    Valid values are `single`, `multiple`, `single-link`, `multiple-link`, `single-optional`, `multiple-optional`,
-    `single-optional-link` and `multiple-optional-link`.
-    The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
-    embedded as an array. The values that contain `optional` indicate that the client can request the
-    way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed` otherwise.
-    The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the
-    values - allows setting the mode of embedding.
+      Valid values are `single`, `multiple`, `single-link`, `multiple-link`, `single-optional`, `multiple-optional`,
+      `single-optional-link` and `multiple-optional-link`.
+      The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
+      embedded as an array. The values that contain `optional` indicate that the client can request the
+      way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed` otherwise.
+      The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the
+      values - allows setting the mode of embedding.
     * `values` - Provides a list of possible values for a select list or similar use. Below this key, the following
-    options can be used: (all are optional - but skipping all is pointless)
+      options can be used: (all are optional - but skipping all is pointless)
       * `id` - Can be used to reference a particular list and include its values in another values entry.
       * `href` - Include a referenced values entry
       * `list` - Contains an array of values
@@ -40,10 +40,10 @@ indicates the URI of the descriptor for top-level descriptors.
      entries.
      In case of the `external_list` or `external_hash`, the link needs to contain a fragment to indicate what element
      the list or hash is in and the attributes
-     * `key_name` - specifies the name of the attribute inside the element that the key will be taken from
-     * `value_name` - (only for hashes) specifies the attribute the value will be taken from
+     * `value_attribute_name` - specifies the name of the attribute inside the element that the value will be taken from
+     * `text_attribute_name` - (only for hashes) specifies the attribute the text of the item will be taken from
      are used to specify the fields that are to be used to assemble the list or hash.
-     In case of the list, the key and value are identical so the `value_name` is not needed.
+     In case of the list, the value and text are identical so the `text_attribute_name` is not needed.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
