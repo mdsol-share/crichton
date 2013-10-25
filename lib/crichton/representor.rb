@@ -101,7 +101,8 @@ module Crichton
     #
     # @return [Hash] The data.
     def each_data_semantic(options = nil, &block)
-      each_data_semantic_enumerator(options, &block)
+      return to_enum(:each_data_semantic, options) unless block_given?
+      each_enumerator(:data, :semantic, options, &block)
     end
 
     ##
@@ -117,41 +118,19 @@ module Crichton
     #
     # @return [Hash] The embedded resources.
     def each_embedded_semantic(options = nil, &block)
-      each_embedded_semantic_enumerator(options, &block)
-    end
-
-    ##
-    # Returns a hash populated with the related semantic keys and underlying descriptors for embedded resources.
-    # 
-    # @example
-    #  @drds_instance.each_embedded_semantic({include: :items}).to_a   
-    #  @drds_instance.each_embedded_semantic({exclude: 'items'}).to_a
-    # 
-    # @param [Hash] options Optional conditions.
-    # @option options [String, Symbol, Array] :conditions The state conditions.
-    # @option options [String, Symbol, Array] :except The embedded transition descriptors to filter out.
-    # @option options [String, Symbol, Array] :only The embedded transition descriptors to limit.
-    # @option options [String, Symbol, Array] :state The state of the resource.
-    #
-    # @return [Hash] The embedded resources.
-    def each_embedded_transition(options = nil, &block)
-      each_embedded_transition_enumerator(options, &block)
-    end
-
-    def each_additional_link_transition(options = nil, &block)
-      additional_link_transition = each_additional_link_transition_enumerator(options, &block)
-      return additional_link_transition.to_enum unless block_given?
+      return to_enum(:each_embedded_semantic, options) unless block_given?
+      each_enumerator(:embedded, :semantic, options, &block)
     end
 
     ##
     # Returns a hash populated with the data related semantic keys and underlying descriptors for the represented
-    # resource.
-    # 
+    # and embedded resource.
+    #
     # @example
-    #  @drd_instance.each_link_transition({except: :delete}).to_a   
-    #  @drd_instance.each_link_transition({only: [:show, 'activate']}).to_a
-    #  @drd_instance.each_link_transition({state: :activated, conditions: :can_do_anything}).to_a
-    # 
+    #  @drd_instance.each_transition({except: :delete}).to_a
+    #  @drd_instance.each_transition({only: [:show, 'activate']}).to_a
+    #  @drd_instance.each_transition({state: :activated, conditions: :can_do_anything}).to_a
+    #
     # @param [Hash] options Optional conditions.
     # @option options [String, Symbol, Array] :conditions The state conditions.
     # @option options [String, Symbol, Array] :except The link transition descriptors to filter out.
@@ -159,14 +138,11 @@ module Crichton
     # @option options [String, Symbol, Array] :state The state of the resource.
     #
     # @return [Hash] The data.
-    def each_link_transition(options = nil, &block)
-      each_link_transition_enumerator(options, &block)
-    end
-
     def each_transition(options = nil, &block)
-      %w(link additional_link embedded).each do |type|
-        send("each_#{type}_transition", options, &block)
-      end
+      return to_enum(:each_transition, options) unless block_given?
+      each_enumerator(:link, :transition, options, &block)
+      each_additional_link_transition_enumerator(options, &block)
+      each_enumerator(:embedded, :transition, options, &block)
     end
 
     ##
@@ -183,16 +159,6 @@ module Crichton
     # @return [Array] The link instances.
     def metadata_links
       self.class.resource_descriptor.metadata_links
-    end
-
-    # @private
-    # Used to return the correct enumerator.
-    def method_missing(method, *args, &block)
-      if method =~ /^each_(\w*)_(\w*)_enumerator$/
-        send(:each_enumerator, $1, $2.to_sym, *args, &block)
-      else
-        super
-      end
     end
 
   private
@@ -212,11 +178,10 @@ module Crichton
       end
     end
 
-    def each_enumerator(type, descriptor, options)
+    def each_enumerator(type, descriptor, options, &block)
       unless options.nil? || options.is_a?(Hash)
         raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'."
       end
-      return to_enum("each_#{type}_#{descriptor}", options) unless block_given?
 
       filtered_descriptors(type, descriptor, options).each do |descriptor| 
         # For semantic descriptors, use the target in case it is a hash adapter. For transition descriptors, use
