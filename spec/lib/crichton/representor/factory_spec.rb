@@ -25,7 +25,7 @@ module Crichton
           if @check_semantics
             representor.each_data_semantic.any? { |data_semantic| data_semantic.value == '1812' }.should be_true
           else
-            enumerator = representor.each_link_transition(conditions: 'can_do_anything')
+            enumerator = representor.each_transition(conditions: 'can_do_anything')
             enumerator.any? { |transition| transition.name == 'deactivate' }.should be_true
           end
         end
@@ -111,7 +111,7 @@ module Crichton
                 it 'raises an error' do
                   # Following is a hack absent an #unstub method on mocks
                   target.stub(:respond_to?).with('my_state').and_return(false)
-                  expect { subject.build_state_representor(target, :drd, @options).each_link_transition.to_a }
+                  expect { subject.build_state_representor(target, :drd, @options).each_transition.to_a }
                     .to raise_error(
                       Crichton::RepresentorError,
                       /^The state method my_state is not implemented in the target.*/
@@ -130,7 +130,7 @@ module Crichton
               context 'when accessing transitions with a state_method that is not an attribute of the hash' do
                 it 'raises an error' do
                   @target = {name: '1812'}
-                  expect { subject.build_state_representor(target, :drd, @options).each_link_transition.to_a }
+                  expect { subject.build_state_representor(target, :drd, @options).each_transition.to_a }
                     .to raise_error(
                       Crichton::RepresentorError,
                       /^No attribute exists in the target.* that corresponds to the state method 'my_state'.*/

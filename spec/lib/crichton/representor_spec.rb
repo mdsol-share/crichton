@@ -227,9 +227,9 @@ module Crichton
         end
       end
 
-      describe '#each_embedded_transition' do
-        let(:embedded_transitions) do
-          simple_test_class.new(@attributes).each_embedded_transition(options).inject({}) do |h, descriptor|
+      describe '#each_transition' do
+        let(:transitions) do
+          simple_test_class.new(@attributes).each_transition(options).inject({}) do |h, descriptor|
             h.tap { |hash| hash[descriptor.id] = descriptor }
           end
         end
@@ -239,111 +239,121 @@ module Crichton
         end
 
         it 'returns an enumerator' do
-          simple_test_class.new.each_link_transition.should be_a(Enumerable)
+          simple_test_class.new.each_transition.should be_a(Enumerable)
         end
 
         it 'yields decorated transition descriptors' do
-          simple_test_class.new.each_embedded_transition.all? do |item|
+          simple_test_class.new.each_transition.all? do |item|
             item.instance_of?(Crichton::Descriptor::TransitionDecorator)
           end
         end
 
-        it 'yields the additional links' do
+        it 'yields additional links' do
           @top_level = true
           @additional_links = {'first' => 'first_link', 'second' => 'second_link'}
           results = []
-          simple_test_class.new.each_embedded_transition(options) do |item|
+          simple_test_class.new.each_transition(options) do |item|
             results << item.to_a if item.is_a?(Struct)
           end
           results.should == [['first', 'first_link'], ['second', 'second_link']]
         end
 
-
-
         it 'raises an error if options are passed that are not a hash' do
-          expect { simple_test_class.new.each_link_transition(:options).to_a }.to raise_error(ArgumentError,
-            /options must be nil or a hash. Received ':options'./)
+          expect { simple_test_class.new.each_transition(:options).to_a }.to raise_error(
+            ArgumentError,
+            /options must be nil or a hash. Received ':options'./
+          )
         end
 
-        shared_examples_for 'a filtered list of embedded transitions' do
+        shared_examples_for 'a filtered list of transitions' do
           context 'with :only option' do
             before do
-              @options = {only: :leviathan}
+              @options = {only: [:self, :leviathan]}
             end
-            
+
             it 'returns only the specified transition descriptors' do
-              @comparison_links.each { |link| embedded_transitions[link].should be_nil }
+              [transitions['leviathan-link'], transitions['show']].all? do |item|
+                item.should_not be_nil
+              end
             end
 
             it 'excludes all unspecified transition descriptors' do
-              @comparison_links.each { |link| embedded_transitions[link].should be_nil }
+              @comparison_links.each { |link| transitions[link].should be_nil }
             end
           end
 
           context 'with :exclude option' do
             before do
-              @options = {exclude: 'leviathan'}
+              @options = {exclude: [:self, :leviathan]}
             end
-            
+
             it 'excludes all the transition descriptors that were specified' do
-              embedded_transitions['leviathan-link'].should be_nil
+              [transitions['leviathan-link'], transitions['show']].all? do |item|
+                item.should be_nil
+              end
             end
 
             it 'returns all other unspecified the transition descriptors' do
-              @comparison_links.each { |link| embedded_transitions[link].should_not be_nil }
+              @comparison_links.each { |link| transitions[link].should_not be_nil }
             end
           end
 
           context 'with :except option' do
             before do
-              @options = {except: 'leviathan'}
+              @options = {except: [:self, :leviathan]}
             end
 
             it 'excludes all the transition descriptors that were specified' do
-              embedded_transitions['leviathan-link'].should be_nil
+              [transitions['leviathan-link'], transitions['show']].all? do |item|
+                item.should be_nil
+              end
             end
 
             it 'returns all other unspecified the transition descriptors' do
-              @comparison_links.each { |link| embedded_transitions[link].should_not be_nil }
+              @comparison_links.each { |link| transitions[link].should_not be_nil }
             end
           end
         end
 
         context 'without a state' do
           before do
-            @comparison_links = %w(repair-history)
+            @comparison_links = %w(repair-history activate deactivate update delete)
           end
 
           it 'returns all link transitions' do
-            %w(leviathan-link repair-history).each { |id| embedded_transitions[id].should_not be_nil }
+            %w(leviathan-link repair-history).each { |id| transitions[id].should_not be_nil }
           end
 
-          it_behaves_like 'a filtered list of embedded transitions'
+          it_behaves_like 'a filtered list of transitions'
         end
-        
-        shared_examples_for 'an embedded transition enumerator' do
+
+        shared_examples_for 'a transition enumerator' do
           context 'without :conditions option' do
             before do
               @conditions = nil
             end
 
             it 'only includes transitions available for the state that do not have conditions' do
-              embedded_transitions['leviathan-link'].should_not be_nil
+              [transitions['leviathan-link'], transitions['show']].all? do |item|
+                item.should_not be_nil
+              end
             end
 
             it 'excludes transitions available for the state that have conditions' do
-              embedded_transitions['repair-history'].should be_nil
+              [transitions['repair-history'], transitions['delete']].all? do |item|
+                item.should be_nil
+              end
             end
           end
 
           context 'with :conditions option' do
             it 'only includes transition descriptors available for the state with satisfied conditions' do
-              %w(leviathan-link repair-history).each { |id| embedded_transitions[id].should_not be_nil }
+              %w(leviathan-link repair-history).each { |id| transitions[id].should_not be_nil }
             end
 
             it 'excludes all transition descriptors available for the state with unsatisfied conditions' do
               @conditions = :cannot_repair
-              embedded_transitions['repair-history'].should be_nil
+              transitions['repair-history'].should be_nil
             end
           end
         end
@@ -355,9 +365,9 @@ module Crichton
             @conditions = :can_repair
           end
 
-          it_behaves_like 'a filtered list of embedded transitions'
+          it_behaves_like 'a filtered list of transitions'
 
-          it_behaves_like 'an embedded transition enumerator'
+          it_behaves_like 'a transition enumerator'
         end
 
         context 'with a valid state_method' do
@@ -368,159 +378,30 @@ module Crichton
             @conditions = :can_repair
           end
 
-          it_behaves_like 'a filtered list of embedded transitions'
+          it_behaves_like 'a filtered list of transitions'
 
-          it_behaves_like 'an embedded transition enumerator'
+          it_behaves_like 'a transition enumerator'
 
           it 'raises an error if the state is not a string or a symbol' do
             attributes = {'my_state_method' => mock('invalid_state')}
-            expect { simple_test_class.new(attributes).each_link_transition.to_a }.to raise_error(
-                Crichton::RepresentorError,
-                /^The state method 'my_state_method' must return a string or a symbol.*/
+            expect { simple_test_class.new(attributes).each_transition.to_a }.to raise_error(
+              Crichton::RepresentorError,
+              /^The state method 'my_state_method' must return a string or a symbol.*/
             )
           end
         end
-        
+
         context 'with no state_method' do
           it 'raises an error' do
             @include_state = true
-            expect { simple_test_class.new.each_link_transition.to_a }.to raise_error(
-              Crichton::RepresentorError,
-              /^No state method has been defined in the class ''.*/
+            expect { simple_test_class.new.each_transition.to_a }.to raise_error(
+               Crichton::RepresentorError,
+               /^No state method has been defined in the class ''.*/
             )
           end
         end
       end
-      
-      describe '#each_link_transition' do
-        let(:link_transitions) do
-          simple_test_class.new(@attributes).each_link_transition(options).inject({}) do |h, descriptor|
-            h.tap { |hash| hash[descriptor.id] = descriptor }
-          end
-        end
-      
-        before do
-          @resource_name = 'drd'
-        end
-      
-        it 'returns an enumerator' do
-          simple_test_class.new.each_link_transition.should be_a(Enumerable)
-        end
-      
-        it 'yields decorated transition descriptors' do
-          simple_test_class.new.each_link_transition.all? do |item|
-            item.instance_of?(Crichton::Descriptor::TransitionDecorator)
-          end
-        end
 
-        it 'raises an error if options are passed that are not a hash' do
-          expect { simple_test_class.new.each_link_transition('options').to_a }.to raise_error(ArgumentError,
-            /options must be nil or a hash. Received '"options"'./)
-        end
-        
-        shared_examples_for 'a filtered list of link transitions' do
-          context 'with :only option' do
-            before do
-              @options = {only: :self}
-            end
-            
-            it 'returns only the specified transition descriptors' do
-              link_transitions['show'].should_not be_nil
-            end
-
-            it 'excludes all other transition descriptors' do
-              @comparison_links.each { |link| link_transitions[link].should be_nil }
-            end
-          end
-
-          context 'with :except option' do
-            before do
-              @options = {except: 'self'}
-            end
-            
-            it 'excludes the specified transition descriptors' do
-              link_transitions['show'].should be_nil
-            end
-
-            it 'returns all other transition descriptors' do
-              @comparison_links.each { |link| link_transitions[link].should_not be_nil }
-            end
-          end
-        end
-      
-        context 'without a state' do
-          before do
-            @comparison_links = %w(activate deactivate update delete)
-          end
-        
-          it 'returns all link transitions' do
-            %w(show activate deactivate update delete).each { |id| link_transitions[id].should_not be_nil }
-          end
-        
-          it_behaves_like 'a filtered list of link transitions'
-        end
-
-        shared_examples_for 'a link transition enumerator' do
-
-          context 'without :conditions option' do
-            before do
-              @conditions = nil
-            end
-
-            it 'only includes transitions available for the state that do not have conditions' do
-              link_transitions['show'].should_not be_nil
-            end
-
-            it 'excludes transitions available for the state that have conditions' do
-              %w(deactivate update delete).each { |id| link_transitions[id].should be_nil }
-            end
-          end
-
-          context 'with :conditions option' do
-            it 'only includes transitions available for the state' do
-              %w(activate update delete).each { |id| link_transitions[id].should be_nil }
-            end
-
-            it 'excludes transitions available for the state with unsatisfied conditions' do
-              %w(activate update delete).each { |id| link_transitions[id].should be_nil }
-            end
-          end
-        end
-      
-        context 'with a :state option' do
-          before do
-            @state = 'activated'
-            @comparison_links = %w(deactivate)
-            @conditions = :can_deactivate
-          end
-
-          it_behaves_like 'a filtered list of link transitions'
-
-          it_behaves_like 'a link transition enumerator'
-        end
-
-        context 'with a valid state_method' do
-          before do
-            @state_method = 'my_state_method'
-            @attributes = {'my_state_method' => 'activated'}
-            @comparison_links = %w(deactivate)
-            @conditions = :can_deactivate
-          end
-
-          it_behaves_like 'a filtered list of link transitions'
-
-          it_behaves_like 'a link transition enumerator'
-
-          it 'raises an error if the state is not a string or a symbol' do
-            attributes = {'my_state_method' => mock('invalid_state')}
-            expect { simple_test_class.new(attributes).each_link_transition.to_a }.to raise_error(
-              Crichton::RepresentorError,
-              /The state method 'my_state_method' must return a string or a symbol.*/
-            )
-          end
-        end
-      end
-      
       describe '#metadata_links' do
         it 'returns the metadata links associated with the represented resource' do
           @resource_name = 'drds'
