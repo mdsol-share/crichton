@@ -5,13 +5,13 @@ requirements of Crichton.
 
 Since a resource descriptor document is a .yml file, it first must meet the requirements of a
 well-formed YAML file. This website is one of many to help check to see if the file is well
-formed: [yaml parser] (http://yaml-online-parser.appspot.com/)
+formed: [yaml parser](http://yaml-online-parser.appspot.com/)
 
 Crichton lint works to validate the logic of a single resource descriptor file, outputting errors, warning
 and hints to help generate an optimal document.
 
 Lint can be used to help you build a clean resource descriptor file, and once a clean file is created, lint can
-be invoked using rspec to make sure that any changes to the file or new requirements to Crichton do not inadvertently
+be invoked using rspec to make sure that any changes to the file, or new requirements to Crichton, do not inadvertently
 result in an error. It is highly recommended to generate an Rspec file with Crichton lint for continuous integration
 purposes.
 
@@ -19,7 +19,7 @@ Lint can be invoked in 2 ways, once crichton is added to your project as a gem:
 
 ### A lint gem ruby executable  (rdlint)
 
-`bundle exec rdlint <options> <resource desciptor file>`
+`bundle exec rdlint <options> <resource descriptor file>`
 
 rdlint can validate a single descriptor file or, with a --all option, will validate all the descriptor files
 found in the current project (the location of descriptor files defaults to an api_descriptors directory).
@@ -32,7 +32,7 @@ The options to rdlint are:
 * -a or --all: Lint all (*.yml, *.yaml) files found in the resource descriptor directory (defaults to api_descriptors)
 * -h or --help: Displays the standard usage dialog
 
-Some examples, run from the root of a project
+Some examples run from the root of a project
 
 * `bundle exec rdlint api_descriptors/file.yml`  Lint validates a single file
 * `bundle exec rdlint -a (or --all) ` Lint validate all files in the resource descriptor directory
@@ -48,9 +48,9 @@ Mutual exclusive options:
 
 ### Running from rake
 
-Projects bundled with the crichton gem can also lint validate resource descriptor files using rake.
+Projects bundled with the crichton gem can also use lint to validate resource descriptor files using rake.
 
-Rake takes up to two parameters with the following invocation possibilities:
+Rake accepts up to two parameters with the following invocation possibilities:
 
 1. "path_to_filename"
 2. "all"

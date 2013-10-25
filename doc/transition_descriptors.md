@@ -51,7 +51,7 @@ descriptors:
         doc: Creates a DRD.
         type: unsafe
         rt: drd
-        descriptors:# Descriptors associated with a form to template a body associated with the 'create' affordance.
+        descriptors: # Descriptors associated with a form to template a body associated with the 'create' affordance.
           create-drd: # Unique ID that does not collide with 'create' transition descriptor above.
             type: semantic
             href: update-drd # Relative URI indicates that this should dereference update-drd to include it's semantics.
@@ -80,8 +80,8 @@ descriptors:
 ```
 
 ## Descriptor Dependencies
-Transition descriptors are directly related to [Protocol Descriptors](transition_descriptors.md) and 
-[State Descriptors](data_descriptors.md), which indicate implementation details of the transtions. Thus, a 
+Transition descriptors are directly related to [Protocol Descriptors](protocol_descriptors.md) and 
+[State Descriptors](state_descriptors.md), which indicate implementation details of the transtions. Thus, a 
 transition descriptor transition:
 
 * MUST have a related Protocol Descriptor whose ID (YAML key) is the same as some transition.
