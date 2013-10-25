@@ -100,9 +100,9 @@ module Crichton
     # @option options [String, Symbol, Array] :only The semantic data descriptor names to limit.
     #
     # @return [Hash] The data.
-    def each_data_semantic(options = nil, &block)
+    def each_data_semantic(options = nil)
       return to_enum(:each_data_semantic, options) unless block_given?
-      each_enumerator(:data, :semantic, options, &block)
+      each_enumerator(:data, :semantic, options, &Proc.new)
     end
 
     ##
@@ -117,9 +117,9 @@ module Crichton
     # @option options [String, Symbol, Array] :exclude The embedded semantic descriptor names to exclude.
     #
     # @return [Hash] The embedded resources.
-    def each_embedded_semantic(options = nil, &block)
+    def each_embedded_semantic(options = nil)
       return to_enum(:each_embedded_semantic, options) unless block_given?
-      each_enumerator(:embedded, :semantic, options, &block)
+      each_enumerator(:embedded, :semantic, options, &Proc.new)
     end
 
     ##
@@ -138,11 +138,11 @@ module Crichton
     # @option options [String, Symbol, Array] :state The state of the resource.
     #
     # @return [Hash] The data.
-    def each_transition(options = nil, &block)
+    def each_transition(options = nil)
       return to_enum(:each_transition, options) unless block_given?
-      each_enumerator(:link, :transition, options, &block)
-      each_additional_link_transition_enumerator(options, &block)
-      each_enumerator(:embedded, :transition, options, &block)
+      each_enumerator(:link, :transition, options, &Proc.new)
+      each_additional_link_transition_enumerator(options, &Proc.new)
+      each_enumerator(:embedded, :transition, options, &Proc.new)
     end
 
     ##
@@ -165,7 +165,7 @@ module Crichton
     AdditionalTransition = Struct.new :name, :url
     private_constant :AdditionalTransition
 
-    def each_additional_link_transition_enumerator(options, &block)
+    def each_additional_link_transition_enumerator(options)
       if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
         options[:additional_links].map do |relation, url|
           # We don't use url because we want to clear out the data from the options
@@ -178,7 +178,7 @@ module Crichton
       end
     end
 
-    def each_enumerator(type, descriptor, options, &block)
+    def each_enumerator(type, descriptor, options)
       unless options.nil? || options.is_a?(Hash)
         raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'."
       end
