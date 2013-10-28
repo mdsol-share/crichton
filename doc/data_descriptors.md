@@ -20,23 +20,50 @@ indicates the URI of the descriptor for top-level descriptors.
     * `href` - The underlying ALPS profile, either representing another resource or a primitive profile. See 
 [Primitive Profiles](primitive_profiles.md) for more information: REQUIRED.
     * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
-    * `embed` - Indicates that this resource should be embedded in a response. Valid values are `single`, `multiple`, 
-and `optional`. The default, if not specified, is `single`. The value `multiple` indicates the item should be embedded 
-as an array. The value `optional` indicates this property should only be included is specifically requested using an 
-associated transition that specifies its optional inclusion: OPTIONAL.
+    * `embed` - Indicates that this resource should be embedded in a response either inline or as a link.
+    Valid values are `single`, `multiple`, `single-link`, `multiple-link`, `single-optional`, `multiple-optional`,
+    `single-optional-link` and `multiple-optional-link`.
+    The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
+    embedded as an array. The values that contain `optional` indicate that the client can request the
+    way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed' otherwise.
+    The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the
+    values - allows setting the mode of embedding.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
 in contrast to a link).
 
-* `field_type` - Defines the type of field for the form. Valid values are `input`, `boolean`, `select`, or 
-`multi-select`: REQUIRED.
+* `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
+[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
 * `enum` - Defines the options for select field types or references another profile associated with the enum: OPTIONAL.
-* `validators` - An array of validator objects associated with a field: OPTIONAL.
+* `validators` - Hash of validator objects associated with a field: OPTIONAL.
+
+Following table defines list of supported input types and validators which can be applied to it:
+
+| Input types / attributes | required | pattern | maxlength | min/max |
+|:----------------:|:----------:|:---------:|:-----------:|:---------:|
+| text           | x        | x       | x         |         |
+| search         | x        | x       |           |         |
+| email          | x        | x       |           |         |
+| tel            | x        | x       |           |         |
+| url            | x        | x       | x         |         |
+| datetime       | x        |         |           | x       |
+| time           | x        |         |           | x       |
+| date           | x        |         |           | x       |
+| month          | x        |         |           | x       |
+| week           | x        |         |           | x       |
+| time           | x        |         |           | x       |
+| datetime-local | x        |         |           | x       |
+| number         | x        |         |           | x       |
+| boolean(*)     | x        |         |           |         |
+| select         | x        |         |           |         |
+
+(*) `boolean` is a generic input type used instead of `checkbox`.
+ HTML5 `checkbox` type doesn't make sense in media-types other than HTML and therefore replaced with generic `boolean` type.
 
 ## Examples
 The following example highlights a few parts of the [Example Resource Descriptor][] `descriptors` section associated
-with data descriptors and template descriptors. In-line commentsare expounded in the structure and some material is 
+with data descriptors and template descriptors. In-line comments are expounded in the structure and some material is 
 removed for simplicity (indicated by # ...). 
 
 ```yaml
@@ -78,9 +105,9 @@ descriptors:
                 doc: The name of the DRD.
                 type: semantic
                 href: http://alps.io/schema.org/Text
-                field_type: input
+                field_type: text
                 validators:
-                  - presence
+                  - required
               form-leviathan_uuid: # Unique ID that does not collide with 'leviathan_uuid' descriptor.
                 name: leviathan_uuid # Name associated with the associated element in a hypermedia response.
                 doc: The UUID of the creator Leviathan.
@@ -90,7 +117,7 @@ descriptors:
                 enum:
                   href: http://alps.io.example.org/Leviathans#list 
                 validators:
-                  - presence  
+                  - required
   drd:
     doc: |
       Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
@@ -145,21 +172,21 @@ descriptors:
                   - renegade
                   - broken
                 validators:
-                  - presence
+                  - required
               form-kind: # Unique value to differentiate from 'kind' descriptor.
                 type: semantic
                 name: kind # Name associated with the associated element in a hypermedia response.doc: What kind is it.
                 href: http://alps.io/schema.org/Text
-                field_type: multi-select
+                field_type: select
                 enum:
                   - standard
                   - sentinel
                 validators:
-                  - presence 
+                  - required
 ```
 
 ## Descriptor Dependencies
-Data descriptors are directly related to [State Descriptors](data_descriptors.md) in a _Resource Descriptor_. Thus, a
+Data descriptors are directly related to [State Descriptors](state_descriptors.md) in a _Resource Descriptor_. Thus, a
 data descriptor:
 
 * MUST have a corresponding State descriptor if it includes [Transition Descriptors](transition_descriptors.md).

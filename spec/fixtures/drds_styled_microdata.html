@@ -22,7 +22,7 @@
       <ul>
         <li>
           <label itemprop="search_term">
-            <input type="search" name="search_term"/>
+            <input itemprop="search_term" type="text" name="search_term"/>
           </label>
         </li>
       </ul>
@@ -34,22 +34,32 @@
       <ul>
         <li>
           <label itemprop="status">
-            <input type="text" name="status"/>
+            <input itemprop="status" type="text" name="status" required=""/>
           </label>
         </li>
         <li>
           <label itemprop="kind">
-            <input type="text" name="kind"/>
+            <input itemprop="kind" type="checkbox" name="kind"/>
           </label>
         </li>
         <li>
           <label itemprop="name">
-            <input type="text" name="name"/>
+            <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
           </label>
         </li>
         <li>
           <label itemprop="leviathan_uuid">
-            <input type="text" name="leviathan_uuid"/>
+            <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="leviathan_health_points">
+              <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0" max="100"/>
+          </label>
+        </li>
+        <li>
+          <label itemprop="leviathan_email">
+              <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
           </label>
         </li>
       </ul>
@@ -68,19 +78,24 @@
             <a rel="self" href="http://deployment.example.org/drds/0">self</a>
           </li>
           <li>
-            <a rel="deactivate" href="http://deployment.example.org/drds/0/deactivate">deactivate</a>
+            <form action="http://deployment.example.org/drds/0/deactivate" method="post">
+              <ul>
+              </ul>
+              <input type="hidden" name="_method" value="PUT"/>
+              <input type="submit" value="deactivate"/>
+            </form>
           </li>
           <li>
             <form action="http://deployment.example.org/drds/0" method="post">
               <ul>
                 <li>
                   <label itemprop="status">
-                    <input type="text" name="status"/>
+                    <input itemprop="status" type="text" name="status" required=""/>
                   </label>
                 </li>
                 <li>
                   <label itemprop="kind">
-                    <input type="text" name="kind"/>
+                    <input itemprop="kind" type="checkbox" name="kind"/>
                   </label>
                 </li>
               </ul>
@@ -89,7 +104,12 @@
             </form>
           </li>
           <li>
-            <a rel="delete" href="http://deployment.example.org/drds/0">delete</a>
+            <form action="http://deployment.example.org/drds/0" method="post">
+              <ul>
+              </ul>
+              <input type="hidden" name="_method" value="DELETE"/>
+              <input type="submit" value="delete"/>
+            </form>
           </li>
           <li>
             <span itemprop="uuid">0</span>
@@ -117,19 +137,24 @@
             <a rel="self" href="http://deployment.example.org/drds/1">self</a>
           </li>
           <li>
-            <a rel="deactivate" href="http://deployment.example.org/drds/1/deactivate">deactivate</a>
+            <form action="http://deployment.example.org/drds/1/deactivate" method="post">
+              <ul>
+              </ul>
+              <input type="hidden" name="_method" value="PUT"/>
+              <input type="submit" value="deactivate"/>
+            </form>
           </li>
           <li>
             <form action="http://deployment.example.org/drds/1" method="post">
               <ul>
                 <li>
                   <label itemprop="status">
-                    <input type="text" name="status"/>
+                    <input itemprop="status" type="text" name="status" required=""/>
                   </label>
                 </li>
                 <li>
                   <label itemprop="kind">
-                    <input type="text" name="kind"/>
+                    <input itemprop="kind" type="checkbox" name="kind"/>
                   </label>
                 </li>
               </ul>
@@ -138,7 +163,12 @@
             </form>
           </li>
           <li>
-            <a rel="delete" href="http://deployment.example.org/drds/1">delete</a>
+            <form action="http://deployment.example.org/drds/1" method="post">
+              <ul>
+              </ul>
+              <input type="hidden" name="_method" value="DELETE"/>
+              <input type="submit" value="delete"/>
+            </form>
           </li>
           <li>
             <a rel="leviathan" href="http://example.org/leviathan/leviathan_uuid_1">leviathan</a>

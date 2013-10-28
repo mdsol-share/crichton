@@ -16,7 +16,6 @@ module Crichton
       # @return [Hash] The built representation.
       def as_media_type(options = {})
         options ||= {}
-        handle_non_representor
         base_object = get_links(options).merge(get_semantic_data(options))
         add_embedded(base_object, options)
       end
@@ -33,18 +32,10 @@ module Crichton
 
       private
 
-      #Todo: Determine proper Exception handling for non Crichton::Representor object
-      def handle_non_representor
-        unless @object.is_a? Crichton::Representor
-          logger.warn("Semantic element should be either representor or array! Was #{@object.class.name}")
-        end
-      end
-
       def get_links(options)
         metadata_links = @object.metadata_links(options)
-        link_transitions = @object.each_link_transition(options)
-        embedded_transitions = @object.each_embedded_transition(options)
-        all_links = [metadata_links, link_transitions, embedded_transitions]
+        link_transitions = @object.each_transition(options)
+        all_links = [metadata_links, link_transitions]#, embedded_transitions]
         { _links: all_links.reduce({}) { |hash, link_block| hash.merge(get_data(link_block, relations)) } }
       end
 
@@ -70,11 +61,16 @@ module Crichton
       end
 
       def add_embedded(base_object, options)
-        embedded = get_embedded(options)
-        embedded_links = embedded.reduce({}) { |hash, (k,v)| hash.merge({k => get_self_links(v)}) }
-        base_object[:_links] = base_object[:_links].merge( embedded_links )
-        base_object[:_embedded] = embedded unless embedded == {}
+        if (embedded = get_embedded(options)) && embedded.any?
+          base_object[:_embedded] = embedded
+          add_embedded_links(base_object, embedded)
+        end
         base_object
+      end
+
+      def add_embedded_links(base_object, embedded)
+        embedded_links = embedded.inject({}) { |hash, (k,v)| hash.merge({k => get_self_links(v)}) }
+        base_object[:_links] = base_object[:_links].merge( embedded_links )
       end
 
       def get_embedded(options)

@@ -1,3 +1,5 @@
+require 'colorize'
+
 module Support
   module Helpers
 
@@ -22,6 +24,10 @@ module Support
       system("bundle exec rake config:file[\"#{template_path}/crichton.yml.dice\"] #{environment_args(env_vars)}")
     end
 
+    def lint_rake_path
+      tasks_path('lint.rake')
+    end
+
     def drds_descriptor
       YAML.load_file(drds_filename)
     end
@@ -35,8 +41,8 @@ module Support
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
 
-    def drds_microdata_hal_json
-      @drds_microdata_hal_json ||= JSON.load(File.open(fixture_path('hal_microdata.json')))
+    def drds_hal_json
+      @drds_hal_json ||= File.open(fixture_path('hal_microdata.json'))
     end
 
     def drds_microdata_html
@@ -44,7 +50,11 @@ module Support
     end
 
     def drds_styled_microdata_html
-      @drds_styled__microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata.html')))
+      @drds_styled_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata.html')))
+    end
+
+    def drds_styled_microdata_embed_html
+      @drds_styled_embed_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata_embed.html')))
     end
 
     def example_environment_config
@@ -132,18 +142,31 @@ module Support
     end
 
     def load_lint_translation_file
-      I18n.load_path =  [File.join(LINT_DIR, 'eng.yml')]
-      I18n.default_locale = 'eng'
+      I18n.load_path = [File.join(LINT_DIR, 'en.yml')]
+      I18n.default_locale = 'en'
+      I18n.reload!
     end
 
     def expected_output(error_or_warning, key, options = {})
-      (generate_lint_file_line(options[:filename]) << (error_or_warning == :error ? "\tERROR: " : "\tWARNING: ") <<
-        I18n.t(key, options) << "\n")
+      generate_lint_file_line(options[:filename]) <<
+        generate_section_header(options[:section])  <<
+        generate_sub_header(options[:sub_header]) <<
+        build_colorized_lint_output(error_or_warning, key, options) << "\t\n"
     end
 
     private
     def generate_lint_file_line(filename)
       filename ? "In file '#{filename}':\n" : ""
+    end
+
+    def generate_section_header(section)
+      return "" if section == :catastrophic
+      section ? "\n#{section.capitalize} Section:" << "\n" : ""
+    end
+
+    def generate_sub_header(sub_header)
+      return "  " if sub_header.nil?
+      sub_header == :error ? "ERRORS:".red << "\n  " : "WARNINGS:".yellow << "\n  "
     end
 
     def environment_args(env_vars)
@@ -152,6 +175,23 @@ module Support
 
     def fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', args)
+    end
+
+    def tasks_path(*args)
+      File.join(Dir.pwd, 'tasks', args)
+    end
+
+    def default_lint_descriptor_file(file)
+      File.join(Crichton.descriptor_location, file)
+    end
+
+    def build_colorized_lint_output(error_or_warning, key, options = {})
+      I18n.t(key, options).send(error_or_warning == :error ? :red : :yellow)
+    end
+
+    def build_dir_for_lint_rspec(config_dir, files_to_copy)
+      FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
+      FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
   end
 end

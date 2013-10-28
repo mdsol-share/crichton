@@ -1,6 +1,6 @@
 SPEC_DIR = File.expand_path("..", __FILE__)
 lib_dir = File.expand_path("../lib", SPEC_DIR)
-LINT_DIR = File.expand_path("../lib/lint", SPEC_DIR)
+LINT_DIR = File.expand_path("../lib/crichton/lint", SPEC_DIR)
 
 $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
@@ -9,6 +9,7 @@ require 'rspec'
 require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
+require 'webmock/rspec'
 
 if ENV['COVERAGE']
   require 'simplecov'
@@ -19,7 +20,6 @@ Debugger.start
 Bundler.setup
 
 require 'crichton'
-load 'Rakefile'
 
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
 

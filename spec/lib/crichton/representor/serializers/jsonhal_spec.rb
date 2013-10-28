@@ -61,13 +61,9 @@ module Crichton
 
 
       describe '#as_media_type' do
-        context 'without styled interface for API surfing' do
-          it 'returns the resource represented as hal+json' do
-            serializer = @serializer.new(DRD.all)
-            exp = drds_microdata_hal_json
-            x = serializer.to_media_type(conditions: 'can_do_anything')
-            x.should be_json_eql(exp.to_json)
-          end
+        it 'returns the resource represented as application/hal+json' do
+          serializer = @serializer.new(DRD.all)
+          serializer.to_media_type(conditions: 'can_do_anything').should be_json_eql(drds_hal_json)
         end
       end
     end

@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/clean'
+require 'crichton/external_document_store'
 
 begin
   namespace :alps do
@@ -13,6 +14,21 @@ begin
           File.open(File.join(directory, "#{key}.#{ext}"), 'w') { |f| f.write(doc) }
         end
       end
+    end
+
+    desc "Download ALPS profile documents to the external document store"
+    task :store_external_document, :link do |t, args|
+      Crichton::ExternalDocumentStore.new.download_link_and_store_in_document_store(args.link)
+    end
+
+    desc "Compare ALPS profile documents to documents in the external document store"
+    task :check_external_documents do |t|
+      puts Crichton::ExternalDocumentStore.new.compare_stored_documents_with_their_original_documents
+    end
+
+    desc 'Store all external documents in external document store'
+    task :store_all_external_documents do
+      Crichton::ExternalDocumentStore.new.store_all_external_documents
     end
   end
 end

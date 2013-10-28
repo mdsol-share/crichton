@@ -1,4 +1,5 @@
 require 'crichton/representor/serializer'
+require 'crichton/helpers'
 
 module Crichton
   module Representor
@@ -30,7 +31,12 @@ module Crichton
           add_embedded_element(options)
         end
       end
-      
+
+      def as_link(self_transition, options)
+        configure_markup_builder(options)
+        @markup_builder.tag!(:a, @object.uuid, href: self_transition.url)
+      end
+
     private
       def configure_markup_builder(options)
         require 'builder' unless defined?(::Builder)
@@ -71,13 +77,7 @@ module Crichton
       # Manages Abstract Base functionality for semantic Builders that implement the specifics of Hypermedia 
       # serialization per ALPS media-type guidance specs for HTML.
       class BaseSemanticBuilder
-        ##
-        # Helper to access the Crichton logger locally.
-        #
-        # @return [Logger] Logger object
-        def logger
-          @logger ||= Crichton.logger
-        end
+        include Crichton::Helpers::ConfigHelper
 
         ##
         # Helper to access the Crichton configuration locally
@@ -97,17 +97,13 @@ module Crichton
         # @!macro add_head
         #   Adds the head tag and any relevant child tags.
         def add_head
-          @markup_builder.head do
-            add_metadata_links
-          end
+          @markup_builder.head { add_metadata_links }
         end
 
         # @!macro add_body
         #   Adds the body tag and all child tags.
         def add_body(options)
-          @markup_builder.body do
-            add_embedded_element(options)
-          end
+          @markup_builder.body { add_embedded_element(options) }
         end
 
         # @!macro add_embedded_element
@@ -116,6 +112,19 @@ module Crichton
           @markup_builder.tag!(element_tag, element_attributes) do
             add_transitions(options)
             add_semantics(options)
+          end
+        end
+
+        # @!macro add_control
+        #   Adds HTML tag of specific kind to its parent tag.
+        def add_control(semantic)
+          case semantic.field_type.to_sym
+          when :select
+            add_control_select(semantic)
+          when :boolean
+            add_control_boolean(semantic)
+          else
+            add_control_input(semantic)
           end
         end
 
@@ -139,69 +148,53 @@ module Crichton
         end
 
         def add_transitions(options)
-          @object.each_link_transition(options) do |transition|
-            transition.templated? ? add_templated_transition(transition, options) : add_transition(transition, options)
-          end
-
-          @object.each_embedded_transition(options) { |transition| add_transition(transition, options) }
-        end
-
-        def add_templated_transition(transition, options)
-          if transition.safe?
-            add_query_transition(transition)
-          else
-            add_control_transition(transition)
+          @object.each_transition(options) do |transition|
+            if transition.safe?
+              add_link_transition(transition)
+            else
+              add_form_transition(transition)
+            end
           end
         end
 
-        def add_query_transition(transition)
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url}) if transition.url
+        def add_link_transition(transition)
+          @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url}) if transition.templated_url
         end
 
-        def add_control_transition(transition)
-          raise_abstract('add_control_transition')
-        end
-
-        def add_transition(transition, options)
-          transition_url = transition.url
-          logger.warn("URL is blank for transition #{transition.name}!") if transition_url.blank?
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition_url}) unless transition_url.blank?
+        def add_form_transition(transition)
+          raise_abstract('add_form_transition')
         end
 
         def add_semantics(options)
-          @object.each_data_semantic(options) do |semantic|
-            add_semantic(semantic, options)
-          end
+          @object.each_data_semantic(options) { |semantic| add_semantic(semantic, options) }
 
           options[:top_level] = false
-          @object.each_embedded_semantic(options) do |semantic|
-            add_embedded_semantic(semantic, options)
-          end
+          @object.each_embedded_semantic(options) { |semantic| add_embedded_semantic(semantic, options) }
         end
-        
+
         def add_semantic(semantic, options)
           raise_abstract('add_semantic')
         end
-        
+
         def add_embedded_semantic(semantic, options)
           embedded_element_attributes = {itemscope: 'itemscope', itemtype: semantic.href, itemprop: semantic.name}
 
           @markup_builder.tag!(element_tag, embedded_element_attributes) do
             case embedded_object = semantic.value
             when Array
-              embedded_object.each { |object| add_embedded_object(object, options) }
+              embedded_object.each { |object| add_embedded_object(object, options, semantic)}
             when Crichton::Representor
-              add_embedded_object(embedded_object, options)
+              add_embedded_object(embedded_object, options, semantic)
             else
               logger.warn("Semantic element should be either representor or array! Was #{semantic}")
             end
           end
         end
         
-        def add_embedded_object(object, options)
+        def add_embedded_object(object, options, semantic)
           object.as_media_type(@media_type, options)
         end
-        
+
         def raise_abstract(method)
           raise "##{method} is an abstract method that must be implemented."
         end
@@ -215,30 +208,38 @@ module Crichton
         def element_tag
           :div
         end
-        
+
       private
         def add_semantic(semantic, options)
-          @markup_builder.span(semantic.value, itemprop: semantic.name)
+          @markup_builder.span(semantic.value.to_s, itemprop: semantic.name)
         end
 
-        def add_control_transition(transition, input_type = :text)
-          method = transition.safe? ? transition.method : :post
+        def add_form_transition(transition, method = :post)
           @markup_builder.form({action: transition.url, method: method, name: transition.name}) do
             transition.semantics.values.each do |semantic|
               # If this is a form semantic, pick up its attributes
               if semantic.semantics.any?
-                semantic.semantics.values.each { |form_semantic| add_control_input(form_semantic, input_type) }
+                semantic.semantics.values.each { |form_semantic| add_control(form_semantic) }
               else
-                add_control_input(semantic, input_type)
+                add_control(semantic)
               end
             end
             @markup_builder.input({type: :hidden, name: '_method', value: transition.method}) unless transition.safe?
             @markup_builder.input({type: :submit, value: transition.name})
           end
         end
-        
-        def add_control_input(semantic, input_type)
-          @markup_builder.input({itemprop: semantic.name, type: input_type, name: semantic.name})
+
+        def add_control_input(semantic, field_type = nil)
+          field_type ||= semantic.field_type
+          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name}.merge(semantic.validators))
+        end
+
+        def add_control_boolean(semantic)
+          add_control_input(semantic, :checkbox)
+        end
+
+        def add_control_select(semantic)
+          #TODO: Need to implement <select /> HTML control here
         end
       end
 
@@ -267,47 +268,43 @@ module Crichton
           end
         end
 
-        def add_transition(transition, options = {})
-          return unless transition.url
-          
-          @markup_builder.li do
-            super
-          end
-        end
-        
         def add_semantic(semantic, options)
-          @markup_builder.li do
-            super
-          end
+          @markup_builder.li { super }
         end
 
         def add_embedded_semantic(semantic, options)
+          @markup_builder.li { super }
+        end
+
+        def add_embedded_object(object, options, semantic)
           @markup_builder.li do
-            super
+            case semantic.embed_type(options)
+            when :link
+              object.as_link(@media_type, options)
+            when :embed
+              object.as_media_type(@media_type, options)
+            end
           end
         end
 
-        def add_embedded_object(object, options)
-          @markup_builder.li do
-            object.as_media_type(@media_type, options)
+        def add_link_transition(transition)
+          if transition.templated?
+            add_form_transition(transition, transition.method)
+          elsif transition.url
+            @markup_builder.li { super }
           end
-        end
-
-        def add_query_transition(transition)
-          add_control_transition(transition, :search)
         end
         
         # Builds a form control
-        def add_control_transition(transition, input_type = :text)
-          method = transition.safe? ? transition.method : :post
+        def add_form_transition(transition, method = :post)
           @markup_builder.li do
             @markup_builder.form({action: transition.url, method: method}) do
               @markup_builder.ul do
                 transition.semantics.values.each do |semantic|
                   if semantic.semantics.any?
-                    semantic.semantics.values.each { |form_semantic| add_control_input(form_semantic, input_type) }
+                    semantic.semantics.values.each { |form_semantic| add_control(form_semantic) }
                   else
-                    add_control_input(semantic, input_type)
+                    add_control(semantic)
                   end
                 end
               end
@@ -317,12 +314,14 @@ module Crichton
           end
         end
 
-        def add_control_input(semantic, input_type)
+        def add_control_input(semantic, field_type = nil)
           @markup_builder.li do
-            @markup_builder.label({itemprop: semantic.name}) do
-              @markup_builder.input({type: input_type, name: semantic.name})
-            end
+            @markup_builder.label({itemprop: semantic.name}) { super }
           end
+        end
+
+        def add_control_select(semantic)
+          #TODO: Need to implement <select /> HTML control here
         end
       end
     end

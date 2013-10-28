@@ -12,6 +12,9 @@ module Crichton
       descriptor_reader :embed
 
       # @!macro string_reader
+      descriptor_reader :field_type
+
+      # @!macro string_reader
       descriptor_reader :rt
 
       # @!macro object_reader
@@ -19,7 +22,7 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :type
-      
+
       ##
       # Constructs a new instance of BaseDocumentDescriptor.
       #
@@ -55,7 +58,30 @@ module Crichton
       def embeddable?
         !!embed
       end
-      
+
+      SINGLE_MULTIPLE = %w(single multiple)
+      SINGLE_LINK_MULTIPLE_LINK = %w(single-link multiple-link)
+      SINGLE_OPTIONAL_MULTIPLE_OPTIONAL = %w(single-optional multiple-optional)
+      SINGLE_OPTIONAL_MULTIPLE_OPTIONAL_LINK = %w(single-optional-link multiple-optional-link)
+
+      ##
+      # Determines how embedded elements should be embedded
+      #
+      # @return [Symbol, NilClass] Either :embed or :link
+      def embed_type(options)
+        if SINGLE_MULTIPLE.include?(embed)
+          :embed
+        elsif SINGLE_LINK_MULTIPLE_LINK.include?(embed)
+          :link
+        elsif SINGLE_OPTIONAL_MULTIPLE_OPTIONAL.include?(embed)
+          options[:embed_optional] && options[:embed_optional][self.name] || :embed
+        elsif SINGLE_OPTIONAL_MULTIPLE_OPTIONAL_LINK.include?(embed)
+          options[:embed_optional] && options[:embed_optional][self.name] || :link
+        else
+          :embed
+        end
+      end
+
       ##
       # Returns an array of the profile, type and help links associated with the descriptor.
       #
@@ -92,7 +118,15 @@ module Crichton
           Crichton::Descriptor::Link.new(resource_descriptor, 'type', self_link.absolute_href)
         end
       end
-      
+
+      ##
+      # Returns attributes associated with descriptor.
+      #
+      # @return [Hash] Attributes.
+      def validators
+        @validators ||= [*descriptor_document['validators']].map { |v| v.is_a?(String) ? { v => nil } : v }.inject({}, :update)
+      end
+
     private
       def decorator_class
         @decorator_class ||= begin

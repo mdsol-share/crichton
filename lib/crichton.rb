@@ -73,6 +73,15 @@ module Crichton
   end
 
   ##
+  # external_descriptor_document_urls
+  def self.external_descriptor_document_urls
+    @registry ||= Crichton::Registry.new
+    @registry.descriptor_registry
+    descriptor_documents = @registry.external_descriptor_documents
+    descriptor_documents.keys if descriptor_documents
+  end
+
+  ##
   # Returns the registered resources - toplevel version that does not have the local resources de-referenced.
   #
   # If a directory containing YAML resource descriptor files is configured, it automatically loads all resource
@@ -101,7 +110,7 @@ module Crichton
       environment = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
       Configuration.new(YAML.load_file(config_file)[environment])
     else
-      raise "No crichton.yml file found in the configuration directory: #{config_directory}."
+      raise "No crichton.yml file found in the configuration directory: #{config_directory}. Tried #{config_file}."
     end
   end
 

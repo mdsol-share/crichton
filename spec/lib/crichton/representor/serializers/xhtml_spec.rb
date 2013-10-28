@@ -61,9 +61,10 @@ module Crichton
       end
       
       describe '#as_media_type' do
+        let (:serializer) { XHTMLSerializer.new(DRD.all) }
+
         context 'without styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
-            serializer = XHTMLSerializer.new(DRD.all)
             serializer.as_media_type(conditions: 'can_do_anything').should be_equivalent_to(drds_microdata_html)
           end
         end
@@ -71,8 +72,12 @@ module Crichton
         context 'with styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
             options = {conditions: 'can_do_anything', semantics: :styled_microdata}
-            serializer = XHTMLSerializer.new(DRD.all)
             serializer.as_media_type(options).should be_equivalent_to(drds_styled_microdata_html)
+          end
+
+          it 'returns the resource represented as xhtml with linked resources' do
+            options = {conditions: 'can_do_anything', semantics: :styled_microdata, embed_optional: {'items' => :link}}
+            serializer.as_media_type(options).should be_equivalent_to(drds_styled_microdata_embed_html)
           end
         end
       end

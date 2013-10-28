@@ -64,32 +64,13 @@ resource descriptor document may take several iterations.
 To help with the development, a lint feature is part of Crichton in order to help catch major and
 minor errors in the design of the resource descriptor document.
 
-Since a resource descriptor document is a .yml file, it first must meet the requirements of a
-well-formed YAML file. This website is one of many to help check to see if the file is well
-formed: [yaml parser] (http://yaml-online-parser.appspot.com/)
+Single or multiple descriptor files can be validated via lint through the rdlint gem executable or rake. For example:
 
-Crichton lint works to validate the logic of a single resource descriptor file, outputting errors, warning
-and hints to help generate an optimal document.
+`bundle exec rdlint -a (or --all) ` Lint validate all files in the resource descriptor directory
 
-Lint can be invoked in two ways, once crichton is added to your project as a gem:
+`bundle exec rake crichton:lint[all]` Use rake to validate all files in the resource descriptor directory
 
-### A lint gem ruby executable  (rdlint)
-
-`bundle exec rdlint <resource desciptor file>`
-
-The file should be a path, which is relative to the root of the project. For example, if you're in the
-root of the project, you can run lint as:
-
-`bundle exec rdlint api_descriptors/my_resource_descriptor_file.yml` (api_descriptors is a
-possible standard folder to place descriptor files.)
-
-### Running from rake
-
-lint is also a rake task within the crichton gem. You can invoke lint with:
- `bundle exec rake crichton:lint[<resource descriptor file>]`
-
-For those unfamiliar with rake, arguments to rake require brackets. In zsh, you must escape
-the brackets with \[...\]
+To understand all of the details of linting descriptors files, please view the [Lint README Page](doc/lint.md)
 
 ### Logging
 If you use Rails, then the ```Rails.logger``` should be configured automatically.

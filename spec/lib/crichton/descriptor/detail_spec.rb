@@ -12,7 +12,8 @@ module Crichton
         descriptor
       end
       let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, 'drds') }
-  
+      let(:name_semantic) { descriptor.transitions['create'].semantics['create-drd'].semantics['name'] }
+
       describe '.new' do
         it 'returns a subclass of Profile' do
           descriptor.should be_a(Profile)
@@ -23,8 +24,82 @@ module Crichton
 
       describe '#embed' do
         it 'returns the embed value for the descriptor' do
-          descriptor_document['embed'] = 'optional'
+          descriptor_document['embed'] = 'single-optional'
           descriptor.embed.should == descriptor_document['embed']
+        end
+      end
+
+      describe '#embed_type' do
+        it 'returns :embed for single' do
+          descriptor_document['embed'] = 'single'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed for multiple' do
+          descriptor_document['embed'] = 'multiple'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :link for single-link' do
+          descriptor_document['embed'] = 'single-link'
+          options = {}
+          descriptor.embed_type(options).should == :link
+        end
+
+        it 'returns :link for multiple-link' do
+          descriptor_document['embed'] = 'multiple-link'
+          options = {}
+          descriptor.embed_type(options).should == :link
+        end
+
+        it 'returns :embed for single-optional without optional_embed_mode option' do
+          descriptor_document['embed'] = 'single-optional'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed in case an unknown embed option is specified' do
+          descriptor_document['embed'] = 'junk-optional'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed for multiple-optional without optional_embed_mode option' do
+          descriptor_document['embed'] = 'multiple-optional'
+          options = {}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed for multiple-optional-link without optional_embed_mode option' do
+          descriptor_document['embed'] = 'multiple-optional-link'
+          options = {}
+          descriptor.embed_type(options).should == :link
+        end
+
+        it 'returns :embed for single-optional with optional_embed_mode option set to :embed' do
+          descriptor_document['embed'] = 'single-optional'
+          options = {embed_optional: {'drds' => :embed}}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :embed for multiple-optional with optional_embed_mode option set to :embed' do
+          descriptor_document['embed'] = 'multiple-optional'
+          options = {embed_optional: {'drds' => :embed}}
+          descriptor.embed_type(options).should == :embed
+        end
+
+        it 'returns :link for single-optional with optional_embed_mode option set to :link' do
+          descriptor_document['embed'] = 'single-optional'
+          options = {embed_optional: {'drds' => :link}}
+          descriptor.embed_type(options).should == :link
+        end
+
+        it 'returns :link for multiple-optional with optional_embed_mode option set to :link' do
+          descriptor_document['embed'] = 'multiple-optional'
+          options = {embed_optional: {'drds' => :link}}
+          descriptor.embed_type(options).should == :link
         end
       end
 
@@ -125,6 +200,23 @@ module Crichton
       describe '#type' do
         it 'returns semantic' do
           descriptor.type.should == descriptor_document['type']
+        end
+      end
+
+      describe '#field_type' do
+        it 'returns the descriptor field_type' do
+          name_semantic.field_type.should == 'text'
+        end
+      end
+
+      describe '#validators' do
+        it 'returns a hash' do
+          name_semantic.validators.should include({ 'required' => nil, 'maxlength' => 50 })
+        end
+
+        it 'memoizes' do
+          validators = name_semantic.validators
+          name_semantic.validators.object_id == validators.object_id
         end
       end
     end

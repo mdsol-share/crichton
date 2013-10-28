@@ -1,11 +1,11 @@
-eng:
+en:
   catastrophic:
     no_secondary_descriptors: "At least one resource type must be defined (e.g. object, collection, etc.) in states: and descriptors: sections"
     no_states: "No states defined for resource '%{resource}'"
     no_descriptors: "No descriptors defined for resource '%{resource}'"
     no_protocols: "No protocol section found"
     cant_load_file: "Unable to load descriptor file '%{filename}': %{exception_message}"
-    section_missing: "'%{section}' section missing"
+    section_missing: "'%{missing_section}' section missing"
     cant_register: "Unable to process registry file '%{filename}': %{exception_message}"
     missing_main_id: "Top level id property is missing"
   profile:
@@ -25,6 +25,8 @@ eng:
     duplicate_state: "Duplicate state found in state section: '%{state}' for resource '%{resource}'"
     descriptor_transition_not_found: "No state transition defined for descriptor transition '%{transition}'"
     protocol_transition_not_found: "No state transition defined for protocol transition '%{transition}'"
+    invalid_external_location: "Invalid external profile url '%{link}' found in resource '%{secondary_descriptor}', in state '%{state}', transition '%{transition}'"
+    download_external_profile: "External profile url '%{link}' exists in resource '%{secondary_descriptor}', in state '%{state}', transition '%{transition}', but is not downloaded. Please run 'rake alps:store_all_external_documents'"
   descriptors:
     property_missing:  "Resource '%{resource}' descriptor section does not have a '%{prop}' property"
     doc_media_type_invalid:  "Resource '%{resource}' descriptor section, doc property media type '%{media_type}' is invalid"
@@ -36,7 +38,12 @@ eng:
     state_resource_not_found: "State resource named '%{resource}' not found in the descriptor section"
     descriptor_resource_not_found: "Descriptor resource named '%{resource}' not found in the states section"
     invalid_return_type: "Descriptor transition '%{resource}' contains an invalid return type '%{rt}'"
+    missing_return_type: "Descriptor transition '%{resource}' does not have a return type. Please supply a valid type or 'none'"
     invalid_method: "Descriptor transition '%{resource}' of type '%{type}' uses an incorrect protocol method '%{mthd}'"
+    non_unique_descriptor: "Descriptor ID '%{id}' is not unique. You can create a unique ID with concatenation, such as '%{parent}-%{id}' and adding a name property '%{id}'"
+    invalid_field_type: "Invalid field type '%{field_type}' for descriptor '%{id}' in descriptor section"
+    invalid_field_validator: "Invalid  validator '%{validator}' for field_type '%{field_type}' for descriptor '%{id}' in descriptor section"
+    not_permitted_field_validator: "Validator '%{validator}' for field_type '%{field_type}' not allowed for descriptor '%{id}' in descriptor section"
   protocols:
     no_protocol:  "No underlying protocol (e.g. 'http') defined in the protocol section"
     protocol_empty:  "Protocol '%{protocol}' has no content"

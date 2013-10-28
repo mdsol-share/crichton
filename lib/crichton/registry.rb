@@ -1,4 +1,6 @@
 require 'crichton/descriptor/dereferencer'
+require 'crichton/external_document_cache'
+require 'crichton/external_document_store'
 
 module Crichton
   ##
@@ -67,6 +69,12 @@ module Crichton
       descriptor_registry.any?
     end
 
+    ##
+    # external_descriptor_documents
+    def external_descriptor_documents
+      @external_descriptor_documents
+    end
+
     private
 
     ##
@@ -120,15 +128,17 @@ module Crichton
     # De-references documents after loading all available documents
     def build_registry
       if File.exists?(location = Crichton.descriptor_location)
-        Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
-          register(YAML.load_file(f))
+        files = Dir.glob(File.join(location, '*.{yml,yaml}'))
+        if files.empty?
+          raise "No resource descriptor directory exists or it is empty. Default is #{Crichton.descriptor_location}."
         end
+        files.each { |f| register(YAML.load_file(f)) }
         # The above register step works on a per-file basis. If a early file references a later file, it won't be
         # able to dereference the data. So in order to handle this, the de-referencing needs to be done in a later
         # step. Not elegant, but should get the job done.
         dereference_queued_descriptor_hashes_and_build_registry
       else
-        raise "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
+        raise "No resource descriptor directory exists or it is empty. Default is #{Crichton.descriptor_location}."
       end
     end
 
@@ -184,14 +194,21 @@ module Crichton
       end
     end
 
+    def external_document_cache
+      @external_document_cache ||= Crichton::ExternalDocumentCache.new
+    end
+
+    def external_document_store
+      @external_document_store ||= Crichton::ExternalDocumentStore.new
+    end
 
     def load_external_profile(link)
       # find and get profile
       unless (@external_descriptor_documents ||= {}).include?(link)
         begin
-          @external_descriptor_documents[link] = Net::HTTP.get(URI(link))
+          @external_descriptor_documents[link] = external_document_store.get(link) || external_document_cache.get(link)
         rescue => e
-          error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}"
+          error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}\n#{e.backtrace}"
           @logger.warn error_message
           raise(Crichton::ExternalProfileLoadError, error_message)
         end

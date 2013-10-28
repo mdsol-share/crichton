@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'rake'
+require 'dice_bag/tasks'
 
 describe Crichton do
   before do
@@ -102,9 +104,13 @@ describe Crichton do
 
   describe '.clear_registry' do
     it 'clears any registered resource descriptors' do
+      Support::ALPSSchema::StubUrls.each do |url, body|
+        stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
+      end
       Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
       registry_obj = mock('Registry')
       registry_obj.stub(:descriptor_registry)
+      Crichton.stub(:config_directory).and_return(File.join('spec', 'fixtures', 'config'))
       # Initializes registry
       Crichton.descriptor_registry
       # Clears registry
@@ -152,6 +158,10 @@ describe Crichton do
     context 'when used in an Application' do
       before do
         @app = mock('app')
+      end
+      
+      after do
+        Crichton.clear_config
       end
 
       context 'when Rails' do
