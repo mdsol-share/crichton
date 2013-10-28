@@ -45,8 +45,7 @@ module Crichton
         link_transitions = @object.each_link_transition(options)
         embedded_transitions = @object.each_embedded_transition(options)
         all_links = [metadata_links, link_transitions, embedded_transitions]
-        _links = all_links.reduce({}) { |hash, link_block| hash.merge(get_data(link_block, relations)) }
-        {_links: _links}
+        { _links: all_links.reduce({}) { |hash, link_block| hash.merge(get_data(link_block, relations)) } }
       end
 
       def relations
@@ -72,7 +71,7 @@ module Crichton
 
       def add_embedded(base_object, options)
         embedded = get_embedded(options)
-        embedded_links = embedded.inject({}) { |hash, (k,v)| hash.merge({k => get_self_links(v)}) }
+        embedded_links = embedded.reduce({}) { |hash, (k,v)| hash.merge({k => get_self_links(v)}) }
         base_object[:_links] = base_object[:_links].merge( embedded_links )
         base_object[:_embedded] = embedded unless embedded == {}
         base_object
@@ -90,7 +89,7 @@ module Crichton
 
       #Todo: Move to a helpers.rb file
       def map_or_apply(unknown_object, function)
-        unknown_object.is_a?(Array) ? unknown_object.map(&function) : transformation.call(unknown_object)
+        unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
       end
 
       #Todo: Make Representor::xhtml refactored similarly
