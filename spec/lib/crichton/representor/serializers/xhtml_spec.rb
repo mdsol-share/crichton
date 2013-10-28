@@ -30,8 +30,8 @@ module Crichton
         def initialize(i)
           @attributes = {}
           @attributes = %w(name status kind status old_status leviathan_uuid built_at location).inject({}) do |h, attr|
-              h[attr] = "#{attr}_#{i}"; h
-            end
+            h[attr] = "#{attr}_#{i}"; h
+          end
           @attributes['uuid'] = i
         end
         
