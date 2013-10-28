@@ -1,5 +1,7 @@
 require 'spec_helper'
 require 'crichton/lint'
+require 'crichton/lint/embed_validator'
+require 'crichton/lint/field_type_validator'
 
 module Crichton
   module Lint
