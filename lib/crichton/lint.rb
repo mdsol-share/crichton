@@ -18,7 +18,7 @@ module Crichton
         yml_output = YAML.load_file(filename)
         resource_descriptor = Crichton::Descriptor::Resource.new(yml_output)
       rescue StandardError => e
-        puts I18n.t('catastrophic.cant_load_file'.red, filename: filename, exception_message: e.message)
+        puts I18n.t('catastrophic.cant_load_file', exception_message: e.message).red
         return
       end
 

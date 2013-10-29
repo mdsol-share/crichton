@@ -119,4 +119,12 @@ describe Crichton::Lint do
       end
     end
   end
+
+  context 'when loading an invalid file' do
+    it 'reports a load error' do
+      @expected_rdlint_output = build_colorized_lint_output(:error, 'catastrophic.cant_load_file',
+        exception_message: 'No such file or directory - /xxx/yyy') << "\n"
+      capture(:stdout) { validator.validate('/xxx/yyy') }.should == @expected_rdlint_output
+    end
+  end
 end
