@@ -65,6 +65,14 @@ describe 'rdlint' do
     end
   end
 
+  context 'when loading an invalid file' do
+    it 'reports a load error' do
+      @expected_rdlint_output = build_colorized_lint_output(:error, 'catastrophic.cant_load_file',
+        exception_message: 'No such file or directory - /xxx/yyy') << "\n"
+      %x(bundle exec rdlint /xxx/yyy).should == @expected_rdlint_output
+    end
+  end
+
   context 'with the --strict option' do
     it 'reports false when errors occur' do
       @filename = %w(protocol_section_errors missing_protocol_actions.yml)
