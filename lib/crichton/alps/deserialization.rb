@@ -61,6 +61,12 @@ module Crichton
         node.each do |k, node_element|
           if k == 'ext'
             result_hash.merge!(decode_json_ext(node_element))
+          elsif k == 'doc'
+            value = node_element['value']
+            if node_element.include?('format') && node_element['format'] == 'html'
+              value = {"html" => value}
+            end
+            result_hash[k] = value
           elsif node_element.is_a?(Array)
             # We can have either a data structure that uses IDs and then is put into a hash or lacking the IDs we end
             # up having an array. The loop can handle both types and skips special logic to beforehand determine what
@@ -124,7 +130,11 @@ module Crichton
               decode_xml_ext(result_hash, child)
             elsif child.name == 'doc'
               # Unpack the doc element correctly
-              result_hash['doc'] = child.text.strip
+              if child.attributes.include?('format') && child.attributes['format'].value == 'html'
+                result_hash['doc'] = {"html" => child.inner_html.strip}
+              else
+                result_hash['doc'] = child.text.strip
+              end
             elsif child.name == 'descriptor'
               result_hash['descriptors'] ||= {}
               result_hash['descriptors'][child.attributes['id'].value] = result
