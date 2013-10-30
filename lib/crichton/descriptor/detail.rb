@@ -6,44 +6,40 @@ module Crichton
     ##
     # Manages options for select lists
     class Options
+
+      def initialize(descriptor_document)
+        @descriptor_document = descriptor_document
+      end
+
       OPTIONS = 'options'
       HREF = 'href'
-      EXT = 'ext'
-      
-      def initialize(descriptor_document)
+
+      def options
         @opts ||= begin
-          oh = nil
-          descriptor_document.include?(EXT) && oh = descriptor_document[EXT].find { |x| x.include?(OPTIONS) }
-          if oh
-            o = oh[OPTIONS]
-            o.merge!(Crichton::values_registry[o.delete(HREF)]) if o && o.include?(HREF)
-            o
-          end
+          o = @descriptor_document[OPTIONS]
+          o.merge!(Crichton::options_registry[o.delete(HREF)]) if o && o.include?(HREF)
+          o
         end
       end
 
-      def options
-        @opts
-      end
-
       def is_internal_select?
-        @opts && (@opts.include?('hash') || @opts.include?('list'))
+        (opts = options) && (opts.include?('hash') || opts.include?('list'))
       end
 
       def is_external_select?
-        @opts && (@opts.include?('external_hash') || @opts.include?('external_list'))
+        (opts = options) && (opts.include?('external_hash') || opts.include?('external_list'))
       end
 
       ##
       # Iterator allowing the generation of select lists from the values
       def each
-        if o = @opts
-          if o.include? 'hash'
-            o['hash'].each { |k, v| yield k, v }
-          elsif o.include? 'list'
-            o['list'].each { |k| yield k, k }
+        if opts = @opts
+          if opts.include? 'hash'
+            opts['hash'].each { |k, v| yield k, v }
+          elsif opts.include? 'list'
+            opts['list'].each { |k| yield k, k }
           else
-            Crichton::logger.warn("did not find list or hash key in options data: #{@opts.to_s}")
+            Crichton::logger.warn("did not find list or hash key in options data: #{opts.to_s}")
           end
         end
       end
