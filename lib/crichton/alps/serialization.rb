@@ -26,8 +26,12 @@ module Crichton
       LINK_ELEMENT = 'link'
 
       ##
+      # Options element
+      OPTIONS_ELEMENT = 'options'
+
+      ##
       # ALPS specification elements that can be serialized.
-      ALPS_ELEMENTS = [DOC_ELEMENT, EXT_ELEMENT, LINK_ELEMENT]
+      ALPS_ELEMENTS = [DOC_ELEMENT, EXT_ELEMENT, OPTIONS_ELEMENT, LINK_ELEMENT]
 
       ##
       # The ALPS attributes for the descriptor.
@@ -72,6 +76,8 @@ module Crichton
                            end
                          when EXT_ELEMENT
                            convert_ext_element_hrefs(alps_value)
+                         when OPTIONS_ELEMENT
+                           convert_options_element_to_alps(alps_value.options) if alps_value.options
                          when LINK_ELEMENT
                            unless alps_value.empty?
                              alps_value.values.map do |link|
@@ -80,7 +86,13 @@ module Crichton
                            end
                          end
 
-          hash.tap { |h| h[element] = alps_element if alps_element }
+          hash.tap do |h|
+            if element == 'options'
+              h.merge!(alps_element) if alps_element
+            else
+              h[element] = alps_element if alps_element
+            end
+          end
         end
       end
 
@@ -97,7 +109,7 @@ module Crichton
         hash.merge!(alps_elements.dup)
         hash.merge!(alps_attributes.dup)
         hash['descriptor'] = alps_descriptors unless alps_descriptors.empty?
-        
+
         if options[:top_level] != false
           hash.delete('id')
           {'alps' => hash}
@@ -155,6 +167,8 @@ module Crichton
             builder.doc(format) { |doc| doc << properties['value'] }
           when EXT_ELEMENT, LINK_ELEMENT
             properties.each { |element_attributes| builder.tag!(alps_element, element_attributes) }
+          when OPTIONS_ELEMENT
+            properties["ext"].each { |h| builder.tag!(:ext, h) }
           end
         end
       end
@@ -175,7 +189,7 @@ module Crichton
         ext_elem
       end
 
-      SERIALIZED_VALUES_LIST_URL = 'http://alps.io/extensions/serialized_values_list'
+      SERIALIZED_OPTIONS_LIST_URL = 'http://alps.io/extensions/serialized_options_list'
 
       def convert_ext_element_hash_hrefs_and_values(ext_elem)
         if ext_elem.is_a?(Hash)
@@ -184,9 +198,13 @@ module Crichton
           end
           if ext_elem.include?('values')
             ext_elem['value'] = ext_elem.delete('values').to_json
-            ext_elem['href'] = SERIALIZED_VALUES_LIST_URL unless ext_elem.include?('href')
+            ext_elem['href'] = SERIALIZED_OPTIONS_LIST_URL unless ext_elem.include?('href')
           end
         end
+      end
+
+      def convert_options_element_to_alps(options_elem)
+        {'ext' => convert_ext_element_hrefs([{'values' => options_elem}])}
       end
 
       def add_xml_descriptors(builder)

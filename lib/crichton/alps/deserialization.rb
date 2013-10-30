@@ -60,7 +60,7 @@ module Crichton
         result_hash = {}
         node.each do |k, node_element|
           if k == 'ext'
-            result_hash[k] = decode_json_ext(node_element)
+            result_hash.merge!(decode_json_ext(node_element))
           elsif node_element.is_a?(Array)
             # We can have either a data structure that uses IDs and then is put into a hash or lacking the IDs we end
             # up having an array. The loop can handle both types and skips special logic to beforehand determine what
@@ -80,14 +80,29 @@ module Crichton
             result_hash["#{k}s"] = array_result_hash unless array_result_hash.empty?
             result_hash["#{k}s"] = array_result_array unless array_result_array.empty?
           else
-            result_hash[k] = json_node_to_hash(node_element)
+            if k == 'options'
+              result_hash.merge!(json_node_to_hash(node_element))
+            else
+              result_hash[k] = json_node_to_hash(node_element)
+            end
           end
         end
         result_hash
       end
 
       def decode_json_ext(node_element)
-        # TODO: Do it
+        result_hash = {}
+        node_element.each do |ne|
+          if ne.include?('href') && ne['href'] == Crichton::ALPS::Serialization::SERIALIZED_OPTIONS_LIST_URL
+            if ne.include?('value')
+              result_hash['options'] = JSON.parse(ne['value'])
+            end
+          else
+            result_hash['ext'] = [] unless result_hash.include?('ext')
+            result_hash['ext'] << ne
+          end
+        end
+        result_hash
       end
 
       def xml_node_to_hash(node)
@@ -132,13 +147,13 @@ module Crichton
       end
 
       def decode_xml_ext(result_hash, child)
-        result_hash['ext'] = [] unless result_hash.include?('ext')
         if child.has_attribute?('href') &&
-          child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_VALUES_LIST_URL
+          child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_OPTIONS_LIST_URL
           if child.has_attribute?('value')
-            result_hash['ext'] << {'values' => JSON.parse(child.attribute('value').value)}
+            result_hash['options'] = JSON.parse(child.attribute('value').value)
           end
         else
+          result_hash['ext'] = [] unless result_hash.include?('ext')
           result_hash['ext'] << child.attributes
         end
       end

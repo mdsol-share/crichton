@@ -58,8 +58,8 @@ module Crichton
       @raw_profile_registry ||= {}
     end
 
-    def values_registry
-      @values_registry ||= {}
+    def options_registry
+      @options_registry ||= {}
     end
 
     #TODO: Add
@@ -182,7 +182,7 @@ module Crichton
 
     # Recursive descent
     def build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, id, hash)
-      add_values_to_values_registry(descriptor_name_prefix, hash)
+      add_values_to_options_registry(descriptor_name_prefix, hash)
       @ids_registry ||= {}
       descriptor_name = "#{descriptor_name_prefix}\##{id}"
       if id && @ids_registry.include?(descriptor_name)
@@ -199,9 +199,10 @@ module Crichton
       end
     end
 
-    def add_values_to_values_registry(descriptor_name_prefix, hash)
-      if hash.include?('values') && hash['values'].include?('id')
-        values_registry["#{descriptor_name_prefix}\##{hash['values']['id']}"] = hash['values']
+    OPTIONS_STRING = 'options'
+    def add_values_to_options_registry(descriptor_name_prefix, hash)
+      if hash.include?(OPTIONS_STRING) && hash[OPTIONS_STRING].include?('id')
+        options_registry["#{descriptor_name_prefix}\##{hash[OPTIONS_STRING]['id']}"] = hash[OPTIONS_STRING]
       end
     end
 

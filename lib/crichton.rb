@@ -72,9 +72,9 @@ module Crichton
     @registry.raw_descriptor_registry
   end
 
-  def self.values_registry
+  def self.options_registry
     @registry ||= Crichton::Registry.new
-    @registry.values_registry
+    @registry.options_registry
   end
 
   ##
