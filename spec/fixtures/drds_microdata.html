@@ -11,7 +11,17 @@
   <a rel="search" href="http://deployment.example.org/drds{?search_term}">search</a>
   <form action="http://deployment.example.org/drds" method="post" name="create">
     <input itemprop="status" type="text" name="status" required=""/>
-    <input itemprop="kind" type="checkbox" name="kind"/>
+        <li>
+          <select name="kind">
+            <option value="standard">standard</option>
+            <option value="sentinel">sentinel</option>
+          </select>
+        </li>
+        <li>
+          <a value_attribute_name="location_id" type="list" href="http://crichton.example.com/drd_location_list#items">external list link</a>
+          <input type="text" name="location"/>
+        </li>
+        <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
     <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
     <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
     <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0" max="100"/>
@@ -29,7 +39,17 @@
       </form>
       <form action="http://deployment.example.org/drds/0" method="post" name="update">
         <input itemprop="status" type="text" name="status" required=""/>
-        <input itemprop="kind" type="checkbox" name="kind"/>
+            <li>
+              <select name="kind">
+                <option value="standard">standard</option>
+                <option value="sentinel">sentinel</option>
+              </select>
+            </li>
+            <li>
+              <a value_attribute_name="location_id" type="list" href="http://crichton.example.com/drd_location_list#items">external list link</a>
+              <input type="text" name="location"/>
+            </li>
+            <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
         <input type="hidden" name="_method" value="PUT"/>
         <input type="submit" value="update"/>
       </form>
@@ -40,9 +60,13 @@
       <span itemprop="uuid">0</span>
       <span itemprop="name">name_0</span>
       <span itemprop="status">status_0</span>
+      <span itemprop="old_status">old_status_0</span>
       <span itemprop="kind">kind_0</span>
       <span itemprop="leviathan_uuid">leviathan_uuid_0</span>
       <span itemprop="built_at">built_at_0</span>
+      <span itemprop="location">location_0</span>
+      <span itemprop="destroyed"></span>
+
     </div>
     <div itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drd">
       <a rel="self" href="http://deployment.example.org/drds/1">self</a>
@@ -52,7 +76,17 @@
       </form>
       <form action="http://deployment.example.org/drds/1" method="post" name="update">
         <input itemprop="status" type="text" name="status" required=""/>
-        <input itemprop="kind" type="checkbox" name="kind"/>
+            <li>
+              <select name="kind">
+                <option value="standard">standard</option>
+                <option value="sentinel">sentinel</option>
+              </select>
+            </li>
+            <li>
+              <a value_attribute_name="location_id" type="list" href="http://crichton.example.com/drd_location_list#items">external list link</a>
+              <input type="text" name="location"/>
+            </li>
+        <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
         <input type="hidden" name="_method" value="PUT"/>
         <input type="submit" value="update"/>
       </form>
@@ -64,9 +98,12 @@
       <span itemprop="uuid">1</span>
       <span itemprop="name">name_1</span>
       <span itemprop="status">status_1</span>
+      <span itemprop="old_status">old_status_1</span>
       <span itemprop="kind">kind_1</span>
       <span itemprop="leviathan_uuid">leviathan_uuid_1</span>
       <span itemprop="built_at">built_at_1</span>
+      <span itemprop="location">location_1</span>
+      <span itemprop="destroyed"></span>
     </div>
   </div>
 </div>

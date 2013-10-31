@@ -72,6 +72,11 @@ module Crichton
     @registry.raw_descriptor_registry
   end
 
+  def self.options_registry
+    @registry ||= Crichton::Registry.new
+    @registry.options_registry
+  end
+
   ##
   # external_descriptor_document_urls
   def self.external_descriptor_document_urls

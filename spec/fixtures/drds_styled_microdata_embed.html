@@ -38,11 +38,21 @@
           </label>
         </li>
         <li>
-          <label itemprop="kind">
-            <input itemprop="kind" type="checkbox" name="kind"/>
-          </label>
+              <select name="kind">
+                <option value="standard">standard</option>
+                <option value="sentinel">sentinel</option>
+              </select>
+            </li>
+            <li>
+              <a value_attribute_name="location_id" type="list" href="http://crichton.example.com/drd_location_list#items">external list link</a>
+              <input type="text" name="location"/>
         </li>
         <li>
+              <label itemprop="form-destroyed">
+                <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
+              </label>
+            </li>
+            <li>
           <label itemprop="name">
             <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
           </label>

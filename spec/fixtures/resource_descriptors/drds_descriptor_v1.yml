@@ -248,11 +248,28 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: renegade
+        options:
+          id: drd_status_values
+          hash:
+            active: activated
+            inactive: deactivated
+            unknown: renegade
+      old_status:
+        doc: How was the DRD before the last change
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: renegade
+        options:
+          href: DRDs#drd_status_values
       kind:
         doc: What kind is it.
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: standard
+        options:
+          list:
+            - standard
+            - sentinel
       leviathan_uuid:
         doc: The UUID of the creator Leviathan.
         type: semantic
@@ -268,6 +285,20 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Thing/Leviathan
         embed: single-optional
+      location:
+        doc: The area the DRD is currently in
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: somewere
+        options:
+          external_hash: http://crichton.example.com/drd_location_list#items
+          value_attribute_name: location_id
+          text_attribute_name: location_text
+      destroyed:
+        doc: This DRD has been destroyed
+        type: semantic
+        href: http://alps.io/schema.org/Boolean
+        sample: false
       # Transitions
       show:
         doc: Shows a particular DRD.
@@ -310,17 +341,55 @@ descriptors:
                 doc: How is the DRD.
                 href: http://alps.io/schema.org/Text
                 name: status
+                field_type: select
+                validators:
+                  - required
+                sample: activated
+                options:
+                  href: DRDs#drd_status_values
+              form-old_status:
+                type: semantic
+                doc: How is the DRD.
+                href: http://alps.io/schema.org/Text
+                name: status
                 field_type: text
                 validators:
                   - required
                 sample: activated
+                options:
+                  hash:
+                    active: activated
+                    inactive: deactivated
+                    unknown: renegade
               form-kind:
                 type: semantic
                 name: kind
                 doc: What kind is it.
                 href: http://alps.io/schema.org/Text
-                field_type: boolean
                 sample: true
+                field_type: select
+                options:
+                  list:
+                    - standard
+                    - sentinel
+              form-location:
+                type: semantic
+                name: location
+                doc: The area the DRD is currently in
+                href: http://alps.io/schema.org/Text
+                sample: some_location
+                field_type: select
+                options:
+                  external_list: http://crichton.example.com/drd_location_list#items
+                  value_attribute_name: location_id
+                  text_attribute_name: location_text
+              form-destroyed:
+                doc: This DRD has been destroyed
+                type: semantic
+                href: http://alps.io/schema.org/Boolean
+                sample: true
+                field_type: boolean
+
       delete:
         doc: Drops a DRD out an air-lock.
         type: idempotent    

@@ -21,7 +21,7 @@ module Crichton
         options ||= {}
         configure_markup_builder(options)
 
-        if options[:top_level] != false       
+        unless options[:top_level] == false
           @markup_builder.declare!(:DOCTYPE, :html)
           @markup_builder.tag!(:html, xmlns: 'http://www.w3.org/1999/xhtml') do
             add_head
@@ -158,7 +158,9 @@ module Crichton
         end
 
         def add_link_transition(transition)
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url}) if transition.templated_url
+          if transition.templated_url
+            @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url})
+          end
         end
 
         def add_form_transition(transition)
@@ -231,15 +233,51 @@ module Crichton
 
         def add_control_input(semantic, field_type = nil)
           field_type ||= semantic.field_type
-          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name}.merge(semantic.validators))
+          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name
+            }.merge(semantic.validators))
         end
 
         def add_control_boolean(semantic)
           add_control_input(semantic, :checkbox)
         end
 
+
         def add_control_select(semantic)
-          #TODO: Need to implement <select /> HTML control here
+          options = semantic.options
+          @markup_builder.li do
+            # Later, the datalist will be added here
+            if options.is_internal_select?
+              add_control_internal_select(semantic)
+            elsif options.is_external_select?
+              add_control_external_select(semantic)
+            end
+          end
+        end
+
+        ##
+        # Generate select list with options that were provided in the descriptor document
+        def add_control_internal_select(semantic)
+          @markup_builder.select(name: semantic.name) do
+            semantic.options.each { |k, v| @markup_builder.option(v, value: k) }
+          end
+        end
+
+        ##
+        # Generate input that has a "special" link for the client to fetch the options from.
+        def add_control_external_select(semantic)
+          options = semantic.options
+          opts = options.options
+          link_arguments = {value_attribute_name: opts['value_attribute_name']}
+          if opts.include?('external_hash')
+            description = 'external hash link'
+            link_arguments.merge!({type: :hash, text_attribute_name: opts['text_attribute_name'],
+              href: opts['external_hash']})
+          else
+            description = 'external list link'
+            link_arguments.merge!({type: :list, href: opts['external_list']})
+          end
+          @markup_builder.a(description, link_arguments)
+          @markup_builder.input(type: :text, name: semantic.name)
         end
       end
 
@@ -318,10 +356,6 @@ module Crichton
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) { super }
           end
-        end
-
-        def add_control_select(semantic)
-          #TODO: Need to implement <select /> HTML control here
         end
       end
     end
