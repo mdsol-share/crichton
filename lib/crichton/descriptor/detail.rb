@@ -30,6 +30,9 @@ module Crichton
 
       ##
       # Iterator allowing the generation of select lists from the values
+      #
+      # This iterator should provide a unified interface for generating option lists. It should avoid the need to
+      # check if the option is a hash or list, so for both it uses two parameters for the yield.
       def each
         if opts = options
           if opts.include? 'hash'
