@@ -15,10 +15,8 @@ module Crichton
       HREF = 'href'
 
       def options
-        @opts ||= begin
-          o = @descriptor_document[OPTIONS]
+        @opts ||= @descriptor_document[OPTIONS].tap do |o|
           o.merge!(Crichton::options_registry[o.delete(HREF)]) if o && o.include?(HREF)
-          o
         end
       end
 
@@ -40,6 +38,9 @@ module Crichton
 
       ##
       # Iterator allowing the generation of select lists from the values
+      #
+      # This iterator should provide a unified interface for generating option lists. It should avoid the need to
+      # check if the option is a hash or list, so for both it uses two parameters for the yield.
       def each
         if opts = options
           if opts.include? 'hash'
@@ -77,7 +78,7 @@ module Crichton
       ##
       # Return de-referenced values attribute
       def options
-        @val = Options.new(descriptor_document)
+        @options ||= Options.new(descriptor_document)
       end
 
       ##
