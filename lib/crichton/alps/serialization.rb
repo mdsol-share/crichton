@@ -81,13 +81,7 @@ module Crichton
                            end
                          end
 
-          hash.tap do |h|
-            if element == 'options'
-              h.merge!(alps_element) if alps_element
-            else
-              h[element] = alps_element if alps_element
-            end
-          end
+          hash.tap { |h| element == 'options' ? h.merge!(alps_element) : h[element] = alps_element if alps_element }
         end
       end
 

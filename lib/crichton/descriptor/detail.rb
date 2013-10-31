@@ -15,10 +15,8 @@ module Crichton
       HREF = 'href'
 
       def options
-        @opts ||= begin
-          o = @descriptor_document[OPTIONS]
+        @opts ||= @descriptor_document[OPTIONS].tap do |o|
           o.merge!(Crichton::options_registry[o.delete(HREF)]) if o && o.include?(HREF)
-          o
         end
       end
 
@@ -69,7 +67,7 @@ module Crichton
       ##
       # Return de-referenced values attribute
       def options
-        @val = Options.new(descriptor_document)
+        @options ||= Options.new(descriptor_document)
       end
 
       ##
