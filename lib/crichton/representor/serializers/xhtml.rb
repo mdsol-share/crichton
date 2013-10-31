@@ -113,6 +113,7 @@ module Crichton
             add_transitions(options)
             add_semantics(options)
           end
+          add_datalists(options)
         end
 
         # @!macro add_control
@@ -145,6 +146,23 @@ module Crichton
 
         def add_metadata_links
           @object.metadata_links.each { |metadata_link| @markup_builder.tag!(:link, metadata_link.attributes) }
+        end
+
+        def add_datalists(options)
+            #require "pry"
+            #binding.pry
+          Crichton::used_datalists.uniq.each do |dl_name|
+            @markup_builder.datalist(id: dl_name.split('#')[1]) do
+              dl = Crichton::datalist_registry[dl_name]
+              if dl.is_a?(Hash)
+                dl.each { |k, v| @markup_builder.option(v, value: k) }
+              else
+                dl.each { |e| @markup_builder.option(e, value: e) }
+              end
+            end
+          end
+          #@object.datalists { |dl|
+          #}
         end
 
         def add_transitions(options)
@@ -248,10 +266,17 @@ module Crichton
             # Later, the datalist will be added here
             if options.is_internal_select?
               add_control_internal_select(semantic)
+            elsif options.is_datalist?
+              add_datalist_to_used_datalists_list(options)
+              @markup_builder.tag!(:input, {type: "text", name: semantic.name, list: options.datalist_name})
             elsif options.is_external_select?
               add_control_external_select(semantic)
             end
           end
+        end
+
+        def add_datalist_to_used_datalists_list(options)
+          Crichton::used_datalists << "#{@object.class.resource_descriptor.resource_descriptor.name}\##{options.datalist_name}"
         end
 
         ##

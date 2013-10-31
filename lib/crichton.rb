@@ -77,6 +77,15 @@ module Crichton
     @registry.options_registry
   end
 
+  def self.datalist_registry
+    @registry ||= Crichton::Registry.new
+    @registry.datalist_registry
+  end
+
+  def self.used_datalists
+    @used_datalists ||= []
+  end
+
   ##
   # external_descriptor_document_urls
   def self.external_descriptor_document_urls

@@ -369,9 +369,10 @@ descriptors:
                 sample: true
                 field_type: select
                 options:
-                  list:
-                    - standard
-                    - sentinel
+                  datalist: kind-list
+#                  list:
+#                    - standard
+#                    - sentinel
               form-location:
                 type: semantic
                 name: location
@@ -394,6 +395,15 @@ descriptors:
         doc: Drops a DRD out an air-lock.
         type: idempotent    
         rt: none
+
+datalists:
+  kind-list:
+    - standard
+    - sentinel
+  status-list:
+    active: activated
+    inactive: deactivated
+    unknown: renegade
 
 # The protocol descriptors section defines the protocol affordances associated with the 
 # application affordances. This decouples protocol specific information from the 
