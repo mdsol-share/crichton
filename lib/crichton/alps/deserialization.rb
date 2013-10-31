@@ -61,39 +61,45 @@ module Crichton
         node.each do |k, node_element|
           if k == 'ext'
             result_hash.merge!(decode_json_ext(node_element))
+          elsif k == 'options'
+            result_hash.merge!(json_node_to_hash(node_element))
           elsif k == 'doc'
-            value = node_element['value']
-            if node_element.include?('format') && node_element['format'] == 'html'
-              value = {"html" => value}
-            end
-            result_hash[k] = value
+            result_hash[k] = json_node_to_hash_doc_element(node_element)
           elsif node_element.is_a?(Array)
-            # We can have either a data structure that uses IDs and then is put into a hash or lacking the IDs we end
-            # up having an array. The loop can handle both types and skips special logic to beforehand determine what
-            # kind of data it is.
-            array_result_hash = {}
-            array_result_array = []
-            node_element.each do |array_element|
-              if array_element.is_a?(Hash) && array_element.include?('id')
-                array_result_hash[array_element.delete('id')] = json_node_to_hash(array_element)
-              else
-                array_result_array << json_node_to_hash(array_element)
-              end
-            end
             # I'm not quite sure about these. Pluralize is in the ActiveSupport package - but that may be a little
             # heavyweight for what we want here. And adding a linguistics Gem for these may be too heavyweight.
             # So for the cases that I ran into, this seems to work.
-            result_hash["#{k}s"] = array_result_hash unless array_result_hash.empty?
-            result_hash["#{k}s"] = array_result_array unless array_result_array.empty?
+            result_hash["#{k}s"] = json_node_to_hash_array_element(node_element)
           else
-            if k == 'options'
-              result_hash.merge!(json_node_to_hash(node_element))
-            else
-              result_hash[k] = json_node_to_hash(node_element)
-            end
+            result_hash[k] = json_node_to_hash(node_element)
           end
         end
         result_hash
+      end
+
+      def json_node_to_hash_array_element(node_element)
+        # We can have either a data structure that uses IDs and then is put into a hash or lacking the IDs we end
+        # up having an array. The loop can handle both types and skips special logic to beforehand determine what
+        # kind of data it is.
+        array_result_hash = {}
+        array_result_array = []
+        node_element.each do |array_element|
+          if array_element.is_a?(Hash) && array_element.include?('id')
+            array_result_hash[array_element.delete('id')] = json_node_to_hash(array_element)
+          else
+            array_result_array << json_node_to_hash(array_element)
+          end
+        end
+        return array_result_hash unless array_result_hash.empty?
+        array_result_array
+      end
+
+      def json_node_to_hash_doc_element(node_element)
+        value = node_element['value']
+        if node_element.include?('format') && node_element['format'] == 'html'
+          value = {"html" => value}
+        end
+        value
       end
 
       def decode_json_ext(node_element)
@@ -115,11 +121,7 @@ module Crichton
         # If we are at the root of the document, start the hash
         if node.element?
           result_hash = {}
-          node.attributes.keys.each do |key|
-            unless node.name == 'descriptor' && key == 'id'
-              result_hash[node.attributes[key].name] = prepare(node.attributes[key].value)
-            end
-          end
+          xml_node_to_hash_node_attributes(node, result_hash)
           node.children.each do |child|
             result = xml_node_to_hash(child)
             if child.name == 'link'
@@ -129,23 +131,14 @@ module Crichton
             elsif child.name == 'ext'
               decode_xml_ext(result_hash, child)
             elsif child.name == 'doc'
-              # Unpack the doc element correctly
-              if child.attributes.include?('format') && child.attributes['format'].value == 'html'
-                result_hash['doc'] = {"html" => child.inner_html.strip}
-              else
-                result_hash['doc'] = child.text.strip
-              end
+              xml_node_to_hash_unpack_doc(child, result_hash)
             elsif child.name == 'descriptor'
               result_hash['descriptors'] ||= {}
               result_hash['descriptors'][child.attributes['id'].value] = result
             elsif child.name == 'text'
               # Intentionally do nothing
             elsif result_hash[child.name]
-              if result_hash[child.name].is_a?(Array)
-                result_hash[child.name] << prepare(result)
-              else
-                result_hash[child.name] = [result_hash[child.name], prepare(result)]
-              end
+              xml_node_to_hash_add_to_result(result_hash, child.name, result)
             else
               result_hash[child.name] = prepare(result)
             end
@@ -153,6 +146,31 @@ module Crichton
           result_hash
         else
           return prepare(node.content.to_s)
+        end
+      end
+
+      def xml_node_to_hash_add_to_result(result_hash, child_name, result)
+        if result_hash[child_name].is_a?(Array)
+          result_hash[child_name] << prepare(result)
+        else
+          result_hash[child_name] = [result_hash[child_name], prepare(result)]
+        end
+      end
+
+      def xml_node_to_hash_unpack_doc(child, result_hash)
+        # Unpack the doc element correctly
+        if child.attributes.include?('format') && child.attributes['format'].value == 'html'
+          result_hash['doc'] = {"html" => child.inner_html.strip}
+        else
+          result_hash['doc'] = child.text.strip
+        end
+      end
+
+      def xml_node_to_hash_node_attributes(node, result_hash)
+        node.attributes.keys.each do |key|
+          unless node.name == 'descriptor' && key == 'id'
+            result_hash[node.attributes[key].name] = prepare(node.attributes[key].value)
+          end
         end
       end
 
