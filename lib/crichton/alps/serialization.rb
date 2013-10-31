@@ -68,12 +68,7 @@ module Crichton
 
           alps_element = case element
                          when DOC_ELEMENT
-                           if alps_value.is_a?(Hash)
-                             format = alps_value.keys.first
-                             {'format' => format, 'value' => alps_value[format]}
-                           else
-                             {'value' => alps_value }
-                           end
+                           serialize_doc_element(alps_value)
                          when EXT_ELEMENT
                            convert_ext_element_hrefs(alps_value)
                          when OPTIONS_ELEMENT
@@ -93,6 +88,15 @@ module Crichton
               h[element] = alps_element if alps_element
             end
           end
+        end
+      end
+
+      def serialize_doc_element(alps_value)
+        if alps_value.is_a?(Hash)
+          format = alps_value.keys.first
+          {'format' => format, 'value' => alps_value[format]}
+        else
+          {'value' => alps_value}
         end
       end
 
