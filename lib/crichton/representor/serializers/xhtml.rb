@@ -148,15 +148,13 @@ module Crichton
         end
 
         def add_transitions(options)
-          @object.each_link_transition(options) do |transition|
+          @object.each_transition(options) do |transition|
             if transition.safe?
               add_link_transition(transition)
             else
               add_form_transition(transition)
             end
           end
-
-          @object.each_embedded_transition(options) { |transition| add_link_transition(transition) }
         end
 
         def add_link_transition(transition)

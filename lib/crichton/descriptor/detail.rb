@@ -113,6 +113,8 @@ module Crichton
       SINGLE_OPTIONAL_MULTIPLE_OPTIONAL = %w(single-optional multiple-optional)
       SINGLE_OPTIONAL_MULTIPLE_OPTIONAL_LINK = %w(single-optional-link multiple-optional-link)
 
+      EMBED_VALUES = SINGLE_MULTIPLE + SINGLE_LINK_MULTIPLE_LINK + SINGLE_OPTIONAL_MULTIPLE_OPTIONAL +
+        SINGLE_OPTIONAL_MULTIPLE_OPTIONAL_LINK
       ##
       # Determines how embedded elements should be embedded
       #

@@ -3,6 +3,7 @@ require 'crichton/lint/base_validator'
 module Crichton
   module Lint
     class StatesValidator < BaseValidator
+      section :states
 
       def validate
         #7, #8

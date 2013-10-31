@@ -79,7 +79,7 @@ Following table defines list of supported input types and validators which can b
 
 ## Examples
 The following example highlights a few parts of the [Example Resource Descriptor][] `descriptors` section associated
-with data descriptors and template descriptors. In-line commentsare expounded in the structure and some material is 
+with data descriptors and template descriptors. In-line comments are expounded in the structure and some material is 
 removed for simplicity (indicated by # ...). 
 
 ```yaml
@@ -202,7 +202,7 @@ descriptors:
 ```
 
 ## Descriptor Dependencies
-Data descriptors are directly related to [State Descriptors](data_descriptors.md) in a _Resource Descriptor_. Thus, a
+Data descriptors are directly related to [State Descriptors](state_descriptors.md) in a _Resource Descriptor_. Thus, a
 data descriptor:
 
 * MUST have a corresponding State descriptor if it includes [Transition Descriptors](transition_descriptors.md).

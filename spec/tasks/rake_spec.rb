@@ -28,7 +28,7 @@ describe 'rake crichton.lint' do
     it 'allows users to to validate a single descriptor file' do
       @filename = %w(protocol_section_errors no_entry_points.yml)
       @expected_rake_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
-        filename: rake_filename)
+        filename: rake_filename, section: :protocols, sub_header: :error)
     end
 
     it 'reports empty output when all warnings are suppressed with a warning free result' do
@@ -42,7 +42,7 @@ describe 'rake crichton.lint' do
       Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return("<alps></alps>")
       @filename = %w(protocol_section_errors extraneous_properties.yml)
       @expected_rake_output = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http',
-        action: 'leviathan-link', filename: rake_filename)
+        action: 'leviathan-link', filename: rake_filename, section: :protocols, sub_header: :warning)
       @option = 'version'
     end
   end

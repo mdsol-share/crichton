@@ -28,19 +28,21 @@ describe Crichton::Lint do
 
       it 'reports a missing states section error when the states section is missing' do
         @filename = %w(missing_sections nostate_descriptor.yml)
-        @errors = expected_output(:error, 'catastrophic.section_missing', section: 'states', filename: filename)
+        @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
+          missing_section: 'states', sub_header: :error)
       end
 
       it 'reports a missing descriptor errors when the descriptor section is missing' do
         @filename = %w(missing_sections nodescriptors_descriptor.yml)
-
-        @errors = expected_output(:error, 'catastrophic.section_missing', section: 'descriptors', filename: filename) <<
+        @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
+          missing_section: 'descriptors', sub_header: :error) <<
           expected_output(:error, 'catastrophic.no_secondary_descriptors')
       end
 
       it 'reports a missing protocols section error when the protocols section is missing' do
         @filename = %w(missing_sections noprotocols_descriptor.yml)
-        @errors = expected_output(:error, 'catastrophic.section_missing', section: 'protocols', filename: filename)
+        @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
+          missing_section: 'protocols',sub_header: :error)
       end
     end
 
@@ -115,6 +117,14 @@ describe Crichton::Lint do
         @option = {strict: true, count: :warning}
         @retval = false
       end
+    end
+  end
+
+  context 'when loading an invalid file' do
+    it 'reports a load error' do
+      @expected_rdlint_output = build_colorized_lint_output(:error, 'catastrophic.cant_load_file',
+        exception_message: 'No such file or directory - /xxx/yyy') << "\n"
+      capture(:stdout) { validator.validate('/xxx/yyy') }.should == @expected_rdlint_output
     end
   end
 end

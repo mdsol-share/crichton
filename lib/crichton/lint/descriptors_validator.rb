@@ -5,6 +5,7 @@ module Crichton
     class DescriptorsValidator < BaseValidator
       TOP_LEVEL = 0
       VALID_MIME_TYPES = %w(html)
+      section :descriptors
 
       def validate
         check_descriptor_graph
@@ -85,7 +86,8 @@ module Crichton
       # check all rules surrounding transition based descriptors
       def semantic_properties_check(descriptor, options, level)
         if level > TOP_LEVEL
-          FieldTypeValidator.validate_field_type(self, descriptor) if descriptor.field_type
+          FieldTypeValidator.validate(self, descriptor) if descriptor.field_type
+          EmbedValidator.validate(self, descriptor) if descriptor.embed
 
           # all NON top level descriptors should have a sample and href entry
           add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
@@ -175,53 +177,6 @@ module Crichton
           unless descriptor_transitions.include?(transition)
             add_error('descriptors.protocol_transition_not_found', transition: transition)
           end
-        end
-      end
-    end
-
-    # class to valid the integrity of field_type names, validator names and allowed validator per field_type
-    class FieldTypeValidator
-      def self.field_types
-        @field_types ||=
-          %w(text search email tel url datetime date time month week datetime-local number boolean select)
-      end
-
-      def self.validator_types
-        @val_types ||= %w(required pattern maxlength min max)
-      end
-
-      def self.allowable_validators
-        @allowable_validators ||= {pattern: %w(text search email tel url), maxlength: %w(text url),
-          min: %w(datetime date time month week datetime-local number),
-          max: %w(datetime date time month week datetime-local number),
-          required: self.field_types}
-      end
-
-      def self.validate_field_type(descriptor_validator, descriptor)
-        if field_types.include?(descriptor.field_type)
-          validate_field_validators(descriptor_validator, descriptor)
-        else
-          descriptor_validator.add_error('descriptors.invalid_field_type', id: descriptor.id, field_type:
-            descriptor.field_type)
-        end
-      end
-
-      def self.validate_field_validators(descriptor_validator, descriptor)
-        descriptor.validators.keys.each do |validator|
-          if validator_types.include?(validator)
-            allowable_validators_check(descriptor_validator, descriptor, validator)
-          else
-            descriptor_validator.add_error('descriptors.invalid_field_validator', id: descriptor.id, field_type:
-              descriptor.field_type, validator: validator)
-          end
-        end
-      end
-
-      def self.allowable_validators_check(descriptor_validator, descriptor, validator)
-        # test for allowable validator for this field_type
-        unless allowable_validators[validator.to_sym].include?(descriptor.field_type)
-          descriptor_validator.add_error('descriptors.not_permitted_field_validator', id: descriptor.id, field_type:
-            descriptor.field_type, validator: validator)
         end
       end
     end
