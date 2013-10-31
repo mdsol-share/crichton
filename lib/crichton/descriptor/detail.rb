@@ -33,7 +33,7 @@ module Crichton
       ##
       # Iterator allowing the generation of select lists from the values
       def each
-        if opts = @opts
+        if opts = options
           if opts.include? 'hash'
             opts['hash'].each { |k, v| yield k, v }
           elsif opts.include? 'list'
