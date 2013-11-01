@@ -154,6 +154,7 @@ module Support
         build_colorized_lint_output(error_or_warning, key, options) << "\t\n"
     end
 
+
     private
     def generate_lint_file_line(filename)
       filename ? "In file '#{filename}':\n" : ""
@@ -193,5 +194,8 @@ module Support
       FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
+    
+
+    
   end
 end
