@@ -103,7 +103,10 @@ module Crichton
         # @!macro add_body
         #   Adds the body tag and all child tags.
         def add_body(options)
-          @markup_builder.body { add_embedded_element(options) }
+          @markup_builder.body do
+            add_embedded_element(options)
+            add_datalists(options)
+          end
         end
 
         # @!macro add_embedded_element
@@ -113,7 +116,6 @@ module Crichton
             add_transitions(options)
             add_semantics(options)
           end
-          add_datalists(options)
         end
 
         # @!macro add_control
