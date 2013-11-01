@@ -40,7 +40,7 @@ optparse.parse!
 Crichton::Lint.version if options[:version]
 
 if options[:all]
-  Crichton::Lint.validate_all(options)
+  puts "#{Crichton::Lint.validate_all(options) ? 'true'.green : 'false'.red}"
 elsif ARGV.any?
   ARGV.each do |file|
     retval = Crichton::Lint.validate(file, options)

@@ -154,6 +154,10 @@ module Support
         build_colorized_lint_output(error_or_warning, key, options) << "\t\n"
     end
 
+    def build_colorized_lint_output(error_or_warning, key, options = {})
+      I18n.t(key, options).send(error_or_warning == :error ? :red : :yellow)
+    end
+
     private
     def generate_lint_file_line(filename)
       filename ? "In file '#{filename}':\n" : ""
@@ -183,10 +187,6 @@ module Support
 
     def default_lint_descriptor_file(file)
       File.join(Crichton.descriptor_location, file)
-    end
-
-    def build_colorized_lint_output(error_or_warning, key, options = {})
-      I18n.t(key, options).send(error_or_warning == :error ? :red : :yellow)
     end
 
     def build_dir_for_lint_rspec(config_dir, files_to_copy)

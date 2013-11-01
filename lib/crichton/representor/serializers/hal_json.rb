@@ -52,7 +52,7 @@ module Crichton
 
       def get_semantic_data(options)
         semantic_data = @object.each_data_semantic(options)
-        each_pair = lambda { |descriptor| [descriptor.name, descriptor.value] }
+        each_pair = ->(descriptor) {[descriptor.name, descriptor.value] }
         get_data(semantic_data, each_pair)
       end
 

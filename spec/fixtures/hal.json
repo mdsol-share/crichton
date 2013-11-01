@@ -63,8 +63,11 @@
                     }                },
                 "uuid": 0,
                 "built_at": "built_at_0",
+                "destroyed": null,
                 "leviathan_uuid": "leviathan_uuid_0",
-                "name": "name_0"
+                "location": null,
+                "name": "name_0",
+                "old_status": null
             },
             {
                 "status": "status_1",
@@ -97,9 +100,12 @@
                     }
                 },
                 "uuid": 1,
+                "destroyed": null,
                 "built_at": "built_at_1",
                 "leviathan_uuid": "leviathan_uuid_1",
-                "name": "name_1"
+                "location": null,
+                "name": "name_1",
+                "old_status": null
             }
         ]
     }

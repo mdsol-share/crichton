@@ -6,6 +6,7 @@ require 'crichton/representor/serializers/xhtml'
 module Crichton
   module Representor
     describe XHTMLSerializer do
+
       let (:drds) do
         drd_klass.tap { |klass| klass.apply_methods }.all
       end
