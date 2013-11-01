@@ -109,6 +109,11 @@ module Crichton
             if ne.include?('value')
               result_hash['options'] = JSON.parse(ne['value'])
             end
+          elsif ne.include?('href') && ne['href'] == Crichton::ALPS::Serialization::SERIALIZED_DATALIST_LIST_URL
+            if ne.include?('value')
+              result_hash['datalists'] = [] unless result_hash.include?('datalists')
+              result_hash['datalists'] << JSON.parse(ne['value'])
+            end
           else
             result_hash['ext'] = [] unless result_hash.include?('ext')
             result_hash['ext'] << ne
@@ -180,6 +185,10 @@ module Crichton
           if child.has_attribute?('value')
             result_hash['options'] = JSON.parse(child.attribute('value').value)
           end
+        elsif child.has_attribute?('href') &&
+          child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_DATALIST_LIST_URL
+          result_hash['datalists'] = [] unless result_hash.include?('datalists')
+          result_hash['datalists'] << child.attributes
         else
           result_hash['ext'] = [] unless result_hash.include?('ext')
           result_hash['ext'] << child.attributes

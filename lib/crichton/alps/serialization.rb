@@ -41,7 +41,7 @@ module Crichton
         if @descriptor_document['datalists']
           @descriptor_document['datalists'].each do |dl_name, dl|
             result_hash['ext'] = [] unless result_hash.include?('ext')
-            result_hash['ext'] << {'href' => SERIALIZED_DATALIST_LIST_URL, 'value' => dl.to_json}
+            result_hash['ext'] << {'href' => SERIALIZED_DATALIST_LIST_URL, 'value' => {dl_name => dl}.to_json}
           end
         end
         result_hash
