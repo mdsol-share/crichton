@@ -39,7 +39,7 @@ module Crichton
             add_warning('states.doc_property_missing', options) unless state.doc
 
             # if a state does not have transitions, then check to see if it has a location property (e.g. deleted, error)
-            if  state.transitions.empty?
+            if state.transitions.empty?
               add_warning('states.location_property_missing', options) if state.location.nil?
             else
               check_resource_state_transitions(secondary_descriptor_name, state, states_list)

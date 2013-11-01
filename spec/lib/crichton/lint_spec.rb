@@ -10,7 +10,7 @@ describe Crichton::Lint do
     load_lint_translation_file
   end
 
-  describe '.validate individual files' do
+  describe '.validate' do
     context 'with no options' do
       after do
         validation_report.should == (@errors || @message)
@@ -126,8 +126,8 @@ describe Crichton::Lint do
     end
   end
 
-  describe ".validate the config folder" do
-    context 'containing files with errors' do
+  describe "with the descriptor file config folder" do
+    context 'containing files with errors, lint validation' do
       before(:all) do
         build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
       end
@@ -141,7 +141,7 @@ describe Crichton::Lint do
       end
     end
 
-    context 'containing files with no errors' do
+    context 'containing files with no errors, lint validation' do
       before(:all) do
         build_dir_for_lint_rspec('api_descriptors', 'fixtures/resource_descriptors')
         FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')
