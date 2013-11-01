@@ -157,7 +157,7 @@ module Crichton
     # Returns the profile, type and help links of the associated descriptor.
     #
     # @return [Array] The link instances.
-    def metadata_links
+    def metadata_links(*)
       self.class.resource_descriptor.metadata_links
     end
 
