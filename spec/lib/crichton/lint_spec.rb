@@ -158,14 +158,14 @@ describe Crichton::Lint do
 
       it 'returns an accurate warning count if the --all and count option are set' do
         Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
-        Crichton::Lint.validate_all({count: :warning}).should == 14
+        Crichton::Lint.validate_all({count: :warning}).should == 15
       end
     end
 
     context 'when loading an invalid file' do
       it 'reports a load error' do
         @expected_rdlint_output = build_colorized_lint_output(:error, 'catastrophic.cant_load_file',
-                                                              exception_message: 'No such file or directory - /xxx/yyy') << "\n"
+          exception_message: 'No such file or directory - /xxx/yyy') << "\n"
         capture(:stdout) { validator.validate('/xxx/yyy') }.should == @expected_rdlint_output
       end
     end
