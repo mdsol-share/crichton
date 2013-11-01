@@ -151,8 +151,6 @@ module Crichton
         end
 
         def add_datalists(options)
-            #require "pry"
-            #binding.pry
           Crichton::used_datalists.uniq.each do |dl_name|
             @markup_builder.datalist(id: dl_name.split('#')[1]) do
               dl = Crichton::datalist_registry[dl_name]
