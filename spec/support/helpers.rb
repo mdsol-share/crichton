@@ -185,10 +185,6 @@ module Support
       File.join(Dir.pwd, 'tasks', args)
     end
 
-    def default_lint_descriptor_file(file)
-      File.join(Crichton.descriptor_location, file)
-    end
-
     def build_dir_for_lint_rspec(config_dir, files_to_copy)
       FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)

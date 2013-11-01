@@ -42,7 +42,7 @@ describe Crichton::Lint do
       it 'reports a missing protocols section error when the protocols section is missing' do
         @filename = %w(missing_sections noprotocols_descriptor.yml)
         @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
-          missing_section: 'protocols',sub_header: :error)
+          missing_section: 'protocols', sub_header: :error)
       end
     end
 
@@ -69,6 +69,12 @@ describe Crichton::Lint do
         @filename = %w(protocol_section_errors missing_required_properties.yml)
         @option = {count: :error}
         @count = 2
+      end
+
+      it 'returns an expected number of errors for a descriptor file with catastrophic errors' do
+        @filename = %w(missing_sections noprotocols_descriptor.yml)
+        @option = {count: :error}
+        @count = 1
       end
 
       it 'returns an expected number of warnings for a descriptor file' do
@@ -120,11 +126,56 @@ describe Crichton::Lint do
     end
   end
 
-  context 'when loading an invalid file' do
-    it 'reports a load error' do
-      @expected_rdlint_output = build_colorized_lint_output(:error, 'catastrophic.cant_load_file',
-        exception_message: 'No such file or directory - /xxx/yyy') << "\n"
-      capture(:stdout) { validator.validate('/xxx/yyy') }.should == @expected_rdlint_output
+  context 'with the descriptor file config folder' do
+    context 'containing files with errors' do
+      before(:all) do
+        build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
+      end
+
+      after(:all) do
+        FileUtils.rm_rf('api_descriptors')
+      end
+
+      it 'returns false when both --strict and --all options are set' do
+        Crichton::Lint.validate_all({strict: true, all: true}).should be_false
+      end
+    end
+
+    context 'containing files with no errors' do
+      before(:all) do
+        build_dir_for_lint_rspec('api_descriptors', 'fixtures/resource_descriptors')
+        FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')
+      end
+
+      after(:all) do
+        FileUtils.rm_rf('api_descriptors')
+      end
+
+      it 'returns true if the --strict option is set' do
+        Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+        Crichton::Lint.validate_all({strict: true}).should be_true
+      end
+
+      it 'returns an accurate warning count if the --all and count option are set' do
+        Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+        Crichton::Lint.validate_all({count: :warning}).should == 15
+      end
+    end
+
+    context 'when loading an invalid file' do
+      it 'reports a load error' do
+        @expected_rdlint_output = build_colorized_lint_output(:error, 'catastrophic.cant_load_file',
+          exception_message: 'No such file or directory - /xxx/yyy') << "\n"
+        capture(:stdout) { validator.validate('/xxx/yyy') }.should == @expected_rdlint_output
+      end
+    end
+
+    context 'when it does not exist' do
+      it 'returns an exception if the --all option is set' do
+        Crichton.stub(:descriptor_location).and_return('/xxx/yyy')
+        expect { validator.validate_all }.to raise_error
+        "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
+      end
     end
   end
 end
