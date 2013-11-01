@@ -69,7 +69,7 @@ states:
         leviathan-link:
           name: leviathan
           next:
-            - location: http://alps.io/schema.org/Leviathans#leviathan
+            - location: http://alps.io/schema.org/Thing
     deactivated:
       doc: The DRD is shut down.
       transitions:
@@ -100,7 +100,7 @@ states:
         leviathan-link:
           name: leviathan
           next:
-            - location: http://alps.io/schema.org/Leviathans#leviathan
+            - location: http://alps.io/schema.org/WarrantyPromise
     deleted:
       doc: The DRD is now free-floating in space.
       location: exit
