@@ -33,9 +33,11 @@
     <form action="http://deployment.example.org/drds" method="post">
       <ul>
         <li>
-          <label itemprop="status">
-            <input itemprop="status" type="text" name="status" required=""/>
-          </label>
+              <select name="status">
+                <option value="active">activated</option>
+                <option value="inactive">deactivated</option>
+                <option value="unknown">renegade</option>
+              </select>
         </li>
         <li>
               <select name="kind">
@@ -102,9 +104,11 @@
             <form action="http://deployment.example.org/drds/0" method="post">
               <ul>
                 <li>
-                  <label itemprop="status">
-                    <input itemprop="status" type="text" name="status" required=""/>
-                  </label>
+                      <select name="status">
+                        <option value="active">activated</option>
+                        <option value="inactive">deactivated</option>
+                        <option value="unknown">renegade</option>
+                      </select>
                 </li>
                 <li>
                       <select name="kind">
@@ -186,9 +190,11 @@
             <form action="http://deployment.example.org/drds/1" method="post">
               <ul>
                 <li>
-                  <label itemprop="status">
-                    <input itemprop="status" type="text" name="status" required=""/>
-                  </label>
+                      <select name="status">
+                        <option value="active">activated</option>
+                        <option value="inactive">deactivated</option>
+                        <option value="unknown">renegade</option>
+                      </select>
                 </li>
                 <li>
                       <select name="kind">

@@ -249,7 +249,7 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: renegade
         options:
-          id: drd_status_values
+          id: drd_status_options
           hash:
             active: activated
             inactive: deactivated
@@ -260,7 +260,7 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: renegade
         options:
-          href: DRDs#drd_status_values
+          href: DRDs#drd_status_options
       kind:
         doc: What kind is it.
         type: semantic
@@ -353,13 +353,13 @@ descriptors:
                   - required
                 sample: activated
                 options:
-                  href: DRDs#drd_status_values
+                  href: DRDs#drd_status_options
               form-old_status:
                 type: semantic
                 doc: How is the DRD.
                 href: http://alps.io/schema.org/Text
                 name: status
-                field_type: text
+                field_type: select
                 validators:
                   - required
                 sample: activated
