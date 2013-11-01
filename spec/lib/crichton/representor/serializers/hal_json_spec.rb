@@ -4,7 +4,6 @@ require 'crichton/representor/factory'
 require 'crichton/representor/serializers/hal_json'
 require 'json_spec'
 
-#TODO: Create single Representor Test Class, and Merge this test with XHTML Test
 module Crichton
   module Representor
     describe HalJsonSerializer do
@@ -14,6 +13,7 @@ module Crichton
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
         Crichton.initialize_registry(drds_descriptor)
+        DRD = drd_klass
         DRD.apply_methods
         @serializer = HalJsonSerializer
       end

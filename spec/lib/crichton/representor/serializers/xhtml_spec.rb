@@ -11,6 +11,7 @@ module Crichton
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
         Crichton.initialize_registry(drds_descriptor)
+        DRD = drd_klass
         DRD.apply_methods
       end
 
