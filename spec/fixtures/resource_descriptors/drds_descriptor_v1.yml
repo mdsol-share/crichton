@@ -270,6 +270,13 @@ descriptors:
           list:
             - standard
             - sentinel
+      size:
+        doc: How large it is
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: medium
+        options:
+          datalist: size-list
       leviathan_uuid:
         doc: The UUID of the creator Leviathan.
         type: semantic
@@ -369,10 +376,18 @@ descriptors:
                 sample: true
                 field_type: select
                 options:
-                  datalist: kind-list
-#                  list:
-#                    - standard
-#                    - sentinel
+#                  datalist: kind-list
+                  list:
+                    - standard
+                    - sentinel
+              form-size:
+                doc: How large it is
+                type: semantic
+                href: http://alps.io/schema.org/Text
+                sample: medium
+                field_type: select
+                options:
+                  datalist: size-list
               form-location:
                 type: semantic
                 name: location
@@ -404,6 +419,10 @@ datalists:
     active: activated
     inactive: deactivated
     unknown: renegade
+  size-list:
+    - small
+    - medium
+    - large
 
 # The protocol descriptors section defines the protocol affordances associated with the 
 # application affordances. This decouples protocol specific information from the 
