@@ -1,5 +1,38 @@
 {
-    "total_count": 2,
+
+    "_links": {
+        "profile": {
+            "href": "http://alps.example.org/DRDs"
+        },
+        "create": {
+            "href": "http://deployment.example.org/drds{?create-drd}",
+            "templated": true
+        },
+        "search": {
+            "href": "http://deployment.example.org/drds{?search_term}",
+            "templated": true
+        },
+        "help": {
+            "href": "http://documentation.example.org/Things/DRDs"
+        },
+        "self": {
+            "href": "http://deployment.example.org/drds"
+        },
+        "type": {
+            "href": "http://alps.example.org/DRDs#drds"
+        },
+        "items": [
+            {
+                "href": "http://deployment.example.org/drds/0",
+                "type": "http://alps.example.org/DRDs#drd"
+            },
+            {
+                "href": "http://deployment.example.org/drds/1",
+                "type": "http://alps.example.org/DRDs#drd"
+            }
+        ]
+    },
+	"total_count": 2,
     "_embedded": {
         "items": [
             {
@@ -67,38 +100,6 @@
                 "built_at": "built_at_1",
                 "leviathan_uuid": "leviathan_uuid_1",
                 "name": "name_1"
-            }
-        ]
-    },
-    "_links": {
-        "profile": {
-            "href": "http://alps.example.org/DRDs"
-        },
-        "create": {
-            "href": "http://deployment.example.org/drds{?create-drd}",
-            "templated": true
-        },
-        "search": {
-            "href": "http://deployment.example.org/drds{?search_term}",
-            "templated": true
-        },
-        "help": {
-            "href": "http://documentation.example.org/Things/DRDs"
-        },
-        "self": {
-            "href": "http://deployment.example.org/drds"
-        },
-        "type": {
-            "href": "http://alps.example.org/DRDs#drds"
-        },
-        "items": [
-            {
-                "href": "http://deployment.example.org/drds/0",
-                "type": "http://alps.example.org/DRDs#drd"
-            },
-            {
-                "href": "http://deployment.example.org/drds/1",
-                "type": "http://alps.example.org/DRDs#drd"
             }
         ]
     }

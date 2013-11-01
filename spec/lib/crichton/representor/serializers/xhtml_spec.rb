@@ -6,13 +6,14 @@ require 'crichton/representor/serializers/xhtml'
 module Crichton
   module Representor
     describe XHTMLSerializer do
+      let (:drds) do
+        drd_klass.tap { |klass| klass.apply_methods }.all
+      end
 
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
         Crichton.initialize_registry(drds_descriptor)
-        DRD = drd_klass
-        DRD.apply_methods
       end
 
       it 'self-registers as a serializer for the xhtml media-type' do
@@ -24,7 +25,7 @@ module Crichton
       end
       
       describe '#as_media_type' do
-        let (:serializer) { XHTMLSerializer.new(DRD.all) }
+        let (:serializer) { XHTMLSerializer.new(drds) }
 
         context 'without styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
