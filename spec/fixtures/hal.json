@@ -67,7 +67,8 @@
                 "leviathan_uuid": "leviathan_uuid_0",
                 "location": "location_0",
                 "name": "name_0",
-                "old_status": "old_status_0"
+                "old_status": "old_status_0",
+                "size": "size_0"
             },
             {
                 "status": "status_1",
@@ -105,7 +106,8 @@
                 "leviathan_uuid": "leviathan_uuid_1",
                 "location": "location_1",
                 "name": "name_1",
-                "old_status": "old_status_1"
+                "old_status": "old_status_1",
+                "size": "size_1"
             }
         ]
     }
