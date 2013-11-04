@@ -174,7 +174,7 @@ module Crichton
 
       def add_xml_datalists(builder)
         datalists = alps_datalists['ext']
-        datalists.each do |dl|
+        datalists && datalists.each do |dl|
           builder.tag!('ext', dl)
         end
       end
