@@ -117,7 +117,6 @@ module Crichton
           options = mock('options') 
           serializer_instance = MediaTypeSerializer.new(object)
           serializer_instance.should_receive(:as_media_type).with(options)
-
           serializer_instance.to_media_type(options)
         end
       end

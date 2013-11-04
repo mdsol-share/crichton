@@ -47,6 +47,18 @@ module Crichton
             expected_output(:error, 'states.protocol_transition_not_found', transition: 'create')
         end
 
+        it 'reports a warning when a transition-less state does not contain a location' do
+          @filename = %w(state_section_errors missing_location.yml)
+          @warnings = expected_output(:warning, 'states.location_property_missing', resource: 'drds', state: 'deleted',
+            filename: filename, section: :states, sub_header: :warning)
+        end
+
+        it 'reports an error if a resource has no states defined' do
+          @filename = %w(state_section_errors no_states_defined.yml)
+          @errors = expected_output(:error, 'catastrophic.no_states', resource: 'drd',  filename: filename,
+            section: :states, sub_header: :error)
+        end
+
         context 'an external profile' do
           let(:external_url) { 'http://alps.io/schema.org/Leviathans' }
 

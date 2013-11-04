@@ -202,7 +202,7 @@ module Crichton
             when Array
               embedded_object.each { |object| add_embedded_object(object, options, semantic)}
             when Crichton::Representor
-              add_embedded_object(embedded_object, options)
+              add_embedded_object(embedded_object, options, semantic)
             else
               logger.warn("Semantic element should be either representor or array! Was #{semantic}")
             end

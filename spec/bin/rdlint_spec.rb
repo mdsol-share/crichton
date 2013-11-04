@@ -117,5 +117,9 @@ describe 'rdlint' do
 
       all_files_processed.should be_true
     end
+
+    it 'returns the correct value together with the --strict option ' do
+      %x(bundle exec rdlint -as).should == 'false'.red << "\n"
+    end
   end
 end

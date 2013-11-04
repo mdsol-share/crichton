@@ -1,0 +1,112 @@
+{
+
+    "_links": {
+        "profile": {
+            "href": "http://alps.example.org/DRDs"
+        },
+        "create": {
+            "href": "http://deployment.example.org/drds{?create-drd}",
+            "templated": true
+        },
+        "search": {
+            "href": "http://deployment.example.org/drds{?search_term}",
+            "templated": true
+        },
+        "help": {
+            "href": "http://documentation.example.org/Things/DRDs"
+        },
+        "self": {
+            "href": "http://deployment.example.org/drds"
+        },
+        "type": {
+            "href": "http://alps.example.org/DRDs#drds"
+        },
+        "items": [
+            {
+                "href": "http://deployment.example.org/drds/0",
+                "type": "http://alps.example.org/DRDs#drd"
+            },
+            {
+                "href": "http://deployment.example.org/drds/1",
+                "type": "http://alps.example.org/DRDs#drd"
+            }
+        ]
+    },
+	"total_count": 2,
+    "_embedded": {
+        "items": [
+            {
+                "status": "status_0",
+                "kind": "kind_0",
+                "_links": {
+                    "deactivate": {
+                        "href": "http://deployment.example.org/drds/0/deactivate"
+                    },
+                    "delete": {
+                        "href": "http://deployment.example.org/drds/0"
+                    },
+                    "update": {
+                        "href": "http://deployment.example.org/drds/0{?update-drd}",
+                        "templated": true
+                    },
+                    "self": {
+                        "href": "http://deployment.example.org/drds/0"
+                    },
+                    "type": {
+                        "href": "http://alps.example.org/DRDs#drd"
+                    },
+                    "help": {
+                        "href": "http://documentation.example.org/Things/DRDs"
+                    },
+                    "profile": {
+                        "href": "http://alps.example.org/DRDs"
+                    }                },
+                "uuid": 0,
+                "built_at": "built_at_0",
+                "destroyed": null,
+                "leviathan_uuid": "leviathan_uuid_0",
+                "location": "location_0",
+                "name": "name_0",
+                "old_status": "old_status_0"
+            },
+            {
+                "status": "status_1",
+                "kind": "kind_1",
+                "_links": {
+                    "deactivate": {
+                        "href": "http://deployment.example.org/drds/1/deactivate"
+                    },
+                    "delete": {
+                        "href": "http://deployment.example.org/drds/1"
+                    },
+                    "update": {
+                        "href": "http://deployment.example.org/drds/1{?update-drd}",
+                        "templated": true
+                    },
+                    "leviathan": {
+                        "href": "http://example.org/leviathan/leviathan_uuid_1"
+                    },
+                    "self": {
+                        "href": "http://deployment.example.org/drds/1"
+                    },
+                    "type": {
+                        "href": "http://alps.example.org/DRDs#drd"
+                    },
+                    "help": {
+                        "href": "http://documentation.example.org/Things/DRDs"
+                    },
+                    "profile": {
+                        "href": "http://alps.example.org/DRDs"
+                    }
+                },
+                "uuid": 1,
+                "destroyed": null,
+                "built_at": "built_at_1",
+                "leviathan_uuid": "leviathan_uuid_1",
+                "location": "location_1",
+                "name": "name_1",
+                "old_status": "old_status_1"
+            }
+        ]
+    }
+}
