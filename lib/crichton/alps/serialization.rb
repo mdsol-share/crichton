@@ -161,7 +161,8 @@ module Crichton
 
         builder.tag!(*args) do
           add_xml_elements(builder)
-          add_xml_descriptors(builder)  
+          add_xml_descriptors(builder)
+          add_xml_datalists(builder) unless options[:top_level] == false # This is intentional! it's false, not true
         end
       end
       
@@ -170,7 +171,14 @@ module Crichton
       def alps_name
         descriptor_document['name']
       end
-      
+
+      def add_xml_datalists(builder)
+        datalists = alps_datalists['ext']
+        datalists.each do |dl|
+          builder.tag!('ext', dl)
+        end
+      end
+
       def add_xml_elements(builder)
         alps_elements.each do |alps_element, properties|
           case alps_element

@@ -188,7 +188,7 @@ module Crichton
         elsif child.has_attribute?('href') &&
           child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_DATALIST_LIST_URL
           result_hash['datalists'] = [] unless result_hash.include?('datalists')
-          result_hash['datalists'] << child.attributes
+          result_hash['datalists'] << JSON.parse(child.attribute('value').value)
         else
           result_hash['ext'] = [] unless result_hash.include?('ext')
           result_hash['ext'] << child.attributes
