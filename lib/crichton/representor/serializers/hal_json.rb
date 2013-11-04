@@ -35,12 +35,12 @@ module Crichton
       def get_links(options)
         metadata_links = @object.metadata_links(options)
         link_transitions = @object.each_transition(options)
-        all_links = [metadata_links, link_transitions]#, embedded_transitions]
+        all_links = [metadata_links, link_transitions]
         { _links: all_links.reduce({}) { |hash, link_block| hash.merge(get_data(link_block, relations)) } }
       end
 
       def relations
-        ->(transition) do
+        lambda do |transition|
           link = if transition.templated?
                    {href: transition.templated_url, templated: true}
                  else
