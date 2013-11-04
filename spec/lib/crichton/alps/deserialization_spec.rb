@@ -20,6 +20,16 @@ module Crichton
           deserializer = Deserialization.new("{\"alps\": #{xmldeserializer.to_json}}")
           deserializer.to_hash.keys.should == ["doc", "ext", "links", "descriptors"]
         end
+
+        it 'deserializes a JSON DRD' do
+          deserializer = Deserialization.new(alps_json_data)
+          deserializer.to_hash.keys.should == ['doc', "links", "datalists", "descriptors"]
+        end
+
+        it 'deserializes a XML DRD' do
+          deserializer = Deserialization.new(alps_xml_data)
+          deserializer.to_hash.keys.should == ['doc', "links", "descriptors", "datalists"]
+        end
       end
 
       describe '#alps_to_hash' do

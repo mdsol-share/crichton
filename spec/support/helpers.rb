@@ -189,5 +189,13 @@ module Support
       FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
+
+    def alps_json_data
+      File.open(File.join(SPEC_DIR, 'fixtures', 'alps', 'DRDs.json'), 'rb') {|f| f.read }
+    end
+
+    def alps_xml_data
+      File.open(File.join(SPEC_DIR, 'fixtures', 'alps', 'DRDs.xml'), 'rb') {|f| f.read }
+    end
   end
 end
