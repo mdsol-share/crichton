@@ -124,7 +124,11 @@ module Crichton
         
         @object, @options = object, options || {}
       end
-      
+
+      def used_datalists
+        @used_datalists ||= []
+      end
+
       ##
       # Returns a serialized media-type for the response as a Hash or XML. This method is used for serialization
       # of a response and should not typically be used as the method to generate the final response, which should be

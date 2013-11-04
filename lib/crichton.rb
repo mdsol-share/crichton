@@ -82,10 +82,6 @@ module Crichton
     @registry.datalist_registry
   end
 
-  def self.used_datalists
-    @used_datalists ||= []
-  end
-
   ##
   # external_descriptor_document_urls
   def self.external_descriptor_document_urls

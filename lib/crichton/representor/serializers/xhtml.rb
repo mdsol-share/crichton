@@ -58,7 +58,7 @@ module Crichton
                   MicrodataSemanticBuilder
                 end
         
-        @semantic_builder = klass.new(self.class.default_media_type, @object, @markup_builder)
+        @semantic_builder = klass.new(self.class.default_media_type, @object, @markup_builder, self)
       end
       
       def add_head
@@ -90,8 +90,8 @@ module Crichton
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
         # @param [Crichton::Representor] object The object to build semantics for.
         # @param [Builder::XmlMarkup] markup_builder The primary builder.
-        def initialize(media_type, object, markup_builder)
-          @media_type, @object, @markup_builder = media_type, object, markup_builder
+        def initialize(media_type, object, markup_builder, serializer)
+          @media_type, @object, @markup_builder, @serializer = media_type, object, markup_builder, serializer
         end
 
         # @!macro add_head
@@ -151,7 +151,7 @@ module Crichton
         end
 
         def add_datalists(options)
-          Crichton.used_datalists.uniq.each do |dl_name|
+          @serializer.used_datalists.uniq.each do |dl_name|
             @markup_builder.datalist(id: dl_name.split('#')[1]) do
               dl = Crichton::datalist_registry[dl_name]
               if dl.is_a?(Hash)
@@ -274,7 +274,7 @@ module Crichton
         end
 
         def add_datalist_to_used_datalists_list(options)
-          Crichton.used_datalists <<
+          @serializer.used_datalists <<
             "#{@object.class.resource_descriptor.resource_descriptor.name}\##{options.datalist_name}"
         end
 
