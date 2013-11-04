@@ -177,10 +177,8 @@ module Crichton
     end
 
     def register_datalist(resource_descriptor)
-      if resource_descriptor.descriptor_document['datalists']
-        resource_descriptor.descriptor_document['datalists'].each do |k, v|
-          datalist_registry["#{resource_descriptor.name}\##{k}"] = v
-        end
+      if datalists = resource_descriptor.descriptor_document['datalists']
+        datalists.each { |k, v| datalist_registry["#{resource_descriptor.name}\##{k}"] = v }
       end
     end
 
