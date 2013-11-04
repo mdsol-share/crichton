@@ -382,6 +382,7 @@ descriptors:
                     - sentinel
               form-size:
                 doc: How large it is
+                name: size
                 type: semantic
                 href: http://alps.io/schema.org/Text
                 sample: medium
