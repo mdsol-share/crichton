@@ -151,7 +151,7 @@ module Crichton
         end
 
         def add_datalists(options)
-          Crichton::used_datalists.uniq.each do |dl_name|
+          Crichton.used_datalists.uniq.each do |dl_name|
             @markup_builder.datalist(id: dl_name.split('#')[1]) do
               dl = Crichton::datalist_registry[dl_name]
               if dl.is_a?(Hash)
@@ -161,8 +161,6 @@ module Crichton
               end
             end
           end
-          #@object.datalists { |dl|
-          #}
         end
 
         def add_transitions(options)
@@ -276,7 +274,8 @@ module Crichton
         end
 
         def add_datalist_to_used_datalists_list(options)
-          Crichton::used_datalists << "#{@object.class.resource_descriptor.resource_descriptor.name}\##{options.datalist_name}"
+          Crichton.used_datalists <<
+            "#{@object.class.resource_descriptor.resource_descriptor.name}\##{options.datalist_name}"
         end
 
         ##

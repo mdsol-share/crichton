@@ -9,7 +9,7 @@ module Crichton
       let(:parent_descriptor) do
         descriptor = mock('parent_descriptor')
         descriptor.stub(:child_descriptor_document).with('drds').and_return(descriptor_document)
-        descriptor.stub(:name).and_return("DRDs")
+        descriptor.stub(:name).and_return('DRDs')
         descriptor
       end
       let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, 'drds') }
@@ -165,7 +165,7 @@ module Crichton
         end
 
         it 'returns the absolute self link' do
-          descriptor.type_link.href.should == "http://alps.example.com/DRDs#drds"
+          descriptor.type_link.href.should == 'http://alps.example.com/DRDs#drds'
         end
       end
 
