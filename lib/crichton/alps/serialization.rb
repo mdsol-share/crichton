@@ -173,10 +173,7 @@ module Crichton
       end
 
       def add_xml_datalists(builder)
-        datalists = alps_datalists['ext']
-        datalists && datalists.each do |dl|
-          builder.tag!('ext', dl)
-        end
+        (datalists = alps_datalists['ext']) && datalists.each { |dl| builder.tag!('ext', dl) }
       end
 
       def add_xml_elements(builder)
