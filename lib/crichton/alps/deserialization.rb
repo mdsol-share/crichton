@@ -61,8 +61,6 @@ module Crichton
         node.each do |k, node_element|
           if k == 'ext'
             result_hash.merge!(decode_json_ext(node_element))
-          elsif k == 'options'
-            result_hash.merge!(json_node_to_hash(node_element))
           elsif k == 'doc'
             result_hash[k] = json_node_to_hash_doc_element(node_element)
           elsif node_element.is_a?(Array)
