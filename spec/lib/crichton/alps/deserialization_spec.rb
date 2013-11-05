@@ -10,6 +10,16 @@ module Crichton
           alps_xml_string.rewind
         end
 
+        it 'handles empty XML data' do
+          deserializer = Deserialization.new('')
+          deserializer.to_hash.keys.should == []
+        end
+
+        it 'handles nil XML data' do
+          deserializer = Deserialization.new(nil)
+          deserializer.to_hash.keys.should == []
+        end
+
         it 'deserializes XML data' do
           deserializer = Deserialization.new(alps_xml_string)
           deserializer.to_hash.keys.should == ["doc", "ext", "links", "descriptors"]
