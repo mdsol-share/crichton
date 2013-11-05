@@ -94,7 +94,7 @@ module Crichton
         descriptor_document ||= parent_descriptor.child_descriptor_document(id)
         super(resource_descriptor, descriptor_document, id)
         @descriptors[:parent] = parent_descriptor
-        @descriptors[:descriptor_name] = parent_descriptor.name # parent_descriptor[:descriptor_name]
+        @descriptors[:descriptor_name] = parent_descriptor.name
       end
       
       ##

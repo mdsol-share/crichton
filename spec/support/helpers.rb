@@ -191,11 +191,11 @@ module Support
     end
 
     def alps_json_data
-      File.open(File.join(SPEC_DIR, 'fixtures', 'alps', 'DRDs.json'), 'rb') {|f| f.read }
+      File.open(File.join(SPEC_DIR, 'fixtures', 'alps', 'DRDs.json'), 'rb') { |f| f.read }
     end
 
     def alps_xml_data
-      File.open(File.join(SPEC_DIR, 'fixtures', 'alps', 'DRDs.xml'), 'rb') {|f| f.read }
+      File.open(File.join(SPEC_DIR, 'fixtures', 'alps', 'DRDs.xml'), 'rb') { |f| f.read }
     end
   end
 end
