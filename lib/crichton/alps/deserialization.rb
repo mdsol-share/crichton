@@ -35,7 +35,7 @@ module Crichton
 
       private
       def guess_alps_data_type(alps_data)
-        if alps_data.nil? || (alps_data.respond_to?(:empty?) && alps_data.empty?)
+        if alps_data.nil? || alps_data.respond_to?(:empty?) && alps_data.empty?
           data_type = :no_data
         elsif alps_data.is_a?(File)
           # Guess based on file name first
