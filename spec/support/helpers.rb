@@ -181,6 +181,18 @@ module Support
       File.join(SPEC_DIR, 'fixtures', args)
     end
 
+    def alps_fixture_path(*args)
+      File.join(SPEC_DIR, 'fixtures', 'alps', args)
+    end
+
+    def alps_json_data
+      File.open(alps_fixture_path('DRDs.json'), 'rb') { |f| f.read }
+    end
+
+    def alps_xml_data
+      File.open(alps_fixture_path('DRDs.xml'), 'rb') { |f| f.read }
+    end
+
     def tasks_path(*args)
       File.join(Dir.pwd, 'tasks', args)
     end
@@ -188,14 +200,6 @@ module Support
     def build_dir_for_lint_rspec(config_dir, files_to_copy)
       FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
-    end
-
-    def alps_json_data
-      File.open(File.join(SPEC_DIR, 'fixtures', 'alps', 'DRDs.json'), 'rb') { |f| f.read }
-    end
-
-    def alps_xml_data
-      File.open(File.join(SPEC_DIR, 'fixtures', 'alps', 'DRDs.xml'), 'rb') { |f| f.read }
     end
   end
 end

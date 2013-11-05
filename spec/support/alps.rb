@@ -188,8 +188,20 @@ module Support
       @alps_xml ||= Nokogiri::XML(File.open(fixture_path('leviathans_alps.xml')))
     end
 
-    def alps_xml_string
+    def alps_xml_opened_file
       @alps_xml_string ||= File.open(fixture_path('leviathans_alps.xml'))
+    end
+
+    def alps_json_opened_file
+      @alps_xml_string ||= File.open(alps_fixture_path('DRDs.json'))
+    end
+
+    def alps_xml_opened_file_with_bad_filename
+      @alps_xml_string ||= File.open(alps_fixture_path('DRDs_x'))
+    end
+
+    def alps_json_opened_file_with_bad_filename
+      @alps_xml_string ||= File.open(alps_fixture_path('DRDs_j'))
     end
   end
 
