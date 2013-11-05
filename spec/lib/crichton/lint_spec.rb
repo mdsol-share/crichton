@@ -160,7 +160,7 @@ describe Crichton::Lint do
 
       it 'returns an accurate warning count if the --all and count option are set' do
         Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
-         Crichton::Lint.validate_all({count: :warning}).should == 15
+        Crichton::Lint.validate_all({count: :warning}).should == 15
       end
     end
 
