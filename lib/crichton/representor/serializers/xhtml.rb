@@ -58,7 +58,7 @@ module Crichton
                   MicrodataSemanticBuilder
                 end
         
-        @semantic_builder = klass.new(self.class.default_media_type, @object, @markup_builder)
+        @semantic_builder = klass.new(self.class.default_media_type, @object, @markup_builder, self)
       end
       
       def add_head
@@ -90,8 +90,8 @@ module Crichton
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
         # @param [Crichton::Representor] object The object to build semantics for.
         # @param [Builder::XmlMarkup] markup_builder The primary builder.
-        def initialize(media_type, object, markup_builder)
-          @media_type, @object, @markup_builder = media_type, object, markup_builder
+        def initialize(media_type, object, markup_builder, serializer)
+          @media_type, @object, @markup_builder, @serializer = media_type, object, markup_builder, serializer
         end
 
         # @!macro add_head
@@ -103,7 +103,10 @@ module Crichton
         # @!macro add_body
         #   Adds the body tag and all child tags.
         def add_body(options)
-          @markup_builder.body { add_embedded_element(options) }
+          @markup_builder.body do
+            add_embedded_element(options)
+            add_datalists(options)
+          end
         end
 
         # @!macro add_embedded_element
@@ -145,6 +148,19 @@ module Crichton
 
         def add_metadata_links
           @object.metadata_links.each { |metadata_link| @markup_builder.tag!(:link, metadata_link.attributes) }
+        end
+
+        def add_datalists(options)
+          @serializer.used_datalists.uniq.each do |dl_name|
+            @markup_builder.datalist(id: dl_name.split('#')[1]) do
+              dl = Crichton::datalist_registry[dl_name]
+              if dl.is_a?(Hash)
+                dl.each { |k, v| @markup_builder.option(v, value: k) }
+              else
+                dl.each { |e| @markup_builder.option(e, value: e) }
+              end
+            end
+          end
         end
 
         def add_transitions(options)
@@ -248,10 +264,18 @@ module Crichton
             # Later, the datalist will be added here
             if options.is_internal_select?
               add_control_internal_select(semantic)
+            elsif options.is_datalist?
+              add_datalist_to_used_datalists_list(options)
+              @markup_builder.tag!(:input, {type: "text", name: semantic.name, list: options.datalist_name})
             elsif options.is_external_select?
               add_control_external_select(semantic)
             end
           end
+        end
+
+        def add_datalist_to_used_datalists_list(options)
+          @serializer.used_datalists <<
+            "#{@object.class.resource_descriptor.resource_descriptor.name}\##{options.datalist_name}"
         end
 
         ##

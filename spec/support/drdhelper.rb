@@ -24,7 +24,7 @@ module Support
 
         def initialize(i)
           @attributes = {}
-          @attributes = %w(name status kind leviathan_uuid built_at old_status location).inject({}) { |h, attr| h[attr] = "#{attr}_#{i}"; h }
+          @attributes = %w(name status kind leviathan_uuid built_at old_status location size).inject({}) { |h, attr| h[attr] = "#{attr}_#{i}"; h }
           @attributes['uuid'] = i
         end
 

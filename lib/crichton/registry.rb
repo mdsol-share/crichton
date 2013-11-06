@@ -42,6 +42,10 @@ module Crichton
       @registry ||= {}
     end
 
+    def datalist_registry
+      @datalist_registry ||= {}
+    end
+
     ##
     # Lists the registered resource descriptors that do not have local links de-referenced.
     #
@@ -161,6 +165,7 @@ module Crichton
 
     def add_resource_descriptor_to_registry(hash_descriptor, registry)
       Crichton::Descriptor::Resource.new(hash_descriptor).tap do |resource_descriptor|
+        register_datalist(resource_descriptor)
         resource_descriptor.descriptors.each do |descriptor|
           if registry[descriptor.id]
             raise Crichton::DescriptorAlreadyRegisteredError,
@@ -168,6 +173,12 @@ module Crichton
           end
           registry[descriptor.id] = descriptor
         end
+      end
+    end
+
+    def register_datalist(resource_descriptor)
+      if datalists = resource_descriptor.descriptor_document['datalists']
+        datalists.each { |k, v| datalist_registry["#{resource_descriptor.name}\##{k}"] = v }
       end
     end
 

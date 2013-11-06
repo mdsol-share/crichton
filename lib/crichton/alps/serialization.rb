@@ -33,6 +33,20 @@ module Crichton
       # ALPS specification elements that can be serialized.
       ALPS_ELEMENTS = [DOC_ELEMENT, EXT_ELEMENT, OPTIONS_ELEMENT, LINK_ELEMENT]
 
+      SERIALIZED_DATALIST_LIST_URL = 'http://alps.io/extensions/serialized_datalist'
+      ##
+      # Add datalists to the ALPS document - as ext elements
+      def alps_datalists
+        result_hash = {}
+        if @descriptor_document['datalists']
+          @descriptor_document['datalists'].each do |dl_name, dl|
+            result_hash['ext'] = [] unless result_hash.include?('ext')
+            result_hash['ext'] << {'href' => SERIALIZED_DATALIST_LIST_URL, 'value' => {dl_name => dl}.to_json}
+          end
+        end
+        result_hash
+      end
+
       ##
       # The ALPS attributes for the descriptor.
       #
@@ -106,8 +120,8 @@ module Crichton
         hash = {}
         hash.merge!(alps_elements.dup)
         hash.merge!(alps_attributes.dup)
+        hash.merge!(alps_datalists.dup)
         hash['descriptor'] = alps_descriptors unless alps_descriptors.empty?
-
         if options[:top_level] != false
           hash.delete('id')
           {'alps' => hash}
@@ -147,7 +161,8 @@ module Crichton
 
         builder.tag!(*args) do
           add_xml_elements(builder)
-          add_xml_descriptors(builder)  
+          add_xml_descriptors(builder)
+          add_xml_datalists(builder) unless options[:top_level] == false # This is intentional! it's false, not true
         end
       end
       
@@ -156,7 +171,11 @@ module Crichton
       def alps_name
         descriptor_document['name']
       end
-      
+
+      def add_xml_datalists(builder)
+        (datalists = alps_datalists['ext']) && datalists.each { |dl| builder.tag!('ext', dl) }
+      end
+
       def add_xml_elements(builder)
         alps_elements.each do |alps_element, properties|
           case alps_element

@@ -181,6 +181,18 @@ module Support
       File.join(SPEC_DIR, 'fixtures', args)
     end
 
+    def alps_fixture_path(*args)
+      File.join(SPEC_DIR, 'fixtures', 'alps', args)
+    end
+
+    def alps_json_data
+      File.open(alps_fixture_path('DRDs.json'), 'rb') { |f| f.read }
+    end
+
+    def alps_xml_data
+      File.open(alps_fixture_path('DRDs.xml'), 'rb') { |f| f.read }
+    end
+
     def tasks_path(*args)
       File.join(Dir.pwd, 'tasks', args)
     end

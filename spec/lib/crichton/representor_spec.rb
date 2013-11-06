@@ -418,7 +418,7 @@ module Crichton
 
     context "BaseSemanticBuilder" do
       describe '#logger' do
-        let(:builder) { Crichton::Representor::XHTMLSerializer::BaseSemanticBuilder.new('xhtml', {}, 'markup') }
+        let(:builder) { Crichton::Representor::XHTMLSerializer::BaseSemanticBuilder.new('xhtml', {}, 'markup', nil) }
         it 'allows access to the Crichton logger' do
           logger = double('logger')
           Crichton.should_receive(:logger).once.and_return(logger)

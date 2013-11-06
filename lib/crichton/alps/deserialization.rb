@@ -35,7 +35,7 @@ module Crichton
 
       private
       def guess_alps_data_type(alps_data)
-        if alps_data.nil?
+        if alps_data.nil? || alps_data.respond_to?(:empty?) && alps_data.empty?
           data_type = :no_data
         elsif alps_data.is_a?(File)
           # Guess based on file name first
@@ -61,8 +61,6 @@ module Crichton
         node.each do |k, node_element|
           if k == 'ext'
             result_hash.merge!(decode_json_ext(node_element))
-          elsif k == 'options'
-            result_hash.merge!(json_node_to_hash(node_element))
           elsif k == 'doc'
             result_hash[k] = json_node_to_hash_doc_element(node_element)
           elsif node_element.is_a?(Array)
@@ -108,6 +106,11 @@ module Crichton
           if ne.include?('href') && ne['href'] == Crichton::ALPS::Serialization::SERIALIZED_OPTIONS_LIST_URL
             if ne.include?('value')
               result_hash['options'] = JSON.parse(ne['value'])
+            end
+          elsif ne.include?('href') && ne['href'] == Crichton::ALPS::Serialization::SERIALIZED_DATALIST_LIST_URL
+            if ne.include?('value')
+              result_hash['datalists'] = [] unless result_hash.include?('datalists')
+              result_hash['datalists'] << JSON.parse(ne['value'])
             end
           else
             result_hash['ext'] = [] unless result_hash.include?('ext')
@@ -180,6 +183,10 @@ module Crichton
           if child.has_attribute?('value')
             result_hash['options'] = JSON.parse(child.attribute('value').value)
           end
+        elsif child.has_attribute?('href') &&
+          child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_DATALIST_LIST_URL
+          result_hash['datalists'] = [] unless result_hash.include?('datalists')
+          result_hash['datalists'] << JSON.parse(child.attribute('value').value)
         else
           result_hash['ext'] = [] unless result_hash.include?('ext')
           result_hash['ext'] << child.attributes

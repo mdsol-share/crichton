@@ -91,7 +91,7 @@ module Support
         }
       }
     end
-    
+
     def alps_profile_with_absolute_links
       {
         'alps' => {
@@ -99,7 +99,8 @@ module Support
             'value' => 'Describes Leviathans.'
           },
           'ext' => [
-            {'href' => 'http://alps.example.com/Leviathans#alt', 'value' => 'Alternate.'}
+            {'href' => 'http://alps.io/extensions/serialized_datalist',
+             'value' => "{\"size-list\":[\"small\",\"medium\",\"large\"]}"}
           ],
           'link' => [
             {
@@ -143,6 +144,32 @@ module Support
                   'href' => 'http://alps.io/schema.org/Text'
                 },
                 {
+                  'id' => 'status',
+                  'doc' => {
+                    'value' => 'How is the Leviathan.'
+                  },
+                  'type' => 'semantic',
+                  'href' => 'http://alps.io/schema.org/Text',
+                  'ext' => [
+                    {
+                      "value" => "{\"id\":\"leviathan_status_options\",\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
+                      'href' => 'http://alps.io/extensions/serialized_options_list'}
+                  ],
+                },
+                {
+                 'id' => 'size',
+                  'doc' => {
+                    'value' => 'How large it is'
+                  },
+                 'type' => 'semantic',
+                 'ext' => [
+                   {
+                     "value" => "{\"datalist\":\"size-list\"}", 
+                     'href' => 'http://alps.io/extensions/serialized_options_list'
+                   }
+                  ],
+                 'href' => 'http://alps.io/schema.org/Text'},
+                {
                   'id' => 'create',
                   'doc' => {
                     'value' => 'Creates a Leviathan.'
@@ -172,7 +199,19 @@ module Support
                           'name' => 'name',
                           'type' => 'semantic',
                           'href' => 'http://alps.io/schema.org/Text'
-                        }
+                        },
+                        {"doc" => {"value" => "How large it is"},
+                         "ext" => [{"value" => "{\"datalist\":\"size-list\"}", "href" => "http://alps.io/extensions/serialized_options_list"}],
+                         "id" => "form-size",
+                         "name" => "size",
+                         "type" => "semantic",
+                         "href" => "http://alps.io/schema.org/Text"},
+                        {"doc" => {"value" => "How is the Leviathan."},
+                         "ext" => [{"value" => "{\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
+                                    "href" => "http://alps.io/extensions/serialized_options_list"}],
+                         "id" => "form-status",
+                         "name" => "status",
+                         "type" => "semantic", "href" => "http://alps.io/schema.org/Text"}
                       ]
                     }
                   ]
@@ -188,8 +227,20 @@ module Support
       @alps_xml ||= Nokogiri::XML(File.open(fixture_path('leviathans_alps.xml')))
     end
 
-    def alps_xml_string
+    def alps_xml_opened_file
       @alps_xml_string ||= File.open(fixture_path('leviathans_alps.xml'))
+    end
+
+    def alps_json_opened_file
+      @alps_xml_string ||= File.open(alps_fixture_path('DRDs.json'))
+    end
+
+    def alps_xml_opened_file_with_bad_filename
+      @alps_xml_string ||= File.open(alps_fixture_path('DRDs_x'))
+    end
+
+    def alps_json_opened_file_with_bad_filename
+      @alps_xml_string ||= File.open(alps_fixture_path('DRDs_j'))
     end
   end
 
