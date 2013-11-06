@@ -128,11 +128,12 @@ describe Crichton::Lint do
 
   context 'with the descriptor file config folder' do
     context 'containing files with errors' do
-      before(:all) do
+      before do
         build_dir_for_lint_rspec('api_descriptors', 'fixtures/lint_resource_descriptors/missing_sections')
+        Crichton.stub(:descriptor_location).and_return('api_descriptors')
       end
 
-      after(:all) do
+      after do
         FileUtils.rm_rf('api_descriptors')
       end
 
@@ -142,12 +143,13 @@ describe Crichton::Lint do
     end
 
     context 'containing files with no errors' do
-      before(:all) do
+      before do
         build_dir_for_lint_rspec('api_descriptors', 'fixtures/resource_descriptors')
         FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')
+        Crichton.stub(:descriptor_location).and_return('api_descriptors')
       end
 
-      after(:all) do
+      after do
         FileUtils.rm_rf('api_descriptors')
       end
 
