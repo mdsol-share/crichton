@@ -25,6 +25,14 @@ module Crichton
         # convert the representation into the base media-type. For example, for a HAL JSON serializer, #as_media_type
         # would return a hash, but #to_media_type would return a JSON string.
         #
+        # The options hash may contain:
+        # :embed_optional => {'name1' => :embed, 'name2' => :link}
+        #
+        # The keys need to be strings which correspond to the name of the attribute that has an embed: single-optional
+        # or multiple-optional or single-optional-link or multiple-optional-link. The first two embed values (the ones
+        # without -link) default to embed when no embed_optional parameter is specified, the ones with -link default
+        # to embedding a link.
+        #
         # @param [Symbol, String] media_type The registered media-type associated with the desired serializer.
         # @param [Hash] options Conditional options to configure to the serialization.
         def to_media_type(media_type, options = {})
