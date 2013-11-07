@@ -261,7 +261,6 @@ module Crichton
         def add_control_select(semantic)
           options = semantic.options
           @markup_builder.li do
-            # Later, the datalist will be added here
             if options.is_internal_select?
               add_control_internal_select(semantic)
             elsif options.is_datalist?
@@ -282,7 +281,7 @@ module Crichton
         # Generate select list with options that were provided in the descriptor document
         def add_control_internal_select(semantic)
           @markup_builder.select(name: semantic.name) do
-            semantic.options.each { |k, v| @markup_builder.option(v, value: k) }
+            semantic.options.each(@object, semantic.name) { |k, v| @markup_builder.option(v, value: k) }
           end
         end
 

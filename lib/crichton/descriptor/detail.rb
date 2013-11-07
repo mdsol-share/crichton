@@ -14,10 +14,11 @@ module Crichton
       OPTIONS = 'options'
       HREF = 'href'
 
-      def options
-        @opts ||= @descriptor_document[OPTIONS].tap do |o|
+      def options(object = nil, name = nil)
+        options_method = "#{name}_options"
+        options_structure = @descriptor_document[OPTIONS].tap do |o|
           o.merge!(Crichton::options_registry[o.delete(HREF)]) if o && o.include?(HREF)
-        end
+        end.tap { |o| o = object.send(options_method, o) if object && object.respond_to?(options_method) }
       end
 
       def is_internal_select?
@@ -41,8 +42,8 @@ module Crichton
       #
       # This iterator should provide a unified interface for generating option lists. It should avoid the need to
       # check if the option is a hash or list, so for both it uses two parameters for the yield.
-      def each
-        if opts = options
+      def each(object, name)
+        if opts =  options(object, name)
           if opts.include? 'hash'
             opts['hash'].each { |k, v| yield k, v }
           elsif opts.include? 'list'
