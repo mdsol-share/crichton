@@ -16,9 +16,10 @@ module Crichton
 
       def options(object = nil, name = nil)
         options_method = "#{name}_options"
-        options_structure = @descriptor_document[OPTIONS].tap do |o|
+        @descriptor_document[OPTIONS].tap do |o|
           o.merge!(Crichton::options_registry[o.delete(HREF)]) if o && o.include?(HREF)
-        end.tap { |o| o = object.send(options_method, o) if object && object.respond_to?(options_method) }
+          o = object.send(options_method, o) if object && object.respond_to?(options_method)
+        end
       end
 
       def is_internal_select?
@@ -26,11 +27,11 @@ module Crichton
       end
 
       def is_datalist?
-        @opts && @opts.include?('datalist')
+        (opts = options) && opts.include?('datalist')
       end
 
       def datalist_name
-        @opts['datalist']
+        options['datalist']
       end
 
       def is_external_select?
