@@ -10,17 +10,17 @@ is the options hash.
 
 The options hash may contain:
 
-## `conditions: [:condition]`
+#### `conditions: [:condition]`
 
 The conditions are defined in the states section of the descriptor document. See the
   [state descriptors documentation][doc/state_descriptors.md] for more information on that topic.
 
-## `semantics: :styled_microdata`
+#### `semantics: :styled_microdata`
 
 Semantics indicates the semantic markup type to apply. Valid options are
 `:microdata` and `:styled_microdata`. If not included, defaults to `:microdata`.
 
-## `embed_optional: {'name1' => :embed, 'name2' => :link}`
+#### `embed_optional: {'name1' => :embed, 'name2' => :link}`
 
 The keys need to be strings which correspond to the name of the attribute that has an `embed: single-optional`
 or `multiple-optional` or `single-optional-link` or `multiple-optional-link`. The first two embed values (the ones
