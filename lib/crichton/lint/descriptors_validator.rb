@@ -1,6 +1,7 @@
 require 'crichton/lint/base_validator'
 require 'crichton/lint/embed_validator'
 require 'crichton/lint/field_type_validator'
+require 'crichton/lint/options_validator'
 
 module Crichton
   module Lint
@@ -90,6 +91,7 @@ module Crichton
         if level > TOP_LEVEL
           FieldTypeValidator.validate(self, descriptor) if descriptor.field_type
           EmbedValidator.validate(self, descriptor) if descriptor.embed
+          OptionsValidator.validate(self, descriptor) if descriptor.form_options
 
           # all NON top level descriptors should have a sample and href entry
           add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample

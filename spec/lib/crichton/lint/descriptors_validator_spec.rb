@@ -135,6 +135,51 @@ module Crichton
           @filename = %w(clean_descriptor_file.yml)
           @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
         end
+
+        context 'select options attributes' do
+          it 'reports errors when an option name is not one of the supported names' do
+            @filename = %w(descriptor_section_errors bad_option_names.yml)
+            @errors = expected_output(:error, 'descriptors.invalid_options_attribute', id: 'total_count', options_attr:
+              'listt', filename: filename, section: :descriptors, sub_header: :error) <<
+              expected_output(:error, 'descriptors.invalid_options_attribute', id: 'items', options_attr: 'hashh')
+          end
+
+          it 'reports errors when several form options have no values' do
+            @filename = %w(descriptor_section_errors missing_options_values.yml)
+            @errors = expected_output(:error, 'descriptors.missing_options_value', id: 'total_count', options_attr:
+              'id', filename: filename, section: :descriptors, sub_header: :error)  <<
+              expected_output(:error, 'descriptors.missing_options_value', id: 'total_count', options_attr: 'list') <<
+              expected_output(:error, 'descriptors.missing_options_value', id: 'items', options_attr: 'hash') <<
+              expected_output(:error, 'descriptors.missing_options_value', id: 'uuid',  options_attr:
+                'external_list') <<
+              expected_output(:error, 'descriptors.missing_options_value', id: 'name', options_attr:
+                'external_hash')
+          end
+
+          it 'reports errors when multiple options are specified under one descriptor' do
+            @filename = %w(descriptor_section_errors multiple_options.yml)
+            @errors = expected_output(:error, 'descriptors.multiple_options', id: 'total_count', options_keys:
+               'list, hash', filename: filename, section: :descriptors, sub_header: :error)
+          end
+
+          it 'reports errors when multiple options enumerators contain the wrong type in its values' do
+            @filename = %w(descriptor_section_errors bad_option_enumerator_types.yml)
+            @errors = expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'total_count', key_type:
+              'list', value_type: 'hash', filename: filename, section: :descriptors, sub_header: :error) <<
+              expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'items',  key_type:
+              'hash', value_type: 'list')
+          end
+
+          it 'reports warnings when options enumerators are missing a value' do
+            @filename = %w(descriptor_section_errors missing_option_enumerator_values.yml)
+            @warnings = expected_output(:warning, 'descriptors.missing_options_value', id: 'items', options_attr:
+              'hash', filename: filename, section: :descriptors, sub_header: :warning) <<
+              expected_output(:warning, 'descriptors.missing_options_value', id: 'uuid',  options_attr:
+              'text_attribute_name')
+          end
+
+          # FINISH WITH 8, 9 10
+        end
       end
     end
   end
