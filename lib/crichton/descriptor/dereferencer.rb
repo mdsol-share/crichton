@@ -4,9 +4,9 @@ module Crichton
   module Descriptor
     class Dereferencer
 
-      def initialize(hash_descriptor, function)
+      def initialize(hash_descriptor, block)
         @hash_descriptor = hash_descriptor
-        @function = function
+        @block = block
         @logger = Crichton.logger
       end
 
@@ -28,7 +28,7 @@ module Crichton
       private
       # Recursive descent
       def build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, id, hash, ids_registry)
-        @function.call(descriptor_name_prefix, hash)
+        @block.call(descriptor_name_prefix, hash)
         descriptor_name = "#{descriptor_name_prefix}\##{id}"
         if id && ids_registry.include?(descriptor_name)
           raise Crichton::DescriptorAlreadyRegisteredError, "Descriptor name #{descriptor_name} already in ids_registry!"
