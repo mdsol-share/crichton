@@ -39,7 +39,7 @@ module Crichton
             when 'href'
               href_option_check(descriptor_validator, descriptor, form_key, value) if value
 
-            when 'external_list' || 'external_hash'
+            when 'external_list', 'external_hash'
               external_option_check(descriptor_validator, descriptor, form_key, value) if value
 
             #11 *warning* if value_attribute_name or text_attribute_name does not have a value
@@ -63,39 +63,42 @@ module Crichton
       end
 
       def self.href_option_check(descriptor_validator, descriptor, form_key, value)
-        #8a. check for #' char
+        #8a. check for #' char, indicating a local resource#option-id
         if value.include?('#')
-          descriptor_validator.add_warning('descriptors.invalid_options_href', id: descriptor.id, options_attr:
-            form_key, href: value) unless value.split('#').size == 2
+          descriptor_validator.add_warning('descriptors.invalid_options_ref', id: descriptor.id, options_attr:
+            form_key, ref: value) unless value.split('#').size == 2
 
           #8b see if the LHS is an id in this file
           unless valid_descriptor?(value.split('#').first, descriptor_validator)
-            descriptor_validator.add_error('descriptors.href_reference_not_found', id: descriptor.id,
-                                           options_attr: form_key, href: value, type: 'descriptor')
+            descriptor_validator.add_error('descriptors.option_reference_not_found', id: descriptor.id,
+              options_attr: form_key, ref: value, type: 'descriptor')
           end
 
           #8c see if the RHS is an option id extant in this file
           unless valid_options_id?(descriptor_validator, value.split('#').last)
-            descriptor_validator.add_error('descriptors.href_reference_not_found', id: descriptor.id,
-                                           options_attr: form_key, href: value, type: 'option id')
+            descriptor_validator.add_error('descriptors.option_reference_not_found', id: descriptor.id,
+              options_attr: form_key, ref: value, type: 'option id')
           end
         else
-          descriptor_validator.add_error('descriptors.invalid_href', id: descriptor.id, options_attr:
-            form_key, href: value)
+          descriptor_validator.add_error('descriptors.invalid_options_protocol', id: descriptor.id, options_attr:
+            form_key, uri: value) unless valid_protocol_type(value)
         end
       end
 
       def self.external_option_check(descriptor_validator, descriptor, form_key, value)
         #9 check for valid url
-        unless value && Crichton::Descriptor::Resource::PROTOCOL_TYPES.include?(value[/\Ahttp/])
-          descriptor_validator.add_error('descriptors.invalid_option_uri', id: descriptor.id, options_attr:
+        unless valid_protocol_type(value)
+          descriptor_validator.add_error('descriptors.invalid_option_protocol', id: descriptor.id, options_attr:
             form_key, uri: value)
         end
 
         #10 test to see if value_attribute_name exists, if not, put out error
         descriptor_validator.add_error('descriptors.missing_options_key', id: descriptor.id, options_attr:
           form_key) unless descriptor.form_options.has_key?('value_attribute_name')
+      end
 
+      def self.valid_protocol_type(value)
+        value && Crichton::Descriptor::Resource::PROTOCOL_TYPES.include?(value[/\Ahttp/])
       end
 
       def self.clashing_key_count?(options)
