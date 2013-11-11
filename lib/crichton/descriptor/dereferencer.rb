@@ -3,11 +3,11 @@ require 'addressable/uri'
 module Crichton
   module Descriptor
     class Dereferencer
+      include Crichton::Helpers::ConfigHelper
 
       def initialize(hash_descriptor, block)
         @hash_descriptor = hash_descriptor
         @block = block
-        @logger = Crichton.logger
       end
 
       def dereference_hash_descriptor(ids_registry, external_descriptor_documents)
@@ -59,7 +59,7 @@ module Crichton
             external_descriptor_documents[link] = external_document_store.get(link) || external_document_cache.get(link)
           rescue => e
             error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}\n#{e.backtrace}"
-            @logger.warn error_message
+            logger.warn error_message
             raise(Crichton::ExternalProfileLoadError, error_message)
           end
         end
