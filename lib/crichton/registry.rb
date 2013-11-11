@@ -8,7 +8,7 @@ module Crichton
   class Registry
     def initialize(options = {})
       @logger = Crichton.logger
-      register_multiple(Crichton.descriptor_files) unless options[:automatic_load] == false
+      register_multiple(Crichton.descriptor_filenames) unless options[:automatic_load] == false
     end
 
     ##
@@ -97,6 +97,14 @@ module Crichton
         end
     end
 
+    def ids_registry
+      @ids_registry ||= {}
+    end
+
+    def dereference_queue
+      @dereference_queue ||= []
+    end
+
     ##
     # Registers a resource descriptor document by name and version in the raw registry.
     # This is intended to be used by build_registry or register_single but in tests could be useful to be called
@@ -112,7 +120,8 @@ module Crichton
       # Add the non-dereferenced descriptor document -
       # the de-referencing will need to wait until all IDs are collected.
       add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
-      resource_descriptor = add_resource_descriptor_to_registry(hash_descriptor, @raw_descriptor_registry ||= {})
+
+      resource_descriptor = add_resource_descriptor_to_registry(hash_descriptor, raw_descriptor_registry)
       add_resource_descriptor_to_raw_profile_registry(resource_descriptor)
       resource_descriptor
     end
@@ -121,19 +130,18 @@ module Crichton
     # Finishes registration by building de-referenced descriptors. The de-referencing only makes sense once all
     # local descriptor documents have been loaded.
     def dereference_queued_descriptor_hashes_and_build_registry
-      @dereference_queue.each do |dereferencer|
+      dereference_queue.each do |dereferencer|
         # Build hash with resolved local links
-        dereferencer.dereference_hash_descriptor(@ids_registry, external_descriptor_documents).tap do |hash|
-          add_resource_descriptor_to_registry(hash, (@descriptor_registry ||= {}))
+        dereferencer.dereference_hash_descriptor(ids_registry, external_descriptor_documents).tap do |hash|
+          add_resource_descriptor_to_registry(hash, descriptor_registry)
         end
       end
-      @dereference_queue = nil
     end
 
     def add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
       dereferencer = Crichton::Descriptor::Dereferencer.new(hash_descriptor, add_values_to_options_registry)
-      (@ids_registry ||= {}).merge(dereferencer.collect_descriptor_ids)
-      (@dereference_queue ||= []) << dereferencer
+      ids_registry.merge!(dereferencer.collect_descriptor_ids)
+      dereference_queue << dereferencer
     end
 
     def add_resource_descriptor_to_raw_profile_registry(resource_descriptor)
