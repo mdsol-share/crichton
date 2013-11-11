@@ -8,7 +8,7 @@ module Crichton
   class Registry
     def initialize(options = {})
       @logger = Crichton.logger
-      build_registry unless options[:automatic_load] == false
+      register_multiple(Crichton.descriptor_files) unless options[:automatic_load] == false
     end
 
     ##
@@ -39,7 +39,7 @@ module Crichton
     #
     # @return [Hash] The registered resource descriptors, if any.
     def descriptor_registry
-      @registry ||= {}
+      @descriptor_registry ||= {}
     end
 
     def datalist_registry
@@ -80,10 +80,22 @@ module Crichton
     ##
     # external_descriptor_documents
     def external_descriptor_documents
-      @external_descriptor_documents
+      @external_descriptor_documents ||= {}
     end
 
     private
+
+    def load_resource_descriptor(resource_descriptor)
+      hash_descriptor = case resource_descriptor
+        when String
+          raise ArgumentError, "Filename #{resource_descriptor} is not valid." unless File.exists?(resource_descriptor)
+          YAML.load_file(resource_descriptor)
+        when Hash
+          resource_descriptor
+        else
+          raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
+        end
+    end
 
     ##
     # Registers a resource descriptor document by name and version in the raw registry.
@@ -95,18 +107,7 @@ module Crichton
     # @param [Hash, String] resource_descriptor The hashified resource descriptor document or filename of a YAML
     # resource descriptor document.
     def register(resource_descriptor)
-      hash_descriptor = case resource_descriptor
-        when String
-          raise ArgumentError, "Filename #{resource_descriptor} is not valid." unless File.exists?(resource_descriptor)
-          YAML.load_file(resource_descriptor)
-        when Hash
-          resource_descriptor
-        else
-          raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
-        end
-
-      # Collect the hash fragments for dereferencing keyed by the ID (which is a link to a descriptor element)
-      collect_descriptor_ids(hash_descriptor)
+      hash_descriptor = load_resource_descriptor(resource_descriptor)
 
       # Add the non-dereferenced descriptor document -
       # the de-referencing will need to wait until all IDs are collected.
@@ -120,47 +121,26 @@ module Crichton
     # Finishes registration by building de-referenced descriptors. The de-referencing only makes sense once all
     # local descriptor documents have been loaded.
     def dereference_queued_descriptor_hashes_and_build_registry
-      @dereference_queue.each do |hash_descriptor|
+      @dereference_queue.each do |dereferencer|
         # Build hash with resolved local links
-        dereferencer = Crichton::Descriptor::Dereferencer.new(@ids_registry) {|v| load_external_profile(v)}
-        dereferenced_hash_descriptor = dereferencer.build_dereferenced_hash_descriptor(
-          hash_descriptor['links']['self'], hash_descriptor)
-        add_resource_descriptor_to_registry(dereferenced_hash_descriptor, (@registry ||= {}))
+        dereferencer.dereference_hash_descriptor(@ids_registry, external_descriptor_documents).tap do |hash|
+          add_resource_descriptor_to_registry(hash, (@descriptor_registry ||= {}))
+        end
       end
       @dereference_queue = nil
     end
 
-
-    # Loads all descriptor documents from the descriptor directory location and processes them
-    #
-    # De-references documents after loading all available documents
-    def build_registry
-      if File.exists?(location = Crichton.descriptor_location)
-        files = Dir.glob(File.join(location, '*.{yml,yaml}'))
-        if files.empty?
-          raise "No resource descriptor directory exists or it is empty. Default is #{Crichton.descriptor_location}."
-        end
-        files.each { |f| register(YAML.load_file(f)) }
-        # The above register step works on a per-file basis. If a early file references a later file, it won't be
-        # able to dereference the data. So in order to handle this, the de-referencing needs to be done in a later
-        # step. Not elegant, but should get the job done.
-        dereference_queued_descriptor_hashes_and_build_registry
-      else
-        raise "No resource descriptor directory exists or it is empty. Default is #{Crichton.descriptor_location}."
-      end
-    end
-
-
     def add_resource_descriptor_to_dereferencing_queue(hash_descriptor)
-      (@dereference_queue ||= []) << hash_descriptor
+      dereferencer = Crichton::Descriptor::Dereferencer.new(hash_descriptor, add_values_to_options_registry)
+      (@ids_registry ||= {}).merge(dereferencer.collect_descriptor_ids)
+      (@dereference_queue ||= []) << dereferencer
     end
 
     def add_resource_descriptor_to_raw_profile_registry(resource_descriptor)
       if raw_profile_registry[resource_descriptor.id]
         raise ArgumentError, "Resource descriptor profile for #{resource_descriptor.id} is already registered."
-      else
-       raw_profile_registry[resource_descriptor.id] = resource_descriptor
       end
+      raw_profile_registry[resource_descriptor.id] = resource_descriptor
     end
 
     def add_resource_descriptor_to_registry(hash_descriptor, registry)
@@ -182,71 +162,14 @@ module Crichton
       end
     end
 
-    # This method calls the recursive method
-    def collect_descriptor_ids(hash_descriptor)
-      descriptor_document_id = hash_descriptor['id']
-      descriptors = hash_descriptor['descriptors']
-      descriptors.each do |k, v|
-        build_descriptor_hashes_by_id(k, descriptor_document_id, nil, v)
-      end
-    end
-
-    # Recursive descent
-    def build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, id, hash)
-      add_values_to_options_registry(descriptor_name_prefix, hash)
-      @ids_registry ||= {}
-      descriptor_name = "#{descriptor_name_prefix}\##{id}"
-      if id && @ids_registry.include?(descriptor_name)
-        raise Crichton::DescriptorAlreadyRegisteredError, "Descriptor name #{descriptor_name} already in ids_registry!"
-      end
-      # Add descriptor to the IDs hash
-      @ids_registry["#{descriptor_name_prefix}\##{id}"] = hash unless id.nil?
-
-      # Descend
-      unless hash['descriptors'].nil?
-        hash['descriptors'].each do |child_id, descriptor|
-          build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, child_id, descriptor)
-        end
-      end
-    end
-
     OPTIONS_STRING = 'options'
-    def add_values_to_options_registry(descriptor_name_prefix, hash)
-      if hash.include?(OPTIONS_STRING) && hash[OPTIONS_STRING].include?('id')
-        options_registry["#{descriptor_name_prefix}\##{hash[OPTIONS_STRING]['id']}"] = hash[OPTIONS_STRING]
-      end
-    end
-
-    def external_document_cache
-      @external_document_cache ||= Crichton::ExternalDocumentCache.new
-    end
-
-    def external_document_store
-      @external_document_store ||= Crichton::ExternalDocumentStore.new
-    end
-
-    def load_external_profile(link)
-      # find and get profile
-      unless (@external_descriptor_documents ||= {}).include?(link)
-        begin
-          @external_descriptor_documents[link] = external_document_store.get(link) || external_document_cache.get(link)
-        rescue => e
-          error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}\n#{e.backtrace}"
-          @logger.warn error_message
-          raise(Crichton::ExternalProfileLoadError, error_message)
+    def add_values_to_options_registry
+      lambda do |descriptor_name_prefix, hash|
+        if hash.include?(OPTIONS_STRING) && hash[OPTIONS_STRING].include?('id')
+          options_registry["#{descriptor_name_prefix}\##{hash[OPTIONS_STRING]['id']}"] = hash[OPTIONS_STRING]
         end
       end
-      # parse profile to hash
-      profile = Crichton::ALPS::Deserialization.new(@external_descriptor_documents[link])
-      ext_profile_hash = profile.to_hash
-      # add profile to id registry
-      uri = URI.parse(link)
-      uri.fragment = nil
-      descriptor_root = uri.to_s
-      descriptors = ext_profile_hash['descriptors']
-      descriptors && descriptors.each do |k,v|
-        build_descriptor_hashes_by_id(k, descriptor_root, nil, v)
-      end
     end
+
   end
 end

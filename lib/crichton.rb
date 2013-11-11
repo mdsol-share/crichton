@@ -179,6 +179,10 @@ module Crichton
     @descriptor_location ||= File.join(root, descriptor_directory)
   end
 
+  def self.descriptor_files
+    @descriptor_files ||= Dir.glob(File.join(descriptor_location, '*.{yml,yaml}'))
+  end
+
   ##
   # The root directory of parent project.
   #
