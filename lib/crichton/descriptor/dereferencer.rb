@@ -1,4 +1,5 @@
 require 'addressable/uri'
+require 'crichton/helpers'
 
 module Crichton
   module Descriptor
