@@ -16,10 +16,12 @@ module Crichton
 
       def options(object = nil, name = nil)
         options_method = "#{name}_options"
-        @descriptor_document[OPTIONS].tap do |o|
+        res = @descriptor_document[OPTIONS].tap do |o|
           o.merge!(Crichton::options_registry[o.delete(HREF)]) if o && o.include?(HREF)
-          o = object.send(options_method, o) if object && object.respond_to?(options_method)
         end
+        # Loop in the model in order to provide or override the options list/hash
+        res = object.send(options_method.to_sym, res) if object && object.respond_to?(options_method.to_sym)
+        res
       end
 
       def is_internal_select?

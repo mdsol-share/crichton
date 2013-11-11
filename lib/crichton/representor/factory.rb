@@ -83,6 +83,27 @@ module Crichton
 
             define_singleton_method(:state, lambda { state }) if state
           end
+
+          ##
+          # Use the *_options lambda from the collection if it is provided
+          def method_missing(meth, *args, &block)
+            if meth.to_s.ends_with?('_options') && @target.include?(meth.to_s)
+              @target[meth.to_s].call(*args)
+            else
+              super
+            end
+          end
+
+          ##
+          # Tell anyone who askes that we have the *_options lambda
+          def respond_to?(meth, include_private = false)
+            if meth.to_s.ends_with?('_options') && @target.include?(meth.to_s)
+              true
+            else
+              super
+            end
+          end
+
         end
       end
     end
