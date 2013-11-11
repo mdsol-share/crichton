@@ -10,13 +10,15 @@ module Crichton
           end
         end
 
-#        puts "DESCRIPTOR ID: #{descriptor.id}"
-
         #4, more than one option specified
         descriptor_validator.add_error('descriptors.multiple_options', id: descriptor.id, options_keys:
-          descriptor.form_options.keys.join(', ')) if clashing_key_count?(descriptor.form_options)
+          descriptor.form_options.keys.join(', ')) if clashing_keys?(descriptor.form_options)
 
         option_rule_check(descriptor_validator, descriptor)
+      end
+
+      def self.clashing_keys?(options)
+        (options.keys & %w(href list hash external_list external_hash)).size > 1
       end
 
       def self.option_rule_check(descriptor_validator, descriptor)
@@ -97,14 +99,6 @@ module Crichton
           form_key) unless descriptor.form_options.has_key?('value_attribute_name')
       end
 
-      def self.valid_protocol_type(value)
-        value && Crichton::Descriptor::Resource::PROTOCOL_TYPES.include?(value[/\Ahttp/])
-      end
-
-      def self.clashing_key_count?(options)
-        (options.keys & %w(href list hash external_list external_hash)).size > 1
-      end
-
       def self.valid_descriptor?(descriptor, descriptor_validator)
         descriptor_validator.resource_descriptor.descriptors.any? { |desc| desc.id.downcase == descriptor.downcase }
       end
@@ -127,6 +121,10 @@ module Crichton
 
       def self.option_id_match?(options, option_id)
         options && options.has_key?(:id.to_s) && options[:id.to_s] == option_id
+      end
+
+      def self.valid_protocol_type(value)
+        value && Crichton::Descriptor::Resource::PROTOCOL_TYPES.include?(value[/\Ahttp/])
       end
     end
   end

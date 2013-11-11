@@ -195,7 +195,6 @@ module Crichton
               options_attr: 'external_hash', filename: filename, section: :descriptors, sub_header: :error) <<
               expected_output(:error, 'descriptors.missing_options_key', id: 'location',  options_attr: 'external_list')
            end
-
         end
       end
     end
