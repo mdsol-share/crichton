@@ -68,7 +68,7 @@ module Crichton
         registry = Registry.new(automatic_load: false)
         registry.register_multiple([fixture_path('resource_descriptors', 'drds_descriptor_v1.yml'),
                                     fixture_path('broken_resource_descriptors', 'leviathans_descriptor_v1.yaml')])
-        expect { registry.descriptor_registry }.to raise_error('Descriptor for DRDs is already registered.')
+        expect { registry.descriptor_registry }.to raise_error('Descriptor for drd is already registered.')
       end
     end
 
