@@ -5,15 +5,15 @@ module Crichton
     class Options
 
       HREF = 'href'
-      SRC = 'src'
+      SOURCE = 'source'
       def initialize(descriptor_options, object)
         if descriptor_options && descriptor_options.include?(HREF)
           descriptor_options = descriptor_options.merge(Crichton::options_registry[descriptor_options[HREF]])
           descriptor_options.delete(HREF)
         end
         # Loop in the model in order to provide or override the options list/hash
-        if descriptor_options && descriptor_options.include?(SRC)
-          src_sym = descriptor_options[SRC].to_sym
+        if descriptor_options && descriptor_options.include?(SOURCE)
+          src_sym = descriptor_options[SOURCE].to_sym
           descriptor_options = object.send(src_sym, descriptor_options) if object && object.respond_to?(src_sym)
         end
         @descriptor_options = descriptor_options
@@ -56,6 +56,5 @@ module Crichton
         end
       end
     end
-
   end
 end

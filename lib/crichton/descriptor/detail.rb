@@ -23,11 +23,10 @@ module Crichton
       # @!macro string_reader
       descriptor_reader :type
 
-      ##
-      # Return de-referenced values attribute
-
       OPTIONS = 'options'
 
+      ##
+      # returns options branch
       def options
         @options ||= descriptor_document[OPTIONS]
       end
