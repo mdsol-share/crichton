@@ -296,7 +296,7 @@ descriptors:
         doc: The area the DRD is currently in
         type: semantic
         href: http://alps.io/schema.org/Text
-        sample: somewere
+        sample: moya
         options:
           external_hash: http://crichton.example.com/drd_location_list#items
           value_attribute_name: location_id
@@ -394,7 +394,7 @@ descriptors:
                 name: location
                 doc: The area the DRD is currently in
                 href: http://alps.io/schema.org/Text
-                sample: some_location
+                sample: moya
                 field_type: select
                 options:
                   external_list: http://crichton.example.com/drd_location_list#items
