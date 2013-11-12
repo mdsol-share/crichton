@@ -12,7 +12,8 @@ module Crichton
       end
 
       def dereference_hash_descriptor(ids_registry, external_descriptor_documents)
-        build_dereferenced_hash_descriptor(ids_registry, @hash_descriptor['links']['self'], @hash_descriptor, external_descriptor_documents)
+        build_dereferenced_hash_descriptor(ids_registry, @hash_descriptor['links']['self'],
+                                           @hash_descriptor, external_descriptor_documents)
       end
 
       # This method calls the recursive method
