@@ -6,6 +6,9 @@ module Crichton
     describe Dereferencer do
 
       context 'build_dereferenced_hash_descriptor' do
+        let(:build_options_registry) do
+          ->(name,hash){ [name, hash] }
+        end
 
         it 'dereferences a local reference' do
           @ids_registry = {
@@ -15,6 +18,9 @@ module Crichton
               }}
           descriptor_hash = {
               'id' => "example",
+              'links' => {
+                'self' => 'example'
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -32,6 +38,9 @@ module Crichton
           }
           reference_hash = {
               'id' => "example",
+              'links' => {
+                  'self' => 'example'
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -47,8 +56,9 @@ module Crichton
               }
             }
           }
-          dereferencer = Dereferencer.new(@ids_registry) {}
-          deref_hash = dereferencer.build_dereferenced_hash_descriptor('example', descriptor_hash)
+
+          dereferencer = Dereferencer.new(descriptor_hash, build_options_registry)
+          deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
           deref_hash.should == reference_hash
         end
 
@@ -60,6 +70,9 @@ module Crichton
               }}
           descriptor_hash = {
               'id' => "example",
+              'links' => {
+                  'self' => 'example'
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -76,6 +89,9 @@ module Crichton
           }
           reference_hash = {
               'id' => "example",
+              'links' => {
+                  'self' => 'example'
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -90,8 +106,9 @@ module Crichton
               }
             }
           }
-          dereferencer = Dereferencer.new(@ids_registry) {}
-          deref_hash = dereferencer.build_dereferenced_hash_descriptor('example', descriptor_hash)
+
+          dereferencer = Dereferencer.new(descriptor_hash, build_options_registry)
+          deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
           deref_hash.should == reference_hash
         end
 
@@ -104,6 +121,9 @@ module Crichton
             }
           descriptor_hash = {
               'id' => "example",
+              'links' => {
+                  'self' => 'example'
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -120,6 +140,9 @@ module Crichton
           }
           reference_hash = {
               'id' => "example",
+              'links' => {
+                  'self' => 'example'
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -134,8 +157,9 @@ module Crichton
               }
             }
           }
-          dereferencer = Dereferencer.new(@ids_registry) {}
-          deref_hash = dereferencer.build_dereferenced_hash_descriptor('example', descriptor_hash)
+
+          dereferencer = Dereferencer.new(descriptor_hash, build_options_registry)
+          deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
           deref_hash.should == reference_hash
         end
 
@@ -149,6 +173,9 @@ module Crichton
             }
           descriptor_hash = {
               'id' => "example",
+              'links' => {
+                  'self' => 'example'
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -167,6 +194,9 @@ module Crichton
           }
           reference_hash = {
               'id' => "example",
+              'links' => {
+                  'self' => 'example'
+              },
               'descriptors' => {
               'example' => {
                   'descriptors' => {
@@ -183,8 +213,9 @@ module Crichton
               }
             }
           }
-          dereferencer = Dereferencer.new(@ids_registry) {}
-          deref_hash = dereferencer.build_dereferenced_hash_descriptor('example', descriptor_hash)
+
+          dereferencer = Dereferencer.new(descriptor_hash, build_options_registry)
+          deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
           deref_hash.should == reference_hash
         end
 
