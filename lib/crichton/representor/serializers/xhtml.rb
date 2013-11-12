@@ -1,5 +1,4 @@
 require 'crichton/representor/serializer'
-require 'crichton/representor/options'
 require 'crichton/helpers'
 
 module Crichton
@@ -260,7 +259,7 @@ module Crichton
 
 
         def add_control_select(semantic)
-          options = Crichton::Representor::Options.new(semantic.options, @object)
+          options = @object.options(semantic.options)
           @markup_builder.li do
             if options.is_internal_select?
               add_control_internal_select(semantic, options)
@@ -289,7 +288,7 @@ module Crichton
         ##
         # Generate input that has a "special" link for the client to fetch the options from.
         def add_control_external_select(semantic)
-          options = Crichton::Representor::Options.new(semantic.options, @object)
+          options = @object.options(semantic.options)
           opts = options.options
           link_arguments = {value_attribute_name: opts['value_attribute_name']}
           if opts.include?('external_hash')

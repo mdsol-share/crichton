@@ -1,5 +1,6 @@
 require 'active_support/concern'
 require 'crichton/representor/serialization/media_type'
+require 'crichton/representor/options'
 
 module Crichton
   ##
@@ -21,7 +22,6 @@ module Crichton
     end
 
     module ClassMethods
-
       ##
       # The data-related semantic descriptors defined for the associated resource descriptor.
       #
@@ -85,6 +85,10 @@ module Crichton
         filter = embed == :embedded ? :select : :reject
         resource_descriptor.send(descriptors).values.send(filter) { |descriptor| descriptor.embeddable? }
       end
+    end
+
+    def options(options_hash)
+      Options.new(options_hash, self)
     end
 
     ##
