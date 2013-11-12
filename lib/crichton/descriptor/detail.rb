@@ -138,7 +138,7 @@ module Crichton
         @validators ||= [*descriptor_document['validators']].map { |v| v.is_a?(String) ? { v => nil } : v }.inject({}, :update)
       end
 
-      def form_options
+      def raw_options
        options.descriptor_document[Options::OPTIONS]
       end
 

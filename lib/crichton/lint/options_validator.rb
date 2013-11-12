@@ -2,7 +2,7 @@ module Crichton
   module Lint
     class OptionsValidator
       def self.validate(descriptor_validator, descriptor)
-        descriptor.form_options.keys.each do |key|
+        descriptor.raw_options.keys.each do |key|
           #1 invalid option name
           unless Crichton::Descriptor::Options::OPTIONS_VALUES.include?(key)
             descriptor_validator.add_error('descriptors.invalid_options_attribute', id: descriptor.id, options_attr:
@@ -12,7 +12,7 @@ module Crichton
 
         #4, more than one option specified
         descriptor_validator.add_error('descriptors.multiple_options', id: descriptor.id, options_keys:
-          descriptor.form_options.keys.join(', ')) if clashing_keys?(descriptor.form_options)
+          descriptor.raw_options.keys.join(', ')) if clashing_keys?(descriptor.raw_options)
 
         option_rule_check(descriptor_validator, descriptor)
       end
@@ -23,7 +23,7 @@ module Crichton
 
       def self.option_rule_check(descriptor_validator, descriptor)
         # various rules depending upon the different types of options
-        descriptor.form_options.each do |form_key, value|
+        descriptor.raw_options.each do |form_key, value|
           #1-3 missing value for an option
           if %w(id href list hash external_list external_hash).include?(form_key)
             descriptor_validator.add_error('descriptors.missing_options_value', id: descriptor.id, options_attr:
@@ -96,7 +96,7 @@ module Crichton
 
         #10 test to see if value_attribute_name exists, if not, put out error
         descriptor_validator.add_error('descriptors.missing_options_key', id: descriptor.id, options_attr:
-          form_key) unless descriptor.form_options.has_key?('value_attribute_name')
+          form_key) unless descriptor.raw_options.has_key?('value_attribute_name')
       end
 
       def self.valid_descriptor?(descriptor, descriptor_validator)
@@ -109,7 +109,7 @@ module Crichton
 
       def self.find_matching_option_id(descriptors, option_id, found)
         descriptors.each do |descriptor|
-          found = option_id_match?(descriptor.form_options, option_id)
+          found = option_id_match?(descriptor.raw_options, option_id)
           break if found
           if descriptor.descriptors
             found = find_matching_option_id(descriptor.descriptors, option_id, found)
