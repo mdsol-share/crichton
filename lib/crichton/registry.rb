@@ -183,7 +183,7 @@ module Crichton
       if intersect.empty?
         ids.merge!(other)
       else
-        raise ArgumentError, "Descriptor for #{intersect.keys.join(" ")} is already registered."
+        raise DescriptorAlreadyRegisteredError, "Descriptor for #{intersect.keys.join(" ")} is already registered."
       end
     end
 

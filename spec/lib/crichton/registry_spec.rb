@@ -15,8 +15,12 @@ module Crichton
       end
 
       context 'without a directory of resource descriptors specified' do
+        before do
+          Crichton.stub(:descriptor_filenames).and_return([drds_non_existent_filename])
+        end
+
         it 'raises an error' do
-          expect { Registry.new.descriptor_registry }.to raise_error(/^No resource descriptor directory exists or it is empty./)
+          expect { Registry.new.descriptor_registry }.to raise_error("Filename #{drds_non_existent_filename} is not valid.")
         end
       end
     end
@@ -36,8 +40,8 @@ module Crichton
 
       it "raises an error when duplicate descriptor names are registered" do
         registry = Registry.new(automatic_load: false)
-        expect { registry.register_single(fixture_path('broken_resource_descriptors', 'drds_descriptor_v1.yml'))
-          }.to raise_error('Descriptor name DRDs#update-drd already in ids_registry!')
+        registry.register_single(fixture_path('broken_resource_descriptors', 'drds_descriptor_v1.yml'))
+        expect { registry.descriptor_registry }.to raise_error('Descriptor name DRDs#update-drd already in ids_registry!')
       end
     end
 
@@ -62,10 +66,9 @@ module Crichton
 
       it "accepts filenames" do
         registry = Registry.new(automatic_load: false)
-        expect do
-          registry.register_multiple([fixture_path('resource_descriptors', 'drds_descriptor_v1.yml'),
-            fixture_path('broken_resource_descriptors', 'leviathans_descriptor_v1.yaml')])
-        end.to raise_error('Resource descriptor for drd is already registered.')
+        registry.register_multiple([fixture_path('resource_descriptors', 'drds_descriptor_v1.yml'),
+                                    fixture_path('broken_resource_descriptors', 'leviathans_descriptor_v1.yaml')])
+        expect { registry.descriptor_registry }.to raise_error('Descriptor for DRDs is already registered.')
       end
     end
 
@@ -128,8 +131,8 @@ module Crichton
       end
 
       it 'raises an error when the resource descriptor is already registered' do
-        registry.register_single(drds_descriptor)
-        expect { registry.register_single(drds_descriptor) }.to raise_error(
+        registry.register_multiple([drds_descriptor, drds_descriptor])
+        expect { registry.descriptor_registry }.to raise_error(
           Crichton::DescriptorAlreadyRegisteredError)
       end
     end
@@ -194,12 +197,5 @@ module Crichton
       end
     end
 
-    describe '.load_external_profile?' do
-      let(:registry) { Registry.new(automatic_load: false) }
-
-      it 'raises an error when fed a bad link' do
-        expect { registry.send(:load_external_profile, "bad link") }.to raise_error(Crichton::ExternalProfileLoadError)
-      end
-    end
   end
 end

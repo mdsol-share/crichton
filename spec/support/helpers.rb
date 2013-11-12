@@ -41,6 +41,10 @@ module Support
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
 
+    def drds_non_existent_filename
+      fixture_path('resource_descriptors', 'drds_descriptor_v1000.yml')
+    end
+
     def drds_hal_json
       @drds_hal_json ||= File.open(fixture_path('hal.json'))
     end
