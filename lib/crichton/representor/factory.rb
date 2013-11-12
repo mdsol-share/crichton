@@ -86,9 +86,9 @@ module Crichton
 
           ##
           # Use the *_options lambda from the collection if it is provided
-          def method_missing(meth, *args, &block)
-            if meth.to_s.ends_with?('_options') && @target.include?(meth.to_s)
-              @target[meth.to_s].call(*args)
+          def method_missing(method, *args, &block)
+            if method.to_s.ends_with?('_options') && @target.include?(method.to_s)
+              @target[method.to_s].call(*args)
             else
               super
             end
@@ -97,11 +97,7 @@ module Crichton
           ##
           # Tell anyone who askes that we have the *_options lambda
           def respond_to?(meth, include_private = false)
-            if meth.to_s.ends_with?('_options') && @target.include?(meth.to_s)
-              true
-            else
-              super
-            end
+            (meth.to_s.ends_with?('_options') && @target.include?(meth.to_s)) ? true : super
           end
 
         end
