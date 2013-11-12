@@ -1,6 +1,4 @@
 require 'crichton/lint/base_validator'
-require 'crichton/lint/embed_validator'
-require 'crichton/lint/field_type_validator'
 
 module Crichton
   module Lint
