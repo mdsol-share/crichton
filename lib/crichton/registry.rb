@@ -109,9 +109,7 @@ module Crichton
     ##
     # Registers a resource descriptor document by name and version in the raw registry.
     # This is intended to be used by build_registry or register_single but in tests could be useful to be called
-    # directly. After all descriptor documents have been registered with this method, call
-    # dereference_queued_descriptor_hashes_and_build_registry to do the dereferencing in the next step.
-    #
+    # directly.
     #
     # @param [Hash, String] resource_descriptor The hashified resource descriptor document or filename of a YAML
     # resource descriptor document.
@@ -120,7 +118,6 @@ module Crichton
       add_hash_descriptor_to_dereferencing_queue(hash_descriptor)
       add_hash_descriptor_to_resources_list(hash_descriptor)
     end
-
 
     def load_resource_descriptor(resource_descriptor)
       hash_descriptor = case resource_descriptor
