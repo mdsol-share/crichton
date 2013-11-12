@@ -99,7 +99,6 @@ module Crichton
           def respond_to?(meth, include_private = false)
             (meth.to_s.ends_with?('_options') && @target.include?(meth.to_s)) ? true : super
           end
-
         end
       end
     end
