@@ -2,62 +2,6 @@ require 'crichton/descriptor/profile'
 
 module Crichton
   module Descriptor
-
-    ##
-    # Manages options for select lists
-    class Options
-
-      def initialize(descriptor_document)
-        @descriptor_document = descriptor_document
-      end
-
-      OPTIONS = 'options'
-      HREF = 'href'
-
-      def options(object = nil, name = nil)
-        options_method = "#{name}_options"
-        res = @descriptor_document[OPTIONS].tap do |o|
-          o.merge!(Crichton::options_registry[o.delete(HREF)]) if o && o.include?(HREF)
-        end
-        # Loop in the model in order to provide or override the options list/hash
-        res = object.send(options_method.to_sym, res) if object && object.respond_to?(options_method.to_sym)
-        res
-      end
-
-      def is_internal_select?
-        (opts = options) && (opts.include?('hash') || opts.include?('list'))
-      end
-
-      def is_datalist?
-        (opts = options) && opts.include?('datalist')
-      end
-
-      def datalist_name
-        options['datalist']
-      end
-
-      def is_external_select?
-        (opts = options) && (opts.include?('external_hash') || opts.include?('external_list'))
-      end
-
-      ##
-      # Iterator allowing the generation of select lists from the values
-      #
-      # This iterator should provide a unified interface for generating option lists. It should avoid the need to
-      # check if the option is a hash or list, so for both it uses two parameters for the yield.
-      def each(object, name)
-        if opts =  options(object, name)
-          if opts.include? 'hash'
-            opts['hash'].each { |k, v| yield k, v }
-          elsif opts.include? 'list'
-            opts['list'].each { |k| yield k, k }
-          else
-            Crichton::logger.warn("did not find list or hash key in options data: #{opts.to_s}")
-          end
-        end
-      end
-    end
-
     ##
     # Manages detail information associated with descriptors.
     class Detail < Profile
@@ -81,8 +25,11 @@ module Crichton
 
       ##
       # Return de-referenced values attribute
+
+      OPTIONS = 'options'
+
       def options
-        @options ||= Options.new(descriptor_document)
+        @options ||= descriptor_document[OPTIONS]
       end
 
       ##

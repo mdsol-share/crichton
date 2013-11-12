@@ -1,4 +1,5 @@
 require 'crichton/representor/serializer'
+require 'crichton/representor/options'
 require 'crichton/helpers'
 
 module Crichton
@@ -259,10 +260,10 @@ module Crichton
 
 
         def add_control_select(semantic)
-          options = semantic.options
+          options = Crichton::Representor::Options.new(semantic.options, @object)
           @markup_builder.li do
             if options.is_internal_select?
-              add_control_internal_select(semantic)
+              add_control_internal_select(semantic, options)
             elsif options.is_datalist?
               add_datalist_to_used_datalists_list(options)
               @markup_builder.tag!(:input, {type: "text", name: semantic.name, list: options.datalist_name})
@@ -279,16 +280,16 @@ module Crichton
 
         ##
         # Generate select list with options that were provided in the descriptor document
-        def add_control_internal_select(semantic)
+        def add_control_internal_select(semantic, options)
           @markup_builder.select(name: semantic.name) do
-            semantic.options.each(@object, semantic.name) { |k, v| @markup_builder.option(v, value: k) }
+            options.each { |k, v| @markup_builder.option(v, value: k) }
           end
         end
 
         ##
         # Generate input that has a "special" link for the client to fetch the options from.
         def add_control_external_select(semantic)
-          options = semantic.options
+          options = Crichton::Representor::Options.new(semantic.options, @object)
           opts = options.options
           link_arguments = {value_attribute_name: opts['value_attribute_name']}
           if opts.include?('external_hash')
