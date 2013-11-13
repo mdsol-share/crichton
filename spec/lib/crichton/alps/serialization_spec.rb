@@ -4,17 +4,7 @@ require 'crichton/alps/serialization'
 module Crichton
   module ALPS 
     describe Serialization do
-      class OptionsObjectClass
-        def initialize(options)
-          @options = options
-        end
-
-        def options
-          @options
-        end
-      end
-
-      class SimpleAlpsTestClass 
+      class SimpleAlpsTestClass
         include Serialization
 
         (ALPS_ATTRIBUTES | ALPS_ELEMENTS).each do |property|
