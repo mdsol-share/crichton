@@ -38,4 +38,4 @@ running `$ rake doc:yard` locally.
 * Add specs for it. This is important so future versions don't break it unintentionally.
 * Send a pull request.
 * For a proposed version bump, update the CHANGELOG.
-* Run specs to confirm coverage. To run SimpleCov with specs, set environment variable, e.g., `$ COVERAGE=true rspec`
+* Specs are running with code coverage by default. It is reasonable to expect greater than 90% code coverage.
