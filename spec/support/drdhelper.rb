@@ -17,7 +17,8 @@ module Support
         def self.all(options = nil)
           drds = {
               'total_count' => 2,
-              'items' => 2.times.map { |i| new(i) }
+              'items' => 2.times.map { |i| new(i) },
+              location_options: lambda {|h| {'list' => ['option1', 'option2a']} }
           }
           build_state_representor(drds, :drds, {state: 'collection'})
         end
@@ -31,6 +32,13 @@ module Support
         # TODO: develop state specification options for embedded semantics
         def state
           :activated
+        end
+
+        def status_options(options_structure = {})
+            options_structure = options_structure.dup
+            options_structure.delete('hash')
+            options_structure['list'] = ['option1', 'option4']
+          options_structure
         end
 
         def leviathan_url

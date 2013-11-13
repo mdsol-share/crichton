@@ -257,7 +257,6 @@ module Crichton
           add_control_input(semantic, :checkbox)
         end
 
-
         def add_control_select(semantic)
           options = @object.options(semantic.options)
           @markup_builder.li do

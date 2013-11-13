@@ -353,12 +353,13 @@ descriptors:
                   - required
                 sample: activated
                 options:
+                  source: status_options
                   href: DRDs#drd_status_options
               form-old_status:
                 type: semantic
                 doc: How is the DRD.
                 href: http://alps.io/schema.org/Text
-                name: status
+                name: old_status
                 field_type: select
                 validators:
                   - required
@@ -397,6 +398,7 @@ descriptors:
                 sample: moya
                 field_type: select
                 options:
+                  source: location_options
                   external_list: http://crichton.example.com/drd_location_list#items
                   value_attribute_name: location_id
                   text_attribute_name: location_text

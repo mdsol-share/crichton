@@ -40,6 +40,13 @@
         </select>
       </li>
       <li>
+        <select name="old_status">
+          <option value="active">activated</option>
+          <option value="inactive">deactivated</option>
+          <option value="unknown">renegade</option>
+        </select>
+      </li>
+      <li>
         <select name="kind">
           <option value="standard">standard</option>
           <option value="sentinel">sentinel</option>
@@ -49,9 +56,10 @@
         <input type="text" name="size" list="size-list"/>
       </li>
       <li>
-        <a value_attribute_name="location_id" type="list" href="http://crichton.example.com/drd_location_list#items">external
-          list link</a>
-        <input type="text" name="location"/>
+        <select name="location">
+          <option value="option1">option1</option>
+          <option value="option2a">option2a</option>
+        </select>
       </li>
       <li>
         <label itemprop="form-destroyed">
@@ -107,6 +115,12 @@
             <ul>
               <li>
                 <select name="status">
+                  <option value="option1">option1</option>
+                  <option value="option4">option4</option>
+                </select>
+              </li>
+              <li>
+                <select name="old_status">
                   <option value="active">activated</option>
                   <option value="inactive">deactivated</option>
                   <option value="unknown">renegade</option>
@@ -194,6 +208,12 @@
             <ul>
               <li>
                 <select name="status">
+                  <option value="option1">option1</option>
+                  <option value="option4">option4</option>
+                </select>
+              </li>
+              <li>
+                <select name="old_status">
                   <option value="active">activated</option>
                   <option value="inactive">deactivated</option>
                   <option value="unknown">renegade</option>

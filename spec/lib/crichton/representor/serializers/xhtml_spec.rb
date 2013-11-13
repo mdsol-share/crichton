@@ -30,6 +30,7 @@ module Crichton
 
         context 'without styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
+
             serializer.as_media_type(conditions: 'can_do_anything').should be_equivalent_to(drds_microdata_html)
           end
         end
