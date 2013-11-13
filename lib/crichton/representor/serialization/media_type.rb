@@ -12,8 +12,6 @@ module Crichton
         # @param [Symbol, String] media_type The registered media-type associated with the desired serializer.
         # @param [Hash] options Conditional options to configure to the serialization.
         def as_media_type(media_type, options = {})
-          require 'pry'
-          binding.pry
           built_serializer(media_type, self, options).as_media_type(options)
         end
 
@@ -34,8 +32,6 @@ module Crichton
         # @param [Symbol, String] media_type The registered media-type associated with the desired serializer.
         # @param [Hash] options Conditional options to configure to the serialization.
         def to_media_type(media_type, options = {})
-          require 'pry'
-          binding.pry
           built_serializer(media_type, self, options).to_media_type(options)
         end
 
