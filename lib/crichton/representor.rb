@@ -1,6 +1,6 @@
 require 'active_support/concern'
 require 'crichton/representor/serialization/media_type'
-require 'crichton/representor/options'
+require 'crichton/descriptor/options_decorator'
 
 module Crichton
   ##
@@ -88,7 +88,7 @@ module Crichton
     end
 
     def options(options_hash)
-      Options.new(options_hash, self)
+      Crichton::Descriptor::OptionsDecorator.new(options_hash, self)
     end
 
     ##

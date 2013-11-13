@@ -1,8 +1,8 @@
 module Crichton
-  module Representor
+  module Descriptor
     ##
     # Manages options for select lists
-    class Options
+    class OptionsDecorator
 
       HREF = 'href'
       SOURCE = 'source'
