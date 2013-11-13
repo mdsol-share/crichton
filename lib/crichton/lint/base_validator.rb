@@ -22,16 +22,12 @@ module Crichton
 
       #When the dust settles, print out the results of the lint analysis, unless strict mode, which returns true / false
       def report
-        if @options[:strict]
-          errors.empty?
-        else
-          output_sub_header unless class_section == :catastrophic
-          puts "ERRORS:".red if errors.any?
-          errors.each { |error| puts "  #{error.red}\t" }
-          unless @options[:no_warnings]
-            puts "WARNINGS:".yellow  if warnings.any?
-            warnings.each { |warning| puts "  #{warning.yellow}\t" }
-          end
+        output_sub_header unless class_section == :catastrophic
+        puts "ERRORS:".red if errors.any?
+        errors.each { |error| puts "  #{error.red}\t" }
+        unless @options[:no_warnings]
+          puts "WARNINGS:".yellow  if warnings.any?
+          warnings.each { |warning| puts "  #{warning.yellow}\t" }
         end
       end
 

@@ -42,6 +42,10 @@ module Crichton
       @registry ||= {}
     end
 
+    def datalist_registry
+      @datalist_registry ||= {}
+    end
+
     ##
     # Lists the registered resource descriptors that do not have local links de-referenced.
     #
@@ -56,6 +60,10 @@ module Crichton
     # @return [Hash] The registered resource descriptors, if any.
     def raw_profile_registry
       @raw_profile_registry ||= {}
+    end
+
+    def options_registry
+      @options_registry ||= {}
     end
 
     #TODO: Add
@@ -157,6 +165,7 @@ module Crichton
 
     def add_resource_descriptor_to_registry(hash_descriptor, registry)
       Crichton::Descriptor::Resource.new(hash_descriptor).tap do |resource_descriptor|
+        register_datalist(resource_descriptor)
         resource_descriptor.descriptors.each do |descriptor|
           if registry[descriptor.id]
             raise Crichton::DescriptorAlreadyRegisteredError,
@@ -164,6 +173,12 @@ module Crichton
           end
           registry[descriptor.id] = descriptor
         end
+      end
+    end
+
+    def register_datalist(resource_descriptor)
+      if datalists = resource_descriptor.descriptor_document['datalists']
+        datalists.each { |k, v| datalist_registry["#{resource_descriptor.name}\##{k}"] = v }
       end
     end
 
@@ -178,6 +193,7 @@ module Crichton
 
     # Recursive descent
     def build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, id, hash)
+      add_values_to_options_registry(descriptor_name_prefix, hash)
       @ids_registry ||= {}
       descriptor_name = "#{descriptor_name_prefix}\##{id}"
       if id && @ids_registry.include?(descriptor_name)
@@ -191,6 +207,13 @@ module Crichton
         hash['descriptors'].each do |child_id, descriptor|
           build_descriptor_hashes_by_id(descriptor_id, descriptor_name_prefix, child_id, descriptor)
         end
+      end
+    end
+
+    OPTIONS_STRING = 'options'
+    def add_values_to_options_registry(descriptor_name_prefix, hash)
+      if hash.include?(OPTIONS_STRING) && hash[OPTIONS_STRING].include?('id')
+        options_registry["#{descriptor_name_prefix}\##{hash[OPTIONS_STRING]['id']}"] = hash[OPTIONS_STRING]
       end
     end
 

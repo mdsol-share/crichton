@@ -33,7 +33,7 @@ module Crichton
         if options[:strict]
           return false
         elsif options[:count] == :error
-          return error_count(resource_validator)
+          return resource_validator.errors.count
         else
           # any errors caught at this point are so catastrophic that it won't be useful to continue
           resource_validator.report
@@ -68,7 +68,7 @@ module Crichton
         Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
           validator_returns << self.validate(f, options)
           if options[:strict]
-            return false unless validator_returns
+            return false unless validator_returns.all?
           else
             puts "\n" unless non_output?(options)
           end
@@ -108,9 +108,9 @@ module Crichton
       options[:strict] || count_option?(options)
     end
 
-    def self.all_option_return(validators, options)
+    def self.all_option_return(validator_returns, options)
       return true if options[:strict]
-      error_or_warning_count(options, validators)
+      validator_returns.reduce(0, :+ )
     end
 
     def self.load_translation_file

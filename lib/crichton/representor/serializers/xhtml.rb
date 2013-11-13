@@ -21,7 +21,7 @@ module Crichton
         options ||= {}
         configure_markup_builder(options)
 
-        if options[:top_level] != false       
+        unless options[:top_level] == false
           @markup_builder.declare!(:DOCTYPE, :html)
           @markup_builder.tag!(:html, xmlns: 'http://www.w3.org/1999/xhtml') do
             add_head
@@ -58,7 +58,7 @@ module Crichton
                   MicrodataSemanticBuilder
                 end
         
-        @semantic_builder = klass.new(self.class.default_media_type, @object, @markup_builder)
+        @semantic_builder = klass.new(self.class.default_media_type, @object, @markup_builder, self)
       end
       
       def add_head
@@ -90,8 +90,8 @@ module Crichton
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
         # @param [Crichton::Representor] object The object to build semantics for.
         # @param [Builder::XmlMarkup] markup_builder The primary builder.
-        def initialize(media_type, object, markup_builder)
-          @media_type, @object, @markup_builder = media_type, object, markup_builder
+        def initialize(media_type, object, markup_builder, serializer)
+          @media_type, @object, @markup_builder, @serializer = media_type, object, markup_builder, serializer
         end
 
         # @!macro add_head
@@ -103,7 +103,10 @@ module Crichton
         # @!macro add_body
         #   Adds the body tag and all child tags.
         def add_body(options)
-          @markup_builder.body { add_embedded_element(options) }
+          @markup_builder.body do
+            add_embedded_element(options)
+            add_datalists(options)
+          end
         end
 
         # @!macro add_embedded_element
@@ -147,6 +150,19 @@ module Crichton
           @object.metadata_links.each { |metadata_link| @markup_builder.tag!(:link, metadata_link.attributes) }
         end
 
+        def add_datalists(options)
+          @serializer.used_datalists.uniq.each do |dl_name|
+            @markup_builder.datalist(id: dl_name.split('#')[1]) do
+              dl = Crichton::datalist_registry[dl_name]
+              if dl.is_a?(Hash)
+                dl.each { |k, v| @markup_builder.option(v, value: k) }
+              else
+                dl.each { |e| @markup_builder.option(e, value: e) }
+              end
+            end
+          end
+        end
+
         def add_transitions(options)
           @object.each_transition(options) do |transition|
             if transition.safe?
@@ -158,7 +174,9 @@ module Crichton
         end
 
         def add_link_transition(transition)
-          @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url}) if transition.templated_url
+          if transition.templated_url
+            @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url})
+          end
         end
 
         def add_form_transition(transition)
@@ -184,7 +202,7 @@ module Crichton
             when Array
               embedded_object.each { |object| add_embedded_object(object, options, semantic)}
             when Crichton::Representor
-              add_embedded_object(embedded_object, options)
+              add_embedded_object(embedded_object, options, semantic)
             else
               logger.warn("Semantic element should be either representor or array! Was #{semantic}")
             end
@@ -231,15 +249,59 @@ module Crichton
 
         def add_control_input(semantic, field_type = nil)
           field_type ||= semantic.field_type
-          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name}.merge(semantic.validators))
+          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name
+            }.merge(semantic.validators))
         end
 
         def add_control_boolean(semantic)
           add_control_input(semantic, :checkbox)
         end
 
+
         def add_control_select(semantic)
-          #TODO: Need to implement <select /> HTML control here
+          options = semantic.options
+          @markup_builder.li do
+            # Later, the datalist will be added here
+            if options.is_internal_select?
+              add_control_internal_select(semantic)
+            elsif options.is_datalist?
+              add_datalist_to_used_datalists_list(options)
+              @markup_builder.tag!(:input, {type: "text", name: semantic.name, list: options.datalist_name})
+            elsif options.is_external_select?
+              add_control_external_select(semantic)
+            end
+          end
+        end
+
+        def add_datalist_to_used_datalists_list(options)
+          @serializer.used_datalists <<
+            "#{@object.class.resource_descriptor.resource_descriptor.name}\##{options.datalist_name}"
+        end
+
+        ##
+        # Generate select list with options that were provided in the descriptor document
+        def add_control_internal_select(semantic)
+          @markup_builder.select(name: semantic.name) do
+            semantic.options.each { |k, v| @markup_builder.option(v, value: k) }
+          end
+        end
+
+        ##
+        # Generate input that has a "special" link for the client to fetch the options from.
+        def add_control_external_select(semantic)
+          options = semantic.options
+          opts = options.options
+          link_arguments = {value_attribute_name: opts['value_attribute_name']}
+          if opts.include?('external_hash')
+            description = 'external hash link'
+            link_arguments.merge!({type: :hash, text_attribute_name: opts['text_attribute_name'],
+              href: opts['external_hash']})
+          else
+            description = 'external list link'
+            link_arguments.merge!({type: :list, href: opts['external_list']})
+          end
+          @markup_builder.a(description, link_arguments)
+          @markup_builder.input(type: :text, name: semantic.name)
         end
       end
 
@@ -318,10 +380,6 @@ module Crichton
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) { super }
           end
-        end
-
-        def add_control_select(semantic)
-          #TODO: Need to implement <select /> HTML control here
         end
       end
     end

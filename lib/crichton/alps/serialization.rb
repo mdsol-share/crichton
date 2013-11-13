@@ -26,8 +26,26 @@ module Crichton
       LINK_ELEMENT = 'link'
 
       ##
+      # Options element
+      OPTIONS_ELEMENT = 'options'
+
+      ##
       # ALPS specification elements that can be serialized.
-      ALPS_ELEMENTS = [DOC_ELEMENT, EXT_ELEMENT, LINK_ELEMENT]
+      ALPS_ELEMENTS = [DOC_ELEMENT, EXT_ELEMENT, OPTIONS_ELEMENT, LINK_ELEMENT]
+
+      SERIALIZED_DATALIST_LIST_URL = 'http://alps.io/extensions/serialized_datalist'
+      ##
+      # Add datalists to the ALPS document - as ext elements
+      def alps_datalists
+        result_hash = {}
+        if @descriptor_document['datalists']
+          @descriptor_document['datalists'].each do |dl_name, dl|
+            result_hash['ext'] = [] unless result_hash.include?('ext')
+            result_hash['ext'] << {'href' => SERIALIZED_DATALIST_LIST_URL, 'value' => {dl_name => dl}.to_json}
+          end
+        end
+        result_hash
+      end
 
       ##
       # The ALPS attributes for the descriptor.
@@ -64,14 +82,11 @@ module Crichton
 
           alps_element = case element
                          when DOC_ELEMENT
-                           if alps_value.is_a?(Hash)
-                             format = alps_value.keys.first
-                             {'format' => format, 'value' => alps_value[format]}
-                           else
-                             {'value' => alps_value }
-                           end
+                           serialize_doc_element(alps_value)
                          when EXT_ELEMENT
                            convert_ext_element_hrefs(alps_value)
+                         when OPTIONS_ELEMENT
+                           convert_options_element_to_alps(alps_value.options) if alps_value.options
                          when LINK_ELEMENT
                            unless alps_value.empty?
                              alps_value.values.map do |link|
@@ -80,7 +95,16 @@ module Crichton
                            end
                          end
 
-          hash.tap { |h| h[element] = alps_element if alps_element }
+          hash.tap { |h| element == 'options' ? h.merge!(alps_element) : h[element] = alps_element if alps_element }
+        end
+      end
+
+      def serialize_doc_element(alps_value)
+        if alps_value.is_a?(Hash)
+          format = alps_value.keys.first
+          {'format' => format, 'value' => alps_value[format]}
+        else
+          {'value' => alps_value}
         end
       end
 
@@ -96,8 +120,8 @@ module Crichton
         hash = {}
         hash.merge!(alps_elements.dup)
         hash.merge!(alps_attributes.dup)
+        hash.merge!(alps_datalists.dup)
         hash['descriptor'] = alps_descriptors unless alps_descriptors.empty?
-        
         if options[:top_level] != false
           hash.delete('id')
           {'alps' => hash}
@@ -137,7 +161,8 @@ module Crichton
 
         builder.tag!(*args) do
           add_xml_elements(builder)
-          add_xml_descriptors(builder)  
+          add_xml_descriptors(builder)
+          add_xml_datalists(builder) unless options[:top_level] == false # This is intentional! it's false, not true
         end
       end
       
@@ -146,7 +171,11 @@ module Crichton
       def alps_name
         descriptor_document['name']
       end
-      
+
+      def add_xml_datalists(builder)
+        (datalists = alps_datalists['ext']) && datalists.each { |dl| builder.tag!('ext', dl) }
+      end
+
       def add_xml_elements(builder)
         alps_elements.each do |alps_element, properties|
           case alps_element
@@ -155,6 +184,8 @@ module Crichton
             builder.doc(format) { |doc| doc << properties['value'] }
           when EXT_ELEMENT, LINK_ELEMENT
             properties.each { |element_attributes| builder.tag!(alps_element, element_attributes) }
+          when OPTIONS_ELEMENT
+            properties["ext"].each { |h| builder.tag!(:ext, h) }
           end
         end
       end
@@ -169,16 +200,28 @@ module Crichton
 
       def convert_ext_element_hrefs(ext_elem)
         if ext_elem.is_a?(Array)
-          ext_elem.each {|eae| convert_ext_element_hash_hrefs(eae) }
+          ext_elem.each {|eae| convert_ext_element_hash_hrefs_and_values(eae) }
         end
-        convert_ext_element_hash_hrefs(ext_elem)
+        convert_ext_element_hash_hrefs_and_values(ext_elem)
         ext_elem
       end
 
-      def convert_ext_element_hash_hrefs(ext_elem)
-        if ext_elem.is_a?(Hash) && ext_elem.include?('href')
-          ext_elem['href'] = absolute_link(ext_elem['href'], nil)
+      SERIALIZED_OPTIONS_LIST_URL = 'http://alps.io/extensions/serialized_options_list'
+
+      def convert_ext_element_hash_hrefs_and_values(ext_elem)
+        if ext_elem.is_a?(Hash)
+          if ext_elem.include?('href')
+            ext_elem['href'] = absolute_link(ext_elem['href'], nil)
+          end
+          if ext_elem.include?('values')
+            ext_elem['value'] = ext_elem.delete('values').to_json
+            ext_elem['href'] = SERIALIZED_OPTIONS_LIST_URL unless ext_elem.include?('href')
+          end
         end
+      end
+
+      def convert_options_element_to_alps(options_elem)
+        {'ext' => convert_ext_element_hrefs([{'values' => options_elem}])}
       end
 
       def add_xml_descriptors(builder)

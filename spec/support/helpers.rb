@@ -41,6 +41,10 @@ module Support
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
 
+    def drds_hal_json
+      @drds_hal_json ||= File.open(fixture_path('hal.json'))
+    end
+
     def drds_microdata_html
       @drds_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_microdata.html')))
     end
@@ -177,12 +181,20 @@ module Support
       File.join(SPEC_DIR, 'fixtures', args)
     end
 
-    def tasks_path(*args)
-      File.join(Dir.pwd, 'tasks', args)
+    def alps_fixture_path(*args)
+      File.join(SPEC_DIR, 'fixtures', 'alps', args)
     end
 
-    def default_lint_descriptor_file(file)
-      File.join(Crichton.descriptor_location, file)
+    def alps_json_data
+      File.open(alps_fixture_path('DRDs.json'), 'rb') { |f| f.read }
+    end
+
+    def alps_xml_data
+      File.open(alps_fixture_path('DRDs.xml'), 'rb') { |f| f.read }
+    end
+
+    def tasks_path(*args)
+      File.join(Dir.pwd, 'tasks', args)
     end
 
     def build_dir_for_lint_rspec(config_dir, files_to_copy)

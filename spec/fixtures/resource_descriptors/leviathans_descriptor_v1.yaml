@@ -27,6 +27,23 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Text
         sample: Moya
+      status:
+        doc: How is the Leviathan.
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: old
+        options:
+          id: leviathan_status_options
+          hash:
+            new: new
+            old: old
+      size:
+        doc: How large it is
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: medium
+        options:
+          datalist: size-list
       #Transitions
       create:
         doc: Creates a Leviathan.
@@ -47,3 +64,30 @@ descriptors:
                 field_type: input
                 validators:
                   - presence
+              form-size:
+                doc: How large it is
+                name: size
+                type: semantic
+                href: http://alps.io/schema.org/Text
+                sample: medium
+                field_type: select
+                options:
+                  datalist: size-list
+              form-status:
+                type: semantic
+                doc: How is the Leviathan.
+                href: http://alps.io/schema.org/Text
+                name: status
+                field_type: select
+                validators:
+                  - required
+                sample: activated
+                options:
+                  hash:
+                    new: new
+                    old: old
+datalists:
+  size-list:
+    - small
+    - medium
+    - large

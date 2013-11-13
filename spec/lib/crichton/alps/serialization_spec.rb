@@ -4,16 +4,30 @@ require 'crichton/alps/serialization'
 module Crichton
   module ALPS 
     describe Serialization do
+      class OptionsObjectClass
+        def initialize(options)
+          @options = options
+        end
+
+        def options
+          @options
+        end
+      end
+
       class SimpleAlpsTestClass 
         include Serialization
 
         (ALPS_ATTRIBUTES | ALPS_ELEMENTS).each do |property|
-          next if property == 'link'
+          next if property == 'link' || property == 'options'
           define_method(property) do
             descriptor_document[property]
           end
         end
-        
+
+        def options
+          descriptor_document['options'] ? OptionsObjectClass.new(descriptor_document['options']) : nil
+        end
+
         def links
           @links ||= (descriptor_document['links'] || {}).inject({}) do |h, (rel, href)|
             h.tap { |hash| hash[rel] = Crichton::Descriptor::Link.new(self, rel, href) }
@@ -36,7 +50,7 @@ module Crichton
       end
     
       let(:descriptor) { SimpleAlpsTestClass.new(leviathans_descriptor, 'Leviathans') }
-      
+
       describe '#alps_attributes' do
         it 'returns a hash of alps descriptor attributes' do
           descriptor.alps_attributes.should == {'id' => 'Leviathans'}

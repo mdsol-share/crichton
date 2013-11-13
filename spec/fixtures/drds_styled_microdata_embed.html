@@ -33,13 +33,29 @@
     <form action="http://deployment.example.org/drds" method="post">
       <ul>
         <li>
-          <label itemprop="status">
-            <input itemprop="status" type="text" name="status" required=""/>
-          </label>
+          <select name="status">
+            <option value="active">activated</option>
+            <option value="inactive">deactivated</option>
+            <option value="unknown">renegade</option>
+          </select>
         </li>
         <li>
-          <label itemprop="kind">
-            <input itemprop="kind" type="checkbox" name="kind"/>
+          <select name="kind">
+            <option value="standard">standard</option>
+            <option value="sentinel">sentinel</option>
+          </select>
+        </li>
+        <li>
+          <input type="text" name="size" list="size-list"/>
+        </li>
+        <li>
+          <a value_attribute_name="location_id" type="list" href="http://crichton.example.com/drd_location_list#items">external
+            list link</a>
+          <input type="text" name="location"/>
+        </li>
+        <li>
+          <label itemprop="form-destroyed">
+            <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
           </label>
         </li>
         <li>
@@ -54,12 +70,13 @@
         </li>
         <li>
           <label itemprop="leviathan_health_points">
-              <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0" max="100"/>
+            <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0"
+                   max="100"/>
           </label>
         </li>
         <li>
           <label itemprop="leviathan_email">
-              <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
+            <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
           </label>
         </li>
       </ul>
@@ -81,5 +98,10 @@
     </ul>
   </li>
 </ul>
+<datalist id="size-list">
+  <option value="small">small</option>
+  <option value="medium">medium</option>
+  <option value="large">large</option>
+</datalist>
 </body>
 </html>

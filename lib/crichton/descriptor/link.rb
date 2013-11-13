@@ -24,6 +24,12 @@ module Crichton
         {rel: rel, href: href}
       end
 
+      ##
+      # Always returns false, maintains duck typing with similar descriptors.
+      def templated?
+        false
+      end
+
       def absolute_href
         if href.nil? || Addressable::URI.parse(href).absolute?
           href
