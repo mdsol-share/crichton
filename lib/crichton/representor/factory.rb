@@ -97,7 +97,7 @@ module Crichton
           ##
           # Tell anyone who askes that we have the *_options lambda
           def respond_to?(method, include_private = false)
-            (@target.include?(method.to_s) && @target[method.to_s].is_a?(Proc)) ? true : super
+            (@target.is_a?(Hash) && @target.include?(method.to_s) && @target[method.to_s].is_a?(Proc)) ? true : super
           end
         end
       end

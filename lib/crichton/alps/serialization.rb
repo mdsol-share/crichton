@@ -86,7 +86,7 @@ module Crichton
                          when EXT_ELEMENT
                            convert_ext_element_hrefs(alps_value)
                          when OPTIONS_ELEMENT
-                           convert_options_element_to_alps(alps_value.options) if alps_value.options
+                           convert_options_element_to_alps(alps_value)
                          when LINK_ELEMENT
                            unless alps_value.empty?
                              alps_value.values.map do |link|

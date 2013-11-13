@@ -25,7 +25,7 @@ module Crichton
         end
 
         def options
-          descriptor_document['options'] ? OptionsObjectClass.new(descriptor_document['options']) : nil
+          descriptor_document['options']
         end
 
         def links
