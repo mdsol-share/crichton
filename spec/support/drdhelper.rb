@@ -35,10 +35,10 @@ module Support
         end
 
         def status_options(options_structure = {})
-            options_structure = options_structure.dup
-            options_structure.delete('hash')
-            options_structure['list'] = ['option1', 'option4']
-          options_structure
+          options_structure.dup.tap do |o|
+            o.delete('hash')
+            o['list'] = ['option1', 'option4']
+          end
         end
 
         def leviathan_url

@@ -221,7 +221,8 @@ module Crichton
       end
 
       def convert_options_element_to_alps(options_elem)
-        {'ext' => convert_ext_element_hrefs([{'values' => options_elem}])}
+        values = options_elem.is_a?(Hash) ? options_elem : options_elem.descriptor_document
+        values.empty? ? {} : {'ext' => convert_ext_element_hrefs([{'values' => values}])}
       end
 
       def add_xml_descriptors(builder)

@@ -1,4 +1,5 @@
 require 'crichton/descriptor/profile'
+require 'crichton/descriptor/options'
 
 module Crichton
   module Descriptor
@@ -8,6 +9,9 @@ module Crichton
       # @private
       SAFE = 'safe'
       
+      # @private
+      OPTIONS = 'options'
+
       # @!macro string_reader
       descriptor_reader :embed
 
@@ -22,14 +26,6 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :type
-
-      OPTIONS = 'options'
-
-      ##
-      # returns options branch
-      def options
-        @options ||= descriptor_document[OPTIONS]
-      end
 
       ##
       # Constructs a new instance of BaseDocumentDescriptor.
@@ -99,6 +95,10 @@ module Crichton
       # @return [Array] The link instances.
       def metadata_links
         @metadata_links ||= [profile_link, type_link, help_link].compact
+      end
+      
+      def options
+        @options ||= Options.new(descriptor_document[OPTIONS] || {})
       end
       
       ##

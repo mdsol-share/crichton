@@ -1,6 +1,5 @@
 require 'active_support/concern'
 require 'crichton/representor/serialization/media_type'
-require 'crichton/descriptor/options_decorator'
 
 module Crichton
   ##
@@ -85,10 +84,6 @@ module Crichton
         filter = embed == :embedded ? :select : :reject
         resource_descriptor.send(descriptors).values.send(filter) { |descriptor| descriptor.embeddable? }
       end
-    end
-
-    def options(options_hash)
-      Crichton::Descriptor::OptionsDecorator.new(options_hash, self)
     end
 
     ##

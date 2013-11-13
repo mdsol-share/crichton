@@ -258,14 +258,14 @@ module Crichton
         end
 
         def add_control_select(semantic)
-          options = @object.options(semantic.options)
+          options = semantic.options
           @markup_builder.li do
-            if options.is_internal_select?
-              add_control_internal_select(semantic, options)
-            elsif options.is_datalist?
+            if options.internal_select?
+              add_control_internal_select(semantic)
+            elsif options.datalist?
               add_datalist_to_used_datalists_list(options)
               @markup_builder.tag!(:input, {type: "text", name: semantic.name, list: options.datalist_name})
-            elsif options.is_external_select?
+            elsif options.external_select?
               add_control_external_select(semantic)
             end
           end
@@ -278,25 +278,24 @@ module Crichton
 
         ##
         # Generate select list with options that were provided in the descriptor document
-        def add_control_internal_select(semantic, options)
+        def add_control_internal_select(semantic)
           @markup_builder.select(name: semantic.name) do
-            options.each { |k, v| @markup_builder.option(v, value: k) }
+            semantic.options.each { |k, v| @markup_builder.option(v, value: k) }
           end
         end
 
         ##
         # Generate input that has a "special" link for the client to fetch the options from.
         def add_control_external_select(semantic)
-          options = @object.options(semantic.options)
-          opts = options.options
-          link_arguments = {value_attribute_name: opts['value_attribute_name']}
-          if opts.include?('external_hash')
+          options = semantic.options
+          link_arguments = {value_attribute_name: options.value_key}
+          if options.external_hash
             description = 'external hash link'
-            link_arguments.merge!({type: :hash, text_attribute_name: opts['text_attribute_name'],
-              href: opts['external_hash']})
+            link_arguments.merge!({type: :hash, text_attribute_name: options.text_key,
+              href: options.external_hash})
           else
             description = 'external list link'
-            link_arguments.merge!({type: :list, href: opts['external_list']})
+            link_arguments.merge!({type: :list, href: options.external_list})
           end
           @markup_builder.a(description, link_arguments)
           @markup_builder.input(type: :text, name: semantic.name)
