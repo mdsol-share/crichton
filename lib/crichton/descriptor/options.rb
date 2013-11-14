@@ -4,15 +4,7 @@ module Crichton
     # Manages options for select lists
     class Options
       # @private
-      HREF = 'href'
-      # @private
-      EXTERNAL_HASH = 'external_hash'
-      # @private
-      EXTERNAL_LIST = 'external_list'
-      # @private
-      HASH = 'hash'
-      # @private
-      LIST = 'list'
+      HREF, EXTERNAL_HASH, EXTERNAL_LIST, HASH, LIST  = %w(href external_hash external_list hash list)
 
       attr_reader :descriptor_document
 

@@ -24,6 +24,15 @@ module Crichton
           super.inject({}) { |h, (k, v)| h[k] = SemanticDecorator.new(@target, v, @_options); h}
         end
       end
+
+      ##
+      # Decorated transitions.
+      def transitions
+        @transitions ||= begin
+          require 'crichton/descriptor/transition_decorator'
+          super.inject({}) { |h, (k, v)| h[k] = TransitionDecorator.new(@target, v, @_options); h }
+        end
+      end
     end
   end
 end
