@@ -62,7 +62,7 @@ module Crichton
           rescue => e
             error_message = "Link #{link} that was referenced in profile had an error: #{e.inspect}\n#{e.backtrace}"
             logger.warn error_message
-            raise(Crichton::ExternalProfileLoadError, error_message)
+            raise Crichton::ExternalProfileLoadError, error_message
           end
         end
         # parse profile to hash

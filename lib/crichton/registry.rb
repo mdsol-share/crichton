@@ -35,12 +35,11 @@ module Crichton
     #
     # @return [Hash] The registered resource descriptors, if any.
     def descriptor_registry
-      @descriptor_registry ||= ({}).tap do |registry|
+      @descriptor_registry ||= {}.tap do |registry|
         dereference_queue.each do |d|
           d.dereference_hash_descriptor(ids_registry, external_descriptor_documents).tap do |hash|
-            add_hash_descriptor_to_resources_list(hash).tap do |resource|
-              resource.descriptors.each { |descriptor| add_to_registry(descriptor, registry) }
-            end
+            resource = add_hash_descriptor_to_resources_list(hash)
+            resource.descriptors.each { |descriptor| add_to_registry(descriptor, registry) }
           end
         end
       end
@@ -48,7 +47,7 @@ module Crichton
 
     def datalist_registry
       @datalist_registry ||= if descriptor_registry
-        ({}).tap do |registry|
+        {}.tap do |registry|
           resources_list.each { |resource| register_datalist(registry, resource) }
         end
       end
@@ -59,7 +58,7 @@ module Crichton
     #
     # @return [Hash] The registered resource descriptors, if any.
     def raw_descriptor_registry
-      @raw_descriptor_registry ||= ({}).tap do |registry|
+      @raw_descriptor_registry ||= {}.tap do |registry|
         resources_list.each do |resource|
           resource.descriptors.each { |descriptor| add_to_registry(descriptor, registry) }
         end
@@ -71,7 +70,7 @@ module Crichton
     #
     # @return [Hash] The registered resource descriptors, if any.
     def raw_profile_registry
-      @raw_profile_registry ||= ({}).tap do |registry|
+      @raw_profile_registry ||= {}.tap do |registry|
         resources_list.each { |descriptor| add_to_registry(descriptor, registry) }
       end
     end
@@ -160,13 +159,13 @@ module Crichton
     end
 
     def ids_registry
-      @ids_registry ||= ({}).tap do |ids_registry|
+      @ids_registry ||= {}.tap do |ids_registry|
         dereference_queue.each { |dereferencer| build_ids_registry(ids_registry, dereferencer.collect_descriptor_ids)}
       end
     end
 
     def build_ids_registry(ids, other)
-      intersect = ids.reject { |k,_| !other.include? k }
+      intersect = ids.reject { |k, _| !other.include? k }
       if intersect.empty?
         ids.merge!(other)
       else
