@@ -113,6 +113,7 @@ module Crichton
               result_hash['datalists'] << JSON.parse(ne['value'])
             end
           else
+            # This case should handle unknown ext elements somewhat sanely - but ideally it should never be used.
             result_hash['ext'] = [] unless result_hash.include?('ext')
             result_hash['ext'] << ne
           end
@@ -141,6 +142,7 @@ module Crichton
             elsif child.name == 'text'
               # Intentionally do nothing
             elsif result_hash[child.name]
+              # If we have duplicate elements, create an Array with them
               xml_node_to_hash_add_to_result(result_hash, child.name, result)
             else
               result_hash[child.name] = prepare(result)
@@ -152,6 +154,9 @@ module Crichton
         end
       end
 
+      ##
+      # If we have duplicate elements with the same name, put the elements into an array/a list
+      # Probably a rather uncommon case
       def xml_node_to_hash_add_to_result(result_hash, child_name, result)
         if result_hash[child_name].is_a?(Array)
           result_hash[child_name] << prepare(result)
