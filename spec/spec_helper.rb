@@ -10,12 +10,9 @@ require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
 require 'webmock/rspec'
+require 'simplecov'
 
-if ENV['COVERAGE']
-  require 'simplecov'
-  SimpleCov.start
-end
-
+SimpleCov.start
 Debugger.start
 Bundler.setup
 
