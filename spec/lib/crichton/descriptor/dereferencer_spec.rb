@@ -57,7 +57,7 @@ module Crichton
             }
           }
 
-          dereferencer = Dereferencer.new(descriptor_hash, build_options_registry)
+          dereferencer = Dereferencer.new(descriptor_hash, &build_options_registry)
           deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
           deref_hash.should == reference_hash
         end
@@ -107,7 +107,7 @@ module Crichton
             }
           }
 
-          dereferencer = Dereferencer.new(descriptor_hash, build_options_registry)
+          dereferencer = Dereferencer.new(descriptor_hash, &build_options_registry)
           deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
           deref_hash.should == reference_hash
         end
@@ -158,7 +158,7 @@ module Crichton
             }
           }
 
-          dereferencer = Dereferencer.new(descriptor_hash, build_options_registry)
+          dereferencer = Dereferencer.new(descriptor_hash, &build_options_registry)
           deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
           deref_hash.should == reference_hash
         end
@@ -214,7 +214,7 @@ module Crichton
             }
           }
 
-          dereferencer = Dereferencer.new(descriptor_hash, build_options_registry)
+          dereferencer = Dereferencer.new(descriptor_hash, &build_options_registry)
           deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
           deref_hash.should == reference_hash
         end

@@ -6,7 +6,7 @@ module Crichton
     class Dereferencer
       include Crichton::Helpers::ConfigHelper
 
-      def initialize(hash_descriptor, block)
+      def initialize(hash_descriptor, &block)
         @hash_descriptor = hash_descriptor
         @block = block
       end
@@ -18,9 +18,9 @@ module Crichton
 
       # This method calls the recursive method
       def collect_descriptor_ids
-        descriptor_document_id = @hash_descriptor['id']
-        descriptors = @hash_descriptor['descriptors']
-        (ids_registry ||= {}).tap do |ids_registry|
+        ({}).tap do |ids_registry|
+          descriptor_document_id = @hash_descriptor['id']
+          descriptors = @hash_descriptor['descriptors']
           descriptors.each do |k, v|
             build_descriptor_hashes_by_id(k, descriptor_document_id, nil, v, ids_registry)
           end
