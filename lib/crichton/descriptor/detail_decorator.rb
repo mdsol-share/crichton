@@ -10,7 +10,8 @@ module Crichton
       # @param [Hash, Object] target The target instance to retrieve data from.
       # @param [Crichton::Descriptor::Detail] descriptor The Detail descriptor associated with the semantic data.
       def initialize(target, descriptor, options = {})
-        super(descriptor.resource_descriptor, descriptor.parent_descriptor, descriptor.id, descriptor.descriptor_document)
+        super(descriptor.resource_descriptor, descriptor.parent_descriptor, descriptor.id,
+          descriptor.descriptor_document)
         @target = target
         @_options = options || {}
       end

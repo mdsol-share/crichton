@@ -18,6 +18,7 @@ module Support
           drds = {
               'total_count' => 2,
               'items' => 2.times.map { |i| new(i) },
+              # Override the values of the options in the locations create form. This uses the factory method missing.
               location_options: lambda {|h| {'list' => ['option1', 'option2a']} }
           }
           build_state_representor(drds, :drds, {state: 'collection'})
@@ -34,10 +35,13 @@ module Support
           :activated
         end
 
+        # Override the values of the status options for individual DRDs.
         def status_options(options_structure = {})
           options_structure.dup.tap do |o|
-            o.delete('hash')
-            o['list'] = ['option1', 'option4']
+            if uuid == 0 # only override the first DRD entry - this demonstrates the dynamic override capability
+              o.delete('hash')
+              o['list'] = ['option1', 'option4']
+            end
           end
         end
 
