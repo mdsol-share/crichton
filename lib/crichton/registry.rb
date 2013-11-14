@@ -165,7 +165,7 @@ module Crichton
     end
 
     def build_ids_registry(ids, other)
-      intersect = ids.reject { |k, _| !other.include? k }
+      intersect = ids.reject { |k, _| !other.include?(k) }
       if intersect.empty?
         ids.merge!(other)
       else
