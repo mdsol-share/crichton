@@ -18,7 +18,7 @@ module Crichton
 
       # This method calls the recursive method
       def collect_descriptor_ids
-        ({}).tap do |ids_registry|
+        {}.tap do |ids_registry|
           descriptor_document_id = @hash_descriptor['id']
           descriptors = @hash_descriptor['descriptors']
           descriptors.each do |k, v|
