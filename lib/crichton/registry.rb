@@ -37,10 +37,9 @@ module Crichton
     def descriptor_registry
       @descriptor_registry ||= {}.tap do |registry|
         dereference_queue.each do |d|
-          d.dereference_hash_descriptor(ids_registry, external_descriptor_documents).tap do |hash|
-            resource = add_hash_descriptor_to_resources_list(hash)
-            resource.descriptors.each { |descriptor| add_to_registry(descriptor, registry) }
-          end
+          hash = d.dereference_hash_descriptor(ids_registry, external_descriptor_documents)
+          resource = add_hash_descriptor_to_resources_list(hash)
+          resource.descriptors.each { |descriptor| add_to_registry(descriptor, registry) }
         end
       end
     end
