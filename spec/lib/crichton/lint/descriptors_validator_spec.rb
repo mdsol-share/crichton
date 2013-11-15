@@ -194,7 +194,15 @@ module Crichton
             @errors = expected_output(:error, 'descriptors.missing_options_key', id: 'uuid',
               options_attr: 'external_hash', filename: filename, section: :descriptors, sub_header: :error) <<
               expected_output(:error, 'descriptors.missing_options_key', id: 'location',  options_attr: 'external_list')
-           end
+          end
+
+          it 'reports an error when the source attribute is not a string or has no value' do
+            @filename = %w(descriptor_section_errors/options_errors source_attribute_errors.yml)
+            @errors = expected_output(:error, 'descriptors.missing_options_value', id: 'total_count',  options_attr:
+              'source', filename: filename, section: :descriptors, sub_header: :error) <<
+              expected_output(:error, 'descriptors.invalid_option_source_type', id: 'items',
+              options_attr: 'source')
+          end
         end
       end
     end

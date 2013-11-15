@@ -48,6 +48,9 @@ module Crichton
             when 'value_attribute_name', 'text_attribute_name'
               descriptor_validator.add_warning('descriptors.missing_options_value', id: descriptor.id, options_attr:
                 form_key) unless value
+            #12, source should be a non-empty string
+            when 'source'
+              source_option_check(descriptor_validator, descriptor, form_key, value)
           end
         end
       end
@@ -125,6 +128,15 @@ module Crichton
 
       def self.valid_protocol_type(value)
         value && Crichton::Descriptor::Resource::PROTOCOL_TYPES.include?(value[/\Ahttp/])
+      end
+
+      def self.source_option_check(descriptor_validator, descriptor, form_key, value)
+        if value
+          descriptor_validator.add_error('descriptors.invalid_option_source_type', id: descriptor.id,
+            options_attr: form_key) unless value.is_a?(String)
+        else
+          descriptor_validator.add_error('descriptors.missing_options_value', id: descriptor.id, options_attr: form_key)
+        end
       end
     end
   end

@@ -53,6 +53,7 @@ en:
     invalid_options_ref: "Descriptor '%{id}' option tag '%{options_attr}' has an malformed href to an option id: '%{ref}'"
     option_reference_not_found: "Descriptor '%{id}' option tag '%{options_attr}' value: '%{ref}' does not match any %{type} in this file"
     invalid_options_protocol: "Descriptor '%{id}' option tag '%{options_attr}' has an invalid protocol: '%{uri}'"
+    invalid_option_source_type: "Descriptor '%{id}' options tag '%{options_attr}' must be a text string"
   protocols:
     no_protocol: "No underlying protocol (e.g. 'http') defined"
     protocol_empty: "Protocol '%{protocol}' has no content"

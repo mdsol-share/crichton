@@ -139,7 +139,7 @@ module Crichton
       end
 
       def raw_options
-       options.descriptor_document[Options::OPTIONS]
+       descriptor_document[OPTIONS]
       end
 
     private
