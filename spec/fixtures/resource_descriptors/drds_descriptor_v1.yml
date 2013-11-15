@@ -301,6 +301,15 @@ descriptors:
           external_hash: http://crichton.example.com/drd_location_list#items
           value_attribute_name: location_id
           text_attribute_name: location_text
+      location_detail:
+        doc: Exactly where in the location the DRD currenlty is
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: outside
+        options:
+          external_hash: http://crichton.example.com/drd_location_detail_list#items
+          value_attribute_name: location_id
+          text_attribute_name: location_text
       destroyed:
         doc: This DRD has been destroyed
         type: semantic
@@ -365,10 +374,7 @@ descriptors:
                   - required
                 sample: activated
                 options:
-                  hash:
-                    active: activated
-                    inactive: deactivated
-                    unknown: renegade
+                  datalist: status-list
               form-kind:
                 type: semantic
                 name: kind
@@ -377,7 +383,6 @@ descriptors:
                 sample: true
                 field_type: select
                 options:
-#                  datalist: kind-list
                   list:
                     - standard
                     - sentinel
@@ -402,13 +407,23 @@ descriptors:
                   external_list: http://crichton.example.com/drd_location_list#items
                   value_attribute_name: location_id
                   text_attribute_name: location_text
+              form-location_detail:
+                type: semantic
+                name: location_detail
+                doc: Exactly where in the location the DRD currenlty is
+                href: http://alps.io/schema.org/Text
+                sample: inside
+                field_type: select
+                options:
+                  external_hash: http://crichton.example.com/drd_location_detail_list#items
+                  value_attribute_name: location_detail_id
+                  text_attribute_name: location_detail_text
               form-destroyed:
                 doc: This DRD has been destroyed
                 type: semantic
                 href: http://alps.io/schema.org/Boolean
                 sample: true
                 field_type: boolean
-
       delete:
         doc: Drops a DRD out an air-lock.
         type: idempotent    
