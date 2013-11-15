@@ -1,19 +1,11 @@
-require 'crichton/descriptor/detail'
+require 'crichton/descriptor/detail_decorator'
+require 'crichton/descriptor/options_decorator'
 
 module Crichton
   module Descriptor
     ##
     # Manages retrieving the data values associated with semantic descriptors from a target object.
-    class SemanticDecorator < Detail
-      
-      ##
-      # @param [Hash, Object] target The target instance to retrieve data from.
-      # @param [Crichton::Descriptor::Detail] descriptor The Detail descriptor associated with the semantic data.
-      def initialize(target, descriptor, options = nil)
-        super(descriptor.resource_descriptor, descriptor.parent_descriptor, descriptor.id, descriptor.descriptor_document)
-        # options not implemented
-        @target = target
-      end
+    class SemanticDecorator < DetailDecorator
       
       ##
       # Whether the source of the data exists in the hash or object. This is not a <tt>nil?</tt> check, but rather 
@@ -33,6 +25,12 @@ module Crichton
         val = @target.is_a?(Hash) ? @target[source] : @target.try(source)
         logger.warn("Source is not defined for #{@target.inspect}") unless val
         val
+      end
+      
+      ##
+      # The decorated options.
+      def options
+        @options ||= OptionsDecorator.new(super, @target)
       end
     end
   end

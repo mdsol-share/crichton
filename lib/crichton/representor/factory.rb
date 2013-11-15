@@ -83,6 +83,22 @@ module Crichton
 
             define_singleton_method(:state, lambda { state }) if state
           end
+
+          ##
+          # Use the map lambda from the collection as a method if it is provided
+          def method_missing(method, *args, &block)
+            if @target.include?(method.to_s) && @target[method.to_s].is_a?(Proc)
+              @target[method.to_s].call(*args)
+            else
+              super
+            end
+          end
+
+          ##
+          # Tell anyone who asks that we have the lambda 'method'
+          def respond_to?(method, include_private = false)
+            (@target.is_a?(Hash) && @target.include?(method.to_s) && @target[method.to_s].is_a?(Proc)) ? true : super
+          end
         end
       end
     end

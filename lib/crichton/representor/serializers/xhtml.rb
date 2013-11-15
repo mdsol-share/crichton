@@ -257,17 +257,15 @@ module Crichton
           add_control_input(semantic, :checkbox)
         end
 
-
         def add_control_select(semantic)
           options = semantic.options
           @markup_builder.li do
-            # Later, the datalist will be added here
-            if options.is_internal_select?
+            if options.internal_select?
               add_control_internal_select(semantic)
-            elsif options.is_datalist?
+            elsif options.datalist?
               add_datalist_to_used_datalists_list(options)
               @markup_builder.tag!(:input, {type: "text", name: semantic.name, list: options.datalist_name})
-            elsif options.is_external_select?
+            elsif options.external_select?
               add_control_external_select(semantic)
             end
           end
@@ -290,15 +288,14 @@ module Crichton
         # Generate input that has a "special" link for the client to fetch the options from.
         def add_control_external_select(semantic)
           options = semantic.options
-          opts = options.options
-          link_arguments = {value_attribute_name: opts['value_attribute_name']}
-          if opts.include?('external_hash')
+          link_arguments = {value_attribute_name: options.value_key}
+          if options.external_hash
             description = 'external hash link'
-            link_arguments.merge!({type: :hash, text_attribute_name: opts['text_attribute_name'],
-              href: opts['external_hash']})
+            link_arguments.merge!({type: :hash, text_attribute_name: options.text_key,
+              href: options.external_hash})
           else
             description = 'external list link'
-            link_arguments.merge!({type: :list, href: opts['external_list']})
+            link_arguments.merge!({type: :list, href: options.external_list})
           end
           @markup_builder.a(description, link_arguments)
           @markup_builder.input(type: :text, name: semantic.name)

@@ -21,7 +21,6 @@ module Crichton
     end
 
     module ClassMethods
-
       ##
       # The data-related semantic descriptors defined for the associated resource descriptor.
       #
