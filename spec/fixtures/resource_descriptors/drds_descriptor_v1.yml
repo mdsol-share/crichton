@@ -298,7 +298,7 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: moya
         options:
-          external_hash: http://crichton.example.com/drd_location_list#items
+          external_list: http://crichton.example.com/drd_location_list#items
           value_attribute_name: location_id
           text_attribute_name: location_text
       location_detail:
