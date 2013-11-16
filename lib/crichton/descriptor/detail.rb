@@ -138,10 +138,6 @@ module Crichton
         @validators ||= [*descriptor_document['validators']].map { |v| v.is_a?(String) ? { v => nil } : v }.inject({}, :update)
       end
 
-      def raw_options
-       descriptor_document[OPTIONS]
-      end
-
     private
       def decorator_class
         @decorator_class ||= begin

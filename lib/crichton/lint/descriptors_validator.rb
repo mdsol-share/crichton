@@ -89,9 +89,9 @@ module Crichton
       # check all rules surrounding transition based descriptors
       def semantic_properties_check(descriptor, options, level)
         if level > TOP_LEVEL
-          FieldTypeValidator.validate(self, descriptor) if descriptor.field_type
-          EmbedValidator.validate(self, descriptor) if descriptor.embed
-          OptionsValidator.validate(self, descriptor) if descriptor.raw_options
+          FieldTypeValidator.validate(self, descriptor)
+          EmbedValidator.validate(self, descriptor)
+          OptionsValidator.validate(self, descriptor)
 
           # all NON top level descriptors should have a sample and href entry
           add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample

@@ -2,7 +2,9 @@ module Crichton
   module Lint
     class OptionsValidator
       def self.validate(descriptor_validator, descriptor)
-        descriptor.raw_options.keys.each do |key|
+        return unless raw_options(descriptor)
+
+        raw_options(descriptor).keys.each do |key|
           #1 invalid option name
           unless Crichton::Descriptor::Options::OPTIONS_VALUES.include?(key)
             descriptor_validator.add_error('descriptors.invalid_options_attribute', id: descriptor.id, options_attr:
@@ -11,8 +13,10 @@ module Crichton
         end
 
         #4, more than one option specified
-        descriptor_validator.add_error('descriptors.multiple_options', id: descriptor.id, options_keys:
-          descriptor.raw_options.keys.join(', ')) if clashing_keys?(descriptor.raw_options)
+        if clashing_keys?(raw_options(descriptor))
+          descriptor_validator.add_error('descriptors.multiple_options', id: descriptor.id, options_keys:
+            raw_options(descriptor).keys.join(', '))
+        end
 
         option_rule_check(descriptor_validator, descriptor)
       end
@@ -23,7 +27,7 @@ module Crichton
 
       def self.option_rule_check(descriptor_validator, descriptor)
         # various rules depending upon the different types of options
-        descriptor.raw_options.each do |form_key, value|
+        raw_options(descriptor).each do |form_key, value|
           #1-3 missing value for an option
           if %w(id href list hash external_list external_hash).include?(form_key)
             descriptor_validator.add_error('descriptors.missing_options_value', id: descriptor.id, options_attr:
@@ -90,6 +94,11 @@ module Crichton
         end
       end
 
+
+      def self.raw_options(descriptor)
+        descriptor.descriptor_document[Crichton::Descriptor::Detail::OPTIONS]
+      end
+
       def self.external_option_check(descriptor_validator, descriptor, form_key, value)
         #9 check for valid url
         unless valid_protocol_type(value)
@@ -99,7 +108,7 @@ module Crichton
 
         #10 test to see if value_attribute_name exists, if not, put out error
         descriptor_validator.add_error('descriptors.missing_options_key', id: descriptor.id, options_attr:
-          form_key) unless descriptor.raw_options.has_key?('value_attribute_name')
+          form_key) unless raw_options(descriptor).has_key?('value_attribute_name')
       end
 
       def self.valid_descriptor?(descriptor, descriptor_validator)
@@ -112,7 +121,7 @@ module Crichton
 
       def self.find_matching_option_id(descriptors, option_id, found)
         descriptors.each do |descriptor|
-          found = option_id_match?(descriptor.raw_options, option_id)
+          found = option_id_match?(raw_options(descriptor), option_id)
           break if found
           if descriptor.descriptors
             found = find_matching_option_id(descriptor.descriptors, option_id, found)

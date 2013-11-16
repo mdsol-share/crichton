@@ -19,6 +19,8 @@ module Crichton
       end
 
       def self.validate(descriptor_validator, descriptor)
+        return unless descriptor.field_type
+
         if field_types.include?(descriptor.field_type)
           validate_field_validators(descriptor_validator, descriptor)
         else
