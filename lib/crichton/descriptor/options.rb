@@ -6,6 +6,9 @@ module Crichton
       # @private
       HREF, EXTERNAL_HASH, EXTERNAL_LIST, HASH, LIST  = %w(href external_hash external_list hash list)
 
+      OPTIONS_VALUES = %w(id href list hash external_list external_hash value_attribute_name text_attribute_name
+        source datalist)
+
       attr_reader :descriptor_document
 
       def initialize(descriptor_document)

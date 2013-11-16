@@ -1,6 +1,7 @@
 require 'crichton/lint/base_validator'
 require 'crichton/lint/embed_validator'
 require 'crichton/lint/field_type_validator'
+require 'crichton/lint/options_validator'
 
 module Crichton
   module Lint
@@ -88,8 +89,9 @@ module Crichton
       # check all rules surrounding transition based descriptors
       def semantic_properties_check(descriptor, options, level)
         if level > TOP_LEVEL
-          FieldTypeValidator.validate(self, descriptor) if descriptor.field_type
-          EmbedValidator.validate(self, descriptor) if descriptor.embed
+          FieldTypeValidator.validate(self, descriptor)
+          EmbedValidator.validate(self, descriptor)
+          OptionsValidator.validate(self, descriptor)
 
           # all NON top level descriptors should have a sample and href entry
           add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
