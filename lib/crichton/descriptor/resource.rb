@@ -117,7 +117,12 @@ module Crichton
           h
         end.freeze
       end
-  
+
+      # used only by lint
+      def datalists
+        @descriptors[:datalist] ||= (descriptor_document['datalists'] || {})
+      end
+
       ##
       # Converts the descriptor to a key for registration.
       #

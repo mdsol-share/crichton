@@ -203,6 +203,13 @@ module Crichton
               expected_output(:error, 'descriptors.invalid_option_source_type', id: 'items',
               options_attr: 'source')
           end
+
+          it 'reports errors when an datalist value is empty or points to a non-existent datalist' do
+            @filename = %w(descriptor_section_errors/options_errors options_datalists_errors.yml)
+            @errors = expected_output(:error, 'descriptors.invalid_option_datalist', id: 'total_count', options_attr:
+              'datalist', datalist: 'kind_list',filename: filename, section: :descriptors, sub_header: :error) <<
+              expected_output(:error, 'descriptors.missing_option_datalist_value', id: 'items', options_attr: 'datalist')
+          end
         end
       end
     end
