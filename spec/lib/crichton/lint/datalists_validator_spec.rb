@@ -17,7 +17,7 @@ module Crichton
         end
 
         it 'reports errors if a datalist value is empty, or is not an array or hash' do
-          @filename = %w(datalists_section_errors datalists_errors.yml)
+          @filename = %w(descriptor_section_errors/datalists_section_errors datalists_errors.yml)
           @errors = expected_output(:error, 'datalists.invalid_value_type', key: 'kind-list', filename: filename,
             section: :datalists, sub_header: :error) <<
             expected_output(:error, 'datalists.value_missing', key: 'mean-list')

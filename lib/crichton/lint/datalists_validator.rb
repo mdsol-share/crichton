@@ -16,10 +16,6 @@ module Crichton
       end
 
       private
-      def has_datalist_section?
-        resource_descriptor.descriptor_document[:datalist.to_s]
-      end
-
       def valid_data_list_value?(value)
         value.is_a?(Hash) || value.is_a?(Array)
       end

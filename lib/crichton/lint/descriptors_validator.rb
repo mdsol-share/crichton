@@ -29,7 +29,7 @@ module Crichton
         descriptors.each do |descriptor|
           options = {resource: descriptor.id}
           descriptor_properties_check(descriptor, options, level)
-          if descriptor.descriptors
+          unless descriptor.descriptors.empty?
             child_transition_check(descriptor, options) if descriptor.transition?
             check_descriptor_level(descriptor.descriptors, options, level + 1)
           end
