@@ -118,7 +118,10 @@ module Crichton
         end.freeze
       end
 
-      # used only by lint
+      ##
+      # Returns the datalists defined for the resource descriptor.
+      #
+      # @return [Hash] The datalist instances.
       def datalists
         @descriptors[:datalist] ||= (descriptor_document['datalists'] || {})
       end
