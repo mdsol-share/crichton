@@ -54,6 +54,9 @@ en:
     option_reference_not_found: "Descriptor '%{id}' option tag '%{options_attr}' value: '%{ref}' does not match any %{type} in this file"
     invalid_options_protocol: "Descriptor '%{id}' option tag '%{options_attr}' has an invalid protocol: '%{uri}'"
     invalid_option_source_type: "Descriptor '%{id}' options tag '%{options_attr}' must be a text string"
+    invalid_option_datalist: "Descriptor '%{id}' option tag '%{options_attr}' refers to a non-existent datalist in this file: '%{datalist}'"
+    missing_option_datalist_value: "Descriptor '%{id}' option tag '%{options_attr}' does not have a value"
+    invalid_child_transition: "Descriptor '%{resource}' contains child descriptors that are also transitions, which is not permitted"
   protocols:
     no_protocol: "No underlying protocol (e.g. 'http') defined"
     protocol_empty: "Protocol '%{protocol}' has no content"
@@ -66,4 +69,7 @@ en:
     missing_slt_property: "Slt property '%{property}' is missing for transition '%{action}', protocol '%{protocol}'"
     invalid_status_code: "Status code '%{code}' is not valid for transition '%{action}', protocol '%{protocol}'"
     missing_status_codes_property: "Status codes property '%{property}' is missing for transition '%{action}', protocol '%{protocol}'"
+  datalists:
+    value_missing: "Datalist '%{key}' has no values"
+    invalid_value_type: "Datalist '%{key}' has an invalid value type. Only hashes or arrays are permitted"
   aok: "Resource descriptor file passes lint validation."

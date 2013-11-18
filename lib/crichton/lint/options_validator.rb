@@ -55,6 +55,8 @@ module Crichton
             #12, source should be a non-empty string
             when 'source'
               source_option_check(descriptor_validator, descriptor, form_key, value)
+            when 'datalist'
+              datalist_check(descriptor_validator, descriptor, form_key, value)
           end
         end
       end
@@ -145,6 +147,18 @@ module Crichton
             options_attr: form_key) unless value.is_a?(String)
         else
           descriptor_validator.add_error('descriptors.missing_options_value', id: descriptor.id, options_attr: form_key)
+        end
+      end
+
+      def self.datalist_check(descriptor_validator, descriptor, form_key, value)
+        if value
+          unless descriptor_validator.resource_descriptor.datalists.keys.include?(value)
+            descriptor_validator.add_error('descriptors.invalid_option_datalist', id: descriptor.id,
+               options_attr: form_key, datalist: value)
+          end
+        else
+          descriptor_validator.add_error('descriptors.missing_option_datalist_value', id: descriptor.id,
+             options_attr: form_key)
         end
       end
     end
