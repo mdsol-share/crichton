@@ -1,6 +1,12 @@
 module Crichton
   module Lint
+    # class to check embed type descriptor options
     class EmbedValidator
+      ##
+      # standard lint validation method
+      #
+      # @param [Crichton::Lint::DescriptorsValidator] descriptor_validator  option validator object
+      # @param [Crichton::Descriptor::Detail] descriptor current descriptor object
       def self.validate(descriptor_validator, descriptor)
         return unless descriptor.embed
 

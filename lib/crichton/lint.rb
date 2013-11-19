@@ -11,8 +11,11 @@ require 'colorize'
 
 module Crichton
   module Lint
-
+    ##
     # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
+    #
+    # @param [String] filename file to lint validate
+    # param [Hash] options a hash of lint options,
     def self.validate(filename, options = {})
       # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.
       begin
@@ -65,6 +68,11 @@ module Crichton
       end
     end
 
+    ##
+    # validate method when validating all files in the specified config folder (via the '--all' option)
+    #
+    # @param [Hash] options additional options to the --all option
+    # @param [Array] list of return values for linting all files in a config folder
     def self.validate_all(options = {}, validator_returns = [])
       if File.exists?(location = Crichton.descriptor_location)
         Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
@@ -81,40 +89,49 @@ module Crichton
       end
     end
 
+    # output the Crichton version via the --version, -v option inl lint
     def self.version
       puts "Crichton version: #{Crichton::VERSION::STRING}\n\n"
     end
 
     private
+    # used to determine if the ---count option is set
     def self.count_option?(options)
       options[:count] == :error || options[:count] == :warning
     end
 
+    # @return [Integer] either the count of errors or warnings
     def self.error_or_warning_count(options, validators)
       options[:count] == :error ? error_count(validators) : warning_count(validators)
     end
 
+    # @return [Integer] the count of lint errors found
     def self.error_count(validators)
       validators.map(&:error_count).reduce(0, :+)
     end
 
+    # @return [Integer] the count of lint warnings found
     def self.warning_count(validators)
       validators.map(&:warning_count).reduce(0, :+)
     end
 
+    # return [Boolean] determine if any lint  errors or warnings are found
     def self.errors_and_warnings_found?(validators)
       validators.any? { |validator| validator.issues? }
     end
 
+    # determines if the lint options will return text output or no
     def self.non_output?(options)
       options[:strict] || count_option?(options)
     end
 
+    # @return [Boolean, Integer] depending if lint --strict or --count options are set
     def self.all_option_return(validator_returns, options)
       return true if options[:strict]
       validator_returns.reduce(0, :+ )
     end
 
+    # method to load the internationization feature for lint output
     def self.load_translation_file
       I18n.load_path = [File.join(File.dirname(__FILE__), '/lint/en.yml')]
       I18n.default_locale = 'en'

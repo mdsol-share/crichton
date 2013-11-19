@@ -2,10 +2,13 @@ require 'crichton/lint/base_validator'
 
 module Crichton
   module Lint
+    # class to lint validate with respect to catastrophic errors
     class ResourceDescriptorValidator < BaseValidator
+      # the three major mandatory sections in a resource descriptor document
       MAJOR_SECTIONS = %w(states descriptors protocols)
       section :catastrophic
 
+      # standard lint validate method
       def validate
         check_for_major_sections
 
@@ -16,6 +19,8 @@ module Crichton
       end
 
       private
+
+      # check to see if one of the major mandatory sections exist within a resource descriptor document
       def check_for_major_sections
         # Using Yaml output, check for whoppers first
         MAJOR_SECTIONS.each do |section|
@@ -25,6 +30,7 @@ module Crichton
         end
       end
 
+      # the top level profile attribute check
       def check_for_top_level_properties
         add_error('catastrophic.missing_main_id') unless resource_descriptor.id
         add_warning('profile.missing_version') unless resource_descriptor.version

@@ -3,13 +3,19 @@ require 'crichton/lint/embed_validator'
 require 'crichton/lint/field_type_validator'
 require 'crichton/lint/options_validator'
 
+# base class for all lint validators
 module Crichton
   module Lint
+    # class to lint the descriptors section of a resource descriptor document
     class DescriptorsValidator < BaseValidator
+      # used when walking a descriptor object graph. Different rules apply with respect to level within the groph
       TOP_LEVEL = 0
+      # only html is a valid mime type
       VALID_MIME_TYPES = %w(html)
+
       section :descriptors
 
+      # standard validation method
       def validate
         check_descriptor_graph
 
@@ -21,10 +27,13 @@ module Crichton
       end
 
       private
+
+      # begins a walk-down through the graph of descriptors
       def check_descriptor_graph
         check_descriptor_level(@resource_descriptor.descriptors, {}, TOP_LEVEL)
       end
 
+      # recursive method to dispatch to a variety of checks
       def check_descriptor_level(descriptors, options, level)
         descriptors.each do |descriptor|
           options = {resource: descriptor.id}
@@ -36,6 +45,7 @@ module Crichton
         end
       end
 
+      # check for child transition of a transition descriptor
       def child_transition_check(descriptor, options)
         if descriptor.descriptors.any? { |desc| desc.transition? }
           add_error('descriptors.invalid_child_transition', options.merge({id: descriptor.id}))
@@ -49,6 +59,7 @@ module Crichton
         transition_properties_check(descriptor, options, level) if descriptor.transition?
       end
 
+      # performs a variety of error/warning checks for descriptors
       def common_properties_check(descriptor, options, level)
         #20, should have a valid mime type for doc property
         if descriptor.doc
@@ -124,8 +135,8 @@ module Crichton
         end
       end
 
+      # if an external return type, assume http as only valid external for now
       def valid_return_type(return_type)
-        # if external, valid, assume http as only valid external for now
         return true if  Crichton::Descriptor::Resource::PROTOCOL_TYPES.include?(return_type[/\Ahttp/])
         return true if return_type.downcase == 'none'
         rt_is_a_valid_subresource(return_type)
@@ -135,6 +146,7 @@ module Crichton
         resource_descriptor.states.include?(return_type)
       end
 
+      # check for method consistency if descriptor type matches the proper ReSTful method
       def check_protocol_method_and_type(type, method, options)
         case type.to_sym
           when :safe
@@ -163,10 +175,12 @@ module Crichton
         end
       end
 
+      # starter method to walk the chain to look for duplicate ids
       def check_id_uniqueness
         review_descriptor_ids(@resource_descriptor.descriptors, '', {})
       end
 
+      # recursive method to perform id checks
       def review_descriptor_ids(descriptors, parent_id, id_hash)
         descriptors.each do |descriptor|
           add_error('descriptors.non_unique_descriptor', id: descriptor.id, parent: parent_id) if id_hash[descriptor.id]
