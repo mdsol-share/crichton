@@ -1,11 +1,11 @@
-require 'crichton/descriptor/detail'
+require 'crichton/descriptor/detail_decorator'
 require 'crichton/representor'
 
 module Crichton
   module Descriptor
     ##
     # Manages retrieving the transitions associated with transition descriptors from a target object.
-    class TransitionDecorator < Detail
+    class TransitionDecorator < DetailDecorator
       
       ##
       # @param [Hash, Object] target The target instance to generate transitions from.
@@ -15,9 +15,7 @@ module Crichton
       # @option options [String, Symbol] :protocol The protocol the transition implements.
       # @option options [String, Symbol] :state The state of the resource.
       def initialize(target, descriptor, options = {})
-        super(descriptor.resource_descriptor, descriptor.parent_descriptor, descriptor.id, descriptor.descriptor_document)
-        @target = target
-        @options = options || {}
+        super
       end
       
       ##
@@ -28,7 +26,7 @@ module Crichton
       # 
       # @return [Boolean] <tt>true</tt> if available, <tt>false</tt> otherwise.
       def available?
-        state_transition ? state_transition.available?(@options.slice(:conditions)) : state.nil?
+        state_transition ? state_transition.available?(@_options.slice(:conditions)) : state.nil?
       end
       
       ##
@@ -43,7 +41,7 @@ module Crichton
       # @return [String] The down-cased name of the protocol.
       def protocol
         @protocol ||= begin
-          if protocol = @options[:protocol]
+          if protocol = @_options[:protocol]
             protocol.to_s.downcase.tap do |protocol|
               unless resource_descriptor.protocol_exists?(protocol)
                 raise "Unknown protocol #{protocol} defined by options. Available protocols are " <<
@@ -85,8 +83,8 @@ module Crichton
       ##
       # The fully-qualified URL for the transition.
       def url
-        @url ||= if @options[:top_level] && @options[:override_links] && @options[:override_links][self.name]
-          @options[:override_links].delete(self.name)
+        @url ||= if @_options[:top_level] && @_options[:override_links] && @_options[:override_links][self.name]
+          @_options[:override_links].delete(self.name)
         else
           protocol_descriptor ? protocol_descriptor.url_for(@target) : nil
         end.tap { |url| logger.warn("The URL for the transition is not defined for #{@target.inspect}!") unless url }
@@ -94,8 +92,8 @@ module Crichton
 
     private
       def state
-        @state ||= if @options[:state]
-          @options[:state]
+        @state ||= if @_options[:state]
+          @_options[:state]
         elsif @target.is_a?(Crichton::Representor::State)
           @target.crichton_state
         else

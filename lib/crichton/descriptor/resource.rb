@@ -117,7 +117,15 @@ module Crichton
           h
         end.freeze
       end
-  
+
+      ##
+      # Returns the datalists defined for the resource descriptor.
+      #
+      # @return [Hash] The datalist instances.
+      def datalists
+        @descriptors[:datalist] ||= (descriptor_document['datalists'] || {})
+      end
+
       ##
       # Converts the descriptor to a key for registration.
       #

@@ -18,6 +18,9 @@
       </select>
     </li>
     <li>
+      <input type="text" name="old_status" list="status-list"/>
+  </li>
+    <li>
       <select name="kind">
         <option value="standard">standard</option>
         <option value="sentinel">sentinel</option>
@@ -27,9 +30,14 @@
       <input type="text" name="size" list="size-list"/>
     </li>
     <li>
-      <a value_attribute_name="location_id" type="list" href="http://crichton.example.com/drd_location_list#items">external
-        list link</a>
-      <input type="text" name="location"/>
+      <select name="location">
+        <option value="option1">option1</option>
+        <option value="option2a">option2a</option>
+      </select>
+    </li>
+    <li>
+      <a value_attribute_name="location_detail_id" type="hash" text_attribute_name="location_detail_text" href="http://crichton.example.com/drd_location_detail_list#items">external hash link</a>
+      <input type="text" name="location_detail"/>
     </li>
     <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
     <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
@@ -51,10 +59,12 @@
       <form action="http://deployment.example.org/drds/0" method="post" name="update">
         <li>
           <select name="status">
-            <option value="active">activated</option>
-            <option value="inactive">deactivated</option>
-            <option value="unknown">renegade</option>
+            <option value="option1">option1</option>
+            <option value="option4">option4</option>
           </select>
+        </li>
+        <li>
+          <input type="text" name="old_status" list="status-list"/>
         </li>
         <li>
           <select name="kind">
@@ -70,6 +80,10 @@
             list link</a>
           <input type="text" name="location"/>
         </li>
+        <li>
+           <a value_attribute_name="location_detail_id" type="hash" text_attribute_name="location_detail_text" href="http://crichton.example.com/drd_location_detail_list#items">external hash link</a>
+           <input type="text" name="location_detail"/>
+         </li>
         <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
         <input type="hidden" name="_method" value="PUT"/>
         <input type="submit" value="update"/>
@@ -87,6 +101,7 @@
       <span itemprop="leviathan_uuid">leviathan_uuid_0</span>
       <span itemprop="built_at">built_at_0</span>
       <span itemprop="location">location_0</span>
+      <span itemprop="location_detail">location_detail_0</span>
       <span itemprop="destroyed"></span>
     </div>
     <div itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drd">
@@ -104,6 +119,9 @@
           </select>
         </li>
         <li>
+          <input type="text" name="old_status" list="status-list"/>
+        </li>
+        <li>
           <select name="kind">
             <option value="standard">standard</option>
             <option value="sentinel">sentinel</option>
@@ -116,6 +134,10 @@
           <a value_attribute_name="location_id" type="list" href="http://crichton.example.com/drd_location_list#items">external
             list link</a>
           <input type="text" name="location"/>
+        </li>
+        <li>
+          <a value_attribute_name="location_detail_id" type="hash" text_attribute_name="location_detail_text" href="http://crichton.example.com/drd_location_detail_list#items">external hash link</a>
+          <input type="text" name="location_detail"/>
         </li>
         <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
         <input type="hidden" name="_method" value="PUT"/>
@@ -135,10 +157,16 @@
       <span itemprop="leviathan_uuid">leviathan_uuid_1</span>
       <span itemprop="built_at">built_at_1</span>
       <span itemprop="location">location_1</span>
+      <span itemprop="location_detail">location_detail_1</span>
       <span itemprop="destroyed"></span>
     </div>
   </div>
 </div>
+<datalist id="status-list">
+  <option value="active">activated</option>
+  <option value="inactive">deactivated</option>
+  <option value="unknown">renegade</option>
+</datalist>
 <datalist id="size-list">
   <option value="small">small</option>
   <option value="medium">medium</option>
