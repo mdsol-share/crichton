@@ -15,7 +15,7 @@ module Crichton
     # check for a variety of errors and other syntactical issues in a resource descriptor file's contents
     #
     # @param [String] filename file to lint validate
-    # param [Hash] options a hash of lint options,
+    # @param [Hash] options a hash of lint options,
     def self.validate(filename, options = {})
       # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.
       begin
