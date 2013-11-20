@@ -4,18 +4,18 @@ module Crichton
     # class to lint check field_type descriptor options
     class FieldTypeValidator
 
-      # valid field_type keywords
+      # @private valid field_type keywords
       def self.field_types
         @field_types ||=
           %w(text search email tel url datetime date time month week datetime-local number boolean select)
       end
 
-      # valid types of field_types
+      # @private valid types of field_types
       def self.validator_types
         @val_types ||= %w(required pattern maxlength min max)
       end
 
-      # hash of arrays of allowable field_type validators keynames by validator_type
+      # @private hash of arrays of allowable field_type validators keynames by validator_type
       def self.allowable_validators
         @allowable_validators ||= {pattern: %w(text search email tel url), maxlength: %w(text url),
           min: %w(datetime date time month week datetime-local number),

@@ -4,7 +4,7 @@ module Crichton
   module Lint
     # class to lint validate the protocols section of a resource descriptor document
     class ProtocolValidator < BaseValidator
-      # list of valid protocol attributes
+      # @private list of valid protocol attributes
       PROTOCOL_PROPERTIES = %w(uri entry_point method content_type headers status_codes slt)
       section :protocols
 

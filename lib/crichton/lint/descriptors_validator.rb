@@ -8,9 +8,9 @@ module Crichton
   module Lint
     # class to lint the descriptors section of a resource descriptor document
     class DescriptorsValidator < BaseValidator
-      # used when walking a descriptor object graph. Different rules apply with respect to level within the groph
+      # @private used when walking a descriptor object graph. Different rules apply with respect to level within the groph
       TOP_LEVEL = 0
-      # only html is a valid mime type
+      # @private only html is a valid mime type
       VALID_MIME_TYPES = %w(html)
 
       section :descriptors

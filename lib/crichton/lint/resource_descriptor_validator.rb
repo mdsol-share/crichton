@@ -4,7 +4,7 @@ module Crichton
   module Lint
     # class to lint validate with respect to catastrophic errors
     class ResourceDescriptorValidator < BaseValidator
-      # the three major mandatory sections in a resource descriptor document
+      # @private the three major mandatory sections in a resource descriptor document
       MAJOR_SECTIONS = %w(states descriptors protocols)
       section :catastrophic
 
