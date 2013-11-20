@@ -2,10 +2,13 @@ require 'crichton/lint/base_validator'
 
 module Crichton
   module Lint
+    # class to lint validate the protocols section of a resource descriptor document
     class ProtocolValidator < BaseValidator
+      # @private list of valid protocol attributes
       PROTOCOL_PROPERTIES = %w(uri entry_point method content_type headers status_codes slt)
       section :protocols
 
+      # standard lint validate method
       def validate
         check_for_property_issues
 
@@ -14,6 +17,7 @@ module Crichton
 
       private
 
+      # high level validation method for errant properties
       def check_for_property_issues
         #43 we know the protocol: section exists, check to see if it has a protocol specified
         add_error('protocols.no_protocol') unless resource_descriptor.protocols
@@ -31,12 +35,12 @@ module Crichton
         end
       end
 
+      # dispatches a property check based upon the uri
       def check_for_missing_and_empty_properties(protocol, protocol_name)
         options = {protocol: protocol_name}
 
         # only http is supported now, but future may support multiple protocols
         protocol.each do |transition_name, transition|
-
           # if a transition contains uri_source, then it implies an external resource...
           if transition.uri_source
             external_resource_prop_check(transition.descriptor_document, options.merge(action: transition_name))
