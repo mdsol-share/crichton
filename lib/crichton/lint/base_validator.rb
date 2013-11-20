@@ -8,13 +8,13 @@ module Crichton
     # Base class for all lint validator classes
     class BaseValidator
 
-      # @attr_reader [Object] errors
+      # @attr_reader [Array] errors
       attr_reader :errors
 
-      # @attr_reader [Object] warnings
+      # @attr_reader [Array] warnings
        attr_reader :warnings
 
-      # @attr_reader [Object] resource_descriptor
+      # @attr_reader [Crichton::Descriptor::Resource] resource_descriptor
       attr_reader :resource_descriptor
 
       # @attr_reader [String] filename

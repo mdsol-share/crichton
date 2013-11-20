@@ -72,7 +72,7 @@ module Crichton
     # validate method when validating all files in the specified config folder (via the '--all' option)
     #
     # @param [Hash] options additional options to the --all option
-    # @param [Array] list of return values for linting all files in a config folder
+    # @param [Array] validator_returns a list of return values for linting all files in a config folder
     def self.validate_all(options = {}, validator_returns = [])
       if File.exists?(location = Crichton.descriptor_location)
         Dir.glob(File.join(location, '*.{yml,yaml}')).each do |f|
