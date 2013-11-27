@@ -45,6 +45,11 @@ descriptors:
         options:
           datalist: size-list
       #Transitions
+      show:
+        doc: Shows a particular Leviathan.
+        name: self
+        type: safe
+        rt: leviathan
       create:
         doc: Creates a Leviathan.
         type: unsafe
@@ -86,6 +91,33 @@ descriptors:
                   hash:
                     new: new
                     old: old
+protocols:
+  http:
+    create:
+      uri: leviathan
+      method: POST
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+        201:
+          description: Created
+        403:
+          description: Permission denied
+      slt: &slt1
+    show:
+      uri: leviathans/{uuid}
+      entry_point: leviathan
+      method: GET
+      content_types:
+        - application/json
+        - application/hal+json
+      headers:
+      status_codes:
+        200:
+          description: OK
+      slt: *slt1
 datalists:
   size-list:
     - small
