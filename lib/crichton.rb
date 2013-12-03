@@ -196,7 +196,25 @@ module Crichton
       Dir.pwd
     end
   end
-end
+
+  ##
+  # Returns an array of objects ready for json-home serialization
+  #
+  # @return [Array] array of hashes of resources an their entry points
+  # TODO: REFACTOR WITH INJECTion
+  def self.entry_points(entry_point_hash = {})
+    @entry_points ||= begin
+      Crichton.descriptor_registry.values.each do | resource |
+        resource.resource_descriptor.protocols.values.each do | protocol |
+          protocol.values.each do |transition|
+            entry_point_hash["#{transition.entry_point}"] = transition.uri if transition.entry_point
+          end
+        end
+      end
+      resources = {'resources' => entry_point_hash }
+    end
+  end
+ end
 
 # YARD macros definitions for re-use in different classes. These must defined in the first loaded class to
 # be available in other classes.

@@ -134,28 +134,7 @@ module Crichton
         @key ||= "#{id}:#{version}"
       end
 
-      ##
-      # Returns an array of objects ready for json-home serialization
-      #
-      # @return [Array] array of hashes of resources an their entry points
-      def self.entry_points(entry_point_array = [])
-        Crichton.descriptor_registry.values.each do | resource |
-          resource.resource_descriptor.protocols.values.each do | protocol |
-            protocol.values.any? {|transition| insert_entry_point(transition, entry_point_array)  }
-          end
-        end
-        entry_point_array
-      end
-
-
       private
-      # only insert if there is an entry_point attribute and not already added to the array
-      def self.insert_entry_point(transition, array)
-        if transition.entry_point && array.all? { |ep| ep.values.exclude?(transition.entry_point) }
-          array << { href: transition.uri, rel: transition.entry_point }
-        end
-      end
-
       # TODO: Delegate to Lint when implemented.
       def verify_descriptor(descriptor)
         err_msg = ''
