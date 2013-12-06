@@ -15,7 +15,6 @@ module Crichton
         @resources = resources
       end
 
-      # prefer to find a way to not override this
       def to_media_type(media_type)
         case media_type
           when :json_home

@@ -7,7 +7,6 @@ module Support
       Class.new do
         extend ::Crichton::Representor::Factory
 
-
         def self.generate_object_graph
           resources = []
           ep_attributes = %w(drds drds apis entry_points leviathans/{uuid} leviathan)

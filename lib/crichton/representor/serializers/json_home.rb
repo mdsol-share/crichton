@@ -9,9 +9,7 @@ module Crichton
       media_types json_home: %w(application/json+home)
 
       ##
-      # Returns a ruby object representing a HAL serialization.
-      #
-      # @param [Hash] options Optional configurations.
+      # Returns a ruby object representing a JsonHome serialization.
       #
       # @return [Hash] The built representation.
       def as_media_type
@@ -19,9 +17,7 @@ module Crichton
       end
 
       ##
-      # Returns a json object representing a HAL serialization.
-      #
-      # @param [Hash] options Optional configurations.
+      # Returns a json object representing a JsonHome serialization.
       #
       # @return [Hash] The built representation.
       def to_media_type
