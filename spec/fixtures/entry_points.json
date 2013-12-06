@@ -1,0 +1,24 @@
+{
+    "resources":
+    [
+        {
+            "http://deployment.example.org/drds":
+            {
+                "href":"drds"
+            }
+        },
+        {
+            "http://deployment.example.org/apis":
+               {
+                   "href":"entry_points"
+               }
+        },
+        {
+            "http://deployment.example.org/leviathans/{uuid}":
+            {
+                "href":"leviathan"
+            }
+        }
+    ]
+}
+

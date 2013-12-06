@@ -38,6 +38,7 @@ RSpec.configure do |config|
   config.include Support::ALPS
   config.include Support::Controllers
   config.include Support::DRDHelpers
+  config.include Support::EPHelpers
 
   config.before(:each) { Crichton::config_directory = File.join('spec', 'fixtures', 'config') }
 end

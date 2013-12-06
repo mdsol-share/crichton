@@ -6,6 +6,8 @@ require 'crichton/errors'
 require 'crichton/dice_bag/template'
 require 'crichton/representor'
 require 'crichton/alps/deserialization'
+require 'crichton/discovery/entry_point'
+require 'crichton/discovery/entry_points'
 
 if defined?(Rails)
   require 'crichton/rake_lint'
@@ -195,6 +197,34 @@ module Crichton
     else
       Dir.pwd
     end
+  end
+
+  ##
+  # Returns an array of objects ready for json-home serialization
+  #
+  # @return [Array] array of EntryPoint objects
+  def self.entry_points(ep_array = [])
+    @entry_points ||= begin
+      Crichton.descriptor_registry.values.each do | resource |
+        puts "LOOKING AT RESOURCE: #{resource.id}"
+        resource.resource_descriptor.protocols.values.each do | protocol |
+          protocol.values.each_with_object(ep_array) { |trans, arr| arr <<
+            Discovery::EntryPoint.new(trans.uri, trans.entry_point) unless entry_point_exists?(trans.entry_point, arr) }
+        end
+      end
+      ep_array
+    end
+  end
+
+  ##
+  #
+  # Determines if an entry point name already exists in the supplied array
+  #
+  # @param resource_relation [String] entry point name
+  # @param entry_point_arr [Array] Array of existing EntryPoint objects
+  def self.entry_point_exists?(resource_relation, entry_point_arr)
+    return true unless resource_relation
+    entry_point_arr.any? {|ep| ep.resource_relation == resource_relation }
   end
 end
 

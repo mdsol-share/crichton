@@ -2,7 +2,8 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rails',         '~> 3.2.14'
-gem 'debugger',      '~> 1.5.0'
+gem 'debugger',      '~> 1.6.2'
+gem 'debugger-xml',  '~> 0.3.2'
 gem 'ruby-prof',     '~> 0.13'
 gem 'yard',          '~> 0.8.5'
 gem 'redcarpet',     '~> 3.0.0'
