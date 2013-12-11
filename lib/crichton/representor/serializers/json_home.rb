@@ -12,32 +12,30 @@ module Crichton
       # Returns a ruby object representing a JsonHome serialization.
       #
       # @return [Hash] The built representation.
-      def as_media_type
-        { :resources => generate_entry_points_array }
+      def as_media_type(options)
+        { :resources => generate_entry_points_hash }
       end
 
       ##
       # Returns a json object representing a JsonHome serialization.
       #
       # @return [Hash] The built representation.
-      def to_media_type
-        as_media_type.to_json
+      def to_media_type(options  = {})
+        as_media_type(options).to_json
       end
 
       private
-      def generate_entry_points_array
-        @object.resources.inject([]) do |arr, ep|
-          arr << { gen_full_uri(ep.resource_uri) => gen_href_hash(ep.resource_relation) }
+      def generate_entry_points_hash
+        @object.resources.inject({}) do |ep_hash, ep|
+          ep_hash[ep.rel] = gen_href_hash(ep.url)
+          ep_hash
         end
       end
 
-      def gen_full_uri(uri)
-        "#{Crichton.config.deployment_base_uri}/#{uri}"
+      def gen_href_hash(resource_url)
+        {:href => resource_url}
       end
 
-      def gen_href_hash(resource_relation)
-        {:href => resource_relation}
-      end
     end
   end
 end

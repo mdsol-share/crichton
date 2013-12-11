@@ -8,6 +8,7 @@ module Crichton
   module Representor
     describe JsonHomeSerializer do
       let(:deployment_base_uri) { 'http://deployment.example.org' }
+      let(:apls_base_uri) { 'http://alps.example.org' }
       let (:entry_points) do
         ep_klass.generate_object_graph
       end
@@ -25,7 +26,6 @@ module Crichton
 
       describe '#as_media_type' do
         it 'returns the resource represented as application/json+home' do
-          puts "\n\n *** ENTRY_POINTS: #{entry_points.inspect} *** \n\n"
           serializer = @serializer.new(entry_points)
           serializer.to_media_type.should be_json_eql(entry_points_json)
         end

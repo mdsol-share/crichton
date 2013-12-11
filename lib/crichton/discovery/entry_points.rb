@@ -11,22 +11,13 @@ module Crichton
 
       attr_reader :resources
 
+      ##
+      #
+      # Saves a collection of EntryPoint objects eventually used in serialization
+      #
+      # @params [Set] resources A Set collection of EntryPoint objects
       def initialize(resources)
         @resources = resources
-      end
-
-      def to_media_type(media_type)
-        case media_type
-          when :json_home
-            serializer = JsonHomeSerializer.new(self)
-            serializer.to_media_type
-          when :html
-            # TODO
-            super
-          else
-            # FAIL?
-            # super
-        end
       end
     end
   end

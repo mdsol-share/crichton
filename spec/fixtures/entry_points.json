@@ -1,24 +1,17 @@
 {
     "resources":
-    [
+    {
+        "http://alps.example.org/DRDs/#list":
         {
-            "http://deployment.example.org/drds":
-            {
-                "href":"drds"
-            }
+            "href":"http://deployment.example.org/drds"
         },
+            "http://alps.example.org/EntryPoints/#list":
         {
-            "http://deployment.example.org/apis":
-               {
-                   "href":"entry_points"
-               }
+            "href":"http://deployment.example.org/apis"
         },
+            "http://alps.example.org/Leviathans/#show":
         {
-            "http://deployment.example.org/leviathans/{uuid}":
-            {
-                "href":"leviathan"
-            }
+            "href":"http://deployment.example.org/leviathans/{uuid}"
         }
-    ]
+    }
 }
-
