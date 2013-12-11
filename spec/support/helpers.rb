@@ -61,14 +61,6 @@ module Support
       @drds_styled_embed_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata_embed.html')))
     end
 
-    def entry_points_descriptor
-      YAML.load_file(entry_points_filename)
-    end
-
-    def entry_points_filename
-      fixture_path('entry_points', 'entry_points.yml')
-    end
-
     def example_environment_config
       config = %w(alps deployment discovery documentation).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
@@ -214,9 +206,16 @@ module Support
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
 
+    def entry_points_descriptor
+      YAML.load_file(entry_points_filename)
+    end
+
+    def entry_points_filename
+      fixture_path('entry_points', 'entry_points.yml')
+    end
+
     def entry_points_json
       @entry_points_json ||= File.open(fixture_path('entry_points.json'))
-     end
-
+    end
   end
 end
