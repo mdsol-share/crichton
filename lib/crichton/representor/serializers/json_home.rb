@@ -35,7 +35,6 @@ module Crichton
       def gen_href_hash(resource_url)
         {:href => resource_url}
       end
-
     end
   end
 end
