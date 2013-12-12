@@ -151,14 +151,9 @@ module Crichton
         end
 
         def add_datalists(options)
-          @serializer.used_datalists.uniq.each do |dl_name|
-            @markup_builder.datalist(id: dl_name.split('#')[1]) do
-              dl = Crichton::datalist_registry[dl_name]
-              if dl.is_a?(Hash)
-                dl.each { |k, v| @markup_builder.option(v, value: k) }
-              else
-                dl.each { |e| @markup_builder.option(e, value: e) }
-              end
+          @serializer.used_datalists.uniq { |x| x[:id] }.each do |dl|
+            @markup_builder.datalist(id: dl[:id].split('#')[1]) do
+              dl[:data].each {|k, v| @markup_builder.option(v, value: k)}
             end
           end
         end
@@ -235,7 +230,6 @@ module Crichton
         def add_form_transition(transition, method = :post)
           @markup_builder.form({action: transition.url, method: method, name: transition.name}) do
             transition.semantics.values.each do |semantic|
-              # If this is a form semantic, pick up its attributes
               if semantic.semantics.any?
                 semantic.semantics.values.each { |form_semantic| add_control(form_semantic) }
               else
@@ -249,8 +243,16 @@ module Crichton
 
         def add_control_input(semantic, field_type = nil)
           field_type ||= semantic.field_type
-          @markup_builder.input({itemprop: semantic.name, type: field_type, name: semantic.name
-            }.merge(semantic.validators))
+          attributes = { itemprop: semantic.name, type: field_type, name: semantic.name }
+          if options = semantic.options
+            if options.external?
+              add_control_external_select(semantic)
+            elsif options.enumerable?
+              add_datalist_to_used_datalists_list(semantic.name, options)
+              attributes.merge!({list: semantic.name})
+            end
+          end
+          @markup_builder.input(attributes.merge(semantic.validators)) unless (options && options.external?)
         end
 
         def add_control_boolean(semantic)
@@ -259,21 +261,11 @@ module Crichton
 
         def add_control_select(semantic)
           options = semantic.options
-          @markup_builder.li do
-            if options.internal_select?
-              add_control_internal_select(semantic)
-            elsif options.datalist?
-              add_datalist_to_used_datalists_list(options)
-              @markup_builder.tag!(:input, {type: "text", name: semantic.name, list: options.datalist_name})
-            elsif options.external_select?
-              add_control_external_select(semantic)
-            end
+          if options.enumerable?
+            add_control_internal_select(semantic)
+          elsif options.external?
+            add_control_external_select(semantic)
           end
-        end
-
-        def add_datalist_to_used_datalists_list(options)
-          @serializer.used_datalists <<
-            "#{@object.class.resource_descriptor.resource_descriptor.name}\##{options.datalist_name}"
         end
 
         ##
@@ -288,17 +280,13 @@ module Crichton
         # Generate input that has a "special" link for the client to fetch the options from.
         def add_control_external_select(semantic)
           options = semantic.options
-          link_arguments = {value_attribute_name: options.value_key}
-          if options.external_hash
-            description = 'external hash link'
-            link_arguments.merge!({type: :hash, text_attribute_name: options.text_key,
-              href: options.external_hash})
-          else
-            description = 'external list link'
-            link_arguments.merge!({type: :list, href: options.external_list})
-          end
-          @markup_builder.a(description, link_arguments)
+          @markup_builder.a('source', { href: options.source, prompt: options.prompt, target: options.target })
           @markup_builder.input(type: :text, name: semantic.name)
+        end
+
+        def add_datalist_to_used_datalists_list(id, data)
+          @serializer.used_datalists <<
+              { id: "#{@object.class.resource_descriptor.resource_descriptor.name}\##{id}", data: data }
         end
       end
 
@@ -373,7 +361,7 @@ module Crichton
           end
         end
 
-        def add_control_input(semantic, field_type = nil)
+        def add_control(semantic)
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) { super }
           end

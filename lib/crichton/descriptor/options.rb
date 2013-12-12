@@ -4,10 +4,8 @@ module Crichton
     # Manages options for select lists
     class Options
       # @private
-      HREF, EXTERNAL_HASH, EXTERNAL_LIST, HASH, LIST  = %w(href external_hash external_list hash list)
-
-      OPTIONS_VALUES = %w(id href list hash external_list external_hash value_attribute_name text_attribute_name
-        source datalist)
+      HREF, HASH, LIST, EXTERNAL, SOURCE, TARGET, PROMPT  = %w(href hash list external source target prompt)
+      OPTIONS_VALUES = %w(id href hash list external source target prompt)
 
       attr_reader :descriptor_document
 
@@ -24,32 +22,12 @@ module Crichton
         end
       end
 
-
-
-      def internal_select?
+      def enumerable?
         (opts = options) && (opts.include?(HASH) || opts.include?(LIST))
       end
 
-      def datalist?
-        (opts = options) && opts.include?('datalist')
-      end
-
-      def datalist_name
-        options['datalist']
-      end
-
-
-      def external_hash
-        (opts = options) && opts[EXTERNAL_HASH]
-      end
-
-
-      def external_list
-        (opts = options) && opts[EXTERNAL_LIST]
-      end
-
-      def external_select?
-        (opts = options) && (opts.include?(EXTERNAL_HASH) || opts.include?(EXTERNAL_LIST))
+      def external?
+        (opts = options) && opts.include?(EXTERNAL)
       end
 
       ##
@@ -68,14 +46,24 @@ module Crichton
           end
         end
       end
-      
-      def text_key
-        options['text_attribute_name']
+
+      def source
+        external[SOURCE]
       end
 
-      def value_key
-        options['value_attribute_name']
+      def prompt
+        external[PROMPT]
       end
+
+      def target
+        external[TARGET]
+      end
+
+      private
+      def external
+        options[EXTERNAL]
+      end
+
     end
   end
 end

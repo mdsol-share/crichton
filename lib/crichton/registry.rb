@@ -44,14 +44,6 @@ module Crichton
       end
     end
 
-    def datalist_registry
-      @datalist_registry ||= if descriptor_registry
-        {}.tap do |registry|
-          resources_list.each { |resource| register_datalist(registry, resource) }
-        end
-      end
-    end
-
     ##
     # Lists the registered resource descriptors that do not have local links de-referenced.
     #
@@ -171,12 +163,5 @@ module Crichton
         raise DescriptorAlreadyRegisteredError, "Descriptor for #{intersect.keys.join(" ")} is already registered."
       end
     end
-
-    def register_datalist(registry, resource_descriptor)
-      if datalists = resource_descriptor.descriptor_document['datalists']
-        datalists.each { |k, v| registry["#{resource_descriptor.name}\##{k}"] = v }
-      end
-    end
-
   end
 end
