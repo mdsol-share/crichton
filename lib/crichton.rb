@@ -204,10 +204,8 @@ module Crichton
   #
   # @return [Array] array of EntryPoint objects
   def self.entry_points
-    @entry_points ||= begin
-      Crichton.descriptor_registry.values.inject(Set.new) do | ep_set, resource |
-        resource.resource_descriptor.entry_point ? ep_set << resource.resource_descriptor.entry_point : ep_set
-      end
+    @entry_points ||= Crichton.descriptor_registry.values.inject(Set.new) do | ep_set, resource |
+      resource.resource_descriptor.entry_points ? ep_set << resource.resource_descriptor.entry_points : ep_set
     end
   end
 end
