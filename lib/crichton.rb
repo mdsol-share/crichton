@@ -206,7 +206,7 @@ module Crichton
   def self.entry_points
     @entry_points ||= begin
       Crichton.descriptor_registry.values.inject(Set.new) do | ep_set, resource |
-        ep_set << resource.resource_descriptor.entry_point if resource.resource_descriptor.entry_point
+        resource.resource_descriptor.entry_point ? ep_set << resource.resource_descriptor.entry_point : ep_set
       end
     end
   end
