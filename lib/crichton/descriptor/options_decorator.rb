@@ -39,9 +39,9 @@ module Crichton
       private
       def conditions
         {
-            EXTERNAL => ->(opts) { (opts[SOURCE] && opts[TARGET] && opts[PROMPT]) },
-            HASH => ->(opts) { opts.is_a?(Hash) },
-            LIST => ->(opts) { opts.is_a?(Array) }
+          EXTERNAL => ->(opts) { (opts[SOURCE] && opts[TARGET] && opts[PROMPT]) },
+          HASH => ->(opts) { opts.is_a?(Hash) },
+          LIST => ->(opts) { opts.is_a?(Array) }
         }
       end
 
