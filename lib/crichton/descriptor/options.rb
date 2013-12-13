@@ -4,8 +4,8 @@ module Crichton
     # Manages options for select lists
     class Options
       # @private
-      HREF, HASH, LIST, EXTERNAL, SOURCE, TARGET, PROMPT  = %w(href hash list external source target prompt)
       OPTIONS_VALUES = %w(id href hash list external source target prompt)
+      HREF, HASH, LIST, EXTERNAL, SOURCE, TARGET, PROMPT = OPTIONS_VALUES[1..-1]
 
       attr_reader :descriptor_document
 

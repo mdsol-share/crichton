@@ -12,34 +12,44 @@ module Crichton
       end
 
       def options
-        @decorated_options ||= if super &&  (external = super[EXTERNAL])
+        @decorated_options ||= if super && (external = super[EXTERNAL])
           source = external[SOURCE]
           if source.include?('://')
             return super
-          end
-          if @target.respond_to?(source)
-            unless (result = @target.send(source, super)).is_a?(Hash)
-              raise Crichton::TargetMethodResponseError, "#{source} method on target must return Hash object"
-            end
+          elsif @target.respond_to?(source)
+            result = @target.send(source, super)
+            raise_if_invalid(result.is_a?(Hash), throw("#{source} method on target must return Hash object"))
 
-             if opts = result[EXTERNAL]
-              raise Crichton::TargetMethodResponseError unless (opts[SOURCE] && opts[TARGET] && opts[PROMPT])
-              result
-            elsif opts = result[LIST]
-              raise Crichton::TargetMethodResponseError unless opts.is_a?(Array)
-              result
-            elsif opts = result[HASH]
-              raise Crichton::TargetMethodResponseError unless opts.is_a?(Hash)
-              result
-            elsif
-              raise Crichton::TargetMethodResponseError
+            [EXTERNAL, LIST, HASH].each do |x|
+              if opts = result[x]
+                raise_if_invalid(conditions[x].call(opts), throw)
+                return result
+              end
             end
+            throw.call
           else
             super
           end
         else
           super
         end
+      end
+
+      private
+      def conditions
+        {
+            EXTERNAL => ->(opts) { (opts[SOURCE] && opts[TARGET] && opts[PROMPT]) },
+            HASH => ->(opts) { opts.is_a?(Hash) },
+            LIST => ->(opts) { opts.is_a?(Array) }
+        }
+      end
+
+      def raise_if_invalid(condition, throw_function)
+        throw_function.call unless condition
+      end
+
+      def throw(message = '')
+        ->(message){ raise Crichton::TargetMethodResponseError, message }
       end
     end
   end
