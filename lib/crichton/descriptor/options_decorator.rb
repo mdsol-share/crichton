@@ -16,7 +16,8 @@ module Crichton
           source = external[SOURCE]
           if source.include?('://')
             return super
-          elsif @target.respond_to?(source)
+          end
+          if @target.respond_to?(source)
             result = @target.send(source, super)
             raise_if_invalid(result.is_a?(Hash), throw("#{source} method on target must return Hash object"))
 
