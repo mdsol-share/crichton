@@ -24,13 +24,12 @@ module Crichton
         Serializer.registered_serializers[:json_home].should == @serializer
       end
 
-      describe '#as_media_type' do
+      describe '#to_media_type' do
         it 'returns the resource represented as application/json+home' do
           serializer = @serializer.new(entry_points)
           serializer.to_media_type.should be_json_eql(entry_points_json)
         end
       end
-
     end
   end
 end

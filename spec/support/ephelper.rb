@@ -12,12 +12,13 @@ module Support
           ep_attributes = %w(drds drds apis   )
           resource_uris = %w(drds apis leviathans/{uuid})
           resource_rels = %w(drds entry_points leviathan)
-          transition_names = %w(list list show)
+          transition_ids = %w(list list show)
           resource_ids = %w(DRDs EntryPoints Leviathans)
 
-          [0,1,2].map { |i| resources <<
-            Crichton::Discovery::EntryPoint.new(resource_uris[i], resource_rels[i],
-            transition_names[i], resource_ids[i]) }
+          [0,1,2].map do |i|
+            resources << Crichton::Discovery::EntryPoint.new(resource_uris[i], resource_rels[i], transition_ids[i],
+              resource_ids[i])
+          end
           Crichton::Discovery::EntryPoints.new(resources)
         end
 

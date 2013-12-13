@@ -10,19 +10,19 @@ module Crichton
 
       attr_reader :resource_relation
       attr_reader :resource_uri
-      attr_reader :transition_name
+      attr_reader :transition_id
       attr_reader :resource_id
 
       ##
       #
       # @param resource_uri [String] uri of the entry point of the resource
       # @param resource_relation [String] name of the resource relation
-      # @param transition_name [String] name of the transition that is the entry point for the resource
+      # @param transition_id [String] name of the transition that is the entry point for the resource
       # @param resource_id [String] name of the resource
-      def initialize(resource_uri, resource_relation, transition_name, resource_id)
+      def initialize(resource_uri, resource_relation, transition_id, resource_id)
         @resource_relation =  resource_relation
         @resource_uri = resource_uri
-        @transition_name = transition_name
+        @transition_id = transition_id
         @resource_id = resource_id
       end
 
@@ -67,13 +67,13 @@ module Crichton
       #
       # @return [String] fully qualified url of the resource's relation name
       def rel
-        "#{Crichton.config.alps_base_uri}/#{resource_id}/##{transition_name}"
+        "#{Crichton.config.alps_base_uri}/#{resource_id}/##{transition_id}"
       end
 
       ##
       #
       # Equality operator for adding EntryPoints into a set collection
-      def == other_klass
+      def ==(other_klass)
         self.resource_relation == other_klass.resource_relation
       end
     end

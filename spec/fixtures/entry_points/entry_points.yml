@@ -45,13 +45,13 @@ states:
           next:
             - collection
   entry_point:
-    activated:
+    default:
       doc: The default state of an entry point.
       transitions:
         show:
           name: self
           next:
-            - activated
+            - default
     error:
       doc: An error has occured.
       location: http://alps.io/schema.org/Error
@@ -77,7 +77,7 @@ descriptors:
         type: semantic
         href: http://alps.io/schema.org/Integer
         sample: 1
-      items:
+      resources:
         doc: An array of resource entry points.
         type: semantic
         href: http://alps.io/schema.org/Array
@@ -92,7 +92,6 @@ descriptors:
         type: safe
         rt: entry_points
         descriptors:
-          ## FIX THIS
           name:
             doc: The terms to search.
             type: semantic
@@ -133,12 +132,8 @@ protocols:
       entry_point: entry_points # Indicates this endpoint is a resource entry point for the protocol.
       method: GET
       content_types:
-         # ONLY THIS MEDIA TYPE?
         - application/json-home
       headers:
-        # NEEDED?
-        - Content-Type
-        - ETag
       status_codes:
         200:
           description: OK
@@ -161,7 +156,6 @@ protocols:
         99th_percentile: 250ms
         std_dev: 50ms
         requests_per_second: 25
-    # GET BY NAME
     show:
       uri: apis/{name}
       method: GET
