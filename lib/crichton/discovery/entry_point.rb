@@ -1,4 +1,5 @@
 require 'crichton/representor/serializer'
+require 'addressable/uri'
 require "json"
 
 module Crichton
@@ -58,7 +59,7 @@ module Crichton
       #
       # @return [String] fully qualified url of the resource's entry point
       def url
-        "#{Crichton.config.deployment_base_uri}/#{resource_uri}"
+        Addressable::URI.parse(File.join(Crichton.config.deployment_base_uri, resource_uri)).to_s
       end
 
       ##
@@ -67,14 +68,18 @@ module Crichton
       #
       # @return [String] fully qualified url of the resource's relation name
       def rel
-        "#{Crichton.config.alps_base_uri}/#{resource_id}/##{transition_id}"
+         Addressable::URI.parse(File.join(Crichton.config.alps_base_uri, resource_id,trans_id)).to_s
       end
-
       ##
       #
       # Equality operator for adding EntryPoints into a set collection
       def ==(other_klass)
         self.resource_relation == other_klass.resource_relation
+      end
+
+      private
+      def trans_id
+        "##{transition_id}"
       end
     end
   end

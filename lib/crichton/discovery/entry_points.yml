@@ -92,7 +92,7 @@ descriptors:
         type: safe
         rt: entry_points
         descriptors:
-          name:
+          resource_name:
             doc: The terms to search.
             type: semantic
             href: http://alps.io/schema.org/Text
@@ -137,13 +137,7 @@ protocols:
       status_codes:
         200:
           description: OK
-          notes:
-            - We have processed your request and returned the data you asked for.
-      slt: &slt1
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50 
-    search: 
+    search:
       uri: entry_points
       method: GET
       content_types:
@@ -152,10 +146,6 @@ protocols:
       status_codes:
         200:
           description: OK
-      slt: &slt2
-        99th_percentile: 250ms
-        std_dev: 50ms
-        requests_per_second: 25
     show:
       uri: apis/{name}
       method: GET
@@ -165,4 +155,3 @@ protocols:
       status_codes:
         200:
           description: OK
-      slt: *slt1
