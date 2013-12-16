@@ -211,7 +211,7 @@ module Support
     end
 
     def entry_points_filename
-      fixture_path('entry_points', 'entry_points.yml')
+      File.join(DISCOVERY_DIR, 'entry_points.yml')
     end
 
     def entry_points_json

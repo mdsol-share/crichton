@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'crichton/representor'
 require 'crichton/representor/factory'
 require 'crichton/representor/serializers/json_home'
+require 'crichton/discovery/entry_points'
 require 'json_spec'
 
 module Crichton
@@ -9,8 +10,9 @@ module Crichton
     describe JsonHomeSerializer do
       let(:deployment_base_uri) { 'http://deployment.example.org' }
       let(:apls_base_uri) { 'http://alps.example.org' }
-      let (:entry_points) do
-        ep_klass.generate_object_graph
+      let (:entry_points) { ep_klass.generate_object_graph }
+      let (:json_output) do
+        '{"resources":{"http://alps.example.org/DRDs/#list":{"href":"http://deployment.example.org/drds"}}}'
       end
 
       before do
@@ -29,6 +31,23 @@ module Crichton
           serializer = @serializer.new(entry_points)
           serializer.to_media_type.should be_json_eql(entry_points_json)
         end
+      end
+
+      it 'raises an exception when an EntryPoint object does not have a resources method' do
+        expect { @serializer.new(mock('bad_entry_point_object')) }.to raise_error(
+          "Target serializing object must be an EntryPoints object containing resources")
+      end
+
+      it 'generates a valid url with a forward slashes on a resource uri' do
+        resources = [Crichton::Discovery::EntryPoint.new('/drds', 'drds', 'list', 'DRDs')]
+        serializer = @serializer.new(Crichton::Discovery::EntryPoints.new(resources))
+        serializer.to_media_type.should == json_output
+      end
+
+      it 'generates a valid url without a forward slashes on a resource uri' do
+        resources = [Crichton::Discovery::EntryPoint.new('drds', 'drds', 'list', 'DRDs')]
+        serializer = @serializer.new(Crichton::Discovery::EntryPoints.new(resources))
+        serializer.to_media_type.should == json_output
       end
     end
   end
