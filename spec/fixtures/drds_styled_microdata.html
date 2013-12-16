@@ -1,309 +1,348 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <link rel="profile" href="http://alps.example.org/DRDs"/>
-  <link rel="type" href="http://alps.example.org/DRDs#drds"/>
-  <link rel="help" href="http://documentation.example.org/Things/DRDs"/>
-  <link rel="stylesheet" href="http://example.org/resources/styles.css"/>
-  <style>
-    *[itemprop]::before {
-      content: attr(itemprop) ": ";
-      text-transform: capitalize;
-    }
-  </style>
+    <link rel="profile" href="http://alps.example.org/DRDs"/>
+    <link rel="type" href="http://alps.example.org/DRDs#drds"/>
+    <link rel="help" href="http://documentation.example.org/Things/DRDs"/>
+    <link rel="stylesheet" href="http://example.org/resources/styles.css"/>
+    <style>
+        *[itemprop]::before {
+            content: attr(itemprop) ": ";
+            text-transform: capitalize;
+        }
+    </style>
 </head>
 <body>
 <ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drds">
 <li>
-  <a rel="self" href="http://deployment.example.org/drds">self</a>
+    <a rel="self" href="http://deployment.example.org/drds">self</a>
 </li>
 <li>
-  <form action="http://deployment.example.org/drds" method="GET">
-    <ul>
-      <li>
-        <label itemprop="search_term">
-          <input itemprop="search_term" type="text" name="search_term"/>
-        </label>
-      </li>
-    </ul>
-    <input type="submit" value="search"/>
-  </form>
-</li>
-<li>
-  <form action="http://deployment.example.org/drds" method="post">
-    <ul>
-      <li>
-        <select name="status">
-          <option value="active">activated</option>
-          <option value="inactive">deactivated</option>
-          <option value="unknown">renegade</option>
-        </select>
-      </li>
-      <li>
-        <input type="text" name="old_status" list="status-list"/>      </li>
-      <li>
-        <select name="kind">
-          <option value="standard">standard</option>
-          <option value="sentinel">sentinel</option>
-        </select>
-      </li>
-      <li>
-        <input type="text" name="size" list="size-list"/>
-      </li>
-      <li>
-        <select name="location">
-          <option value="option1">option1</option>
-          <option value="option2a">option2a</option>
-        </select>
-      </li>
-      <li>
-        <a value_attribute_name="location_detail_id" type="hash" text_attribute_name="location_detail_text" href="http://crichton.example.com/drd_location_detail_list#items">external hash link</a>
-        <input type="text" name="location_detail"/>
-      </li>
-      <li>
-        <label itemprop="form-destroyed">
-          <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
-        </label>
-      </li>
-      <li>
-        <label itemprop="name">
-          <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
-        </label>
-      </li>
-      <li>
-        <label itemprop="leviathan_uuid">
-          <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
-        </label>
-      </li>
-      <li>
-        <label itemprop="leviathan_health_points">
-          <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0"
-                 max="100"/>
-        </label>
-      </li>
-      <li>
-        <label itemprop="leviathan_email">
-          <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
-        </label>
-      </li>
-    </ul>
-    <input type="hidden" name="_method" value="POST"/>
-    <input type="submit" value="create"/>
-  </form>
-</li>
-<li>
-  <span itemprop="total_count">2</span>
-</li>
-<li>
-  <ul itemscope="itemscope" itemtype="http://alps.io/schema.org/Array" itemprop="items">
-    <li>
-      <ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drd">
-        <li>
-          <a rel="self" href="http://deployment.example.org/drds/0">self</a>
-        </li>
-        <li>
-          <form action="http://deployment.example.org/drds/0/deactivate" method="post">
-            <ul>
-            </ul>
-            <input type="hidden" name="_method" value="PUT"/>
-            <input type="submit" value="deactivate"/>
-          </form>
-        </li>
-        <li>
-          <form action="http://deployment.example.org/drds/0" method="post">
-            <ul>
-              <li>
-                <select name="status">
-                  <option value="option1">option1</option>
-                  <option value="option4">option4</option>
-                </select>
-              </li>
-              <li>
-                <input type="text" name="old_status" list="status-list"/>
-              </li>
-              <li>
-                <select name="kind">
-                  <option value="standard">standard</option>
-                  <option value="sentinel">sentinel</option>
-                </select>
-              </li>
-              <li>
-                <input type="text" name="size" list="size-list"/>
-              </li>
-              <li>
-                <a value_attribute_name="location_id" type="list"
-                   href="http://crichton.example.com/drd_location_list#items">external list link</a>
-                <input type="text" name="location"/>
-              </li>
-              <li>
-                <a value_attribute_name="location_detail_id" type="hash" text_attribute_name="location_detail_text" href="http://crichton.example.com/drd_location_detail_list#items">external hash link</a>
-                <input type="text" name="location_detail"/>
-              </li>
-              <li>
-                <label itemprop="form-destroyed">
-                  <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
+    <form action="http://deployment.example.org/drds" method="GET">
+        <ul>
+            <li>
+                <label itemprop="search_term">
+                    <input itemprop="search_term" type="text" name="search_term"/>
                 </label>
-              </li>
-            </ul>
-            <input type="hidden" name="_method" value="PUT"/>
-            <input type="submit" value="update"/>
-          </form>
-        </li>
-        <li>
-          <form action="http://deployment.example.org/drds/0" method="post">
-            <ul>
-            </ul>
-            <input type="hidden" name="_method" value="DELETE"/>
-            <input type="submit" value="delete"/>
-          </form>
-        </li>
-        <li>
-          <span itemprop="uuid">0</span>
-        </li>
-        <li>
-          <span itemprop="name">name_0</span>
-        </li>
-        <li>
-          <span itemprop="status">status_0</span>
-        </li>
-        <li>
-          <span itemprop="old_status">old_status_0</span>
-        </li>
-        <li>
-          <span itemprop="kind">kind_0</span>
-        </li>
-        <li>
-          <span itemprop="size">size_0</span>
-        </li>
-        <li>
-          <span itemprop="leviathan_uuid">leviathan_uuid_0</span>
-        </li>
-        <li>
-          <span itemprop="built_at">built_at_0</span>
-        </li>
-        <li>
-          <span itemprop="location">location_0</span>
-        </li>
-        <li>
-          <span itemprop="location_detail">location_detail_0</span>
-        </li>
-        <li>
-          <span itemprop="destroyed"></span>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drd">
-        <li>
-          <a rel="self" href="http://deployment.example.org/drds/1">self</a>
-        </li>
-        <li>
-          <form action="http://deployment.example.org/drds/1/deactivate" method="post">
-            <ul>
-            </ul>
-            <input type="hidden" name="_method" value="PUT"/>
-            <input type="submit" value="deactivate"/>
-          </form>
-        </li>
-        <li>
-          <form action="http://deployment.example.org/drds/1" method="post">
-            <ul>
-              <li>
-                <select name="status">
-                  <option value="active">activated</option>
-                  <option value="inactive">deactivated</option>
-                  <option value="unknown">renegade</option>
-                </select>
-              </li>
-              <li>
-                <input type="text" name="old_status" list="status-list"/>
-              </li>
-              <li>
-                <select name="kind">
-                  <option value="standard">standard</option>
-                  <option value="sentinel">sentinel</option>
-                </select>
-              </li>
-              <li>
-                <input type="text" name="size" list="size-list"/>
-              </li>
-              <li>
-                <a value_attribute_name="location_id" type="list"
-                   href="http://crichton.example.com/drd_location_list#items">external list link</a>
-                <input type="text" name="location"/>
-              </li>
-              <li>
-                <a value_attribute_name="location_detail_id" type="hash" text_attribute_name="location_detail_text" href="http://crichton.example.com/drd_location_detail_list#items">external hash link</a>
-                <input type="text" name="location_detail"/>
-              </li>
-              <li>
-                <label itemprop="form-destroyed">
-                  <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
+            </li>
+        </ul>
+        <input type="submit" value="search"/>
+    </form>
+</li>
+<li>
+    <form action="http://deployment.example.org/drds" method="post">
+        <ul>
+            <li>
+                <label itemprop="status">
+                    <select name="status">
+                        <option value="active">activated</option>
+                        <option value="inactive">deactivated</option>
+                        <option value="unknown">renegade</option>
+                    </select>
                 </label>
-              </li>
-            </ul>
-            <input type="hidden" name="_method" value="PUT"/>
-            <input type="submit" value="update"/>
-          </form>
+            </li>
+            <li>
+                <label itemprop="old_status">
+                    <select name="old_status">
+                        <option value="active">activated</option>
+                        <option value="inactive">deactivated</option>
+                        <option value="unknown">renegade</option>
+                    </select>
+                </label>
+            </li>
+            <li>
+                <label itemprop="kind">
+                    <select name="kind">
+                        <option value="standard">standard</option>
+                        <option value="sentinel">sentinel</option>
+                    </select>
+                </label>
+            </li>
+            <li>
+                <label itemprop="size">
+                    <input itemprop="size" type="text" name="size" list="size"/>
+                </label>
+            </li>
+            <li>
+                <label itemprop="location">
+                    <a href="http://crichton.example.com/drd_location_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
+                    <input type="text" name="location"/>
+                </label>
+            </li>
+            <li>
+                <label itemprop="location_detail">
+                    <a href="http://crichton.example.com/drd_location_detail_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
+                    <input type="text" name="location_detail"/>
+                </label>
+            </li>
+            <li>
+                <label itemprop="form-destroyed">
+                    <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
+                </label>
+            </li>
+            <li>
+                <label itemprop="name">
+                    <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
+                </label>
+            </li>
+            <li>
+                <label itemprop="leviathan_uuid">
+                    <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
+                </label>
+            </li>
+            <li>
+                <label itemprop="leviathan_health_points">
+                    <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0" max="100"/>
+                </label>
+            </li>
+            <li>
+                <label itemprop="leviathan_email">
+                    <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
+                </label>
+            </li>
+        </ul>
+        <input type="hidden" name="_method" value="POST"/>
+        <input type="submit" value="create"/>
+    </form>
+</li>
+<li>
+    <span itemprop="total_count">2</span>
+</li>
+<li>
+<ul itemscope="itemscope" itemtype="http://alps.io/schema.org/Array" itemprop="items">
+<li>
+    <ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drd">
+        <li>
+            <a rel="self" href="http://deployment.example.org/drds/0">self</a>
         </li>
         <li>
-          <form action="http://deployment.example.org/drds/1" method="post">
-            <ul>
-            </ul>
-            <input type="hidden" name="_method" value="DELETE"/>
-            <input type="submit" value="delete"/>
-          </form>
+            <form action="http://deployment.example.org/drds/0/deactivate" method="post">
+                <ul>
+                </ul>
+                <input type="hidden" name="_method" value="PUT"/>
+                <input type="submit" value="deactivate"/>
+            </form>
         </li>
         <li>
-          <a rel="leviathan" href="http://example.org/leviathan/leviathan_uuid_1">leviathan</a>
+            <form action="http://deployment.example.org/drds/0" method="post">
+                <ul>
+                    <li>
+                        <label itemprop="status">
+                            <select name="status">
+                                <option value="active">activated</option>
+                                <option value="inactive">deactivated</option>
+                                <option value="unknown">renegade</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="old_status">
+                            <select name="old_status">
+                                <option value="active">activated</option>
+                                <option value="inactive">deactivated</option>
+                                <option value="unknown">renegade</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="kind">
+                            <select name="kind">
+                                <option value="standard">standard</option>
+                                <option value="sentinel">sentinel</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="size">
+                            <input itemprop="size" type="text" name="size" list="size"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="location">
+                            <a href="location_options" prompt="" target="">source</a>
+                            <input type="text" name="location"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="location_detail">
+                            <a href="http://crichton.example.com/drd_location_detail_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
+                            <input type="text" name="location_detail"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="form-destroyed">
+                            <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
+                        </label>
+                    </li>
+                </ul>
+                <input type="hidden" name="_method" value="PUT"/>
+                <input type="submit" value="update"/>
+            </form>
         </li>
         <li>
-          <span itemprop="uuid">1</span>
+            <form action="http://deployment.example.org/drds/0" method="post">
+                <ul>
+                </ul>
+                <input type="hidden" name="_method" value="DELETE"/>
+                <input type="submit" value="delete"/>
+            </form>
         </li>
         <li>
-          <span itemprop="name">name_1</span>
+            <span itemprop="uuid">0</span>
         </li>
         <li>
-          <span itemprop="status">status_1</span>
+            <span itemprop="name">name_0</span>
         </li>
         <li>
-          <span itemprop="old_status">old_status_1</span>
+            <span itemprop="status">status_0</span>
         </li>
         <li>
-          <span itemprop="kind">kind_1</span>
+            <span itemprop="old_status">old_status_0</span>
         </li>
         <li>
-          <span itemprop="size">size_1</span>
+            <span itemprop="kind">kind_0</span>
         </li>
         <li>
-          <span itemprop="leviathan_uuid">leviathan_uuid_1</span>
+            <span itemprop="size">size_0</span>
         </li>
         <li>
-          <span itemprop="built_at">built_at_1</span>
+            <span itemprop="leviathan_uuid">leviathan_uuid_0</span>
         </li>
         <li>
-          <span itemprop="location">location_1</span>
+            <span itemprop="built_at">built_at_0</span>
         </li>
         <li>
-          <span itemprop="location_detail">location_detail_1</span>
+            <span itemprop="location">location_0</span>
         </li>
         <li>
-          <span itemprop="destroyed"></span>
+            <span itemprop="location_detail">location_detail_0</span>
         </li>
-      </ul>
-    </li>
-  </ul>
+        <li>
+            <span itemprop="destroyed"></span>
+        </li>
+    </ul>
+</li>
+<li>
+    <ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drd">
+        <li>
+            <a rel="self" href="http://deployment.example.org/drds/1">self</a>
+        </li>
+        <li>
+            <form action="http://deployment.example.org/drds/1/deactivate" method="post">
+                <ul>
+                </ul>
+                <input type="hidden" name="_method" value="PUT"/>
+                <input type="submit" value="deactivate"/>
+            </form>
+        </li>
+        <li>
+            <form action="http://deployment.example.org/drds/1" method="post">
+                <ul>
+                    <li>
+                        <label itemprop="status">
+                            <select name="status">
+                                <option value="active">activated</option>
+                                <option value="inactive">deactivated</option>
+                                <option value="unknown">renegade</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="old_status">
+                            <select name="old_status">
+                                <option value="active">activated</option>
+                                <option value="inactive">deactivated</option>
+                                <option value="unknown">renegade</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="kind">
+                            <select name="kind">
+                                <option value="standard">standard</option>
+                                <option value="sentinel">sentinel</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="size">
+                            <input itemprop="size" type="text" name="size" list="size"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="location">
+                            <a href="location_options" prompt="" target="">source</a>
+                            <input type="text" name="location"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="location_detail">
+                            <a href="http://crichton.example.com/drd_location_detail_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
+                            <input type="text" name="location_detail"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="form-destroyed">
+                            <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
+                        </label>
+                    </li>
+                </ul>
+                <input type="hidden" name="_method" value="PUT"/>
+                <input type="submit" value="update"/>
+            </form>
+        </li>
+        <li>
+            <form action="http://deployment.example.org/drds/1" method="post">
+                <ul>
+                </ul>
+                <input type="hidden" name="_method" value="DELETE"/>
+                <input type="submit" value="delete"/>
+            </form>
+        </li>
+        <li>
+            <a rel="leviathan" href="http://example.org/leviathan/leviathan_uuid_1">leviathan</a>
+        </li>
+        <li>
+            <span itemprop="uuid">1</span>
+        </li>
+        <li>
+            <span itemprop="name">name_1</span>
+        </li>
+        <li>
+            <span itemprop="status">status_1</span>
+        </li>
+        <li>
+            <span itemprop="old_status">old_status_1</span>
+        </li>
+        <li>
+            <span itemprop="kind">kind_1</span>
+        </li>
+        <li>
+            <span itemprop="size">size_1</span>
+        </li>
+        <li>
+            <span itemprop="leviathan_uuid">leviathan_uuid_1</span>
+        </li>
+        <li>
+            <span itemprop="built_at">built_at_1</span>
+        </li>
+        <li>
+            <span itemprop="location">location_1</span>
+        </li>
+        <li>
+            <span itemprop="location_detail">location_detail_1</span>
+        </li>
+        <li>
+            <span itemprop="destroyed"></span>
+        </li>
+    </ul>
 </li>
 </ul>
-<datalist id="status-list">
-  <option value="active">activated</option>
-  <option value="inactive">deactivated</option>
-  <option value="unknown">renegade</option>
-</datalist>
-<datalist id="size-list">
-  <option value="small">small</option>
-  <option value="medium">medium</option>
-  <option value="large">large</option>
+</li>
+</ul>
+<datalist id="size">
+    <option value="big">big</option>
+    <option value="small">small</option>
 </datalist>
 </body>
 </html>

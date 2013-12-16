@@ -19,7 +19,13 @@ module Support
               'total_count' => 2,
               'items' => 2.times.map { |i| new(i) },
               # Override the values of the options in the locations create form. This uses the factory method missing.
-              location_options: lambda {|h| {'list' => ['option1', 'option2a']} }
+              location_options: lambda do |h|
+                {'external' =>
+                     { 'source' => 'http://crichton.example.com/drd_location_list#items',
+                       'prompt' => 'location_detail_text',
+                       'target'=> 'location_detail_id' }
+                }
+              end
           }
           build_state_representor(drds, :drds, {state: 'collection'})
         end
