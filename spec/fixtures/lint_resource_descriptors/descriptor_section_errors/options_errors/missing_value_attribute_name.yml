@@ -34,16 +34,8 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
         options:
-          external_hash: http://crichton.example.com/drd_location_list#items
-          text_attribute_name:  uuid_value
-      location:
-        doc: The area the DRD is currently in
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: somewere
-        options:
-          external_list: http://crichton.example.com/drd_location_list#items
-          text_attribute_name: location_text
+          external:
+            source: http://crichton.example.com/drd_location_list#items
       # Transitions
       list:
         doc: Returns a list of DRDs.

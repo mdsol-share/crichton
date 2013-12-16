@@ -49,7 +49,7 @@ en:
     missing_options_value: "Options attribute '%{options_attr}' missing a value for descriptor '%{id}'"
     multiple_options: "Multiple options specified for descriptor '%{id}': '%{options_keys}'"
     invalid_option_enumerator:  "Descriptor '%{id}' has an option of type '%{key_type}' but has an enumerator of type '%{value_type}'"
-    missing_options_key: "Descriptor '%{id}' option '%{options_attr}' missing child 'value_attribute_name' key"
+    missing_options_key: "Descriptor '%{id}' option '%{options_attr}' missing child '%{child_name}' key"
     invalid_options_ref: "Descriptor '%{id}' option tag '%{options_attr}' has an malformed href to an option id: '%{ref}'"
     option_reference_not_found: "Descriptor '%{id}' option tag '%{options_attr}' value: '%{ref}' does not match any %{type} in this file"
     invalid_options_protocol: "Descriptor '%{id}' option tag '%{options_attr}' has an invalid protocol: '%{uri}'"
