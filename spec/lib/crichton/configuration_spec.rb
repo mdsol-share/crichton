@@ -13,9 +13,11 @@ module Crichton
       end
     end
 
-    describe '#css_uri' do
-      it 'returns css uri' do
-        configuration.css_uri.should == 'http://example.org/resources/styles.css'
+    %w(js css).each do |attribute|
+      describe "\##{attribute}_uri" do
+        it "returns the #{attribute} uri" do
+          configuration.send("#{attribute}_uri").should == "http://example.org/resources/#{attribute}.#{attribute}"
+        end
       end
     end
   end

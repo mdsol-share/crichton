@@ -299,6 +299,7 @@ module Crichton
           @markup_builder.head do
             add_metadata_links
             add_styles
+            add_scripts if config.js_uri
           end
         end
 
@@ -313,6 +314,12 @@ module Crichton
           @markup_builder.style do |style|
             style << "*[itemprop]::before {\n  content: attr(itemprop) \": \";\n  text-transform: capitalize;\n}\n"
           end
+        end
+
+        def add_scripts
+          @markup_builder.tag!(:script, {type: 'text/javascript',
+                                         src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'}){}
+          @markup_builder.tag!(:script, {type: 'text/javascript', src: config.js_uri}){}
         end
 
         def add_semantic(semantic, options)
