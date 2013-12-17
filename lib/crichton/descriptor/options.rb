@@ -61,7 +61,7 @@ module Crichton
 
       private
       def external
-        @options[EXTERNAL]
+        options[EXTERNAL]
       end
 
     end

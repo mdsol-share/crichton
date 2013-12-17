@@ -12,7 +12,8 @@ module Crichton
       end
 
       def options
-        @decorated_options ||= if super && external
+        @decorated_options ||= if super && (external = super[EXTERNAL])
+          source = external[SOURCE]
           if source.include?('://')
             return super
           end
@@ -22,7 +23,7 @@ module Crichton
 
             [EXTERNAL, LIST, HASH].each do |x|
               if opts = result[x]
-                raise_if_invalid(conditions[x].call(opts), throw)
+                raise_if_invalid(conditions[x].(opts), throw)
                 return result
               end
             end
