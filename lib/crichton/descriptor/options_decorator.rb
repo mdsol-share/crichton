@@ -12,8 +12,7 @@ module Crichton
       end
 
       def options
-        @decorated_options ||= if super && (external = super[EXTERNAL])
-          source = external[SOURCE]
+        @decorated_options ||= if super && external
           if source.include?('://')
             return super
           end
