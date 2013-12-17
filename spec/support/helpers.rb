@@ -205,5 +205,17 @@ module Support
       FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
+
+    def entry_points_descriptor
+      YAML.load_file(entry_points_filename)
+    end
+
+    def entry_points_filename
+      File.join(DISCOVERY_DIR, 'entry_points.yml')
+    end
+
+    def entry_points_json
+      @entry_points_json ||= File.open(fixture_path('entry_points.json'))
+    end
   end
 end

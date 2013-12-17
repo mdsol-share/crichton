@@ -1,0 +1,17 @@
+{
+    "resources":
+    {
+        "http://alps.example.org/DRDs/#list":
+        {
+            "href":"http://deployment.example.org/drds"
+        },
+            "http://alps.example.org/EntryPoints/#list":
+        {
+            "href":"http://deployment.example.org/apis"
+        },
+            "http://alps.example.org/Leviathans/#show":
+        {
+            "href":"http://deployment.example.org/leviathans/{uuid}"
+        }
+    }
+}
