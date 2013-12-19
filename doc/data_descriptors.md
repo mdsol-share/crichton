@@ -34,16 +34,14 @@ indicates the URI of the descriptor for top-level descriptors.
       * `href` - Include a referenced values entry
       * `list` - Contains an array of values
       * `hash` - Contains a hash of key-value pairs
-      * `external_list` - Retrieve a list form an external source
-      * `external_hash` - Retrieve a hash from an external source
-     Only one of `list`, `hash`, `external_list`or `external_hash` may be present, this applies also for included href
-     entries.
-     In case of the `external_list` or `external_hash`, the link needs to contain a fragment to indicate what element
-     the list or hash is in and the attributes
-     * `value_attribute_name` - specifies the name of the attribute inside the element that the value will be taken from
-     * `text_attribute_name` - (only for hashes) specifies the attribute the text of the item will be taken from
+      * `external` - Retrieves values from an external source
+     Only one of `list`, `hash` or `external` may be present, this applies also for included href entries.
+     In case of the `external`, the `source` element may contain a link to external resource or method to call on
+     a target object. If `source` is a link to external resource, `prompt` and `target` elements must be present.
+     * `target` - specifies the name of the attribute inside the element that the value will be taken from
+     * `prompt` - specifies the attribute the text of the item will be taken from
      are used to specify the fields that are to be used to assemble the list or hash.
-     In case of the list, the value and text are identical so the `text_attribute_name` is not needed.
+     In case of the list, the target and prompt are identical.
 
 ### Template Properties
 The following properties are only used with semantic descriptors representing templates (media-type form, 
@@ -51,7 +49,7 @@ in contrast to a link).
 
 * `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
 [HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
-* `enum` - Defines the options for select field types or references another profile associated with the enum: OPTIONAL.
+* `options` - Defines the options for select field types or references another profile associated with the options: OPTIONAL.
 * `validators` - Hash of validator objects associated with a field: OPTIONAL.
 
 Following table defines list of supported input types and validators which can be applied to it:
@@ -130,7 +128,7 @@ descriptors:
                 type: semantic
                 href: http://alps.io/schema.org/Text
                 field_type: select
-                enum:
+                options:
                   href: http://alps.io.example.org/Leviathans#list 
                 validators:
                   - required
@@ -183,10 +181,9 @@ descriptors:
                 href: http://alps.io/schema.org/Text
                 name: status # Overrides attribute in response to be 'name' vs. 'form-status'.
                 field_type: select
-                enum:
-                  - working
-                  - renegade
-                  - broken
+                options:
+                    external:
+                        source: method_name
                 validators:
                   - required
               form-kind: # Unique value to differentiate from 'kind' descriptor.
@@ -194,9 +191,11 @@ descriptors:
                 name: kind # Name associated with the associated element in a hypermedia response.doc: What kind is it.
                 href: http://alps.io/schema.org/Text
                 field_type: select
-                enum:
-                  - standard
-                  - sentinel
+                options:
+                    external:
+                        source: http://example.org/external_resource
+                        target: resource_id
+                        prompt: resource_text
                 validators:
                   - required
 ```

@@ -153,7 +153,7 @@ module Crichton
         def add_datalists(options)
           @serializer.used_datalists.uniq { |x| x[:id] }.each do |dl|
             @markup_builder.datalist(id: dl[:id].split('#')[1]) do
-              dl[:data].each {|k, v| @markup_builder.option(v, value: k)}
+              dl[:data].each { |k, v| @markup_builder.option(v, value: k) }
             end
           end
         end
@@ -299,7 +299,7 @@ module Crichton
           @markup_builder.head do
             add_metadata_links
             add_styles
-            add_scripts if config.js_uri
+            add_scripts
           end
         end
 
@@ -318,8 +318,7 @@ module Crichton
 
         def add_scripts
           @markup_builder.tag!(:script, {type: 'text/javascript',
-                                         src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'}){}
-          @markup_builder.tag!(:script, {type: 'text/javascript', src: config.js_uri}){}
+                                         src: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}){}
         end
 
         def add_semantic(semantic, options)

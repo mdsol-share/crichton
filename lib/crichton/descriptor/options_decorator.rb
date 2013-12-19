@@ -15,19 +15,18 @@ module Crichton
         @decorated_options ||= if super && (external = super[EXTERNAL])
           source = external[SOURCE]
           if source.include?('://')
-            return super
-          end
-          if @target.respond_to?(source)
+            super
+          elsif @target.respond_to?(source)
             result = @target.send(source, super)
             raise_if_invalid(result.is_a?(Hash), throw("#{source} method on target must return Hash object"))
 
             [EXTERNAL, LIST, HASH].each do |x|
               if opts = result[x]
-                raise_if_invalid(conditions[x].(opts), throw)
+                raise_if_invalid(conditions[x].call(opts), throw)
                 return result
               end
             end
-            throw.call
+            throw("#{result} is invalid response type.").call
           else
             super
           end
