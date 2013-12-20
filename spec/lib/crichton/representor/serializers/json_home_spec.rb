@@ -14,7 +14,7 @@ module Crichton
       let (:json_output) do
         '{"resources":{"http://alps.example.org/DRDs/#list":{"href":"http://deployment.example.org/drds"}}}'
       end
-
+      let (:html_document) {ep_klass.html_document}
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
@@ -30,6 +30,10 @@ module Crichton
         it 'returns the resource represented as application/json+home' do
           serializer = @serializer.new(entry_points)
           serializer.to_media_type.should be_json_eql(entry_points_json)
+        end
+
+        it 'returns a valid html output when to_media_type is set to :html' do
+          entry_points.as_media_type(:html).should == html_document
         end
       end
 
