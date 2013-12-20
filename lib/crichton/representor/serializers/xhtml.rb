@@ -193,10 +193,10 @@ module Crichton
           embedded_element_attributes = {itemscope: 'itemscope', itemtype: semantic.href, itemprop: semantic.name}
 
           @markup_builder.tag!(element_tag, embedded_element_attributes) do
-            case embedded_object = semantic.value
-            when Array
+            embedded_object = semantic.value
+            if embedded_object && embedded_object.respond_to?(:to_a)
               embedded_object.each { |object| add_embedded_object(object, options, semantic)}
-            when Crichton::Representor
+            elsif embedded_object && embedded_object.respond_to?(:to_media_type)
               add_embedded_object(embedded_object, options, semantic)
             else
               logger.warn("Semantic element should be either representor or array! Was #{semantic}")
