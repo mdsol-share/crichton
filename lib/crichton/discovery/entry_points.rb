@@ -29,8 +29,7 @@ module Crichton
       def as_media_type(media_type, options = {})
         case media_type
           when :html
-            # maybe generate a link
-            # access option builder in xhtml.rb manual!
+            # build html document
             JsonHomeHtmlSerializer.to_media_type(@resources, options)
           else
             super
