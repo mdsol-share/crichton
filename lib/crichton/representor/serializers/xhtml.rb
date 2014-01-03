@@ -319,6 +319,9 @@ module Crichton
         def add_scripts
           @markup_builder.tag!(:script, {type: 'text/javascript',
                                          src: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}){}
+          @markup_builder.tag!(:script, { type: 'text/javascript' }) do |script|
+            script << javascript
+          end
         end
 
         def add_semantic(semantic, options)
@@ -371,6 +374,10 @@ module Crichton
           @markup_builder.li do
             @markup_builder.label({itemprop: semantic.name}) { super }
           end
+        end
+
+        def javascript
+          File.read(File.join(File.dirname(__FILE__), 'xhtml.js'))
         end
       end
     end
