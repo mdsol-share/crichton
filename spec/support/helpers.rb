@@ -217,5 +217,14 @@ module Support
     def entry_points_json
       @entry_points_json ||= File.open(fixture_path('entry_points.json'))
     end
+
+    def entry_points_html
+      @entry_points_html ||= File.read(fixture_path('entry_points_styled_microdata.html'))
+    end
+
+    def entry_points_xhtml
+      @entry_points_html ||= File.read(fixture_path('entry_points_microdata.html'))
+    end
+
   end
 end

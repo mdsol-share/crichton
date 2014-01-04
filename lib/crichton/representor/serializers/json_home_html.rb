@@ -39,11 +39,10 @@ module Crichton
       def self.configure_markup_builder(options)
         require 'builder' unless defined?(::Builder)
 
-        options[:indent] ||= 0
+        options[:indent] ||= 2
         options[:builder] ||= ::Builder::XmlMarkup.new(:indent => options[:indent])
         @markup_builder = options[:builder]
       end
-
 
       def self.add_head()
         @markup_builder.head { add_styles }
@@ -52,14 +51,13 @@ module Crichton
       def self.add_body(resources, options)
         # generate unordered list of resource relations and resource uris hyperlinked
         @markup_builder.body do
-          @markup_builder.ul do
-            resources.each do |resource|
-              @markup_builder.li
-              @markup_builder.p
-              @markup_builder.b('Rel: ')
-              @markup_builder.a(resource.rel, {rel: resource.rel, href: resource.rel})
-              @markup_builder.b('  Url:  ')
-              @markup_builder.a(resource.url, {rel: resource.url, href: resource.url})
+          if microdata?(options)
+            resources.each { |resource| resource_rel_links(resource) }
+          else
+            @markup_builder.ul do
+              resources.each do |resource|
+                add_list_item(resource)
+              end
             end
           end
         end
@@ -70,6 +68,24 @@ module Crichton
         @markup_builder.style do |style|
           style << "*[itemprop]::before {\n  content: attr(itemprop) \": \";\n  text-transform: capitalize\n}\n"
         end
+      end
+
+      def self.add_list_item(resource)
+        @markup_builder.li do
+           resource_rel_links(resource)
+         end
+      end
+
+      def self.resource_rel_links(resource)
+        @markup_builder.p
+        @markup_builder.b('Rel: ')
+        @markup_builder.a(resource.rel, {rel: resource.rel, href: resource.rel})
+        @markup_builder.b('  Url:  ')
+        @markup_builder.a(resource.url, {rel: resource.url, href: resource.url})
+      end
+
+      def self.microdata?(options)
+        options && options[:semantics] == :microdata
       end
     end
   end

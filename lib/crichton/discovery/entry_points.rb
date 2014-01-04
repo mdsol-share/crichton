@@ -26,11 +26,13 @@ module Crichton
       #
       # @param media_type [Symbol] :json_home or :html
       # @param resource_relation [Hash] Hash of options for serialization
-      def as_media_type(media_type, options = {})
+      def as_media_type(media_type, options)
         case media_type
           when :html
             # build html document
             JsonHomeHtmlSerializer.to_media_type(@resources, options)
+          when :xhtml
+            JsonHomeHtmlSerializer.to_media_type(@resources, options.merge({semantics: :microdata}))
           else
             super
         end
@@ -42,7 +44,7 @@ module Crichton
       # @param [Hash] options Optional configurations.
       #
       # @return [Hash] The built representation.
-      def to_media_type(media_type, options)
+      def to_media_type(media_type, options = {})
         as_media_type(media_type, options).to_s
       end
     end

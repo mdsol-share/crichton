@@ -14,7 +14,7 @@ module Crichton
       let (:json_output) do
         '{"resources":{"http://alps.example.org/DRDs/#list":{"href":"http://deployment.example.org/drds"}}}'
       end
-      let (:html_document) {ep_klass.html_document}
+
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
@@ -33,7 +33,11 @@ module Crichton
         end
 
         it 'returns a valid html output when to_media_type is set to :html' do
-          entry_points.as_media_type(:html).should == html_document
+          entry_points.to_media_type(:html).should be_equivalent_to(entry_points_html)
+        end
+
+        it 'returns a valid html output when to_media_type is set to :xhtml' do
+          entry_points.to_media_type(:xhtml).should be_equivalent_to(entry_points_xhtml)
         end
       end
 
