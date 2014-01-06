@@ -61,7 +61,7 @@ module Crichton
 
       def add_styles
         @markup_builder.tag!(:link, {rel: :stylesheet, href: Crichton.config.css_uri}) if  Crichton.config.css_uri
-        @markup_builder.style { |style|  style << xhtml_css }
+        @markup_builder.style { |style| style << xhtml_css }
       end
 
       def add_styled_list(resources)
