@@ -10,4 +10,6 @@ module Crichton
 
   class DescriptorAlreadyRegisteredError < StandardError; end
 
+  class TargetMethodResponseError < StandardError; end
+
 end

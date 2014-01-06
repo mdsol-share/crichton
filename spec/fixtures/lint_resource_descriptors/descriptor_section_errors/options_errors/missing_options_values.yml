@@ -44,14 +44,7 @@ descriptors:
         href: http://alps.io/schema.org/Text
         sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
         options:
-          external_list:
-      name:
-        doc: The name of the DRD.
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: 1812
-        options:
-          external_hash:
+          external:
       # Transitions
       list:
         doc: Returns a list of DRDs.

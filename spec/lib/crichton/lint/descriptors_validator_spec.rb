@@ -150,10 +150,7 @@ module Crichton
               'id', filename: filename, section: :descriptors, sub_header: :error)  <<
               expected_output(:error, 'descriptors.missing_options_value', id: 'total_count', options_attr: 'list') <<
               expected_output(:error, 'descriptors.missing_options_value', id: 'items', options_attr: 'hash') <<
-              expected_output(:error, 'descriptors.missing_options_value', id: 'uuid',  options_attr:
-                'external_list') <<
-              expected_output(:error, 'descriptors.missing_options_value', id: 'name', options_attr:
-                'external_hash')
+              expected_output(:error, 'descriptors.missing_options_value', id: 'uuid', options_attr: 'external')
           end
 
           it 'reports errors when multiple options are specified under one descriptor' do
@@ -175,7 +172,7 @@ module Crichton
             @warnings = expected_output(:warning, 'descriptors.missing_options_value', id: 'items', options_attr:
               'hash', filename: filename, section: :descriptors, sub_header: :warning) <<
               expected_output(:warning, 'descriptors.missing_options_value', id: 'uuid',  options_attr:
-              'text_attribute_name')
+              'external')
           end
 
           it 'reports errors when options href references are malformed' do
@@ -192,23 +189,18 @@ module Crichton
           it 'reports an error when the value_attribute_name is missing for an external hash or list' do
             @filename = %w(descriptor_section_errors/options_errors missing_value_attribute_name.yml)
             @errors = expected_output(:error, 'descriptors.missing_options_key', id: 'uuid',
-              options_attr: 'external_hash', filename: filename, section: :descriptors, sub_header: :error) <<
-              expected_output(:error, 'descriptors.missing_options_key', id: 'location',  options_attr: 'external_list')
+                options_attr: 'external', child_name: 'target', filename: filename,
+                section: :descriptors, sub_header: :error) <<
+              expected_output(:error, 'descriptors.missing_options_key', id: 'uuid',
+                options_attr: 'external', child_name: 'prompt')
           end
 
           it 'reports an error when the source attribute is not a string or has no value' do
             @filename = %w(descriptor_section_errors/options_errors source_attribute_errors.yml)
             @errors = expected_output(:error, 'descriptors.missing_options_value', id: 'total_count',  options_attr:
-              'source', filename: filename, section: :descriptors, sub_header: :error) <<
+                'external', filename: filename, section: :descriptors, sub_header: :error) <<
               expected_output(:error, 'descriptors.invalid_option_source_type', id: 'items',
-              options_attr: 'source')
-          end
-
-          it 'reports errors when an datalist value is empty or points to a non-existent datalist' do
-            @filename = %w(descriptor_section_errors/options_errors options_datalists_errors.yml)
-            @errors = expected_output(:error, 'descriptors.invalid_option_datalist', id: 'total_count', options_attr:
-              'datalist', datalist: 'kind_list',filename: filename, section: :descriptors, sub_header: :error) <<
-              expected_output(:error, 'descriptors.missing_option_datalist_value', id: 'items', options_attr: 'datalist')
+                options_attr: 'external')
           end
         end
       end

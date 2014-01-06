@@ -65,7 +65,7 @@ module Support
       config = %w(alps deployment discovery documentation).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
       end
-      config['css_uri'] = 'http://example.org/resources/styles.css'
+      config['css_uri'] = 'http://example.org/resources/css.css'
       config
     end
 
