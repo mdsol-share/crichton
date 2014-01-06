@@ -286,7 +286,7 @@ module Crichton
 
         def add_datalist_to_used_datalists_list(id, data)
           @serializer.used_datalists <<
-              { id: "#{@object.class.resource_descriptor.resource_descriptor.name}\##{id}", data: data }
+            { id: "#{@object.class.resource_descriptor.resource_descriptor.name}\##{id}", data: data }
         end
       end
 
@@ -317,11 +317,10 @@ module Crichton
         end
 
         def add_scripts
-          @markup_builder.tag!(:script, {type: 'text/javascript',
-                                         src: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}){}
-          @markup_builder.tag!(:script, { type: 'text/javascript' }) do |script|
-            script << javascript
-          end
+          attributes = { type: 'text/javascript',
+                         src: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}
+          @markup_builder.tag!(:script, attributes)
+          @markup_builder.tag!(:script, { type: 'text/javascript' }) { |script| script << javascript }
         end
 
         def add_semantic(semantic, options)

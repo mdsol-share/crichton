@@ -36,7 +36,7 @@ indicates the URI of the descriptor for top-level descriptors.
       * `hash` - Contains a hash of key-value pairs
       * `external` - Retrieves values from an external source
      Only one of `list`, `hash` or `external` may be present, this applies also for included href entries.
-     In case of the `external`, the `source` element may contain a link to external resource or method to call on
+     In the case of `external`, the `source` element may contain a link to external resource or method to call on
      a target object. If `source` is a link to external resource, `prompt` and `target` elements must be present.
      * `target` - specifies the name of the attribute inside the element that the value will be taken from
      * `prompt` - specifies the attribute the text of the item will be taken from
