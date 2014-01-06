@@ -315,9 +315,7 @@ module Crichton
       private
         def add_styles
           @markup_builder.tag!(:link, {rel: :stylesheet, href: config.css_uri }) if config.css_uri
-          @markup_builder.style do |style|
-            style << "*[itemprop]::before {\n  content: attr(itemprop) \": \";\n  text-transform: capitalize;\n}\n"
-          end
+          @markup_builder.style { |style|  style << xhtml_css }
         end
 
         def add_scripts
@@ -381,6 +379,10 @@ module Crichton
 
         def javascript
           File.read(File.join(File.dirname(__FILE__), 'xhtml.js'))
+        end
+
+        def xhtml_css
+          File.read(File.join(File.dirname(__FILE__), 'xhtml.css'))
         end
       end
     end

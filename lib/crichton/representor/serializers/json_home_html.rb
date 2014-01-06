@@ -13,7 +13,7 @@ module Crichton
       # @param [Set] resources collection of EntryPoint resources
       # @param [Hash] options Optional configurations.
       # @return [Hash] The built representation.
-      def self.as_media_type(resources, options)
+      def as_media_type(resources, options)
         options ||= {}
         configure_markup_builder(options)
 
@@ -30,13 +30,13 @@ module Crichton
       # @param [Set] resources collection of EntryPoint resources
       # @param [Hash] options Optional configurations.
       # @return [Hash] The built representation.
-      def self.to_media_type(resources, options = {})
+      def to_media_type(resources, options = {})
         as_media_type(resources, options)
       end
 
       private
 
-      def self.configure_markup_builder(options)
+      def configure_markup_builder(options)
         require 'builder' unless defined?(::Builder)
 
         options[:indent] ||= 2
@@ -44,39 +44,37 @@ module Crichton
         @markup_builder = options[:builder]
       end
 
-      def self.add_head()
+      def add_head()
         @markup_builder.head { add_styles }
       end
 
-      def self.add_body(resources, options)
+      def add_body(resources, options)
         # generate unordered list of resource relations and resource uris hyperlinked
         @markup_builder.body do
           if microdata?(options)
             resources.each { |resource| resource_rel_links(resource) }
           else
-            @markup_builder.ul do
-              resources.each do |resource|
-                add_list_item(resource)
-              end
-            end
+            add_styled_list(resources)
           end
         end
       end
 
-      def self.add_styles
+      def add_styles
         @markup_builder.tag!(:link, {rel: :stylesheet, href: Crichton.config.css_uri}) if  Crichton.config.css_uri
-        @markup_builder.style do |style|
-          style << "*[itemprop]::before {\n  content: attr(itemprop) \": \";\n  text-transform: capitalize\n}\n"
+        @markup_builder.style { |style|  style << xhtml_css }
+      end
+
+      def add_styled_list(resources)
+        @markup_builder.ul do
+          resources.each { |resource| add_list_item(resource) }
         end
       end
 
-      def self.add_list_item(resource)
-        @markup_builder.li do
-           resource_rel_links(resource)
-         end
+      def add_list_item(resource)
+        @markup_builder.li { resource_rel_links(resource) }
       end
 
-      def self.resource_rel_links(resource)
+      def resource_rel_links(resource)
         @markup_builder.p
         @markup_builder.b('Rel: ')
         @markup_builder.a(resource.rel, {rel: resource.rel, href: resource.rel})
@@ -84,8 +82,12 @@ module Crichton
         @markup_builder.a(resource.url, {rel: resource.url, href: resource.url})
       end
 
-      def self.microdata?(options)
+      def microdata?(options)
         options && options[:semantics] == :microdata
+      end
+
+      def xhtml_css
+         File.read(File.join(File.dirname(__FILE__), 'xhtml.css'))
       end
     end
   end
