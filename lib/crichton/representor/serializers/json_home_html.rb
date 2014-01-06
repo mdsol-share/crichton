@@ -66,12 +66,10 @@ module Crichton
 
       def add_styled_list(resources)
         @markup_builder.ul do
-          resources.each { |resource| add_list_item(resource) }
+          resources.each do |resource|
+            @markup_builder.li { resource_rel_links(resource) }
+          end
         end
-      end
-
-      def add_list_item(resource)
-        @markup_builder.li { resource_rel_links(resource) }
       end
 
       def resource_rel_links(resource)
