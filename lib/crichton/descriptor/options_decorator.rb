@@ -14,13 +14,7 @@ module Crichton
       def options
         @decorated_options ||= if super && (external = super[EXTERNAL])
           source = external[SOURCE]
-          if source.include?('://')
-            super
-          elsif @target.respond_to?(source)
-            respond_to_method(source, super)
-          else
-            super
-          end
+          @target.respond_to?(source) ? respond_to_method(source, super) : super
         else
           super
         end
