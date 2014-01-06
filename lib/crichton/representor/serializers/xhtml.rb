@@ -244,14 +244,7 @@ module Crichton
         def add_control_input(semantic, field_type = nil)
           field_type ||= semantic.field_type
           attributes = { itemprop: semantic.name, type: field_type, name: semantic.name }
-          if options = semantic.options
-            if options.external?
-              add_control_external_select(semantic)
-            elsif options.enumerable?
-              add_datalist_to_used_datalists_list(semantic.name, options)
-              attributes.merge!({list: semantic.name})
-            end
-          end
+          attributes.merge!(add_control_datalist(semantic)) if options = semantic.options
           @markup_builder.input(attributes.merge(semantic.validators)) unless (options && options.external?)
         end
 
@@ -266,6 +259,17 @@ module Crichton
           elsif options.external?
             add_control_external_select(semantic)
           end
+        end
+
+        def add_control_datalist(semantic, attributes = {})
+          options = semantic.options
+          if options.external?
+            add_control_external_select(semantic)
+          elsif options.enumerable?
+            add_datalist_to_used_datalists_list(semantic.name, options)
+            attributes.merge!({list: semantic.name})
+          end
+          return attributes
         end
 
         ##
