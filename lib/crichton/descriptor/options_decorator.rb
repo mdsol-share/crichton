@@ -17,16 +17,7 @@ module Crichton
           if source.include?('://')
             super
           elsif @target.respond_to?(source)
-            result = @target.send(source, super)
-            raise_if_invalid(result.is_a?(Hash), throw("#{source} method on target must return Hash object"))
-
-            [EXTERNAL, LIST, HASH].each do |x|
-              if opts = result[x]
-                raise_if_invalid(conditions[x].call(opts), throw)
-                return result
-              end
-            end
-            throw("#{result} is invalid response type.").call
+            respond_to_method(source, super)
           else
             super
           end
@@ -36,6 +27,19 @@ module Crichton
       end
 
       private
+      def respond_to_method(method, options)
+        result = @target.send(method, options)
+        raise_if_invalid(result.is_a?(Hash), throw("#{method} method on target must return Hash object"))
+
+        [EXTERNAL, LIST, HASH].each do |x|
+          if opts = result[x]
+            raise_if_invalid(conditions[x].call(opts), throw)
+            return result
+          end
+        end
+        throw("#{result} is invalid response type.").call
+      end
+
       def conditions
         {
           EXTERNAL => ->(opts) { (opts[SOURCE] && opts[TARGET] && opts[PROMPT]) },
