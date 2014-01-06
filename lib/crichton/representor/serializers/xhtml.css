@@ -1,0 +1,4 @@
+*[itemprop]::before {
+  content: attr(itemprop) ": ";
+  text-transform: capitalize;
+}

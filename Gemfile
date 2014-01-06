@@ -12,6 +12,8 @@ gem 'awesome_print', '~> 1.1.0'
 
 group :development, :test do
   gem 'pry'
+  gem 'pry-remote'
+  gem 'pry-nav'
 end
 
 group :test do

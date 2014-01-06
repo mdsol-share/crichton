@@ -31,6 +31,14 @@ module Crichton
           serializer = @serializer.new(entry_points)
           serializer.to_media_type.should be_json_eql(entry_points_json)
         end
+
+        it 'returns a valid html output when to_media_type is set to :html' do
+          entry_points.to_media_type(:html).should be_equivalent_to(entry_points_html)
+        end
+
+        it 'returns a valid html output when to_media_type is set to :xhtml' do
+          entry_points.to_media_type(:xhtml).should be_equivalent_to(entry_points_xhtml)
+        end
       end
 
       it 'raises an exception when an EntryPoint object does not have a resources method' do

@@ -21,7 +21,6 @@ module Support
           end
           Crichton::Discovery::EntryPoints.new(resources)
         end
-
       end
     end
   end

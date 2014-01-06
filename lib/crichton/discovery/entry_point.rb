@@ -1,4 +1,5 @@
 require 'crichton/representor/serializer'
+require 'crichton/representor/serializers/json_home_html'
 require 'addressable/uri'
 require "json"
 
@@ -25,32 +26,6 @@ module Crichton
         @resource_uri = resource_uri
         @transition_id = transition_id
         @resource_id = resource_id
-      end
-
-      ##
-      #
-      # Serlialization method for json_home and html
-      #
-      # @param media_type [Symbol] :json_home or :html
-      # @param resource_relation [Hash] Hash of options for serialization
-      def as_media_type(media_type, options = {})
-        case media_type
-          when :html
-            # maybe generate a link
-            # access option builder in xhtml.rb manual!
-          else
-            super
-        end
-      end
-
-      ##
-      # Returns a string representing a serialization.
-      #
-      # @param [Hash] options Optional configurations.
-      #
-      # @return [Hash] The built representation.
-      def to_media_type(media_type, options)
-        as_media_type(media_type, options).to_s
       end
 
       ##
