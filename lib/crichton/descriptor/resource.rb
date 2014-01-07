@@ -133,7 +133,19 @@ module Crichton
       def to_key
         @key ||= "#{id}:#{version}"
       end
-      
+
+      ##
+      #
+      # returns an entry point for the http protocol specified for the resource
+      #
+      # @return [EntryPoint] Object containing entry point info
+      def entry_points
+        @entry_points ||= begin
+          trans = protocols[:http.to_s].values.find {|tran| tran.entry_point }
+          Crichton::Discovery::EntryPoint.new(trans.uri, trans.entry_point, trans.id, self.id) if trans
+        end
+     end
+
       private
       # TODO: Delegate to Lint when implemented.
       def verify_descriptor(descriptor)

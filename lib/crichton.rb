@@ -6,6 +6,8 @@ require 'crichton/errors'
 require 'crichton/dice_bag/template'
 require 'crichton/representor'
 require 'crichton/alps/deserialization'
+require 'crichton/discovery/entry_point'
+require 'crichton/discovery/entry_points'
 
 if defined?(Rails)
   require 'crichton/rake_lint'
@@ -194,6 +196,16 @@ module Crichton
       Sinatra.settings.root
     else
       Dir.pwd
+    end
+  end
+
+  ##
+  # Returns an array of objects ready for json-home serialization
+  #
+  # @return [Array] array of EntryPoint objects
+  def self.entry_points
+    @entry_points ||= Crichton.descriptor_registry.values.inject(Set.new) do | ep_set, resource |
+      resource.resource_descriptor.entry_points ? ep_set << resource.resource_descriptor.entry_points : ep_set
     end
   end
 end

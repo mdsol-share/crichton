@@ -65,7 +65,7 @@ module Support
       config = %w(alps deployment discovery documentation).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
       end
-      config['css_uri'] = 'http://example.org/resources/styles.css'
+      config['css_uri'] = 'http://example.org/resources/css.css'
       config
     end
 
@@ -205,5 +205,26 @@ module Support
       FileUtils.rm_rf(config_dir) unless Dir[config_dir].empty?  # Dir always returns an array
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
+
+    def entry_points_descriptor
+      YAML.load_file(entry_points_filename)
+    end
+
+    def entry_points_filename
+      File.join(DISCOVERY_DIR, 'entry_points.yml')
+    end
+
+    def entry_points_json
+      @entry_points_json ||= File.open(fixture_path('entry_points.json'))
+    end
+
+    def entry_points_html
+      @entry_points_html ||= File.read(fixture_path('entry_points_styled_microdata.html'))
+    end
+
+    def entry_points_xhtml
+      @entry_points_html ||= File.read(fixture_path('entry_points_microdata.html'))
+    end
+
   end
 end

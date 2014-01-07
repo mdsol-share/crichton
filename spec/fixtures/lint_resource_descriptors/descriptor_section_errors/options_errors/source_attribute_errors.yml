@@ -29,15 +29,16 @@ descriptors:
         href: http://alps.io/schema.org/Integer
         sample: 1
         options:
-          source:
+          external:
       items:
         doc: An array of embedded DRD resources.
         type: semantic
         href: http://alps.io/schema.org/Array
         sample: many
         options:
-          source:
-            first: first
+          external:
+            source:
+              first: first
       # Transitions
       list:
         doc: Returns a list of DRDs.

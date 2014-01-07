@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" href="http://example.org/resources/css.css"/>
+    <style>
+*[itemprop]::before {
+  content: attr(itemprop) ": ";
+  text-transform: capitalize;
+}
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li>
+        <p/>
+        <b>Rel: </b>
+        <a rel="http://alps.example.org/DRDs/#list" href="http://alps.example.org/DRDs/#list">http://alps.example.org/DRDs/#list</a>
+        <b>  Url:  </b>
+        <a rel="http://deployment.example.org/drds" href="http://deployment.example.org/drds">http://deployment.example.org/drds</a>
+      </li>
+      <li>
+        <p/>
+        <b>Rel: </b>
+        <a rel="http://alps.example.org/EntryPoints/#list" href="http://alps.example.org/EntryPoints/#list">http://alps.example.org/EntryPoints/#list</a>
+        <b>  Url:  </b>
+        <a rel="http://deployment.example.org/apis" href="http://deployment.example.org/apis">http://deployment.example.org/apis</a>
+      </li>
+      <li>
+        <p/>
+        <b>Rel: </b>
+        <a rel="http://alps.example.org/Leviathans/#show" href="http://alps.example.org/Leviathans/#show">http://alps.example.org/Leviathans/#show</a>
+        <b>  Url:  </b>
+        <a rel="http://deployment.example.org/leviathans/{uuid}" href="http://deployment.example.org/leviathans/{uuid}">http://deployment.example.org/leviathans/{uuid}</a>
+      </li>
+    </ul>
+  </body>
+</html>

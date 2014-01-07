@@ -1,121 +1,157 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <link rel="profile" href="http://alps.example.org/DRDs"/>
-  <link rel="type" href="http://alps.example.org/DRDs#drds"/>
-  <link rel="help" href="http://documentation.example.org/Things/DRDs"/>
-  <link rel="stylesheet" href="http://example.org/resources/styles.css"/>
-  <style>
-    *[itemprop]::before {
-      content: attr(itemprop) ": ";
-      text-transform: capitalize;
-    }
-  </style>
+    <link rel="profile" href="http://alps.example.org/DRDs"/>
+    <link rel="type" href="http://alps.example.org/DRDs#drds"/>
+    <link rel="help" href="http://documentation.example.org/Things/DRDs"/>
+    <link rel="stylesheet" href="http://example.org/resources/css.css"/>
+    <style>
+        *[itemprop]::before {
+            content: attr(itemprop) ": ";
+            text-transform: capitalize;
+        }
+    </style>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var selector = $("ul[itemtype]")
+            selector.each(function (index, element) {
+                $('span[itemprop]', element).each(function () {
+                    var attribute = $(this).attr('itemprop')
+                    var value = $(this).text()
+                    set_values(attribute, value, element)
+                })
+            })
+        })
+
+        function set_values(attribute, value, context) {
+            $('select[name="' + attribute + '"]', context).each(function (index, element) {
+                var option = 'option[value="' + value + '"]'
+                $(option, element).attr("selected", "selected")
+            })
+            $('input[name="' + attribute + '"]', context).each(function (index, element) {
+                if ($(this).attr('type') == 'checkbox') {
+                    if (value == 'true') {
+                        $(this).prop('checked', value)
+                    }
+                } else {
+                    $(this).val(value)
+                }
+            })
+        }
+    </script>
 </head>
 <body>
 <ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drds">
-  <li>
-    <a rel="self" href="http://deployment.example.org/drds">self</a>
-  </li>
-  <li>
-    <form action="http://deployment.example.org/drds" method="GET">
-      <ul>
-        <li>
-          <label itemprop="search_term">
-            <input itemprop="search_term" type="text" name="search_term"/>
-          </label>
-        </li>
-      </ul>
-      <input type="submit" value="search"/>
-    </form>
-  </li>
-  <li>
-    <form action="http://deployment.example.org/drds" method="post">
-      <ul>
-        <li>
-          <select name="status">
-              <option value="active">activated</option>
-              <option value="inactive">deactivated</option>
-              <option value="unknown">renegade</option>
-            </select>
-          </li>
-          <li>
-            <input type="text" name="old_status" list="status-list"/>
-
-        </li>
-        <li>
-          <select name="kind">
-            <option value="standard">standard</option>
-            <option value="sentinel">sentinel</option>
-          </select>
-        </li>
-        <li>
-          <input type="text" name="size" list="size-list"/>
-        </li>
-        <li>
-          <select name="location">
-            <option value="option1">option1</option>
-            <option value="option2a">option2a</option>
-          </select>
-        </li>
-        <li>
-          <a value_attribute_name="location_detail_id" type="hash" text_attribute_name="location_detail_text" href="http://crichton.example.com/drd_location_detail_list#items">external hash link</a>
-          <input type="text" name="location_detail"/>
-        </li>
-        <li>
-          <label itemprop="form-destroyed">
-            <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
-          </label>
-        </li>
-        <li>
-          <label itemprop="name">
-            <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
-          </label>
-        </li>
-        <li>
-          <label itemprop="leviathan_uuid">
-            <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
-          </label>
-        </li>
-        <li>
-          <label itemprop="leviathan_health_points">
-            <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0"
-                   max="100"/>
-          </label>
-        </li>
-        <li>
-          <label itemprop="leviathan_email">
-            <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
-          </label>
-        </li>
-      </ul>
-      <input type="hidden" name="_method" value="POST"/>
-      <input type="submit" value="create"/>
-    </form>
-  </li>
-  <li>
-    <span itemprop="total_count">2</span>
-  </li>
-  <li>
-    <ul itemscope="itemscope" itemtype="http://alps.io/schema.org/Array" itemprop="items">
-      <li>
-        <a href="http://deployment.example.org/drds/0">0</a>
-      </li>
-      <li>
-        <a href="http://deployment.example.org/drds/1">1</a>
-      </li>
-    </ul>
-  </li>
+    <li>
+        <a rel="self" href="http://deployment.example.org/drds">self</a>
+    </li>
+    <li>
+        <form action="http://deployment.example.org/drds" method="GET">
+            <ul>
+                <li>
+                    <label itemprop="search_term">
+                        <input itemprop="search_term" type="text" name="search_term"/>
+                    </label>
+                </li>
+            </ul>
+            <input type="submit" value="search"/>
+        </form>
+    </li>
+    <li>
+        <form action="http://deployment.example.org/drds" method="post">
+            <ul>
+                <li>
+                    <label itemprop="status">
+                        <select name="status">
+                            <option value="active">activated</option>
+                            <option value="inactive">deactivated</option>
+                            <option value="unknown">renegade</option>
+                        </select>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="old_status">
+                        <select name="old_status">
+                            <option value="active">activated</option>
+                            <option value="inactive">deactivated</option>
+                            <option value="unknown">renegade</option>
+                        </select>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="kind">
+                        <select name="kind">
+                            <option value="standard">standard</option>
+                            <option value="sentinel">sentinel</option>
+                        </select>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="size">
+                        <input itemprop="size" type="text" name="size" list="size"/>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="location">
+                        <a href="http://crichton.example.com/drd_location_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
+                        <input type="text" name="location"/>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="location_detail">
+                        <a href="http://crichton.example.com/drd_location_detail_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
+                        <input type="text" name="location_detail"/>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="form-destroyed">
+                        <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="name">
+                        <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="leviathan_uuid">
+                        <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="leviathan_health_points">
+                        <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0" max="100"/>
+                    </label>
+                </li>
+                <li>
+                    <label itemprop="leviathan_email">
+                        <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
+                    </label>
+                </li>
+            </ul>
+            <input type="hidden" name="_method" value="POST"/>
+            <input type="submit" value="create"/>
+        </form>
+    </li>
+    <li>
+        <span itemprop="total_count">2</span>
+    </li>
+    <li>
+        <ul itemscope="itemscope" itemtype="http://alps.io/schema.org/Array" itemprop="items">
+            <li>
+                <a href="http://deployment.example.org/drds/0">0</a>
+            </li>
+            <li>
+                <a href="http://deployment.example.org/drds/1">1</a>
+            </li>
+        </ul>
+    </li>
 </ul>
-<datalist id="status-list">
-  <option value="active">activated</option>
-  <option value="inactive">deactivated</option>
-  <option value="unknown">renegade</option>
-</datalist>
-<datalist id="size-list">
-  <option value="small">small</option>
-  <option value="medium">medium</option>
-  <option value="large">large</option>
+<datalist id="size">
+    <option value="big">big</option>
+    <option value="small">small</option>
 </datalist>
 </body>
 </html>

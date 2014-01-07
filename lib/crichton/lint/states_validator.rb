@@ -2,9 +2,11 @@ require 'crichton/lint/base_validator'
 
 module Crichton
   module Lint
+    # class to lint validate the states section of a resource descriptor document
     class StatesValidator < BaseValidator
       section :states
 
+      # standard lint validate method
       def validate
         #7, #8
         check_for_secondary_descriptor_states
@@ -17,6 +19,7 @@ module Crichton
 
       private
 
+      # test to see if the state section has content
       def check_for_secondary_descriptor_states
         #7,8 Check for second level egregious errors
         resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
@@ -63,6 +66,7 @@ module Crichton
         state_array
       end
 
+      # checks for a variety of potential errors with a state transition
       def check_resource_state_transitions(resource_name, curr_state, states_list)
         curr_state.transitions.values.each do |transition|
           transition_decorator = StateTransitionDecorator.new(transition)
@@ -96,6 +100,7 @@ module Crichton
         end
       end
 
+      # check to see if an external link to another profile is setup correctly and is downloaded to local cache
       def validate_external_profile(resource_name, state_name, transition_decorator)
         external_document_store  = Crichton::ExternalDocumentStore.new
         return if external_document_store.get(transition_decorator.next_state_location)
@@ -129,7 +134,13 @@ module Crichton
       end
     end
 
+    # class to override Crichton::Descriptor::StateTransition to perform deep level data access and checks on states
+    # attributes
     class StateTransitionDecorator < Crichton::Descriptor::StateTransition
+      ##
+      # Constructor
+      #
+      # @param [Crichton::Descriptor::StateTransition] transition the current state transition
       def initialize(transition)
         super(transition.resource_descriptor, transition.descriptor_document, transition.id)
       end
@@ -139,14 +150,17 @@ module Crichton
         descriptor_document['conditions'] && conditions.empty?
       end
 
+      # checks to see if the next state is a location
       def is_next_state_a_location?
         self.next.any? { |next_state| next_state.is_a?(Hash) && next_state['location'] }
       end
 
+      # does basic checks for next transitions
       def is_specified_name_property_not_self?
         id != name && name != 'self' && !is_next_state_a_location?
       end
 
+      # @return [Hash] the next state's location, if any
       def next_state_location
         self.next.first['location']
       end
