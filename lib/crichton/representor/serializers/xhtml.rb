@@ -321,7 +321,7 @@ module Crichton
         def add_scripts
           attributes = { type: 'text/javascript',
                          src: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}
-          @markup_builder.tag!(:script, attributes)
+          @markup_builder.tag!(:script, attributes) {}
           @markup_builder.tag!(:script, { type: 'text/javascript' }) { |script| script << javascript }
         end
 
