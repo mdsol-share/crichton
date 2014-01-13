@@ -206,6 +206,8 @@ module Support
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
 
+    alias :copy_resource_to_config_dir :build_dir_for_lint_rspec
+
     def entry_points_descriptor
       YAML.load_file(entry_points_filename)
     end

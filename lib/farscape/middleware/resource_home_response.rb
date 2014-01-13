@@ -2,7 +2,7 @@ module Farscape
   module Middleware
     class ResourceHomeResponse
 
-      SUPPORTED_MEDIA_TYPES=%w(text/html application/xhtml+xml application/json-home application/json application/xml */*)
+      SUPPORTED_MEDIA_TYPES=%w(text/html application/xhtml+xml application/xml application/json-home application/json */*)
 
       def initialize(app, options = {})
         @app = app
