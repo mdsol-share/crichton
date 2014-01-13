@@ -34,6 +34,21 @@ module Crichton
       end
       let(:decorator) { TransitionDecorator.new(target, descriptor, options) }
 
+      describe '#name' do
+        before do
+          @state = 'collection'
+        end
+
+        it 'returns the name of the state transition' do
+          decorator.name.should == 'self'
+        end
+
+        it 'returns the id of the descriptor if name is not specified' do
+          @transition = 'search'
+          decorator.name.should == 'search'
+        end
+      end
+
       describe '#available?' do
         shared_examples_for 'a state transition without conditions' do
           it 'always returns true for transitions without conditions' do
@@ -185,6 +200,10 @@ module Crichton
       end
       
       describe '#templated?' do
+        before do
+          @state = 'navigation'
+        end
+
         it 'returns true if the transition has semantic descriptors' do
           @transition = 'search'
           decorator.should be_templated
@@ -205,6 +224,7 @@ module Crichton
       describe '#templated_url' do
         before do
           stub_config
+          @state = 'navigation'
         end
         
         context 'without query parameter semantic descriptors' do
@@ -224,6 +244,7 @@ module Crichton
       describe '#url' do
         before do
           stub_config
+          @state = 'navigation'
         end
         
         shared_examples_for 'a memoized url' do

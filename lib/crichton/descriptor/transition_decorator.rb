@@ -37,7 +37,7 @@ module Crichton
       # 
       # @return [Boolean] <tt>true</tt> if available, <tt>false</tt> otherwise.
       def available?
-        state_transition ? state_transition.available?(@_options.slice(:conditions)) : state.nil?
+        @available ||= state_transition ? state_transition.available?(@_options.slice(:conditions)) : state.nil?
       end
       
       ##
