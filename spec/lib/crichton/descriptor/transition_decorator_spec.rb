@@ -9,7 +9,7 @@ module Crichton
       let(:descriptor) { resource_descriptor.semantics[@descriptor || 'drds'].transitions[@transition || 'list'] }
       let(:options) do
         {}.tap do |options|
-          options[:state] = @state unless @skip_state_option
+          options[:state] = (@state || 'collection') unless @skip_state_option
           options[:conditions] = @conditions
           options[:protocol] = @protocol
           options[:override_links] = @override_links if @override_links
@@ -35,10 +35,6 @@ module Crichton
       let(:decorator) { TransitionDecorator.new(target, descriptor, options) }
 
       describe '#name' do
-        before do
-          @state = 'collection'
-        end
-
         it 'returns the name of the state transition' do
           decorator.name.should == 'self'
         end
@@ -52,7 +48,7 @@ module Crichton
       describe '#available?' do
         shared_examples_for 'a state transition without conditions' do
           it 'always returns true for transitions without conditions' do
-            @state = 'collection'
+            @skip_state_option = false
             decorator.should be_available
           end
           
@@ -224,7 +220,6 @@ module Crichton
       describe '#templated_url' do
         before do
           stub_config
-          @state = 'navigation'
         end
         
         context 'without query parameter semantic descriptors' do
@@ -244,7 +239,6 @@ module Crichton
       describe '#url' do
         before do
           stub_config
-          @state = 'navigation'
         end
         
         shared_examples_for 'a memoized url' do
