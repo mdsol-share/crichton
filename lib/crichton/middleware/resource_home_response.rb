@@ -1,4 +1,4 @@
-module Farscape
+module Crichton
   module Middleware
     class ResourceHomeResponse
 
@@ -7,21 +7,14 @@ module Farscape
       def initialize(app, options = {})
         @app = app
         # in minutes
-        @expiry = options['expiry'] || 10
+        @expiry = (options['expiry'] || 10) * 60
       end
 
       def call(env)
         req = Rack::Request.new(env)
 
-        media_type = get_supported_media_type(env)
-
         # unless a root path request, delegate to app
-        if req.path == '/'
-          process_home_response(media_type, env)
-        else
-          status, headers, body = @app.call(env)
-          [status, headers, body]
-        end
+        req.path == '/' ? process_home_response(env) : @app.call(env)
       end
 
       #
@@ -31,16 +24,14 @@ module Farscape
       end
 
       # Generate data and return in the appropriate Content-Type
-      def process_home_response(media_type, env)
-        case media_type
-          when 'text/html'
-            home_response(media_type, :html)
-          when 'application/xhtml+xml', 'application/xml'
-            home_response('application/xhtml+xml', :xhtml)
-          when 'application/json-home', 'application/json'
-            home_response(media_type, :xhtml)
-          else
-            unsupported_media_type(env)
+      def process_home_response(env)
+        media_type = get_supported_media_type(env)
+
+
+        if content_type_sym = response_media_type_sym(media_type)
+          home_response(media_type, content_type_sym)
+        else
+          unsupported_media_type(env)
         end
       end
 
@@ -52,7 +43,25 @@ module Farscape
       # returning 406 response for requests with unsupported media types in the HTTP_ACCEPT header entry
       def unsupported_media_type(env)
         [406, {'Content-Type' => 'text/html'},
-         ["Not Acceptable media type(s): #{env["HTTP_ACCEPT"]}, supported types are: #{SUPPORTED_MEDIA_TYPES.join(', ')}\n"]]
+         ["Not Acceptable media type(s): #{env["HTTP_ACCEPT"]}, supported types are: #{SUPPORTED_MEDIA_TYPES.join(', ')}"]]
+      end
+
+      ##
+      #
+      # return symbol of :html, :xhtml, :json or nil based on supplied media_type
+      #
+      # @param [String] media_type textual content_type found in http header
+      def response_media_type_sym(media_type)
+        case media_type
+        when 'text/html'
+          :html
+        when 'application/xhtml+xml', 'application/xml'
+          :xhtml
+        when 'application/json-home', 'application/json', '*/*'
+          :json_home
+        else
+          nil
+        end
       end
 
       ##
@@ -62,8 +71,8 @@ module Farscape
       # @param [String] return_content_type Content type to set in the response to the request
       # @param [Symbol] media_type :html or :xhtml to generate document response
       def home_response(return_content_type, media_type)
-        [200, {'Content-Type' => "#{return_content_type}", 'expires' => "#{@expiry.minutes.from_now.httpdate}"},
-         [Crichton::Discovery::EntryPoints.new(Crichton.entry_points).to_media_type(media_type)]]
+        [200, {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.new+@expiry).httpdate}"},
+          [Crichton::Discovery::EntryPoints.new(Crichton.entry_points).to_media_type(media_type)]]
       end
     end
   end

@@ -228,5 +228,16 @@ module Support
       @entry_points_html ||= File.read(fixture_path('entry_points_microdata.html'))
     end
 
+    def json_home_fixture_path(*args)
+      File.join(SPEC_DIR, 'fixtures', 'middleware', args)
+    end
+
+    def root_html_body
+      @root_html_body ||= File.read(json_home_fixture_path('root_response_body.html'))
+    end
+
+    def root_xml_body
+      @root_xml_body ||= File.read(json_home_fixture_path('root_response_body.xml'))
+    end
   end
 end

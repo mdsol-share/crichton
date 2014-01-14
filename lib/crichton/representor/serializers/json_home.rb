@@ -6,7 +6,7 @@ module Crichton
     ##
     # Manages the serialization of a Crichton::Representor to an application/hal+json media-type.
     class JsonHomeSerializer < Serializer
-      media_types json_home: %w(application/json+home)
+      media_types json_home: %w(application/json-home)
 
       def initialize(object, options = nil)
         unless object.respond_to?(:resources)
