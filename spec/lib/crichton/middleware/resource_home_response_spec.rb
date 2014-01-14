@@ -32,7 +32,7 @@ module Crichton
 
       describe '#call' do
         let(:env) { {'PATH_INFO' => '/', 'HTTP_ACCEPT' => @media_type} }
-        let(:headers) { {'Content-Type' => @media_type, 'expires' => @expires } }
+        let(:headers) { {'Content-Type' => @media_type, 'expires' => @expires} }
         let(:home_responder) { ResourceHomeResponse.new(app) }
         let(:ten_minutes) { 600 }
 
@@ -45,13 +45,13 @@ module Crichton
 
           it 'uses the first supported media type in the HTTP_ACCEPT header' do
             @media_type = 'bogus/media_type,*/a,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*'
-            first_content_type_header =  {'Content-Type' => 'text/html', 'expires' => (Time.new+ten_minutes).httpdate }
+            first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new+ten_minutes).httpdate}
             home_responder.call(env).should == [200, first_content_type_header, [root_html_body]]
           end
 
           it 'responds correctly with a non standard HTTP_ACCEPT header' do
             @media_type = 'bogus/media_type, text/html,  application/xhtml+xml, application/xml;q=0.9,  image/webp, */*'
-            first_content_type_header =  {'Content-Type' => 'text/html', 'expires' => (Time.new+ten_minutes).httpdate }
+            first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new+ten_minutes).httpdate}
             home_responder.call(env).should == [200, first_content_type_header, [root_html_body]]
           end
 
@@ -65,14 +65,14 @@ module Crichton
 
           %w(application/xhtml+xml application/xml).each do |media_type|
             it "responds with xml output for #{media_type} content type requests" do
-                @media_type = media_type
-                @expires = (Time.new+ten_minutes).httpdate
-                home_responder.call(env).should == [200, headers, [root_xml_body]]
-             end
+              @media_type = media_type
+              @expires = (Time.new+ten_minutes).httpdate
+              home_responder.call(env).should == [200, headers, [root_xml_body]]
+            end
           end
 
           %w(application/json-home application/json */*).each do |media_type|
-          it "responds with json-home output for #{media_type} content type requests" do
+            it "responds with json-home output for #{media_type} content type requests" do
               @media_type = media_type
               @expires = (Time.new+ten_minutes).httpdate
               home_responder.call(env).should == [200, headers, [root_json_body]]
