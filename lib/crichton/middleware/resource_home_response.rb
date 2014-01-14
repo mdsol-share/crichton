@@ -1,15 +1,38 @@
 module Crichton
   module Middleware
+    ##
+    # Class to handle root path requests to all hypermedia based services. When root is requested, this class,
+    # deployed as rack middleware, will return a listing of all resources and their 'home' url in the current service.
+    # It respondes in an appropriate media type with respect to the ACCEPT_HEADER environmental variable, based in the
+    # request header.
+    #
+    # Setup as rack middleware in config/application.rb, with an option timeout set
+    # @example
+    #   config.middleware.use "Crichton::Middleware::ResourceHomeResponse", {'expiry' => 20}
+    #
+    # can be accessed using curl, with any of the supported media types below
+    # @example
+    #   curl --header 'Accepts: application/xhtml+xml' localhost:3000/
+    #
     class ResourceHomeResponse
 
       SUPPORTED_MEDIA_TYPES=%w(text/html application/xhtml+xml application/xml application/json-home application/json */*)
 
+      ##
+      #
+      # @param [Object] app parent framework application to this middleware rack app
+      # @param [Hash] options stringified or symbolized 'expiry' options, expressed in minutes, to expire the response
       def initialize(app, options = {})
         @app = app
         # in minutes
-        @expiry = (options['expiry'] || 10) * 60
+        @expiry = (options['expiry'] || options[:expiry] || 10) * 60
       end
 
+      ##
+      #
+      # standard call method for rack applications
+      #
+      # @param [Hash] env environmental variables for requests coming into the middleware
       def call(env)
         req = Rack::Request.new(env)
 
@@ -58,8 +81,6 @@ module Crichton
           :xhtml
         when 'application/json-home', 'application/json', '*/*'
           :json_home
-        else
-          nil
         end
       end
 
