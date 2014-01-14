@@ -27,7 +27,6 @@ module Crichton
       def process_home_response(env)
         media_type = get_supported_media_type(env)
 
-
         if content_type_sym = response_media_type_sym(media_type)
           home_response(media_type, content_type_sym)
         else
@@ -77,3 +76,4 @@ module Crichton
     end
   end
 end
+
