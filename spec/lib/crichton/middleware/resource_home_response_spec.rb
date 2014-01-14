@@ -14,7 +14,7 @@ module Crichton
           end
         end
       end
-      let (:app) { rack_class.new }
+      let (:rack_app) { rack_class.new }
 
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
@@ -33,7 +33,7 @@ module Crichton
       describe '#call' do
         let(:env) { {'PATH_INFO' => '/', 'HTTP_ACCEPT' => @media_type} }
         let(:headers) { {'Content-Type' => @media_type, 'expires' => @expires} }
-        let(:home_responder) { ResourceHomeResponse.new(app) }
+        let(:home_responder) { ResourceHomeResponse.new(rack_app) }
         let(:ten_minutes) { 600 }
 
         context 'when the root' do
@@ -80,7 +80,7 @@ module Crichton
           end
 
           it 'responds with the correct expiration date when it is specified in middleware' do
-            responder = ResourceHomeResponse.new(app, {'expiry' => 20}) #minutes instead of default of 10
+            responder = ResourceHomeResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
             @media_type = 'text/html'
             @expires = (Time.new+1200).httpdate
             responder.call(env).should == [200, headers, [root_html_body]]
