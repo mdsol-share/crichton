@@ -9,7 +9,7 @@ module Crichton
       let(:descriptor) { resource_descriptor.semantics[@descriptor || 'drds'].transitions[@transition || 'list'] }
       let(:options) do
         {}.tap do |options|
-          options[:state] = @state unless @skip_state_option
+          options[:state] = (@state || 'collection') unless @skip_state_option
           options[:conditions] = @conditions
           options[:protocol] = @protocol
           options[:override_links] = @override_links if @override_links
@@ -34,10 +34,21 @@ module Crichton
       end
       let(:decorator) { TransitionDecorator.new(target, descriptor, options) }
 
+      describe '#name' do
+        it 'returns the name of the state transition' do
+          decorator.name.should == 'self'
+        end
+
+        it 'returns the id of the descriptor if name is not specified' do
+          @transition = 'search'
+          decorator.name.should == 'search'
+        end
+      end
+
       describe '#available?' do
         shared_examples_for 'a state transition without conditions' do
           it 'always returns true for transitions without conditions' do
-            @state = 'collection'
+            @skip_state_option = false
             decorator.should be_available
           end
           
@@ -185,6 +196,10 @@ module Crichton
       end
       
       describe '#templated?' do
+        before do
+          @state = 'navigation'
+        end
+
         it 'returns true if the transition has semantic descriptors' do
           @transition = 'search'
           decorator.should be_templated

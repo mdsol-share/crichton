@@ -17,7 +17,18 @@ module Crichton
       def initialize(target, descriptor, options = {})
         super
       end
-      
+
+      ##
+      # The name of the transition.
+      #
+      # Defaults to the id of the descriptor unless a <tt>name</tt> is explicitly specified. This is necessary when
+      # the associated id is modified to make it unique compared to an existing id for another descriptor.
+      #
+      # @return [String] The transition name.
+      def name
+        available? ? state_transition.name : super
+      end
+
       ##
       # Whether the transition is available for inclusion in a response. 
       #
@@ -26,7 +37,7 @@ module Crichton
       # 
       # @return [Boolean] <tt>true</tt> if available, <tt>false</tt> otherwise.
       def available?
-        state_transition ? state_transition.available?(@_options.slice(:conditions)) : state.nil?
+        @available ||= state_transition ? state_transition.available?(@_options.slice(:conditions)) : state.nil?
       end
       
       ##

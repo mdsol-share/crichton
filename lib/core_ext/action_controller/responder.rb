@@ -14,6 +14,7 @@ module ActionController
     def resourceful?
       if resource.is_a?(Crichton::Representor)
         http_accept = request.env['HTTP_ACCEPT']
+        options.merge!({ top_level: true, override_links: { 'self' => request.url } })
         options.merge!(semantics: :styled_microdata) if http_accept && http_accept.include?('text/html')
         true
       else
