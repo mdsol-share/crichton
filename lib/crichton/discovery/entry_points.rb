@@ -22,22 +22,36 @@ module Crichton
 
       ##
       #
-      # Serlialization method for json_home and html
+      # Serialization method for root based requests
       #
-      # @param media_type [Symbol] :json_home or :html
-      # @param resource_relation [Hash] Hash of options for serialization
-      def as_media_type(media_type, options = {})
+      # @param media_type [Symbol] :json_home, :xhtml or :html
+      # @param option [Hash] Hash of options to output styled or non-styled microdata
+      def as_media_type(media_type, options)
         options = options.merge({semantics: :microdata}) if media_type == :xhtml
         case media_type
         when :html, :xhtml
           # build html document
-          JsonHomeHtmlSerializer.new.to_media_type(@resources, options)
+          JsonHomeHtmlSerializer.new.as_media_type(@resources, options)
         else
           super
         end
       end
 
-      alias :to_media_type :as_media_type
+      ##
+      #
+      # Serialization method for root based requests
+      #
+      # @param media_type [Symbol] :json_home, :xhtml or :html
+      # @param option [Hash] Hash of options to output styled or non-styled microdata
+      def to_media_type(media_type, options = {})
+        case media_type
+        when :html, :xhtml
+          # build html document
+          as_media_type(media_type, options)
+        else
+          super
+        end
+      end
     end
   end
 end

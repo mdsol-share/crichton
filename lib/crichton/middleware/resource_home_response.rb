@@ -2,9 +2,9 @@ module Crichton
   module Middleware
     ##
     # Class to handle root path requests to all hypermedia based services. When root is requested, this class,
-    # deployed as rack middleware, will return a listing of all resources and their 'home' url in the current service.
-    # It respondes in an appropriate media type with respect to the ACCEPT_HEADER environmental variable, based in the
-    # request header.
+    # deployed as rack middleware, will return a listing of all resources and their entry point urls in the service.
+    # It responds with an appropriate media type with respect to the ACCEPT_HEADER environmental variable, coming
+    # from the request header.
     #
     # Setup as rack middleware in config/application.rb, with an option timeout set
     # @example
@@ -97,4 +97,3 @@ module Crichton
     end
   end
 end
-
