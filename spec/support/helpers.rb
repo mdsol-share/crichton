@@ -206,6 +206,8 @@ module Support
       FileUtils.copy_entry(File.expand_path("../#{files_to_copy}", File.dirname(__FILE__)), config_dir)
     end
 
+    alias :copy_resource_to_config_dir :build_dir_for_lint_rspec
+
     def entry_points_descriptor
       YAML.load_file(entry_points_filename)
     end
@@ -226,5 +228,16 @@ module Support
       @entry_points_html ||= File.read(fixture_path('entry_points_microdata.html'))
     end
 
+    def json_home_fixture_path(*args)
+      File.join(SPEC_DIR, 'fixtures', 'middleware', args)
+    end
+
+    def root_html_body
+      @root_html_body ||= File.read(json_home_fixture_path('root_response_body.html'))
+    end
+
+    def root_xml_body
+      @root_xml_body ||= File.read(json_home_fixture_path('root_response_body.xml'))
+    end
   end
 end
