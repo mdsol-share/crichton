@@ -42,6 +42,9 @@ module Crichton
         # unless an alps path request, delegate to app
         if resource = alps_request(env['REQUEST_URI'])
           process_alps_response(resource['id'], env)
+        elsif env['REQUEST_URI'] == config.alps_base_uri
+          # captures the "localhost:3000/alps" request
+          resource_not_found(nil)
         else
           @app.call(env)
         end
@@ -57,13 +60,27 @@ module Crichton
         Addressable::Template.new("#{config.alps_base_uri}/{id}").extract(uri)
       end
 
-     # Generate data and return in the appropriate Content-Type
+     # test for apprropriate HTTP_ACCEPT content type and processes accordngly
       def process_alps_response(resource_id, env)
         if media_type =supported_media_type(env)
-          [200, {'Content-Type' => "#{media_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"},
-           [Crichton.raw_profile_registry[resource_id].to_xml]]
+          send_alps_response_for_id(resource_id, media_type)
         else
           unsupported_media_type(env)
+        end
+      end
+
+      ##
+      #
+      # send alps document response if resource found, else return 404 message
+      #
+      # @param [String] resource_id stringified id of the resource
+      # @param [String] media_type the accepted content type for this request/response
+      def send_alps_response_for_id(resource_id, media_type)
+        if alps_document = Crichton.raw_profile_registry[resource_id]
+          [200,  {'Content-Type' => "#{media_type}",
+            'expires' => "#{(Time.new + @expiry).httpdate}"}, [alps_document.to_xml]]
+        else
+          resource_not_found(resource_id)
         end
       end
 
@@ -84,6 +101,10 @@ module Crichton
          ["Not Acceptable media type: #{env["HTTP_ACCEPT"]}, supported types are: #{SUPPORTED_MEDIA_TYPES.join(', ')}"]]
       end
 
+      def resource_not_found(resource_id)
+        [404, {'Content-Type' => 'text/html',
+          'expires' => "#{(Time.new + @expiry).httpdate}"}, ["Resource #{resource_id} not found"]]
+      end
     end
   end
 end

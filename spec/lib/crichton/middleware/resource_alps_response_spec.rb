@@ -7,7 +7,7 @@ module Crichton
     describe ResourceAlpsResponse do
       include Crichton::Helpers::ConfigHelper
 
-       let (:rack_app) { double('rack_app') }
+      let (:rack_app) { double('rack_app') }
 
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
@@ -30,10 +30,12 @@ module Crichton
         let(:ten_minutes) { 600 }
 
         context 'when the alps path' do
-          it 'respond to text/html with an alps document associated with the resource id' do
-            @media_type = 'text/html'
-            @expires = (Time.new + ten_minutes).httpdate
-            home_responder.call(env).should == [200, headers, [alps_drds_document]]
+          %w(text/html application/alps+xml application/alps+json).each do |media_type|
+            it "responds with an alps document associated with the resource id for #{media_type} requests" do
+              @media_type = media_type
+              @expires = (Time.new + ten_minutes).httpdate
+              home_responder.call(env).should == [200, headers, [alps_drds_document]]
+            end
           end
 
           it 'uses the first supported media type in the HTTP_ACCEPT header' do
@@ -48,19 +50,11 @@ module Crichton
             home_responder.call(env).should == [200, first_content_type_header, [alps_drds_document]]
           end
 
-          %w(application/alps+xml application/alps+json).each do |media_type|
+          %w(text/html application/alps+xml application/alps+json).each do |media_type|
             it "responds with the expected content-type for #{media_type} requests" do
               @media_type = media_type
               response = home_responder.call(env)
               response[1]['Content-Type'].should == media_type
-            end
-          end
-
-          %w(application/alps+xml application/alps+json).each do |media_type|
-            it "responds with output for #{media_type} content type requests" do
-              @media_type = media_type
-              @expires = (Time.new + ten_minutes).httpdate
-              home_responder.call(env).should == [200, headers, [alps_drds_document]]
             end
           end
 
@@ -71,8 +65,7 @@ module Crichton
             responder.call(env).should == [200, headers, [alps_drds_document]]
           end
 
-
-          it 'responds with the correct expiration date when a symbollized timeout in specified' do
+          it 'responds with the correct expiration date when a symbolized timeout in specified' do
             responder = ResourceAlpsResponse.new(rack_app, {:expiry => 20}) #minutes instead of default of 10
             @media_type = 'text/html'
             @expires = (Time.new + 1200).httpdate
@@ -88,6 +81,22 @@ module Crichton
           it 'returns a 406 status for an empty list of acceptable media types' do
             @media_type = ''
             home_responder.call(env)[0].should == 406
+          end
+
+          it 'returns a 404 if the resource in the request is not valid' do
+            @media_type = 'text/html'
+            response_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
+            response = home_responder.call({'REQUEST_URI' => "#{config.alps_base_uri}/BLAH",
+              'HTTP_ACCEPT' => @media_type})
+            response.should == [404, response_header, ["Resource BLAH not found"]]
+          end
+
+          it 'returns a 404 if the alps request contains no resource' do
+            @media_type = 'text/html'
+            response_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
+            response = home_responder.call({'REQUEST_URI' => "#{config.alps_base_uri}",
+              'HTTP_ACCEPT' => @media_type})
+            response.should == [404, response_header, ["Resource  not found"]]
           end
         end
 
