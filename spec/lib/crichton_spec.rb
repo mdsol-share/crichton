@@ -104,9 +104,7 @@ describe Crichton do
 
   describe '.clear_registry' do
     it 'clears any registered resource descriptors' do
-      Support::ALPSSchema::StubUrls.each do |url, body|
-        stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
-      end
+      stub_alps_requests
       Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
       registry_obj = mock('Registry')
       registry_obj.stub(:descriptor_registry)

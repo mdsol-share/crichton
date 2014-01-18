@@ -1,3 +1,5 @@
+require 'crichton/middleware/middleware_base'
+
 module Crichton
   module Middleware
     ##
@@ -8,13 +10,13 @@ module Crichton
     #
     # Setup as rack middleware in config/application.rb, with an option timeout set
     # @example
-    #   config.middleware.use "Crichton::Middleware::ResourceHomeResponse", {'expiry' => 20}
+    #   config.middleware.use Crichton::Middleware::ResourceHomeResponse, {'expiry' => 20}
     #
     # can be accessed using curl, with any of the supported media types below
     # @example
     #   curl --header 'Accepts: application/xhtml+xml' localhost:3000/
     #
-    class ResourceHomeResponse
+    class ResourceHomeResponse < MiddlewareBase
 
       SUPPORTED_MEDIA_TYPES=%w(text/html application/xhtml+xml application/xml application/json-home application/json */*)
 
@@ -40,32 +42,15 @@ module Crichton
         req.path == '/' ? process_home_response(env) : @app.call(env)
       end
 
-      #
-      # get the first supported media type from the HTTP_ACCEPT list of media types in the request header
-      def get_supported_media_type(env)
-        accepted_media_types(env).detect { |media_type| SUPPORTED_MEDIA_TYPES.include?(media_type) }
-      end
-
       # Generate data and return in the appropriate Content-Type
       def process_home_response(env)
-        media_type = get_supported_media_type(env)
+        media_type = supported_media_type(SUPPORTED_MEDIA_TYPES, env)
 
         if content_type_sym = response_media_type_sym(media_type)
           home_response(media_type, content_type_sym)
         else
-          unsupported_media_type(env)
+          unsupported_media_type(SUPPORTED_MEDIA_TYPES, env)
         end
-      end
-
-      # generate an array of acceptable media types from the HTTP_ACCEPT header
-      def accepted_media_types(env)
-        env["HTTP_ACCEPT"].to_s.split(/\s*,\s*/)
-      end
-
-      # returning 406 response for requests with unsupported media types in the HTTP_ACCEPT header entry
-      def unsupported_media_type(env)
-        [406, {'Content-Type' => 'text/html'},
-         ["Not Acceptable media type(s): #{env["HTTP_ACCEPT"]}, supported types are: #{SUPPORTED_MEDIA_TYPES.join(', ')}"]]
       end
 
       ##

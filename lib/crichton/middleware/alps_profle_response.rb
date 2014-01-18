@@ -1,3 +1,4 @@
+require 'crichton/middleware/middleware_base'
 require 'addressable/uri'
 require 'addressable/template'
 require 'crichton/helpers'
@@ -5,20 +6,20 @@ require 'crichton/helpers'
 module Crichton
   module Middleware
     ##
-    # Class to handle alps path requests ('/alps/<resource_id>') to all hypermedia based services. When the alps path
-    # is requested, this class, deployed as rack middleware, will return the alps document associated with the
+    # Class to handle ALPS path requests ('/alps/<profile_id>') to all hypermedia based services. When the ALPS path
+    # is requested, this class, deployed as rack middleware, will return the ALPS profile associated with the
     # resource. It responds with an appropriate media type with respect to the ACCEPT_HEADER environmental variable,
     # coming from the request header.
     #
     # Setup as rack middleware in config/application.rb, with an option timeout set
     # @example
-    #   config.middleware.use "Crichton::Middleware::ResourceAlpsResponse", {'expiry' => 20}
+    #   config.middleware.use Crichton::Middleware::AlpsProfileResponse, {'expiry' => 20}
     #
     # can be accessed using curl, with any of the supported media types below
     # @example
     #   curl --header 'Accept: application/alps+xml' localhost:3000/alps/DRDs
     #
-    class ResourceAlpsResponse
+    class AlpsProfileResponse < MiddlewareBase
       include Crichton::Helpers::ConfigHelper
 
       SUPPORTED_MEDIA_TYPES=%w(text/html application/alps+xml application/alps+json) # text/html for browsers
@@ -44,7 +45,7 @@ module Crichton
           process_alps_response(resource['id'], env)
         elsif env['REQUEST_URI'] == config.alps_base_uri
           # captures the "localhost:3000/alps" request
-          resource_not_found(nil)
+          error_response(404, "Profile not found")
         else
           @app.call(env)
         end
@@ -52,7 +53,7 @@ module Crichton
 
       ##
       #
-      # returns a hash with a key containing the id of the resource or nil
+      # returns a hash with a key containing the profile id of the resource or nil
       #
       # @param [String] full_uri the complete uri of the request
       def alps_request(full_uri)
@@ -61,11 +62,11 @@ module Crichton
       end
 
      # test for apprropriate HTTP_ACCEPT content type and processes accordngly
-      def process_alps_response(resource_id, env)
-        if media_type =supported_media_type(env)
-          send_alps_response_for_id(resource_id, media_type)
+      def process_alps_response(profile_id, env)
+        if media_type = supported_media_type(SUPPORTED_MEDIA_TYPES, env)
+          send_alps_response_for_id(profile_id, media_type)
         else
-          unsupported_media_type(env)
+          unsupported_media_type(SUPPORTED_MEDIA_TYPES, env)
         end
       end
 
@@ -73,37 +74,15 @@ module Crichton
       #
       # send alps document response if resource found, else return 404 message
       #
-      # @param [String] resource_id stringified id of the resource
+      # @param [String] profile_id stringified id of the profile
       # @param [String] media_type the accepted content type for this request/response
-      def send_alps_response_for_id(resource_id, media_type)
-        if alps_document = Crichton.raw_profile_registry[resource_id]
+      def send_alps_response_for_id(profile_id, media_type)
+        if alps_document = Crichton.raw_profile_registry[profile_id]
           [200,  {'Content-Type' => "#{media_type}",
             'expires' => "#{(Time.new + @expiry).httpdate}"}, [alps_document.to_xml]]
         else
-          resource_not_found(resource_id)
+          error_response(404, "Profile #{profile_id} not found")
         end
-      end
-
-      #
-      # get the first supported media type from the HTTP_ACCEPT list of media types in the request header
-      def supported_media_type(env)
-        accepted_media_types(env).detect { |media_type| SUPPORTED_MEDIA_TYPES.include?(media_type) }
-      end
-
-      # generate an array of acceptable media types from the HTTP_ACCEPT header
-      def accepted_media_types(env)
-        env["HTTP_ACCEPT"].to_s.split(/\s*,\s*/)
-      end
-
-      # returning 406 response for requests with unsupported media types in the HTTP_ACCEPT header entry
-      def unsupported_media_type(env)
-        [406, {'Content-Type' => 'text/html'},
-         ["Not Acceptable media type: #{env["HTTP_ACCEPT"]}, supported types are: #{SUPPORTED_MEDIA_TYPES.join(', ')}"]]
-      end
-
-      def resource_not_found(resource_id)
-        [404, {'Content-Type' => 'text/html',
-          'expires' => "#{(Time.new + @expiry).httpdate}"}, ["Resource #{resource_id} not found"]]
       end
     end
   end
