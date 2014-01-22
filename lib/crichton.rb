@@ -185,6 +185,11 @@ module Crichton
     @descriptor_filenames ||= Dir.glob(File.join(descriptor_location, '*.{yml,yaml}'))
   end
 
+  def self.register_drds_sample
+    filename = File.join(File.expand_path('../../', __FILE__), 'spec/fixtures/resource_descriptors/drds_descriptor_v1.yml')
+    initialize_registry(filename)
+  end
+
   ##
   # The root directory of parent project.
   #
