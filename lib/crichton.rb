@@ -186,8 +186,8 @@ module Crichton
   end
 
   def self.register_drds_sample
-    filename = File.join(File.expand_path('../../', __FILE__), 'spec/fixtures/resource_descriptors/drds_descriptor_v1.yml')
-    initialize_registry(filename)
+    drds_sample = 'spec/fixtures/resource_descriptors/drds_descriptor_v1.yml'
+    initialize_registry(File.join(File.expand_path('../../', __FILE__), drds_sample))
   end
 
   ##
