@@ -10,6 +10,7 @@ module Crichton
       let (:rack_app) { double('rack_app') }
 
       before do
+        Crichton.clear_registry
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
         stub_configured_profiles
@@ -31,20 +32,20 @@ module Crichton
             it "responds with an alps document associated with the profile id for #{media_type} requests" do
               @media_type = media_type
               @expires = (Time.new + ten_minutes).httpdate
-              home_responder.call(env).should == [200, headers, [alps_drds_document]]
+              home_responder.call(env).should == [200, headers, [alps_xml_data]]
             end
           end
 
           it 'uses the first supported media type in the HTTP_ACCEPT header' do
             @media_type = 'bogus/media_type,*/a,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*'
             first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
-            home_responder.call(env).should == [200, first_content_type_header, [alps_drds_document]]
+            home_responder.call(env).should == [200, first_content_type_header, [alps_xml_data]]
           end
 
           it 'responds correctly with a non standard HTTP_ACCEPT header' do
             @media_type = 'bogus/media_type, text/html,  application/xhtml+xml, application/xml;q=0.9,  image/webp, */*'
             first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
-            home_responder.call(env).should == [200, first_content_type_header, [alps_drds_document]]
+            home_responder.call(env).should == [200, first_content_type_header, [alps_xml_data]]
           end
 
           %w(text/html application/alps+xml application/alps+json).each do |media_type|
@@ -59,19 +60,18 @@ module Crichton
             responder = AlpsProfileResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
             @media_type = 'text/html'
             @expires = (Time.new + 1200).httpdate
-            responder.call(env).should == [200, headers, [alps_drds_document]]
+            responder.call(env).should == [200, headers, [alps_xml_data]]
           end
 
           it 'responds with the correct expiration date when a symbolized timeout in specified' do
             responder = AlpsProfileResponse.new(rack_app, {:expiry => 20}) #minutes instead of default of 10
             @media_type = 'text/html'
             @expires = (Time.new + 1200).httpdate
-            responder.call(env).should == [200, headers, [alps_drds_document]]
+            responder.call(env).should == [200, headers, [alps_xml_data]]
           end
 
           it 'returns a 406 status for unsupported media_types' do
             @media_type = 'application/jrd+json'
-            content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
             home_responder.call(env)[0].should == 406
           end
 

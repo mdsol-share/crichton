@@ -240,10 +240,6 @@ module Support
       @root_xml_body ||= File.read(middleware_fixture_path('root_response_body.xml'))
     end
 
-    def alps_drds_document
-      @alps_drd_document ||= File.read(middleware_fixture_path('alps_drds_document.xml'))
-    end
-
     def stub_configured_profiles
       copy_resource_to_config_dir('api_descriptors', 'fixtures/resource_descriptors')
       FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')

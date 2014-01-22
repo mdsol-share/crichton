@@ -38,7 +38,7 @@ module Crichton
 
         it 'deserializes a XML DRD' do
           deserializer = Deserialization.new(alps_xml_data)
-          deserializer.to_hash.keys.should == ['doc', 'links', 'descriptors', 'datalists']
+          deserializer.to_hash.keys.should == ['doc', 'links', 'descriptors']
         end
 
         it 'deserializes an opened JSON file continaing a DRD' do
