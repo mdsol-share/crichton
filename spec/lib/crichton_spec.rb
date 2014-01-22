@@ -200,5 +200,12 @@ describe Crichton do
       Crichton.descriptor_directory.should == 'test_directory'
     end
   end
+
+  describe '.register_drds_sample' do
+    it 'initializes the registry with a sample resource descriptor document' do
+      Crichton.register_drds_sample
+      Crichton.raw_descriptor_registry.keys.should == ["drds", "drd"]
+    end
+  end
 end
                                                    
