@@ -8,7 +8,7 @@ module Crichton
     ##
     # Class to handle ALPS path requests ('/alps/<profile_id>') to all hypermedia based services. When the ALPS path
     # is requested, this class, deployed as rack middleware, will return the ALPS profile associated with the
-    # resource. It responds with an appropriate media type with respect to the ACCEPT_HEADER environmental variable,
+    # resource. It responds with an appropriate media type with respect to the HTTP_ACCEPT environmental variable,
     # coming from the request header.
     #
     # Setup as rack middleware in config/application.rb, with an option timeout set
@@ -78,8 +78,9 @@ module Crichton
       # @param [String] media_type the accepted content type for this request/response
       def send_alps_response_for_id(profile_id, media_type)
         if alps_document = Crichton.raw_profile_registry[profile_id]
+          body = media_type == 'application/alps+json' ? alps_document.to_json : alps_document.to_xml
           [200,  {'Content-Type' => "#{media_type}",
-            'expires' => "#{(Time.new + @expiry).httpdate}"}, [alps_document.to_xml]]
+            'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
         else
           error_response(404, "Profile #{profile_id} not found")
         end

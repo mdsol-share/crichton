@@ -14,6 +14,7 @@ module Crichton
         stub_example_configuration
         stub_configured_profiles
         stub_alps_requests
+        register_drds_descriptor
       end
 
       after do

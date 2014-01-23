@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'crichton/middleware/alps_profle_response'
 require 'crichton/helpers'
+require 'json_spec'
 
 module Crichton
   module Middleware
@@ -10,11 +11,11 @@ module Crichton
       let (:rack_app) { double('rack_app') }
 
       before do
-        Crichton.clear_registry
-        # Can't apply methods without a stubbed configuration and registered descriptors
+        Time.stub!(:new).and_return(Time.parse("Thu, 23 Jan 2014 18:00:00 GMT") )
         stub_example_configuration
         stub_configured_profiles
         stub_alps_requests
+        register_drds_descriptor
       end
 
       after do
@@ -28,12 +29,21 @@ module Crichton
         let(:ten_minutes) { 600 }
 
         context 'when the alps path' do
-          %w(text/html application/alps+xml application/alps+json).each do |media_type|
+            %w(text/html application/alps+xml).each do |media_type|
             it "responds with an alps document associated with the profile id for #{media_type} requests" do
               @media_type = media_type
-              @expires = (Time.new + ten_minutes).httpdate
+              @expires =  (Time.new + ten_minutes).httpdate
               home_responder.call(env).should == [200, headers, [alps_xml_data]]
             end
+          end
+
+          it 'responds with an alps document associated with the profile id for application/alps+json requests' do
+            @media_type = 'application/alps+json'
+            @expires =  (Time.new + ten_minutes).httpdate
+            # go get the body of the response and JSON parse it.
+            obj = JSON.parse(home_responder.call(env)[2].first)
+            body = JSON.pretty_generate(obj)
+            body.should be_json_eql(alps_json_data)
           end
 
           it 'uses the first supported media type in the HTTP_ACCEPT header' do
@@ -56,7 +66,7 @@ module Crichton
             end
           end
 
-          it 'responds with the correct expiration date when it a timeout  is specified as an option' do
+          it 'responds with the correct expiration date when it a timeout is specified as an option' do
             responder = AlpsProfileResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
             @media_type = 'text/html'
             @expires = (Time.new + 1200).httpdate
