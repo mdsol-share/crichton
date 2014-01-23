@@ -228,16 +228,31 @@ module Support
       @entry_points_html ||= File.read(fixture_path('entry_points_microdata.html'))
     end
 
-    def json_home_fixture_path(*args)
+    def middleware_fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', 'middleware', args)
     end
 
     def root_html_body
-      @root_html_body ||= File.read(json_home_fixture_path('root_response_body.html'))
+      @root_html_body ||= File.read(middleware_fixture_path('root_response_body.html'))
     end
 
     def root_xml_body
-      @root_xml_body ||= File.read(json_home_fixture_path('root_response_body.xml'))
+      @root_xml_body ||= File.read(middleware_fixture_path('root_response_body.xml'))
+    end
+
+    def stub_configured_profiles
+      copy_resource_to_config_dir('api_descriptors', 'fixtures/resource_descriptors')
+      FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')
+    end
+
+    def clear_configured_profiles
+      FileUtils.rm_rf('api_descriptors')
+    end
+
+    def stub_alps_requests
+      Support::ALPSSchema::StubUrls.each do |url, body|
+        stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
+      end
     end
   end
 end

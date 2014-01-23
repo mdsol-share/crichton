@@ -28,22 +28,22 @@ module Crichton
 
         it 'deserializes JSON data' do
           deserializer = Deserialization.new(alps_json_data)
-          deserializer.to_hash.keys.should == ['doc', 'links', 'datalists', 'descriptors']
+          deserializer.to_hash.keys.should == ['doc', 'links', 'descriptors']
         end
 
         it 'deserializes a JSON DRD' do
           deserializer = Deserialization.new(alps_json_data)
-          deserializer.to_hash.keys.should == ['doc', 'links', 'datalists', 'descriptors']
+          deserializer.to_hash.keys.should == ['doc', 'links', 'descriptors']
         end
 
         it 'deserializes a XML DRD' do
           deserializer = Deserialization.new(alps_xml_data)
-          deserializer.to_hash.keys.should == ['doc', 'links', 'descriptors', 'datalists']
+          deserializer.to_hash.keys.should == ['doc', 'links', 'descriptors']
         end
 
         it 'deserializes an opened JSON file continaing a DRD' do
           deserializer = Deserialization.new(alps_json_opened_file)
-          deserializer.to_hash.keys.should == ['doc', 'links', 'datalists', 'descriptors']
+          deserializer.to_hash.keys.should == ['doc', 'links', 'descriptors']
         end
 
         it 'deserializes an opened JSON file continaing a DRD with a unhelpful filename' do

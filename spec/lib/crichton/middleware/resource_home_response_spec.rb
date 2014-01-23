@@ -12,15 +12,13 @@ module Crichton
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
-        copy_resource_to_config_dir('api_descriptors', 'fixtures/resource_descriptors')
-        FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')
-        Support::ALPSSchema::StubUrls.each do |url, body|
-          stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
-        end
+        stub_configured_profiles
+        stub_alps_requests
+        register_drds_descriptor
       end
 
       after do
-        FileUtils.rm_rf('api_descriptors')
+        clear_configured_profiles
       end
 
       describe '#call' do
@@ -72,7 +70,7 @@ module Crichton
             end
           end
 
-          it 'responds with the correct expiration date when it a timeout  is specified as an option' do
+          it 'responds with the correct expiration date when it a timeout is specified as an option' do
             responder = ResourceHomeResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
             @media_type = 'text/html'
             @expires = (Time.new + 1200).httpdate
@@ -80,7 +78,7 @@ module Crichton
           end
 
 
-          it 'responds with the correct expiration date when a symbollized timeout in specified' do
+          it 'responds with the correct expiration date when a symbolized timeout in specified' do
             responder = ResourceHomeResponse.new(rack_app, {:expiry => 20}) #minutes instead of default of 10
             @media_type = 'text/html'
             @expires = (Time.new + 1200).httpdate
