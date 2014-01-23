@@ -79,8 +79,7 @@ module Crichton
       def send_alps_response_for_id(profile_id, media_type)
         if alps_document = Crichton.raw_profile_registry[profile_id]
           body = media_type == 'application/alps+json' ? alps_document.to_json : alps_document.to_xml
-          [200,  {'Content-Type' => "#{media_type}",
-            'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
+          [200,  {'Content-Type' => "#{media_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
         else
           error_response(404, "Profile #{profile_id} not found")
         end
