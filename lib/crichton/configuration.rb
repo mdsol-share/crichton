@@ -46,12 +46,20 @@ module Crichton
     define_method('css_uri') { @config['css_uri'] }
 
     ##
+    # @!attribute [r] js_uri
+    # The URI where CSS is hosted.
+    #
+    # @return [String] The URI.
+    define_method('js_uri') { @config['js_uri'] }
+
+    ##
     # @param [Hash] config The configuration hash.
     # @option config [String] alps_base_uri
     # @option config [String] deployment_base_uri
     # @option config [String] discovery_base_uri
     # @option config [String] documentation_base_uri
     # @option config [String] css_uri
+    # @option config [String] js_uri
     #
     # @return [Configuration] The configuration instance.
     def initialize(config)
