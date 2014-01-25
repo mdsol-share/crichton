@@ -378,11 +378,11 @@ module Crichton
         end
 
         def javascript
-          File.read(File.join(File.dirname(__FILE__), 'xhtml.js'))
+          File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
         end
 
         def xhtml_css
-          File.read(File.join(File.dirname(__FILE__), 'xhtml.css'))
+          File.read(File.join(File.dirname(__FILE__), 'html/xhtml.css'))
         end
       end
     end
