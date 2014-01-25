@@ -298,12 +298,18 @@ module Crichton
       # Manages building HTML elements with Microdata semantics and includes styles and scripts for interacting with
       # the resource in a browser for 'surfing the API'.
       class StyledMicrodataSemanticBuilder < MicrodataSemanticBuilder
+        # @!macro add_body
+        def add_body(options)
+          @markup_builder.tag!(:div) { |html| html << rest_client } if config.js_uri && config.css_uri
+          super
+        end
+
         # @!macro add_head
         def add_head
           @markup_builder.head do
             add_metadata_links
             add_styles
-            add_scripts
+            add_scripts if config.js_uri
           end
         end
 
@@ -314,14 +320,17 @@ module Crichton
 
       private
         def add_styles
-          @markup_builder.tag!(:link, {rel: :stylesheet, href: config.css_uri }) if config.css_uri
+          build_collection(config.css_uri).each do |url|
+            @markup_builder.tag!(:link, {rel: :stylesheet, href: url })
+          end if config.css_uri
           @markup_builder.style { |style| style << xhtml_css }
         end
 
         def add_scripts
-          attributes = { type: 'text/javascript',
-                         src: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}
-          @markup_builder.tag!(:script, attributes) {}
+          build_collection(config.js_uri).each do |url|
+            attributes = { type: 'text/javascript', src: url }
+            @markup_builder.tag!(:script, attributes) {}
+          end
           @markup_builder.tag!(:script, { type: 'text/javascript' }) { |script| script << javascript }
         end
 
@@ -377,12 +386,20 @@ module Crichton
           end
         end
 
+        def rest_client
+          File.read(File.join(File.dirname(__FILE__), 'html/rest_client.html'))
+        end
+
         def javascript
           File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
         end
 
         def xhtml_css
           File.read(File.join(File.dirname(__FILE__), 'html/xhtml.css'))
+        end
+
+        def build_collection(element)
+          element.is_a?(String) ? [element] : element
         end
       end
     end
