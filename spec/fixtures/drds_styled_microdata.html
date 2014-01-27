@@ -11,19 +11,118 @@
             text-transform: capitalize;
         }
     </style>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
+    <script type="text/javascript" src="http://example.org/resources/js.js">
     </script>
     <script type="text/javascript">
         $(document).ready(function () {
-            var selector = $("ul[itemtype]")
-            selector.each(function (index, element) {
+            get_selector().each(function (index, element) {
                 $('span[itemprop]', element).each(function () {
-                    var attribute = $(this).attr('itemprop')
-                    var value = $(this).text()
-                    set_values(attribute, value, element)
+                    var attribute = $(this).attr('itemprop');
+                    var value = $(this).text();
+                    set_values(attribute, value, element);
                 })
             })
+
+            $('.custom-headers').click(function(){
+                create_modal('Request Headers', 'header', '.custom-header-collection');
+            })
+
+            $('.custom-parameters').click(function(){
+                create_modal('Additional Parameters', 'param', '.custom-parameter-collection');
+            })
+
+            $('.add-value').click(function(){
+                add_element($('.element-name').val(), $('.element-value').val())
+            })
+
+            $('form').submit(function(){
+                var form = $(this);
+                $('span[param-name]').each(function(){
+                    var name = $(this).attr('param-name');
+                    var value = $(this).attr('param-value');
+                    var input = create_element('<input/>', { type: 'hidden', name: name, value: value })
+                    input.appendTo(form);
+                });
+                return true;
+            })
+
+            $('a').click(function(){
+                var link = $(this);
+                var url = link.attr('href');
+                $('span[param-name]').each(function(){
+                    url = add_parameters_to_url(url, $(this).attr('param-name'), $(this).attr('param-value'));
+                });
+                link.attr('href', url);
+                return true;
+            })
         })
+
+        function create_modal(title, subtype, container){
+            var modal_object = initialize_modal(title);
+            var hidden = create_element('<input/>', {type: 'hidden', subtype: subtype, container: container});
+            hidden.appendTo(modal_object)
+            modal_object.modal('show');
+        }
+
+        function initialize_modal(title){
+            var modal_object = $('#modal-dialog');
+            $('.element-name').val('');
+            $('.element-value').val('');
+            $('.modal-title').text(title);
+            $('input[type="hidden"]').remove();
+            return modal_object;
+        }
+
+        function add_element(name, value){
+            var input = $('input[type="hidden"]');
+            var container = input.attr('container');
+            var div = create_element('<div/>', { class: 'input-group ' + name + '-' + value });
+            var content = create_element('<span/>', build_options(input, name, value)).text(name + ' : ' + value);
+            var close = create_remove_button(name, value);
+            close.appendTo(content);
+            content.appendTo(div);
+            div.appendTo(container);
+            close_dialog();
+        }
+
+        function create_remove_button(name, value){
+            var close = $('<button class="close" type="button">&times;</button>').button().click(function(){
+                var selector = '.' + name + '-' + value;
+                $(selector).remove();
+            });
+            return close;
+        }
+
+        function build_options(input, name, value) {
+            var subtype_name = input.attr('subtype') + '-name';
+            var subtype_value = input.attr('subtype') + '-value';
+            var options =  { class: 'label label-info input-group-addon' };
+            options[subtype_name] = name;
+            options[subtype_value] = value;
+            return options;
+        }
+
+        function create_element(element, options) {
+            return $(element, options)
+        }
+
+        function close_dialog(){
+            $('#modal-dialog').modal('hide');
+        }
+
+        function get_selector() {
+            ($("ul[itemtype]").length > 1) ? selector = $("ul[itemtype]:gt(0)") : selector = $("ul[itemtype]")
+            return selector
+        }
+
+        function add_parameters_to_url(url, key, value) {
+            var params = key + '=' + value;
+            if (url.indexOf('?') > 0) {
+                return url + "&" + params;
+            } else {
+                return url + "?" + params;
+            }
+        }
 
         function set_values(attribute, value, context) {
             $('select[name="' + attribute + '"]', context).each(function (index, element) {
@@ -43,6 +142,50 @@
     </script>
 </head>
 <body>
+<div>
+    <div class="control-group">
+        <div class="controls custom-parameter-collection">
+            <button class="custom-parameters">Custom Parameters</button>
+            <label for="name">Parameters:</label>
+        </div>
+        <hr/>
+        <div class="controls custom-header-collection">
+            <button class="custom-headers">Custom Headers</button>
+            <label for="name">Headers:</label>
+        </div>
+        <hr/>
+    </div>
+    <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="control-group">
+                        <label for="name">Name</label>
+                        <div class="controls">
+                            <input class="span5 element-name" type="text" name="value"></input>
+                            <span class="help-block hide"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label for="value">Value</label>
+                        <div class="controls">
+                            <input class="span5 element-value" type="text" name="value"></input>
+                            <span class="help-block hide"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default close-form" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary add-value">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drds">
 <li>
     <a rel="self" href="http://deployment.example.org/drds">self</a>

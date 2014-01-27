@@ -300,8 +300,11 @@ module Crichton
       class StyledMicrodataSemanticBuilder < MicrodataSemanticBuilder
         # @!macro add_body
         def add_body(options)
-          @markup_builder.tag!(:div) { |html| html << rest_client } if config.js_uri && config.css_uri
-          super
+          @markup_builder.body do
+            @markup_builder.tag!(:div) { |html| html << rest_client } if config.js_uri && config.css_uri
+            add_embedded_element(options)
+            add_datalists(options)
+          end
         end
 
         # @!macro add_head
