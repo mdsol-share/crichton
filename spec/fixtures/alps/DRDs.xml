@@ -2,12 +2,12 @@
 <alps>
   <doc>
 Describes the semantics, states and state transitions associated with DRDs.  </doc>
-  <link rel="self" href="http://alps.example.com/DRDs"/>
-  <link rel="help" href="http://docs.example.org/Things/DRDs"/>
+  <link rel="self" href="http://alps.example.org/DRDs"/>
+  <link rel="help" href="http://documentation.example.org/Things/DRDs"/>
   <descriptor id="drds" type="semantic">
     <doc format="html">
 <p>A list of DRDs.</p>    </doc>
-    <link rel="self" href="http://alps.example.com/DRDs#drds"/>
+    <link rel="self" href="http://alps.example.org/DRDs#drds"/>
     <descriptor id="total_count" type="semantic" href="http://alps.io/schema.org/Integer">
       <doc>
 The total count of DRDs.      </doc>
@@ -34,8 +34,8 @@ Creates a DRD.      </doc>
       <descriptor id="create-drd" type="semantic" href="update-drd">
         <doc>
 drd attributes to create a drd object        </doc>
-        <link rel="self" href="http://alps.example.com/DRDs#create-drd"/>
-        <link rel="help" href="http://docs.example.org/Forms/create-drd"/>
+        <link rel="self" href="http://alps.example.org/DRDs#create-drd"/>
+        <link rel="help" href="http://documentation.example.org/Forms/create-drd"/>
         <descriptor id="form-name" name="name" type="semantic" href="http://alps.io/schema.org/Text">
           <doc>
 The name of the DRD.          </doc>
@@ -60,7 +60,7 @@ The Leviathan respond to email.          </doc>
 Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
 built by a Leviathan as it grows.
     </doc>
-    <link rel="self" href="http://alps.example.com/DRDs#drd"/>
+    <link rel="self" href="http://alps.example.org/DRDs#drd"/>
     <descriptor id="uuid" type="semantic" href="http://alps.io/schema.org/Text">
       <doc>
 The UUID of the DRD.      </doc>
@@ -72,22 +72,18 @@ The name of the DRD.      </doc>
     <descriptor id="status" type="semantic" href="http://alps.io/schema.org/Text">
       <doc>
 How is the DRD.      </doc>
-      <ext value="{&quot;id&quot;:&quot;drd_status_options&quot;,&quot;hash&quot;:{&quot;active&quot;:&quot;activated&quot;,&quot;inactive&quot;:&quot;deactivated&quot;,&quot;unknown&quot;:&quot;renegade&quot;}}" href="http://alps.io/extensions/serialized_options_list"/>
     </descriptor>
     <descriptor id="old_status" type="semantic" href="http://alps.io/schema.org/Text">
       <doc>
 How was the DRD before the last change      </doc>
-      <ext value="{&quot;id&quot;:&quot;drd_status_options&quot;,&quot;hash&quot;:{&quot;active&quot;:&quot;activated&quot;,&quot;inactive&quot;:&quot;deactivated&quot;,&quot;unknown&quot;:&quot;renegade&quot;}}" href="http://alps.io/extensions/serialized_options_list"/>
     </descriptor>
     <descriptor id="kind" type="semantic" href="http://alps.io/schema.org/Text">
       <doc>
 What kind is it.      </doc>
-      <ext value="{&quot;list&quot;:[&quot;standard&quot;,&quot;sentinel&quot;]}" href="http://alps.io/extensions/serialized_options_list"/>
     </descriptor>
     <descriptor id="size" type="semantic" href="http://alps.io/schema.org/Text">
       <doc>
 How large it is      </doc>
-      <ext value="{&quot;datalist&quot;:&quot;size-list&quot;}" href="http://alps.io/extensions/serialized_options_list"/>
     </descriptor>
     <descriptor id="leviathan_uuid" type="semantic" href="http://alps.io/schema.org/Text">
       <doc>
@@ -104,7 +100,10 @@ The associated Leviathan resource.      </doc>
     <descriptor id="location" type="semantic" href="http://alps.io/schema.org/Text">
       <doc>
 The area the DRD is currently in      </doc>
-      <ext value="{&quot;external_hash&quot;:&quot;http://crichton.example.com/drd_location_list#items&quot;,&quot;value_attribute_name&quot;:&quot;location_id&quot;,&quot;text_attribute_name&quot;:&quot;location_text&quot;}" href="http://alps.io/extensions/serialized_options_list"/>
+    </descriptor>
+    <descriptor id="location_detail" type="semantic" href="http://alps.io/schema.org/Text">
+      <doc>
+Exactly where in the location the DRD currenlty is      </doc>
     </descriptor>
     <descriptor id="destroyed" type="semantic" href="http://alps.io/schema.org/Boolean">
       <doc>
@@ -136,32 +135,37 @@ Updates a DRD.      </doc>
       <descriptor id="update-drd" type="semantic">
         <doc>
 attributes to update an existing drd object        </doc>
-        <link rel="self" href="http://alps.example.com/DRDs#drd/update/update-drd"/>
-        <link rel="help" href="http://docs.example.org/Forms/update-drd"/>
+        <link rel="self" href="http://alps.example.org/DRDs#drd/update/update-drd"/>
+        <link rel="help" href="http://documentation.example.org/Forms/update-drd"/>
         <descriptor id="form-status" name="status" type="semantic" href="http://alps.io/schema.org/Text">
           <doc>
 How is the DRD.          </doc>
           <ext value="{&quot;id&quot;:&quot;drd_status_options&quot;,&quot;hash&quot;:{&quot;active&quot;:&quot;activated&quot;,&quot;inactive&quot;:&quot;deactivated&quot;,&quot;unknown&quot;:&quot;renegade&quot;}}" href="http://alps.io/extensions/serialized_options_list"/>
         </descriptor>
-        <descriptor id="form-old_status" name="status" type="semantic" href="http://alps.io/schema.org/Text">
+        <descriptor id="form-old_status" name="old_status" type="semantic" href="http://alps.io/schema.org/Text">
           <doc>
 How is the DRD.          </doc>
-          <ext value="{&quot;hash&quot;:{&quot;active&quot;:&quot;activated&quot;,&quot;inactive&quot;:&quot;deactivated&quot;,&quot;unknown&quot;:&quot;renegade&quot;}}" href="http://alps.io/extensions/serialized_options_list"/>
+          <ext value="{&quot;href&quot;:&quot;DRDs#drd_status_options&quot;}" href="http://alps.io/extensions/serialized_options_list"/>
         </descriptor>
         <descriptor id="form-kind" name="kind" type="semantic" href="http://alps.io/schema.org/Text">
           <doc>
 What kind is it.          </doc>
           <ext value="{&quot;list&quot;:[&quot;standard&quot;,&quot;sentinel&quot;]}" href="http://alps.io/extensions/serialized_options_list"/>
         </descriptor>
-        <descriptor id="form-size" type="semantic" href="http://alps.io/schema.org/Text">
+        <descriptor id="form-size" name="size" type="semantic" href="http://alps.io/schema.org/Text">
           <doc>
 How large it is          </doc>
-          <ext value="{&quot;datalist&quot;:&quot;size-list&quot;}" href="http://alps.io/extensions/serialized_options_list"/>
+          <ext value="{&quot;list&quot;:[&quot;big&quot;,&quot;small&quot;]}" href="http://alps.io/extensions/serialized_options_list"/>
         </descriptor>
         <descriptor id="form-location" name="location" type="semantic" href="http://alps.io/schema.org/Text">
           <doc>
 The area the DRD is currently in          </doc>
-          <ext value="{&quot;external_list&quot;:&quot;http://crichton.example.com/drd_location_list#items&quot;,&quot;value_attribute_name&quot;:&quot;location_id&quot;,&quot;text_attribute_name&quot;:&quot;location_text&quot;}" href="http://alps.io/extensions/serialized_options_list"/>
+          <ext value="{&quot;external&quot;:{&quot;source&quot;:&quot;location_options&quot;}}" href="http://alps.io/extensions/serialized_options_list"/>
+        </descriptor>
+        <descriptor id="form-location_detail" name="location_detail" type="semantic" href="http://alps.io/schema.org/Text">
+          <doc>
+Exactly where in the location the DRD currenlty is          </doc>
+          <ext value="{&quot;external&quot;:{&quot;source&quot;:&quot;http://crichton.example.com/drd_location_detail_list#items&quot;,&quot;target&quot;:&quot;location_detail_id&quot;,&quot;prompt&quot;:&quot;location_detail_text&quot;}}" href="http://alps.io/extensions/serialized_options_list"/>
         </descriptor>
         <descriptor id="form-destroyed" type="semantic" href="http://alps.io/schema.org/Boolean">
           <doc>
@@ -174,7 +178,4 @@ This DRD has been destroyed          </doc>
 Drops a DRD out an air-lock.      </doc>
     </descriptor>
   </descriptor>
-  <ext href="http://alps.io/extensions/serialized_datalist" value="{&quot;kind-list&quot;:[&quot;standard&quot;,&quot;sentinel&quot;]}"/>
-  <ext href="http://alps.io/extensions/serialized_datalist" value="{&quot;status-list&quot;:{&quot;active&quot;:&quot;activated&quot;,&quot;inactive&quot;:&quot;deactivated&quot;,&quot;unknown&quot;:&quot;renegade&quot;}}"/>
-  <ext href="http://alps.io/extensions/serialized_datalist" value="{&quot;size-list&quot;:[&quot;small&quot;,&quot;medium&quot;,&quot;large&quot;]}"/>
 </alps>

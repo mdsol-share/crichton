@@ -104,9 +104,7 @@ describe Crichton do
 
   describe '.clear_registry' do
     it 'clears any registered resource descriptors' do
-      Support::ALPSSchema::StubUrls.each do |url, body|
-        stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
-      end
+      stub_alps_requests
       Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
       registry_obj = mock('Registry')
       registry_obj.stub(:descriptor_registry)
@@ -198,6 +196,13 @@ describe Crichton do
     it 'sets the descriptor directory' do
       Crichton.descriptor_directory = 'test_directory'
       Crichton.descriptor_directory.should == 'test_directory'
+    end
+  end
+
+  describe '.register_drds_sample' do
+    it 'initializes the registry with a sample resource descriptor document' do
+      Crichton.register_drds_sample
+      Crichton.raw_descriptor_registry.keys.should == ["drds", "drd"]
     end
   end
 end
