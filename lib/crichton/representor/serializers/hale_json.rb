@@ -75,7 +75,7 @@ module Crichton
            {"#{transition_semantic.name}_options" => 
              {
               _source: options.source,
-              _target: options.target
+              _target: options.target || "."
              }
            }
           }

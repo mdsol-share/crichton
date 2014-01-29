@@ -220,7 +220,7 @@
                 "_meta": {
                     "location_options": {
                         "_source": "location_options",
-                        "_target": null
+                        "_target": "."
                     },
                     "location_detail_options": {
                         "_source": "http://crichton.example.com/drd_location_detail_list#items",
@@ -325,7 +325,7 @@
                 "_meta": {
                     "location_options": {
                         "_source": "location_options",
-                        "_target": null
+                        "_target": "."
                     },
                     "location_detail_options": {
                         "_source": "http://crichton.example.com/drd_location_detail_list#items",
