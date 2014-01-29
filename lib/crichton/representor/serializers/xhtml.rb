@@ -79,14 +79,6 @@ module Crichton
       class BaseSemanticBuilder
         include Crichton::Helpers::ConfigHelper
 
-        ##
-        # Helper to access the Crichton configuration locally
-        #
-        # @return [Configuration] Configuration object
-        def config
-          @config ||= Crichton.config
-        end
-
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
         # @param [Crichton::Representor] object The object to build semantics for.
         # @param [Builder::XmlMarkup] markup_builder The primary builder.
@@ -312,7 +304,7 @@ module Crichton
           @markup_builder.head do
             add_metadata_links
             add_styles
-            add_scripts if config.js_uri.any?
+            add_scripts
           end
         end
 
@@ -325,11 +317,12 @@ module Crichton
         def add_styles
           config.css_uri.each do |url|
             @markup_builder.tag!(:link, {rel: :stylesheet, href: url })
-          end if config.css_uri.any?
+          end
           @markup_builder.style { |style| style << xhtml_css }
         end
 
         def add_scripts
+          return unless config.js_uri.any?
           config.js_uri.each do |url|
             attributes = { type: 'text/javascript', src: url }
             @markup_builder.tag!(:script, attributes) {}

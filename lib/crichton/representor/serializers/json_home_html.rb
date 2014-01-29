@@ -6,6 +6,7 @@ module Crichton
     ##
     # Manually generates the serialization of a set of entry point resources to an html media type.
     class JsonHomeHtmlSerializer
+      include Crichton::Helpers::ConfigHelper
 
       ##
       # Returns a ruby object representing a JsonHomeHtml serialization.
@@ -35,10 +36,6 @@ module Crichton
       end
 
       private
-      def config
-        @config ||= Crichton.config
-      end
-
       def configure_markup_builder(options)
         require 'builder' unless defined?(::Builder)
 
@@ -65,7 +62,7 @@ module Crichton
       def add_styles
         config.css_uri.each do |url|
           @markup_builder.tag!(:link, {rel: :stylesheet, href: url })
-        end if config.css_uri.any?
+        end
         @markup_builder.style { |style| style << xhtml_css }
       end
 
