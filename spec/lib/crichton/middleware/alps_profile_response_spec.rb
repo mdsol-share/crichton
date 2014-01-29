@@ -111,7 +111,7 @@ module Crichton
           it 'successfully responds to various alps paths' do
             @media_type = 'text/html'
             @expires =  (Time.new + ten_minutes).httpdate
-            %w(DRDs DRDs/ DRDs/#list).each do |path_segment|
+            %w(DRDs DRDs/ DRDs#list).each do |path_segment|
               request_uri =  "#{config.alps_base_uri}/#{path_segment}"
               env = {'REQUEST_URI' => request_uri, 'HTTP_ACCEPT' => @media_type}
               home_responder.call(env).should == [200, headers, [alps_xml_data]]
