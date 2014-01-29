@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'crichton/middleware/alps_profle_response'
+require 'crichton/middleware/alps_profile_response'
 require 'crichton/helpers'
 require 'json_spec'
 
@@ -24,7 +24,8 @@ module Crichton
 
       describe '#call' do
         let(:env) { {'REQUEST_URI' => "#{config.alps_base_uri}/DRDs", 'HTTP_ACCEPT' => @media_type} }
-        let(:headers) { {'Content-Type' => @media_type, 'expires' => @expires} }
+        let (:response_type) { @media_type == 'text/html' ? 'application/xml' : @media_type}
+        let(:headers) { {'Content-Type' => response_type, 'expires' => @expires} }
         let(:home_responder) { AlpsProfileResponse.new(rack_app) }
         let(:ten_minutes) { 600 }
 
@@ -48,13 +49,15 @@ module Crichton
 
           it 'uses the first supported media type in the HTTP_ACCEPT header' do
             @media_type = 'bogus/media_type,*/a,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*'
-            first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
+            first_content_type_header = {'Content-Type' => 'application/xml',
+              'expires' => (Time.new + ten_minutes).httpdate}
             home_responder.call(env).should == [200, first_content_type_header, [alps_xml_data]]
           end
 
           it 'responds correctly with a non standard HTTP_ACCEPT header' do
             @media_type = 'bogus/media_type, text/html,  application/xhtml+xml, application/xml;q=0.9,  image/webp, */*'
-            first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
+            first_content_type_header = {'Content-Type' => 'application/xml',
+              'expires' => (Time.new + ten_minutes).httpdate}
             home_responder.call(env).should == [200, first_content_type_header, [alps_xml_data]]
           end
 
@@ -62,6 +65,7 @@ module Crichton
             it "responds with the expected content-type for #{media_type} requests" do
               @media_type = media_type
               response = home_responder.call(env)
+              media_type = 'application/xml' if media_type == 'text/html'
               response[1]['Content-Type'].should == media_type
             end
           end
@@ -102,6 +106,16 @@ module Crichton
             response = home_responder.call({'REQUEST_URI' => "#{config.alps_base_uri}",
               'HTTP_ACCEPT' => @media_type})
             response.should == [404, {'Content-Type' => 'text/html'}, ["Profile not found"]]
+          end
+
+          it 'successfully responds to various alps paths' do
+            @media_type = 'text/html'
+            @expires =  (Time.new + ten_minutes).httpdate
+            %w(DRDs DRDs/ DRDs/#list).each do |path_segment|
+              request_uri =  "#{config.alps_base_uri}/#{path_segment}"
+              env = {'REQUEST_URI' => request_uri, 'HTTP_ACCEPT' => @media_type}
+              home_responder.call(env).should == [200, headers, [alps_xml_data]]
+            end
           end
         end
 

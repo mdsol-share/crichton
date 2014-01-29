@@ -12,7 +12,7 @@ module Crichton
       let(:apls_base_uri) { 'http://alps.example.org' }
       let (:entry_points) { ep_klass.generate_object_graph }
       let (:json_output) do
-        '{"resources":{"http://alps.example.org/DRDs/#list":{"href":"http://deployment.example.org/drds"}}}'
+        '{"resources":{"http://alps.example.org/DRDs#list":{"href":"http://deployment.example.org/drds"}}}'
       end
 
       before do
