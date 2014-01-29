@@ -43,7 +43,7 @@ module Crichton
       #
       # @return [String] fully qualified url of the resource's relation name
       def rel
-         Addressable::URI.parse(File.join(Crichton.config.alps_base_uri, resource_id,trans_id)).to_s
+        Addressable::URI.parse(File.join(Crichton.config.alps_base_uri,"#{resource_id}#{trans_id}")).to_s
       end
       ##
       #

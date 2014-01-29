@@ -5,7 +5,7 @@ module Crichton
   module Middleware
     describe ResourceHomeResponse do
       let (:root_json_body) do
-        {:resources => {"http://alps.example.org/DRDs/#list" => {:href => "http://deployment.example.org/drds"}}}.to_json
+        {:resources => {"http://alps.example.org/DRDs#list" => {:href => "http://deployment.example.org/drds"}}}.to_json
       end
       let (:rack_app) { double('rack_app') }
 
