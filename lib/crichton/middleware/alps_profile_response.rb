@@ -42,7 +42,7 @@ module Crichton
       def call(env)
         # unless an alps path request, delegate to app
         if resource = alps_request(env['REQUEST_URI'])
-          process_alps_response(resource['id'], env)
+          process_alps_response(resource['id'].first, env)
         elsif env['REQUEST_URI'] == config.alps_base_uri
           # captures the "localhost:3000/alps" request
           error_response(404, "Profile not found")
@@ -57,8 +57,8 @@ module Crichton
       #
       # @param [String] full_uri the complete uri of the request
       def alps_request(full_uri)
-        uri = Addressable::URI.parse(full_uri)
-        Addressable::Template.new("#{config.alps_base_uri}/{id}").extract(uri)
+        uri = Addressable::URI.parse(full_uri.partition('#').first)
+        Addressable::Template.new("#{config.alps_base_uri}{/id*}").extract(uri)
       end
 
      # test for apprropriate HTTP_ACCEPT content type and processes accordngly
@@ -79,7 +79,8 @@ module Crichton
       def send_alps_response_for_id(profile_id, media_type)
         if alps_document = Crichton.raw_profile_registry[profile_id]
           body = media_type == 'application/alps+json' ? alps_document.to_json : alps_document.to_xml
-          [200,  {'Content-Type' => "#{media_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
+          return_content_type = media_type  == 'text/html' ? 'application/xml' : media_type
+          [200,  {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
         else
           error_response(404, "Profile #{profile_id} not found")
         end
