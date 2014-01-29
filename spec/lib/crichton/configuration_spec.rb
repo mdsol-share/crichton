@@ -15,8 +15,12 @@ module Crichton
 
     %w(js css).each do |attribute|
       describe "\##{attribute}_uri" do
-        it "returns the #{attribute} uri" do
-          configuration.send("#{attribute}_uri").should == "http://example.org/resources/#{attribute}.#{attribute}"
+        it "returns the #{attribute}_uri as Array" do
+          configuration.send("#{attribute}_uri").should be_a(Array)
+        end
+
+        it "returns the #{attribute}_uri array with the expected content" do
+          configuration.send("#{attribute}_uri").should =~ ["http://example.org/resources/#{attribute}.#{attribute}"]
         end
       end
     end

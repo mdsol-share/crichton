@@ -301,7 +301,7 @@ module Crichton
         # @!macro add_body
         def add_body(options)
           @markup_builder.body do
-            @markup_builder.tag!(:div) { |html| html << rest_client } if config.js_uri && config.css_uri
+            @markup_builder.tag!(:div) { |html| html << custom_parameters } if config.js_uri.any? && config.css_uri.any?
             add_embedded_element(options)
             add_datalists(options)
           end
@@ -312,7 +312,7 @@ module Crichton
           @markup_builder.head do
             add_metadata_links
             add_styles
-            add_scripts if config.js_uri
+            add_scripts if config.js_uri.any?
           end
         end
 
@@ -323,14 +323,14 @@ module Crichton
 
       private
         def add_styles
-          build_collection(config.css_uri).each do |url|
+          config.css_uri.each do |url|
             @markup_builder.tag!(:link, {rel: :stylesheet, href: url })
-          end if config.css_uri
+          end if config.css_uri.any?
           @markup_builder.style { |style| style << xhtml_css }
         end
 
         def add_scripts
-          build_collection(config.js_uri).each do |url|
+          config.js_uri.each do |url|
             attributes = { type: 'text/javascript', src: url }
             @markup_builder.tag!(:script, attributes) {}
           end
@@ -389,8 +389,8 @@ module Crichton
           end
         end
 
-        def rest_client
-          File.read(File.join(File.dirname(__FILE__), 'html/rest_client.html'))
+        def custom_parameters
+          File.read(File.join(File.dirname(__FILE__), 'html/custom_parameters.html'))
         end
 
         def javascript
@@ -399,10 +399,6 @@ module Crichton
 
         def xhtml_css
           File.read(File.join(File.dirname(__FILE__), 'html/xhtml.css'))
-        end
-
-        def build_collection(element)
-          element.is_a?(String) ? [element] : element
         end
       end
     end

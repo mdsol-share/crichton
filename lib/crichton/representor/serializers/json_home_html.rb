@@ -35,6 +35,9 @@ module Crichton
       end
 
       private
+      def config
+        @config ||= Crichton.config
+      end
 
       def configure_markup_builder(options)
         require 'builder' unless defined?(::Builder)
@@ -60,7 +63,9 @@ module Crichton
       end
 
       def add_styles
-        @markup_builder.tag!(:link, {rel: :stylesheet, href: Crichton.config.css_uri}) if  Crichton.config.css_uri
+        config.css_uri.each do |url|
+          @markup_builder.tag!(:link, {rel: :stylesheet, href: url })
+        end if config.css_uri.any?
         @markup_builder.style { |style| style << xhtml_css }
       end
 
