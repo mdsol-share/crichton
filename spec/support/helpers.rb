@@ -66,6 +66,7 @@ module Support
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
       end
       config['css_uri'] = 'http://example.org/resources/css.css'
+      config['js_uri'] = 'http://example.org/resources/js.js'
       config
     end
 
