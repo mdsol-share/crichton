@@ -79,14 +79,6 @@ module Crichton
       class BaseSemanticBuilder
         include Crichton::Helpers::ConfigHelper
 
-        ##
-        # Helper to access the Crichton configuration locally
-        #
-        # @return [Configuration] Configuration object
-        def config
-          @config ||= Crichton.config
-        end
-
         # @param [Symbol] media_type The media type the builder builds. Used for nested semantic objects.
         # @param [Crichton::Representor] object The object to build semantics for.
         # @param [Builder::XmlMarkup] markup_builder The primary builder.
@@ -298,6 +290,15 @@ module Crichton
       # Manages building HTML elements with Microdata semantics and includes styles and scripts for interacting with
       # the resource in a browser for 'surfing the API'.
       class StyledMicrodataSemanticBuilder < MicrodataSemanticBuilder
+        # @!macro add_body
+        def add_body(options)
+          @markup_builder.body do
+            @markup_builder.tag!(:div) { |html| html << custom_parameters } if config.js_uri.any? && config.css_uri.any?
+            add_embedded_element(options)
+            add_datalists(options)
+          end
+        end
+
         # @!macro add_head
         def add_head
           @markup_builder.head do
@@ -314,14 +315,18 @@ module Crichton
 
       private
         def add_styles
-          @markup_builder.tag!(:link, {rel: :stylesheet, href: config.css_uri }) if config.css_uri
+          config.css_uri.each do |url|
+            @markup_builder.tag!(:link, {rel: :stylesheet, href: url })
+          end
           @markup_builder.style { |style| style << xhtml_css }
         end
 
         def add_scripts
-          attributes = { type: 'text/javascript',
-                         src: 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'}
-          @markup_builder.tag!(:script, attributes) {}
+          return unless config.js_uri.any?
+          config.js_uri.each do |url|
+            attributes = { type: 'text/javascript', src: url }
+            @markup_builder.tag!(:script, attributes) {}
+          end
           @markup_builder.tag!(:script, { type: 'text/javascript' }) { |script| script << javascript }
         end
 
@@ -377,12 +382,16 @@ module Crichton
           end
         end
 
+        def custom_parameters
+          File.read(File.join(File.dirname(__FILE__), 'html/custom_parameters.html'))
+        end
+
         def javascript
-          File.read(File.join(File.dirname(__FILE__), 'xhtml.js'))
+          File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
         end
 
         def xhtml_css
-          File.read(File.join(File.dirname(__FILE__), 'xhtml.css'))
+          File.read(File.join(File.dirname(__FILE__), 'html/xhtml.css'))
         end
       end
     end
