@@ -7,7 +7,6 @@ module Crichton
     ##
     # Manages the serialization of a Crichton::Representor to an application/vnd.hale+json media-type.
     class HaleJsonSerializer < Serializer
-      extend ActiveSupport::Memoizable
       media_types hale_json: %w(application/vnd.hale+json)
 
       ##
@@ -43,8 +42,7 @@ module Crichton
       end
       
       #maps drd datatypes to simple datatypes
-      def semantic_map(sem)
-        semantics = {
+      SEMANTIC_TYPES = {
           select: "text", #No way in Crichton to distinguish [Int] and [String]
           search:"text",
           text: "text",
@@ -60,9 +58,10 @@ module Crichton
           :"datetime-local" => "text"
         }
 
-        {type: "#{semantics[sem.to_sym]}:#{sem}"}
+      def semantic_map(sem)
+        {type: "#{SEMANTIC_TYPES[sem.to_sym]}:#{sem}"}
       end
-      memoize :semantic_map
+      
       
       def hale_links(transition_name, transition_semantic, attrib_or_params, data)
         { _links: { transition_name => { attrib_or_params => { transition_semantic.name => data } } } }
@@ -71,19 +70,18 @@ module Crichton
       def hale_meta_options(transition_semantic)
         options = transition_semantic.options
         opts = { _source: options.source, _target: options.target || "." }
-        {_meta: {"#{transition_semantic.name}_options" =>  opts } }
-      end     
+        { _meta: { "#{transition_semantic.name}_options" =>  opts } }
+      end
       
       def get_options(transition_semantic)
         options = transition_semantic.options
-        hale_opts = {}
         hale_opts = { "#{transition_semantic.name}_options.options" => {} } if options.external?
         hale_opts = { :options => options.each { |k, v| {k => v} } } if options.enumerable?
-        ->(name, ap) { hale_links(name, transition_semantic, ap, hale_opts) }
+        ->(name, ap) { hale_links(name, transition_semantic, ap, hale_opts || {} ) }
       end
 
       def get_control(transition_name, transition_semantic, attrib_or_params)
-        type_data = semantic_map(transition_semantic.field_type.to_sym)
+        type_data = semantic_map(transition_semantic.field_type)
         validators = type_data.merge(handle_validator(transition_semantic.validators))
         halelet = hale_links(transition_name, transition_semantic, attrib_or_params, validators)
         halelet_opt = get_options(transition_semantic).(transition_name, attrib_or_params)
@@ -98,9 +96,8 @@ module Crichton
       def get_link_transition(transition)
         link = { href: transition.url }
         link = { href: transition.templated_url, templated: true } if transition.templated?
-        method = 'GET'
-        method = transition.interface_method if defined?(transition.interface_method)
-        link = link.merge({method: method}) unless method == 'GET'
+        method = defined?(transition.interface_method) ? transition.interface_method : 'GET'
+        link = link.merge({ method: method }) unless method == 'GET'
         link[:href] ? { _links: { transition.name => link } } : {}
       end
       
@@ -115,9 +112,9 @@ module Crichton
           semantics.values.each do |semantic|
             if semantic.semantics.any?
               _elements = semantic.semantics.values.map { |form_semantic| get_control(transition.name, form_semantic, "attributes") }
-              form_elements = _elements.reduce(&:deep_merge)
+              form_elements = form_elements.merge(_elements.reduce(&:deep_merge))
             else
-              form_elements = get_control(transition.name, semantic, "parameters")
+              form_elements = form_elements.merge(get_control(transition.name, semantic, "parameters"))
             end
           end
           link = get_link_transition(transition)
@@ -143,13 +140,13 @@ module Crichton
       end
 
       def add_embedded_links(base_object, embedded)
-        embedded_links = embedded.inject({}) { |hash, (k, v)| hash.merge({ k => get_base_links(v) }) }
+        embedded_links = embedded.reduce({}) { |h, (k, v)| h[k] = get_base_links(v); h }
         base_object[:_links] = base_object[:_links].merge(embedded_links)
       end
 
       def get_embedded(options)
         @object.each_embedded_semantic(options).inject({}) do |hash, semantic|
-          hash.merge({ semantic.name => get_embedded_elements(semantic, options) })
+          hash[semantic.name] = get_embedded_elements(semantic, options) ; hash
         end
       end
 
