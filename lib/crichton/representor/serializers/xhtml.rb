@@ -228,7 +228,7 @@ module Crichton
                 add_control(semantic)
               end
             end
-            @markup_builder.input({type: :hidden, name: '_method', value: transition.method}) unless transition.safe?
+            @markup_builder.input({type: :hidden, name: '_method', value: transition.interface_method }) unless transition.safe?
             @markup_builder.input({type: :submit, value: transition.name})
           end
         end
@@ -351,7 +351,7 @@ module Crichton
 
         def add_link_transition(transition)
           if transition.templated?
-            add_form_transition(transition, transition.method)
+            add_form_transition(transition, transition.interface_method )
           elsif transition.url
             @markup_builder.li { super }
           end
@@ -370,7 +370,7 @@ module Crichton
                   end
                 end
               end
-              @markup_builder.input({type: :hidden, name: '_method', value: transition.method }) unless transition.safe?
+              @markup_builder.input({type: :hidden, name: '_method', value: transition.interface_method  }) unless transition.safe?
               @markup_builder.input({type: :submit, value: transition.name})
             end
           end

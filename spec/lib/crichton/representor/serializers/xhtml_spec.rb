@@ -16,7 +16,11 @@ module Crichton
         stub_example_configuration
         Crichton.initialize_registry(drds_descriptor)
       end
-
+      
+      after do
+        Crichton.clear_registry
+      end
+      
       it 'self-registers as a serializer for the xhtml media-type' do
         Serializer.registered_serializers[:xhtml].should == XHTMLSerializer
       end

@@ -523,6 +523,7 @@ protocols:
       slt: *slt1
     leviathan-link: 
       uri_source: leviathan_url
+      method: GET
     repair-history:
       uri_source: repair_history_url
 
