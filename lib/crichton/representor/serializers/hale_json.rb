@@ -7,6 +7,7 @@ module Crichton
     ##
     # Manages the serialization of a Crichton::Representor to an application/vnd.hale+json media-type.
     class HaleJsonSerializer < Serializer
+      extend ActiveSupport::Memoizable
       media_types hale_json: %w(application/vnd.hale+json)
 
       ##
@@ -61,6 +62,7 @@ module Crichton
 
         {type: "#{semantics[sem.to_sym]}:#{sem}"}
       end
+      memoize :semantic_map
       
       def hale_links(transition_name, transition_semantic, attrib_or_params, data)
         { _links: { transition_name => { attrib_or_params => { transition_semantic.name => data } } } }
