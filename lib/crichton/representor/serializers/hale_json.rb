@@ -87,8 +87,7 @@ module Crichton
         validators = type_data.merge(handle_validator(transition_semantic.validators))
         halelet = hale_links(transition_name, transition_semantic, attrib_or_params, validators)
         halelet_opt = get_options(transition_semantic).(transition_name, attrib_or_params)
-        hale_meta = {}
-        hale_meta = hale_meta_options(transition_semantic) if transition_semantic.options.external?
+        hale_meta = transition_semantic.options.external? ? hale_meta_options(transition_semantic) : {}
         halelet.deep_merge(halelet_opt).deep_merge(hale_meta)
       end
 
@@ -112,8 +111,7 @@ module Crichton
       
       def get_form_transition(transition)
           form_elements = {}
-          semantics = {}
-          semantics = transition.semantics if defined?(transition.semantics)
+          semantics = defined?(transition.semantics) ? transition.semantics : {}
           semantics.values.each do |semantic|
             if semantic.semantics.any?
               _elements = semantic.semantics.values.map { |form_semantic| get_control(transition.name, form_semantic, "attributes") }
