@@ -1,12 +1,11 @@
 require 'crichton/representor/serializer'
 require "json"
 
-
 module Crichton
   module Representor
 
     ##
-    # Manages the serialization of a Crichton::Representor to an application/hale+json media-type.
+    # Manages the serialization of a Crichton::Representor to an application/vnd.hale+json media-type.
     class HaleJsonSerializer < Serializer
       media_types hale_json: %w(application/vnd.hale+json)
 
@@ -22,7 +21,7 @@ module Crichton
         halelets << get_semantic_data(options)
         halelets << get_data(@object.each_transition(options), relations)
         halelets << get_data(@object.metadata_links(options), relations)
-        base_object = halelets.reduce { |x,y| x.deep_merge(y) }
+        base_object = halelets.reduce(&:deep_merge)
         add_embedded(base_object, options)
       end
 
@@ -38,6 +37,10 @@ module Crichton
 
       private
 
+      def deep_merge(x, y)
+        x.deep_merge(y)
+      end
+      
       #maps drd datatypes to simple datatypes
       def semantic_map(sem)
         semantics = {
@@ -56,74 +59,48 @@ module Crichton
           :"datetime-local" => "text"
         }
 
-        {description: sem, type: semantics[sem.to_sym]}
+        {type: "#{semantics[sem.to_sym]}:#{sem}"}
       end
       
-      def construct_hale_links(transition_name, transition_semantic, ap, data)
-        {_links: 
-         {transition_name => 
-          {ap =>
-            {transition_semantic.name => data
-            }
-          }
-         }
-        }
+      def hale_links(transition_name, transition_semantic, attrib_or_params, data)
+        { _links: { transition_name => { attrib_or_params => { transition_semantic.name => data } } } }
       end
       
-      def construct_hale_meta_options(transition_semantic, options)
-          {_meta:
-           {"#{transition_semantic.name}_options" => 
-             {
-              _source: options.source,
-              _target: options.target || "."
-             }
-           }
-          }
+      def hale_meta_options(transition_semantic)
+        options = transition_semantic.options
+        opts = { _source: options.source, _target: options.target || "." }
+        {_meta: {"#{transition_semantic.name}_options" =>  opts } }
       end     
       
-      def get_options(transition_semantic, ap)
+      def get_options(transition_semantic)
         options = transition_semantic.options
-        hale_opts = if options.enumerable?
-                      {:options => options.each { |k, v| {k => v} } }
-                    elsif options.external?
-                      { "#{transition_semantic.name}_options.options" => {} }
-                    else
-                      {}
-                    end
-        ->(name) { construct_hale_links(name, transition_semantic, ap, hale_opts) }
+        hale_opts = {}
+        hale_opts = { "#{transition_semantic.name}_options.options" => {} } if options.external?
+        hale_opts = { :options => options.each { |k, v| {k => v} } } if options.enumerable?
+        ->(name, ap) { hale_links(name, transition_semantic, ap, hale_opts) }
       end
 
-      def get_control(transition_name, transition_semantic, ap)
-        typedata = semantic_map(transition_semantic.field_type.to_sym)
-        validators = typedata.merge(handle_validator(transition_semantic.validators))
-        halelet = construct_hale_links(transition_name, transition_semantic, ap, validators)
-        halelet_opt = get_options(transition_semantic, ap).(transition_name)
-        hale_meta = if transition_semantic.options.external?
-                      construct_hale_meta_options(transition_semantic, transition_semantic.options)
-                    else
-                      {}
-                    end
+      def get_control(transition_name, transition_semantic, attrib_or_params)
+        type_data = semantic_map(transition_semantic.field_type.to_sym)
+        validators = type_data.merge(handle_validator(transition_semantic.validators))
+        halelet = hale_links(transition_name, transition_semantic, attrib_or_params, validators)
+        halelet_opt = get_options(transition_semantic).(transition_name, attrib_or_params)
+        hale_meta = {}
+        hale_meta = hale_meta_options(transition_semantic) if transition_semantic.options.external?
         halelet.deep_merge(halelet_opt).deep_merge(hale_meta)
       end
 
       def relations
-        lambda do |transition|
-            get_form_transition(transition)
-        end
+        ->(transition) { get_form_transition(transition) }
       end
 
       def get_link_transition(transition)
-        link = if transition.templated?
-                  {href: transition.templated_url, templated: true}
-               else
-                  {href: transition.url}
-               end
+        link = { href: transition.url }
+        link = { href: transition.templated_url, templated: true } if transition.templated?
         method = 'GET'
         method = transition.interface_method if defined?(transition.interface_method)
-        unless method == 'GET'
-          link = link.merge({method: method})   
-        end
-        link[:href] ? {_links: {transition.name => link} } : {}
+        link = link.merge({method: method}) unless method == 'GET'
+        link[:href] ? { _links: { transition.name => link } } : {}
       end
       
       def handle_validator(validators)
@@ -137,25 +114,24 @@ module Crichton
           semantics = transition.semantics if defined?(transition.semantics)
           semantics.values.each do |semantic|
             if semantic.semantics.any?
-              form_elements = semantic.semantics.values.map { |form_semantic| get_control(transition.name, form_semantic, "attributes") }
-              form_elements = form_elements.reduce {|x,y| x.deep_merge(y) } 
+              _elements = semantic.semantics.values.map { |form_semantic| get_control(transition.name, form_semantic, "attributes") }
+              form_elements = _elements.reduce(&:deep_merge)
             else
               form_elements = get_control(transition.name, semantic, "parameters")
             end
           end
-          link = get_link_transition(transition)#{:_links => 
+          link = get_link_transition(transition)
           link.deep_merge(form_elements)
       end
       
       def get_semantic_data(options)
         semantic_data = @object.each_data_semantic(options)
-        each_pair = ->(descriptor) {{descriptor.name => descriptor.value} }
+        each_pair = ->(descriptor) { { descriptor.name => descriptor.value } }
         get_data(semantic_data, each_pair)
       end
 
       def get_data(semantic_element, transformation)
-        dat = semantic_element.map(&transformation).reduce {|x,y| x.deep_merge(y) } 
-        Hash[dat]
+        Hash[semantic_element.map(&transformation).reduce(&:deep_merge) ]
       end
 
       def add_embedded(base_object, options)
@@ -167,8 +143,8 @@ module Crichton
       end
 
       def add_embedded_links(base_object, embedded)
-        embedded_links = embedded.inject({}) { |hash, (k,v)| hash.merge({k => get_self_links(v)}) }
-        base_object[:_links] = base_object[:_links].merge( embedded_links )
+        embedded_links = embedded.inject({}) { |hash, (k, v)| hash.merge({ k => get_base_links(v) }) }
+        base_object[:_links] = base_object[:_links].merge(embedded_links)
       end
 
       def get_embedded(options)
@@ -177,7 +153,7 @@ module Crichton
         end
       end
 
-      def get_self_links(hale_obj)
+      def get_base_links(hale_obj)
         hale_obj.map { |item| { href: item[:_links]['self'][:href], type: item[:_links]['type'][:href] } }
       end
 

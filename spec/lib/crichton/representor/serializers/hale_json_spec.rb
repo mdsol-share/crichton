@@ -23,7 +23,7 @@ module Crichton
       end
 
       describe '#as_media_type' do
-        it 'returns the resource represented as application/hale+json' do
+        it 'returns the resource represented as application/vnd.hale+json' do
           serializer = @serializer.new(drds)
           serializer.to_media_type(conditions: 'can_do_anything').should be_json_eql(drds_hale_json)
         end

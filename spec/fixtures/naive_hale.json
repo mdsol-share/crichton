@@ -9,8 +9,7 @@
             "templated": true,
             "parameters": {
                 "search_term": {
-                    "description": "text",
-                    "type": "text"
+                    "type": "text:text"
                 }
             }
         },
@@ -20,8 +19,7 @@
             "method": "POST",
             "attributes": {
                 "status": {
-                    "description": "select",
-                    "type": "text",
+                    "type": "text:select",
                     "required": true,
                     "options": {
                         "active": "activated",
@@ -30,8 +28,7 @@
                     }
                 },
                 "old_status": {
-                    "description": "select",
-                    "type": "text",
+                    "type": "text:select",
                     "required": true,
                     "options": {
                         "active": "activated",
@@ -40,55 +37,46 @@
                     }
                 },
                 "kind": {
-                    "description": "select",
-                    "type": "text",
+                    "type": "text:select",
                     "options": [
                         "standard",
                         "sentinel"
                     ]
                 },
                 "size": {
-                    "description": "text",
-                    "type": "text",
+                    "type": "text:text",
                     "options": [
                         "big",
                         "small"
                     ]
                 },
                 "location": {
-                    "description": "select",
-                    "type": "text",
+                    "type": "text:select",
                     "location_options.options": {}
                 },
                 "location_detail": {
-                    "description": "select",
-                    "type": "text",
+                    "type": "text:select",
                     "location_detail_options.options": {}
                 },
                 "form-destroyed": {
-                    "description": "boolean",
-                    "type": "bool"
+                    "type": "bool:boolean"
                 },
                 "name": {
-                    "description": "text",
-                    "type": "text",
+                    "type": "text:text",
                     "required": true,
                     "maxlength": 50
                 },
                 "leviathan_uuid": {
-                    "description": "text",
-                    "type": "text"
+                    "type": "text:text"
                 },
                 "leviathan_health_points": {
-                    "description": "number",
-                    "type": "number",
+                    "type": "number:number",
                     "required": true,
                     "min": 0,
                     "max": 100
                 },
                 "leviathan_email": {
-                    "description": "email",
-                    "type": "text",
+                    "type": "text:email",
                     "required": true,
                     "pattern": "^.+@.+$"
                 }
@@ -152,8 +140,7 @@
                         "method": "PUT",
                         "attributes": {
                             "status": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "required": true,
                                 "options": {
                                     "active": "activated",
@@ -162,8 +149,7 @@
                                 }
                             },
                             "old_status": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "required": true,
                                 "options": {
                                     "active": "activated",
@@ -172,34 +158,29 @@
                                 }
                             },
                             "kind": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "options": [
                                     "standard",
                                     "sentinel"
                                 ]
                             },
                             "size": {
-                                "description": "text",
-                                "type": "text",
+                                "type": "text:text",
                                 "options": [
                                     "big",
                                     "small"
                                 ]
                             },
                             "location": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "location_options.options": {}
                             },
                             "location_detail": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "location_detail_options.options": {}
                             },
                             "form-destroyed": {
-                                "description": "boolean",
-                                "type": "bool"
+                                "type": "bool:boolean"
                             }
                         }
                     },
@@ -254,8 +235,7 @@
                         "method": "PUT",
                         "attributes": {
                             "status": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "required": true,
                                 "options": {
                                     "active": "activated",
@@ -264,8 +244,7 @@
                                 }
                             },
                             "old_status": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "required": true,
                                 "options": {
                                     "active": "activated",
@@ -274,34 +253,29 @@
                                 }
                             },
                             "kind": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "options": [
                                     "standard",
                                     "sentinel"
                                 ]
                             },
                             "size": {
-                                "description": "text",
-                                "type": "text",
+                                "type": "text:text",
                                 "options": [
                                     "big",
                                     "small"
                                 ]
                             },
                             "location": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "location_options.options": {}
                             },
                             "location_detail": {
-                                "description": "select",
-                                "type": "text",
+                                "type": "text:select",
                                 "location_detail_options.options": {}
                             },
                             "form-destroyed": {
-                                "description": "boolean",
-                                "type": "bool"
+                                "type": "bool:boolean"
                             }
                         }
                     },
