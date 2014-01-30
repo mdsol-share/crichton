@@ -109,12 +109,12 @@ module Crichton
           form_elements = {}
           semantics = defined?(transition.semantics) ? transition.semantics : {}
           semantics.values.each do |semantic|
-            if semantic.semantics.any?
-              _elements = semantic.semantics.values.map { |form_semantic| get_control(transition.name, form_semantic, "attributes") }
-              form_elements.merge!(_elements.reduce(&:deep_merge))
+            elements = if semantic.semantics.any?
+              semantic.semantics.values.map { |fsemantic| get_control(transition.name, fsemantic, "attributes") }.reduce(&:deep_merge) 
             else
-              form_elements.merge!(get_control(transition.name, semantic, "parameters"))
+              get_control(transition.name, semantic, "parameters")
             end
+            form_elements.merge!(elements)
           end
           link = get_link_transition(transition)
           link.deep_merge(form_elements)
