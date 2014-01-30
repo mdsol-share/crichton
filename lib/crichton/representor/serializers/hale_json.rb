@@ -8,7 +8,23 @@ module Crichton
     # Manages the serialization of a Crichton::Representor to an application/vnd.hale+json media-type.
     class HaleJsonSerializer < Serializer
       media_types hale_json: %w(application/vnd.hale+json)
-
+      
+      #maps descriptor datatypes to simple datatypes
+      SEMANTIC_TYPES = {
+        select: "text", #No way in Crichton to distinguish [Int] and [String]
+        search:"text",
+        text: "text",
+        boolean: "bool", #a Server should accept ?cat&dog or ?cat=cat&dog=dog
+        number: "number",
+        email: "text",     
+        tel: "text", 
+        datetime: "text", 
+        time: "text",
+        date: "text", 
+        month: "text", 
+        week: "text", 
+        :"datetime-local" => "text"
+      }
       ##
       # Returns a ruby object representing a HALe serialization.
       #
@@ -40,23 +56,6 @@ module Crichton
       def deep_merge(x, y)
         x.deep_merge(y)
       end
-      
-      #maps drd datatypes to simple datatypes
-      SEMANTIC_TYPES = {
-          select: "text", #No way in Crichton to distinguish [Int] and [String]
-          search:"text",
-          text: "text",
-          boolean: "bool", #a Server should accept ?cat&dog or ?cat=cat&dog=dog
-          number: "number",
-          email: "text",     
-          tel: "text", 
-          datetime: "text", 
-          time: "text",
-          date: "text", 
-          month: "text", 
-          week: "text", 
-          :"datetime-local" => "text"
-        }
 
       def semantic_map(sem)
         {type: "#{SEMANTIC_TYPES[sem.to_sym]}:#{sem}"}
