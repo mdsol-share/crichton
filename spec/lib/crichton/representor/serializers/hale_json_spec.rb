@@ -17,6 +17,10 @@ module Crichton
         Crichton.initialize_registry(drds_descriptor)
         @serializer = HaleJsonSerializer
       end
+      
+      after do
+        Crichton.clear_registry
+      end
 
       it 'self-registers as a serializer for the hale+json media-type' do
         Serializer.registered_serializers[:hale_json].should == @serializer
