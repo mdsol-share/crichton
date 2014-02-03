@@ -102,7 +102,7 @@ module Crichton
       # TODO: replace by calling Andrey's real method
       #
       def registered_mime_types
-        %w(application/json application/hal+json application/xhtml+xml)
+        %w(application/json application/hal+json application/vnd.hale+json application/xhtml+xml)
       end
 
       # for each status code key, check to see if it is a valid as per the protocol. Only have http currently.
