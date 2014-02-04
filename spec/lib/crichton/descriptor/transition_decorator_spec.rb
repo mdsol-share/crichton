@@ -144,17 +144,17 @@ module Crichton
         end
       end
 
-      describe '#method' do
+      describe '#interface_method' do
         it 'returns the uniform interface method associated with the transition' do
           @descriptor = 'drd'
           @transition = 'delete'
 
-          decorator.method.should == 'DELETE'
+          decorator.interface_method.should == 'DELETE'
         end
 
         it 'returns nil if there is not protocol descriptor' do
           decorator.stub(:protocol_descriptor).and_return(nil)
-          decorator.method.should be_nil
+          decorator.interface_method.should be_nil
         end
       end
 
