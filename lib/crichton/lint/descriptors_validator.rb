@@ -131,7 +131,7 @@ module Crichton
           else
             add_error('descriptors.missing_return_type', options)
           end
-          check_protocol_method_and_type(descriptor.type, descriptor.decorate(self).method, options)
+          check_protocol_method_and_type(descriptor.type, descriptor.decorate(self).interface_method, options)
         end
       end
 
