@@ -15,9 +15,23 @@ module Crichton
         check_for_required_state_transition_properties
 
         check_transition_equivalence
+
+        # check for presence of at least one transition with name:self attribute
+        check_state_transition_names
       end
 
       private
+
+      def check_state_transition_names
+        resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
+          secondary_descriptor.each do |state_descriptor_name, state_descriptor|
+            transitions = state_descriptor.transitions
+            unless transitions.values.any? { |st| st.descriptor_document['name'] }
+              add_error('states.name_property_missing', state: state_descriptor_name)
+            end if transitions.any?
+          end
+        end
+      end
 
       # test to see if the state section has content
       def check_for_secondary_descriptor_states

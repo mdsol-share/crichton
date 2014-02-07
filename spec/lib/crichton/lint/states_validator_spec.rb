@@ -59,6 +59,12 @@ module Crichton
             section: :states, sub_header: :error)
         end
 
+        it 'reports an error if none of the state transitions has a name property defined' do
+          @filename = %w(state_section_errors no_names_defined.yml)
+          @errors = expected_output(:error, 'states.name_property_missing', filename: filename,
+            section: :states, sub_header: :error, state: 'collection')
+        end
+
         context 'an external profile' do
           let(:external_url) { 'http://alps.io/schema.org/Leviathans' }
 

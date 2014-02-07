@@ -22,7 +22,7 @@ actual state names are the keys under the resource.
             * `transitions` - The transtions available for the particular state. These can represent link or form based 
             transitions.
                 * `name` - Overrides the name to be set on the affordance in a response. Otherwise, the ID (YAML key) for the 
-                transition is used.
+                transition is used. Should be defined for at least for transition for the particular state.
                 * `conditions` - An array of conditions applied as a Boolean __OR__ that must exist for the transtion to be 
                 included. By passing an option including a list satisfied conditions when generating responses, Crichton 
                 determines which state's transitions should be included in a response. These strings are defined in your
