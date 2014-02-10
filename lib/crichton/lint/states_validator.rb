@@ -16,8 +16,10 @@ module Crichton
 
         check_transition_equivalence
 
-        # check for presence of at least one transition with name:self attribute
+        # check that there is one and only one name:self property on transition per state
         check_state_transition_names
+
+        check_for_duplicate_transition_names
       end
 
       private
@@ -26,9 +28,22 @@ module Crichton
         resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
           secondary_descriptor.each do |state_descriptor_name, state_descriptor|
             transitions = state_descriptor.transitions
-            unless transitions.values.any? { |st| st.descriptor_document['name'] }
-              add_error('states.name_property_missing', state: state_descriptor_name)
+            unless transitions.values.one? { |st| (name = st.descriptor_document['name']) && name == 'self' }
+              add_error('states.name_self_exception', state: state_descriptor_name)
             end if transitions.any?
+          end
+        end
+      end
+
+      def check_for_duplicate_transition_names
+        resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
+          secondary_descriptor.each do |state_descriptor_name, state_descriptor|
+            transitions = state_descriptor.transitions.values.map { |x| x.name }
+            if (dups = transitions.select { |x| transitions.count(x) > 1 }.uniq)
+              dups.reject{ |name| name == 'self' }.each do |transition|
+                add_error('states.name_duplicated_exception', state: state_descriptor_name, transition: transition)
+              end
+            end
           end
         end
       end
