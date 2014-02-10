@@ -383,7 +383,7 @@ module Crichton
         end
 
         def custom_parameters
-          File.read(File.join(File.dirname(__FILE__), 'html/custom_parameters.html'))
+          File.read(File.join(File.dirname(__FILE__), 'html/custom_html.html'))
         end
 
         def javascript
