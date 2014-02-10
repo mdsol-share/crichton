@@ -65,7 +65,7 @@ module Crichton
             section: :states, sub_header: :error, state: 'collection')
         end
 
-        it 'reports an error if there are two or more state transitions define "name:self"' do
+        it 'reports an error if two or more state transitions define "name:self"' do
           @filename = %w(state_section_errors two_transitions_per_state_define_self.yml)
           @errors = expected_output(:error, 'states.name_self_exception', filename: filename,
             section: :states, sub_header: :error, state: 'collection')

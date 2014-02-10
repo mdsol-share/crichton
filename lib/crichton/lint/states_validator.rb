@@ -28,7 +28,7 @@ module Crichton
         resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
           secondary_descriptor.each do |state_descriptor_name, state_descriptor|
             transitions = state_descriptor.transitions
-            unless transitions.values.one? { |st| (name = st.descriptor_document['name']) && name == 'self' }
+            unless transitions.any? && transitions.values.one? { |st| (name = st.descriptor_document['name']) && name == 'self' }
               add_error('states.name_self_exception', state: state_descriptor_name)
             end if transitions.any?
           end
@@ -38,8 +38,8 @@ module Crichton
       def check_for_duplicate_transition_names
         resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
           secondary_descriptor.each do |state_descriptor_name, state_descriptor|
-            transitions = state_descriptor.transitions.values.map { |x| x.name }
-            if (dups = transitions.select { |x| transitions.count(x) > 1 }.uniq)
+            transitions = state_descriptor.transitions.values.map { |v| v.name }
+            if (dups = transitions.select { |t| transitions.count(t) > 1 }.uniq)
               dups.reject{ |name| name == 'self' }.each do |transition|
                 add_error('states.name_duplicated_exception', state: state_descriptor_name, transition: transition)
               end
