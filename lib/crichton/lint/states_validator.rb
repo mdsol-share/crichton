@@ -28,9 +28,9 @@ module Crichton
         resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
           secondary_descriptor.each do |state_descriptor_name, state_descriptor|
             transitions = state_descriptor.transitions
-            unless transitions.any? && transitions.values.one? { |st| (name = st.descriptor_document['name']) && name == 'self' }
+            unless transitions.empty? || transitions.values.one? { |st| (name = st.descriptor_document['name']) && name == 'self' }
               add_error('states.name_self_exception', state: state_descriptor_name)
-            end if transitions.any?
+            end
           end
         end
       end
