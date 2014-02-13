@@ -59,6 +59,28 @@ module Crichton
             section: :states, sub_header: :error)
         end
 
+        it 'reports an error if no state transitions define "name:self" property' do
+          @filename = %w(state_section_errors no_names_defined.yml)
+          @errors = expected_output(:error, 'states.name_self_exception', filename: filename,
+            section: :states, sub_header: :error, state: 'collection')
+        end
+
+        it 'reports an error if two or more state transitions define "name:self"' do
+          @filename = %w(state_section_errors two_transitions_per_state_define_self.yml)
+          @errors = expected_output(:error, 'states.name_self_exception', filename: filename,
+            section: :states, sub_header: :error, state: 'collection')
+        end
+
+        it 'reports an error if there are duplicated "name" properties per state' do
+          @filename = %w(state_section_errors duplicated_transition_names.yml)
+          @errors = expected_output(:error, 'states.name_duplicated_exception', filename: filename,
+            section: :states, sub_header: :error, state: 'collection', transition: 'transition') <<
+              expected_output(:warning, 'states.no_self_property', resource: 'drds', state: 'collection',
+            transition: 'find', sub_header: :warning) <<
+              expected_output(:warning, 'states.no_self_property', resource: 'drds', state: 'collection',
+            transition: 'create')
+        end
+
         context 'an external profile' do
           let(:external_url) { 'http://alps.io/schema.org/Leviathans' }
 
