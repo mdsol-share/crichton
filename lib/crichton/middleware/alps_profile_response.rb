@@ -59,11 +59,10 @@ module Crichton
       # @param [String] full_uri the complete uri of the request
       def alps_request(full_uri)
         uri = Addressable::URI.parse(full_uri.partition('#').first)
-        curi = Addressable::URI.parse(config.alps_base_uri)
-        curi.scheme = uri.scheme
-        foo = Addressable::Template.new("#{curi}{/id*}")
-        bar = foo.extract(uri)
-        bar
+        alps_uri = Addressable::URI.parse(config.alps_base_uri)
+        alps_uri.scheme = uri.scheme
+        template = Addressable::Template.new("#{alps_uri}{/id*}")
+        template.extract(uri)
       end
 
      # test for apprropriate HTTP_ACCEPT content type and processes accordngly

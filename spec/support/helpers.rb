@@ -66,7 +66,6 @@ module Support
     end
 
     def example_environment_config
-      # WTF!!!
       config = %w(alps deployment discovery documentation).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
       end

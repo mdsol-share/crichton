@@ -23,9 +23,15 @@ module Crichton
       end
       
       shared_examples "any_scheme" do 
-        
-          context 'when the alps path' do
-              %w(text/html application/alps+xml).each do |media_type|
+        let(:response_type) { @media_type == 'text/html' ? 'application/xml' : @media_type}
+        let(:headers) { {'Content-Type' => response_type, 'expires' => @expires} }
+        let(:home_responder) { AlpsProfileResponse.new(rack_app) }
+        let(:ten_minutes) { 600 }
+        let(:env) do
+            Rack::MockRequest.env_for(@uri).tap { |e| e["HTTP_ACCEPT"] = @media_type }
+        end
+        context 'when the alps path' do
+            %w(text/html application/alps+xml).each do |media_type|
               it "responds with an alps document associated with the profile id for #{media_type} requests" do
                 @media_type = media_type
                 @expires =  (Time.new + ten_minutes).httpdate
@@ -126,30 +132,18 @@ module Crichton
             end
           end
 
-          context 'when not an alps path' do
+        context 'when not an alps path' do
         end
       end
       describe '#call' do
-        let (:response_type) { @media_type == 'text/html' ? 'application/xml' : @media_type}
-        let(:headers) { {'Content-Type' => response_type, 'expires' => @expires} }
-        let(:home_responder) { AlpsProfileResponse.new(rack_app) }
-        let(:ten_minutes) { 600 }
-        let(:env) { 
-            e = Rack::MockRequest.env_for( uri=@uri) 
-            e["HTTP_ACCEPT"] = @media_type
-            e }
-        
-
-        
-        describe "when the request scheme is HTTP" do
-          it_behaves_like "any_scheme" do
-            let(:base_uri) { "tcp://alps.example.org" }
-          end
+        context 'when the request scheme is TCP' do
+          let(:base_uri) { "#{config.alps_base_uri}" }
+          it_behaves_like "any_scheme"
         end
-        describe "when the request scheme is HTTP" do
-          it_behaves_like "any_scheme" do
-            let(:base_uri) { "#{config.alps_base_uri}" }
-          end
+
+        context 'when the request scheme is HTTP' do
+          let(:base_uri) { "tcp://alps.example.org" }
+          it_behaves_like "any_scheme"
         end
       end
     end
