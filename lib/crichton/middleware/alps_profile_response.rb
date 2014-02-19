@@ -40,10 +40,11 @@ module Crichton
       #
       # @param [Hash] env environmental variables for requests coming into the middleware
       def call(env)
+        req = Rack::Request.new(env)
         # unless an alps path request, delegate to app
-        if resource = alps_request(env['REQUEST_URI'])
+        if resource = alps_request(req.url)
           process_alps_response(resource['id'].first, env)
-        elsif env['REQUEST_URI'] == config.alps_base_uri
+        elsif req.url == config.alps_base_uri
           # captures the "localhost:3000/alps" request
           error_response(404, "Profile not found")
         else
@@ -58,7 +59,10 @@ module Crichton
       # @param [String] full_uri the complete uri of the request
       def alps_request(full_uri)
         uri = Addressable::URI.parse(full_uri.partition('#').first)
-        Addressable::Template.new("#{config.alps_base_uri}{/id*}").extract(uri)
+        alps_uri = Addressable::URI.parse(config.alps_base_uri)
+        alps_uri.scheme = uri.scheme
+        template = Addressable::Template.new("#{alps_uri}{/id*}")
+        template.extract(uri)
       end
 
      # test for apprropriate HTTP_ACCEPT content type and processes accordngly
