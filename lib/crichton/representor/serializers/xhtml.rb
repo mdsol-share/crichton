@@ -387,7 +387,12 @@ module Crichton
         end
 
         def javascript
-          File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
+          js = File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
+          if uri = config.crichton_controller_base_uri
+            js.gsub!('crichton_controller_uri', uri)
+          else
+            js.gsub!('crichton_controller_uri?url=', '')
+          end
         end
 
         def xhtml_css

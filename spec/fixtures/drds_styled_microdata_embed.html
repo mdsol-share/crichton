@@ -66,7 +66,7 @@
             $('a[target]').each(function() {
                 var link = $(this);
                 var url = link.attr('href');
-                $.getJSON(url, function(data) {
+                $.getJSON('http://crichton_controller.example.org?url='+url, function(data) {
                     var select = build_selector_group(data, link.attr('prompt'), link.attr('target'));
                     link.parent('label').empty().append(select);
                 });

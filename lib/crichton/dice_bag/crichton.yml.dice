@@ -3,7 +3,9 @@ common: &common
   deployment_base_uri: <%= configured.deployment_base_uri || 'http://localhost:3000' %>
   discovery_base_uri: <%= configured.discovery_base_uri || 'http://localhost:7000' %>
   documentation_base_uri: <%= configured.documentation_base_uri || 'http://example.org' %>
+  crichton_controller_base_uri: <%= configured.crichton_controller_base_uri || 'http://localhost:3000/crichton' %>
   css_uri: <%= configured.css_uri %>
+  js_uri: <%= configured.js_uri %>
 production: *common
 development: *common
 test: *common
