@@ -27,6 +27,7 @@ module Crichton
         let(:headers) { {'Content-Type' => response_type, 'expires' => @expires} }
         let(:home_responder) { AlpsProfileResponse.new(rack_app) }
         let(:ten_minutes) { 600 }
+        
         let(:env) do
             Rack::MockRequest.env_for(@uri).tap { |e| e["HTTP_ACCEPT"] = @media_type }
         end
@@ -131,17 +132,15 @@ module Crichton
               home_responder.call(env)[0].should == 202
             end
           end
-
-        context 'when not an alps path' do
-        end
       end
+      
       describe '#call' do
-        context 'when the request scheme is TCP' do
+        context 'when the request scheme is HTTP' do
           let(:base_uri) { "#{config.alps_base_uri}" }
           it_behaves_like "any_scheme"
         end
 
-        context 'when the request scheme is HTTP' do
+        context 'when the request scheme is TCP' do
           let(:base_uri) { "tcp://alps.example.org" }
           it_behaves_like "any_scheme"
         end
