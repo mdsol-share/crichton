@@ -34,7 +34,7 @@ module Crichton
           response = connection.get do |request|
             request.url Addressable::URI.parse(req['url'])
           end
-          [response.status, response.headers, [response.body]]
+          [response.status, response.headers.to_hash.reject {|h| h['transfer-encoding'] }, [response.body]]
         else
           unsupported_media_type(SUPPORTED_MEDIA_TYPES, env)
         end
