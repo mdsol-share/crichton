@@ -65,10 +65,17 @@
 
             $('a[target]').each(function() {
                 var link = $(this);
-                var url = link.attr('href');
-                $.getJSON('http://crichton_controller.example.org?url='+url, function(data) {
-                    var select = build_selector_group(data, link.attr('prompt'), link.attr('target'));
-                    link.parent('label').empty().append(select);
+                var url = link.attr('href'); var input = link.next('input');
+                var name = input.attr('name'); var value = input.val();
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://crichton_controller.example.org?url='+url,
+                    dataType: 'json',
+                    success: function(data) {
+                        var select = build_selector_group(name, value, data, link.attr('prompt'), link.attr('target'));
+                        select.val(value);
+                        link.parent('label').empty().append(select);
+                    }
                 });
             });
         });
@@ -92,8 +99,8 @@
         }
 
         //used to build selector from external resource
-        function build_selector_group(data, prompt, target) {
-            var select = create_select_element({class: 'select-item'});
+        function build_selector_group(name, value, data, prompt, target) {
+            var select = create_select_element({class: 'select-item', name: name});
             $.each(data, function(index, item) {
                 create_option_element({value: item[target]}, item[prompt]).appendTo(select);
             });
