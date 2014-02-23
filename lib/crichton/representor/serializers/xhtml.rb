@@ -388,7 +388,7 @@ module Crichton
 
         def javascript
           js = File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
-          if uri = config.crichton_controller_base_uri
+          if uri = config.crichton_proxy_base_uri
             js.gsub!('crichton_controller_uri', uri)
           else
             js.gsub!('crichton_controller_uri?url=', '')

@@ -1,4 +1,3 @@
-require 'faraday'
 require 'addressable/uri'
 require 'addressable/template'
 require 'crichton/helpers'
@@ -6,7 +5,7 @@ require 'crichton/middleware/middleware_base'
 
 module Crichton
   module Middleware
-    class CrichtonControllerResponse < MiddlewareBase
+    class CrichtonProxyResponse < MiddlewareBase
       include Crichton::Helpers::ConfigHelper
 
       SUPPORTED_MEDIA_TYPES=%w(text/html application/xhtml+xml application/json application/vnd.hale+json */*)
@@ -25,7 +24,7 @@ module Crichton
       private
       def crichton_controller_request(req)
         request_uri = Addressable::URI.parse(req.url.partition('?').first)
-        crichton_uri = Addressable::Template.new(config.crichton_controller_base_uri)
+        crichton_uri = Addressable::Template.new(config.crichton_proxy_base_uri)
         crichton_uri.extract(request_uri)
       end
 

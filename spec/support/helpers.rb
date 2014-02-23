@@ -66,7 +66,7 @@ module Support
     end
 
     def example_environment_config
-      config = %w(alps deployment discovery documentation crichton_controller).inject({}) do |h, attribute|
+      config = %w(alps deployment discovery documentation crichton_proxy).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
       end
       config['css_uri'] = 'http://example.org/resources/css.css'

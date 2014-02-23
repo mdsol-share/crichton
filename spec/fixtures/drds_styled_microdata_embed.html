@@ -69,7 +69,7 @@
                 var name = input.attr('name'); var value = input.val();
                 $.ajax({
                     type: 'GET',
-                    url: 'http://crichton_controller.example.org?url='+url,
+                    url: 'http://crichton_proxy.example.org?url='+url,
                     dataType: 'json',
                     success: function(data) {
                         var select = build_selector_group(name, value, data, link.attr('prompt'), link.attr('target'));

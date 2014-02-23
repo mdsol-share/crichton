@@ -25,7 +25,7 @@ module Crichton
     # The base URI where documentation is hosted.
     #
     # @return [String] The URI.
-    %w(alps deployment discovery documentation crichton_controller).each do |attribute|
+    %w(alps deployment discovery documentation crichton_proxy).each do |attribute|
       method = "#{attribute}_base_uri"
       define_method(method) { @config[method] }
     end
