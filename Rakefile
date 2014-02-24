@@ -3,8 +3,8 @@ $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
 
 require 'rubygems'
+require 'bundler/setup'
 require 'rake'
 require 'dice_bag/tasks'
-require 'appraisal'
 
 Dir['tasks/**/*.rake'].each { |rake| load rake }

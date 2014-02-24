@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'rake'
 require 'crichton'
 require 'crichton/lint'
-require 'colorize'
 
 describe 'rake crichton.lint' do
   let(:rake_filename) { lint_spec_filename(*@filename) }

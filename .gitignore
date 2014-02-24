@@ -2,7 +2,7 @@
 
 spec/fixtures/external_documents_*/
 api_descriptors/
-gemfiles/*.lock
+gemfiles/*.*
 Gemfile.lock
 coverage
 .rvmrc
@@ -11,4 +11,3 @@ tmp
 yardoc
 spec/fixtures/external_documents_cache/
 spec/fixtures/external_documents_store/
-
