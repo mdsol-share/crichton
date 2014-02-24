@@ -8,7 +8,7 @@ module Crichton
     class CrichtonProxyResponse < MiddlewareBase
       include Crichton::Helpers::ConfigHelper
 
-      SUPPORTED_MEDIA_TYPES=%w( application/json )
+      SUPPORTED_MEDIA_TYPES = %w( application/json )
 
       def initialize(app, options = {})
         @app = app
@@ -18,11 +18,11 @@ module Crichton
 
       def call(env)
         req = Rack::Request.new(env)
-        crichton_controller_request(req) ? process_request(req, env) : @app.call(env)
+        crichton_controller_request?(req) ? process_request(req, env) : @app.call(env)
       end
 
       private
-      def crichton_controller_request(req)
+      def crichton_controller_request?(req)
         request_uri = Addressable::URI.parse(req.url.partition('?').first)
         crichton_uri = Addressable::Template.new(config.crichton_proxy_base_uri)
         crichton_uri.extract(request_uri)
@@ -33,7 +33,8 @@ module Crichton
           response = connection.get do |request|
             request.url Addressable::URI.parse(req['url'])
           end
-          [response.status, response.headers.to_hash.reject {|k,_| k == 'transfer-encoding' }, [response.body]]
+          # ajax and transfer-encoding:chunked are not working very well together
+          [response.status, response.headers.to_hash.reject {|k, _| k == 'transfer-encoding' }, [response.body]]
         else
           unsupported_media_type(SUPPORTED_MEDIA_TYPES, env)
         end
