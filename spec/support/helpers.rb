@@ -69,6 +69,7 @@ module Support
       config = %w(alps deployment discovery documentation crichton_proxy).inject({}) do |h, attribute|
         h["#{attribute}_base_uri"] = "http://#{attribute}.example.org"; h
       end
+      config['crichton_proxy_base_uri'] = 'http://example.org/crichton'
       config['css_uri'] = 'http://example.org/resources/css.css'
       config['js_uri'] = 'http://example.org/resources/js.js'
       config
