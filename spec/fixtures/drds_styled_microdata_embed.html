@@ -65,11 +65,13 @@
 
             $('a[target]').each(function() {
                 var link = $(this);
-                var url = link.attr('href'); var input = link.next('input');
-                var name = input.attr('name'); var value = input.val();
+                var url = link.attr('href');
+                var input = link.next('input');
+                var name = input.attr('name');
+                var value = input.val();
                 $.ajax({
                     type: 'GET',
-                    url: 'http://crichton_proxy.example.org?url='+url,
+                    url: 'http://example.org/crichton?url=' + url,
                     dataType: 'json',
                     success: function(data) {
                         var select = build_selector_group(name, value, data, link.attr('prompt'), link.attr('target'));

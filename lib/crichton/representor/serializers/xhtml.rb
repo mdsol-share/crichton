@@ -386,6 +386,9 @@ module Crichton
           File.read(File.join(File.dirname(__FILE__), 'html/custom_html.html'))
         end
 
+        # Reads js file and substitutes crichton_controller_uri string with crichton_proxy_base_uri value
+        # found in crichton.yml. It proxies cross-domain javascript calls through a middleware.
+        #
         def javascript
           js = File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
           if uri = config.crichton_proxy_base_uri
