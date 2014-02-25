@@ -26,6 +26,8 @@ module Crichton
         let(:response_type) { @media_type == 'text/html' ? 'application/xml' : @media_type}
         let(:headers) { {'Content-Type' => response_type, 'expires' => @expires} }
         let(:home_responder) { AlpsProfileResponse.new(rack_app) }
+        let(:response) { home_responder.call(env) }
+        let(:rack_response) { Rack::MockResponse.new(*response) }
         let(:ten_minutes) { 600 }
         
         let(:env) do
@@ -38,7 +40,7 @@ module Crichton
               @media_type = media_type
               @expires =  (Time.new + ten_minutes).httpdate
               @uri = "#{base_uri}/DRDs"
-              home_responder.call(env).should == [200, headers, [alps_xml_data]]
+              response.should == [200, headers, [alps_xml_data]]
             end
           end
 
@@ -47,7 +49,7 @@ module Crichton
             @expires =  (Time.new + ten_minutes).httpdate
             @uri = "#{base_uri}/DRDs"
             # go get the body of the response and JSON parse it.
-            obj = JSON.parse(home_responder.call(env)[2].first)
+            obj = JSON.parse(rack_response.body)
             body = JSON.pretty_generate(obj)
             body.should be_json_eql(alps_json_data)
           end
@@ -57,7 +59,7 @@ module Crichton
             @uri = "#{base_uri}/DRDs"
             first_content_type_header = {'Content-Type' => 'application/xml',
               'expires' => (Time.new + ten_minutes).httpdate}
-            home_responder.call(env).should == [200, first_content_type_header, [alps_xml_data]]
+            response.should == [200, first_content_type_header, [alps_xml_data]]
           end
 
           it 'responds correctly with a non standard HTTP_ACCEPT header' do
@@ -65,16 +67,15 @@ module Crichton
             @uri = "#{base_uri}/DRDs"
             first_content_type_header = {'Content-Type' => 'application/xml',
               'expires' => (Time.new + ten_minutes).httpdate}
-            home_responder.call(env).should == [200, first_content_type_header, [alps_xml_data]]
+            response.should == [200, first_content_type_header, [alps_xml_data]]
           end
 
           %w(text/html application/alps+xml application/alps+json).each do |media_type|
             it "responds with the expected content-type for #{media_type} requests" do
               @media_type = media_type
               @uri = "#{base_uri}/DRDs"
-              response = home_responder.call(env)
               media_type = 'application/xml' if media_type == 'text/html'
-              response[1]['Content-Type'].should == media_type
+              rack_response.headers['Content-Type'].should == media_type
             end
           end
 
@@ -97,25 +98,25 @@ module Crichton
           it 'returns a 406 status for unsupported media_types' do
             @media_type = 'application/jrd+json'
             @uri = "#{base_uri}/DRDs"
-            home_responder.call(env)[0].should == 406
+            rack_response.status.should == 406
           end
 
           it 'returns a 406 status for an empty list of acceptable media types' do
             @media_type = ''
             @uri = "#{base_uri}/DRDs"
-            home_responder.call(env)[0].should == 406
+            rack_response.status.should == 406
           end
 
           it 'returns a 404 if the profile in the request is not valid' do
             @media_type = 'text/html'
             @uri = "#{base_uri}/BLAH"
-            home_responder.call(env) == [404, {'Content-Type' => 'text/html'}, ["Profile BLAH not found"]]
+            response == [404, {'Content-Type' => 'text/html'}, ["Profile BLAH not found"]]
           end
 
           it 'returns a 404 if the alps request contains no resource' do
             @media_type = 'text/html'
             @uri = "#{base_uri}"
-            home_responder.call(env) == [404, {'Content-Type' => 'text/html'}, ["Profile not found"]]
+            response == [404, {'Content-Type' => 'text/html'}, ["Profile not found"]]
           end
 
           it 'successfully responds to various alps paths' do
@@ -123,14 +124,14 @@ module Crichton
             @expires =  (Time.new + ten_minutes).httpdate
             %w(DRDs DRDs/ DRDs#list).each do |path_segment|
               @uri =  "#{config.alps_base_uri}/#{path_segment}"
-              home_responder.call(env).should == [200, headers, [alps_xml_data]]
+              response.should == [200, headers, [alps_xml_data]]
             end
           end
           
           it 'invokes the parent rack app from the middleware' do
             @media_type = 'text/html'
             @uri = "some.other.url/DRDs"
-            home_responder.call(env)[0].should == 202
+            rack_response.status.should == 202
           end
         end
       end
