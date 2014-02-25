@@ -2,7 +2,7 @@
 
 spec/fixtures/external_documents_*/
 api_descriptors/
-gemfiles/*.*
+gemfiles/*.lock
 Gemfile.lock
 coverage
 .rvmrc
