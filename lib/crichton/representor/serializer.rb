@@ -34,7 +34,7 @@ module Crichton
         #  Crichton::Representor::Serializer.registered_media_types[:media_type] #=> %w(application/media_type)
         #  Crichton::Representor::Serializer.registered_media_types[:other_media_type]  #=> %w(application/other_media_type)
         #
-        # @param [Hash] of content types array keyed by media types
+        # @param [Hash] types Hash of content types arrays keyed by media types.
         def media_types(types)
           unless types[default_media_type]
             raise(ArgumentError,

@@ -15,7 +15,7 @@ module Crichton
       #
       # Saves a collection of EntryPoint objects eventually used in serialization
       #
-      # @params [Set] resources A Set collection of EntryPoint objects
+      # @param [Set] resources A Set collection of EntryPoint objects
       def initialize(resources)
         @resources = resources
       end
@@ -25,7 +25,8 @@ module Crichton
       # Serialization method for root based requests
       #
       # @param media_type [Symbol] :json_home, :xhtml or :html
-      # @param option [Hash] Hash of options to output styled or non-styled microdata
+      # @param options [Hash] Hash of options to output styled or non-styled microdata
+      # @option options [:symbol] :semantics Either :microdata (un-styled) or :styled_microdata
       def as_media_type(media_type, options)
         options = options.merge({semantics: :microdata}) if media_type == :xhtml
         case media_type
@@ -42,7 +43,8 @@ module Crichton
       # Serialization method for root based requests
       #
       # @param media_type [Symbol] :json_home, :xhtml or :html
-      # @param option [Hash] Hash of options to output styled or non-styled microdata
+      # @param options [Hash] Hash of options to output styled or non-styled microdata
+      # @option options [:symbol] :semantics Either :microdata (un-styled) or :styled_microdata
       def to_media_type(media_type, options = {})
         case media_type
         when :html, :xhtml
