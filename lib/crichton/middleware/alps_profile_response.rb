@@ -86,7 +86,7 @@ module Crichton
           return_content_type = media_type  == 'text/html' ? 'application/xml' : media_type
           [200,  {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
         else
-          error_response(404, "Profile #{profile_id} not found")
+          error_response(404, "Profile #{profile_id} not found".split.join(' '))
         end
       end
     end

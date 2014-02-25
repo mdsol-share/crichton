@@ -110,13 +110,13 @@ module Crichton
           it 'returns a 404 if the profile in the request is not valid' do
             @media_type = 'text/html'
             @uri = "#{base_uri}/BLAH"
-            response == [404, {'Content-Type' => 'text/html'}, ["Profile BLAH not found"]]
+            response.should == [404, {'Content-Type' => 'text/html'}, ["Profile BLAH not found"]]
           end
 
           it 'returns a 404 if the alps request contains no resource' do
             @media_type = 'text/html'
             @uri = "#{base_uri}"
-            response == [404, {'Content-Type' => 'text/html'}, ["Profile not found"]]
+            response.should == [404, {'Content-Type' => 'text/html'}, ["Profile not found"]]
           end
 
           it 'successfully responds to various alps paths' do
