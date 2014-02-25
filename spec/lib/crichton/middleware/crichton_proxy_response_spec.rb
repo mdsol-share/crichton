@@ -17,7 +17,8 @@ module Crichton
       describe '#call' do
         let(:url) { "#{config.crichton_proxy_base_uri}?url=http://example.org" }
         let(:proxy_responder) { CrichtonProxyResponse.new(rack_app) }
-        let(:response) { Rack::MockResponse.new(200, { 'Content-Type' => 'application/json' }, '') }
+        let(:response) { proxy_responder.call(env) }
+        let(:rack_response) { Rack::MockResponse.new(*response) }
         let(:env) do
           Rack::MockRequest.env_for(url).tap { |e| e['HTTP_ACCEPT'] = @media_type }
         end
@@ -25,18 +26,19 @@ module Crichton
         context 'when a crichton proxy path' do
           it 'returns a 406 status for unsupported media_types' do
             @media_type = 'text/html'
-            proxy_responder.call(env)[0].should == 406
+            rack_response.status.should == 406
           end
 
           it 'returns a 406 status for an empty list of acceptable media types' do
             @media_type = ''
-            proxy_responder.call(env)[0].should == 406
+            rack_response.status.should == 406
           end
 
           it 'responds to application/json request' do
             @media_type = 'application/json'
+            response = Rack::MockResponse.new(200, { 'Content-Type' => @media_type }, '')
             proxy_responder.stub_chain(:connection, :get).and_return(response)
-            proxy_responder.call(env)[0].should == 200
+            rack_response.status.should == 200
           end
         end
 
