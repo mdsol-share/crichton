@@ -86,5 +86,5 @@ See [CONTRIBUTING][] for details.
 Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 
 [CONTRIBUTING]: CONTRIBUTING.md
-[Documentation]: http://rubydoc.info/github/mdsol/crichton/develop/file/README.md
+[Documentation]: http://rubydoc.info/github/mdsol/crichton
 [LICENSE]: LICENSE.md
