@@ -1,0 +1,28 @@
+id: DRDs
+version: v1.0.0
+doc: Describes Leviathans.
+links:
+  self: DRDs
+  help: Things/Leviathans
+ext: 
+    value: Alternate.
+descriptors:
+  drd:
+    doc: 
+      html: <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
+    ext:
+      - href: Leviathans#note
+        value: A note.
+    type: semantic
+    descriptors:
+      # Semantics
+      uuidx:
+        doc: The UUID of the Leviathan.
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
+      namex:
+        doc: The name of the Leviathan.
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: Moya

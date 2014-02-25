@@ -1,0 +1,9 @@
+common: &common
+  alps_base_uri: http://alps.example.com
+  deployment_base_uri: http://deployment.example.com
+  discovery_base_uri: http://discovery.example.com
+  documentation_base_uri: http://docs.example.org
+  css_uri: http://example.org/resources/styles.css
+production: *common
+development: *common
+test: *common

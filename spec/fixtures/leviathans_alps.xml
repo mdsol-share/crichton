@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alps>
+  <doc>Describes Leviathans.</doc>
+  <ext href="http://alps.example.com/Leviathans#alt"
+       value="Alternate."/>
+  <link rel="self"
+        href="http://alps.example.com/Leviathans"/>
+  <link rel="help"
+        href="http://docs.example.org/Things/Leviathans"/>
+  <descriptor id="leviathan"
+              type="semantic">
+    <doc format="html">
+      <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
+    </doc>
+    <ext href="http://alps.example.com/Leviathans#note"
+         value="A note."/>
+    <descriptor id="uuid"
+                type="semantic"
+                href="http://alps.io/schema.org/Text">
+      <doc>The UUID of the Leviathan.</doc>
+    </descriptor>
+    <descriptor id="name"
+                type="semantic"
+                href="http://alps.io/schema.org/Text">
+      <doc>The name of the Leviathan.</doc>
+    </descriptor>
+    <descriptor id="status" type="semantic" href="http://alps.io/schema.org/Text">
+      <doc>
+        How is the Leviathan.
+      </doc>
+      <ext
+              value="{&quot;id&quot;:&quot;leviathan_status_options&quot;,&quot;hash&quot;:{&quot;new&quot;:&quot;new&quot;,&quot;old&quot;:&quot;old&quot;}}"
+              href="http://alps.io/extensions/serialized_options_list"/>
+    </descriptor>
+    <descriptor id="size" type="semantic" href="http://alps.io/schema.org/Text">
+      <doc>
+        How large it is
+      </doc>
+      <ext value="{&quot;datalist&quot;:&quot;size-list&quot;}"
+           href="http://alps.io/extensions/serialized_options_list"/>
+    </descriptor>
+    <descriptor id="create"
+                type="unsafe"
+                rt="leviathan">
+      <doc>Creates a Leviathan.</doc>
+      <descriptor id="create-leviathan"
+                  type="semantic">
+        <link rel="self"
+              href="http://alps.example.com/Leviathans#create-leviathan"/>
+        <link rel="help"
+              href="http://docs.example.org/Forms/create-leviathan"/>
+        <descriptor id="form_name"
+                    name="name"
+                    type="semantic"
+                    href="http://alps.io/schema.org/Text">
+          <doc>The name of the Leviathan.</doc>
+        </descriptor>
+        <descriptor id="form-size" name="size" type="semantic" href="http://alps.io/schema.org/Text">
+          <doc>
+            How large it is
+          </doc>
+          <ext value="{&quot;datalist&quot;:&quot;size-list&quot;}"
+               href="http://alps.io/extensions/serialized_options_list"/>
+        </descriptor>
+        <descriptor id="form-status" name="status" type="semantic" href="http://alps.io/schema.org/Text">
+          <doc>
+            How is the Leviathan.
+          </doc>
+          <ext value="{&quot;hash&quot;:{&quot;new&quot;:&quot;new&quot;,&quot;old&quot;:&quot;old&quot;}}"
+               href="http://alps.io/extensions/serialized_options_list"/>
+        </descriptor>
+      </descriptor>
+    </descriptor>
+  </descriptor>
+  <ext href="http://alps.io/extensions/serialized_datalist"
+       value="{&quot;size-list&quot;:[&quot;small&quot;,&quot;medium&quot;,&quot;large&quot;]}"/>
+</alps>

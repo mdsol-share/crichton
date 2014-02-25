@@ -1,0 +1,5 @@
+--title Crichton Documentation
+--verbose 
+--no-private 
+--output-dir ./yardoc
+'lib/**/*.rb' - '*.md'

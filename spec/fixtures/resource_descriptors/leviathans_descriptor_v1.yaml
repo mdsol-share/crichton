@@ -1,0 +1,93 @@
+id: Leviathans
+version: v1.0.0
+doc: Describes Leviathans.
+links:
+  self: Leviathans
+  help: Things/Leviathans
+ext: 
+  - href: Leviathans#alt
+    value: Alternate.
+descriptors:
+  leviathan:
+    doc:
+      html: <p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>
+    ext:
+      - href: Leviathans#note
+        value: A note.
+    type: semantic
+    descriptors:
+      # Semantics
+      uuid:
+        doc: The UUID of the Leviathan.
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
+      name:
+        doc: The name of the Leviathan.
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: Moya
+      status:
+        doc: How is the Leviathan.
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: old
+        options:
+          id: leviathan_status_options
+          hash:
+            new: new
+            old: old
+      size:
+        doc: How large it is
+        type: semantic
+        href: http://alps.io/schema.org/Text
+        sample: medium
+        options:
+          datalist: size-list
+      #Transitions
+      create:
+        doc: Creates a Leviathan.
+        type: unsafe
+        rt: leviathan
+        descriptors:
+          create-leviathan:
+            type: semantic
+            links:
+              self: Leviathans#create-leviathan
+              help: Forms/create-leviathan
+            descriptors:
+              form_name:
+                name: name
+                doc: The name of the Leviathan.
+                type: semantic
+                href: http://alps.io/schema.org/Text
+                field_type: input
+                validators:
+                  - presence
+              form-size:
+                doc: How large it is
+                name: size
+                type: semantic
+                href: http://alps.io/schema.org/Text
+                sample: medium
+                field_type: select
+                options:
+                  datalist: size-list
+              form-status:
+                type: semantic
+                doc: How is the Leviathan.
+                href: http://alps.io/schema.org/Text
+                name: status
+                field_type: select
+                validators:
+                  - required
+                sample: activated
+                options:
+                  hash:
+                    new: new
+                    old: old
+datalists:
+  size-list:
+    - small
+    - medium
+    - large
