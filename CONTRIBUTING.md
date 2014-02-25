@@ -38,4 +38,9 @@ running `$ rake doc:yard` locally.
 * Add specs for it. This is important so future versions don't break it unintentionally.
 * Send a pull request.
 * For a proposed version bump, update the CHANGELOG.
-* Run specs and confirm coverage for your code additions.
+* Run specs and confirm coverage for your code additions:
+
+    ```
+    $ bundle exec appraisal install
+    $ bundle exec appraisal rspec
+    ```

@@ -88,7 +88,7 @@ module Crichton
   # external_descriptor_document_urls
   def self.external_descriptor_document_urls
     @registry ||= Crichton::Registry.new
-    @registry.descriptor_registry
+    @registry.descriptor_registry # Load descriptors
     descriptor_documents = @registry.external_descriptor_documents
     descriptor_documents.keys if descriptor_documents
   end
