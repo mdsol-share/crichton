@@ -112,6 +112,8 @@ function beforesend_callback(xhr, settings) {
 function success_callback(data) {
     var content = $(data).filter('.main-content');
     $('.main-content').replaceWith(content);
+    var self_href = $('a[rel="self"]', content).attr('href');
+    history.pushState({}, '', self_href);
 }
 
 function add_fields_to_the_form(form){
