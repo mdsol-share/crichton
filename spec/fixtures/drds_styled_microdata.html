@@ -15,6 +15,52 @@
 </script>
 <script type="text/javascript">
 $(document).ready(function () {
+    var CrichtonAjax = {
+        build_selector_callback: function(name, value, link) {
+            var result = function(data) {
+                var select = build_selector_group(name, value, data, link.attr('prompt'), link.attr('target'));
+                select.val(value);
+                link.parent('label').empty().append(select);
+            }
+            return result;
+        },
+
+        update_browser_url: function(context) {
+            var self_href = $('a[rel="self"]', context).attr('href');
+            history.pushState({}, '', self_href);
+        },
+
+        replace_callback: function(selector) {
+            var result = function(data) {
+                var content = $(data).filter(selector);
+                $(selector).replaceWith(content);
+                CrichtonAjax.update_browser_url(content);
+            }
+            return result;
+        },
+
+        beforesend_callback: function(xhr, settings) {
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+            $('span[header-name]').each(function() {
+                xhr.setRequestHeader($(this).attr('header-name'), $(this).attr('header-value'));
+            });
+        },
+
+        call: function(method, url, send, dataType) {
+            var result = function(success){
+                $.ajax({
+                    type: method,
+                    url: url,
+                    data: send,
+                    dataType: dataType,
+                    beforeSend: CrichtonAjax.beforesend_callback,
+                    success: success
+                });
+            };
+            return result;
+        }
+    };
+
     get_selector().each(function (index, element) {
         $('span[itemprop]', element).each(function () {
             var attribute = $(this).attr('itemprop');
@@ -52,34 +98,17 @@ $(document).ready(function () {
 
     $('form').submit(function() {
         add_fields_to_the_form($(this));
-        $.ajax({
-            type: $(this).attr('method'),
-            url: $(this).attr('action'),
-            data: $(this).serialize(),
-            dataType: 'html',
-            beforeSend: function(xhr, settings) {
-                beforesend_callback(xhr, settings);
-            },
-            success: function(data, status, xhr) {
-                success_callback(data);
-            }
-        });
+        var form = $(this);
+        var func = CrichtonAjax.call(form.attr('method'), form.attr('action'), form.serialize(), 'html');
+        func(CrichtonAjax.replace_callback('.main-content'));
         return false;
     });
 
     $('a').click(function() {
         var url = add_parameters_to_url($(this).attr('href'));
         $(this).attr('href', url);
-        $.ajax({
-            type: 'GET',
-            url: url,
-            beforeSend: function(xhr, settings) {
-                beforesend_callback(xhr, settings);
-            },
-            success: function(data) {
-                success_callback(data);
-            }
-        });
+        var func = CrichtonAjax.call('GET', url, '', 'html');
+        func(CrichtonAjax.replace_callback('.main-content'));
         return false;
     });
 
@@ -89,32 +118,12 @@ $(document).ready(function () {
         var input = link.next('input');
         var name = input.attr('name');
         var value = input.val();
-        $.ajax({
-            type: 'GET',
-            url: 'http://example.org/crichton?url=' + url,
-            dataType: 'json',
-            success: function(data) {
-                var select = build_selector_group(name, value, data, link.attr('prompt'), link.attr('target'));
-                select.val(value);
-                link.parent('label').empty().append(select);
-            }
-        });
+        var url = 'http://example.org/crichton?url=' + url;
+        var func =  CrichtonAjax.call('GET', url, '', 'json');
+        func(CrichtonAjax.build_selector_callback(name, value, link));
     });
 });
 
-function beforesend_callback(xhr, settings) {
-    xhr.setRequestHeader('Cache-Control', 'no-cache');
-    $('span[header-name]').each(function() {
-        xhr.setRequestHeader($(this).attr('header-name'), $(this).attr('header-value'));
-    });
-}
-
-function success_callback(data) {
-    var content = $(data).filter('.main-content');
-    $('.main-content').replaceWith(content);
-    var self_href = $('a[rel="self"]', content).attr('href');
-    history.pushState({}, '', self_href);
-}
 
 function add_fields_to_the_form(form) {
     $('span[param-name]').each(function() {
