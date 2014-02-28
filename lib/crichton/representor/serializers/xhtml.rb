@@ -294,8 +294,10 @@ module Crichton
         def add_body(options)
           @markup_builder.body do
             @markup_builder.tag!(:div) { |html| html << custom_parameters } if config.js_uri.any? && config.css_uri.any?
-            add_embedded_element(options)
-            add_datalists(options)
+            @markup_builder.div({ class: 'main-content' }) do
+              add_embedded_element(options)
+              add_datalists(options)
+            end
           end
         end
 
