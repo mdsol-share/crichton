@@ -25,32 +25,33 @@ module Crichton
         let(:env) { {'PATH_INFO' => '/', 'HTTP_ACCEPT' => @media_type} }
         let(:headers) { {'Content-Type' => @media_type, 'expires' => @expires} }
         let(:home_responder) { ResourceHomeResponse.new(rack_app) }
+        let(:response) { home_responder.call(env) }
+        let(:rack_response) { Rack::MockResponse.new(*response) }
         let(:ten_minutes) { 600 }
 
         context 'when the root' do
           it 'respond to text/html' do
             @media_type = 'text/html'
             @expires = (Time.new + ten_minutes).httpdate
-            home_responder.call(env).should == [200, headers, [root_html_body]]
+            response.should == [200, headers, [root_html_body]]
           end
 
           it 'uses the first supported media type in the HTTP_ACCEPT header' do
             @media_type = 'bogus/media_type,*/a,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*'
             first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
-            home_responder.call(env).should == [200, first_content_type_header, [root_html_body]]
+            response.should == [200, first_content_type_header, [root_html_body]]
           end
 
           it 'responds correctly with a non standard HTTP_ACCEPT header' do
             @media_type = 'bogus/media_type, text/html,  application/xhtml+xml, application/xml;q=0.9,  image/webp, */*'
             first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
-            home_responder.call(env).should == [200, first_content_type_header, [root_html_body]]
+            response.should == [200, first_content_type_header, [root_html_body]]
           end
 
           %w(application/xhtml+xml application/xml application/json-home application/json).each do |media_type|
             it "responds with the expected content-type for #{media_type} requests" do
               @media_type = media_type
-              response = home_responder.call(env)
-              response[1]['Content-Type'].should == media_type
+              rack_response.headers['Content-Type'].should == media_type
             end
           end
 
@@ -58,7 +59,7 @@ module Crichton
             it "responds with xml output for #{media_type} content type requests" do
               @media_type = media_type
               @expires = (Time.new + ten_minutes).httpdate
-              home_responder.call(env).should == [200, headers, [root_xml_body]]
+              response.should == [200, headers, [root_xml_body]]
             end
           end
 
@@ -66,7 +67,7 @@ module Crichton
             it "responds with json-home output for #{media_type} content type requests" do
               @media_type = media_type
               @expires = (Time.new + ten_minutes).httpdate
-              home_responder.call(env).should == [200, headers, [root_json_body]]
+              response.should == [200, headers, [root_json_body]]
             end
           end
 
@@ -88,12 +89,12 @@ module Crichton
           it 'returns a 406 status for unsupported media_types' do
             @media_type = 'application/jrd+json'
             content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
-            home_responder.call(env)[0].should == 406
+            rack_response.status.should == 406
           end
 
           it 'returns a 406 status for an empty list of acceptable media types' do
             @media_type = ''
-            home_responder.call(env)[0].should == 406
+            rack_response.status.should == 406
           end
         end
 

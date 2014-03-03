@@ -12,6 +12,7 @@ describe Crichton do
   # tests to fail later on - depending on the order of the tests.
   after do
     Crichton::config_directory = File.join('spec', 'fixtures', 'config')
+    Crichton.clear_registry
   end
 
   describe '.logger' do
@@ -48,26 +49,23 @@ describe Crichton do
     end
   end
 
-  describe '.descriptor_registry' do
+  describe '.descriptor_registry' do 
     it 'initializes the registry if the registry is not already initialized' do
-      Crichton.clear_registry
-      mock_registry = mock('Registry')
+      mock_registry = double('Registry')
       mock_registry.stub(:descriptor_registry)
       Crichton::Registry.should_receive(:new).and_return(mock_registry)
       Crichton.descriptor_registry
     end
 
     it 'calls descriptor_registry on the registry' do
-      Crichton.clear_registry
-      mock_registry = mock('Registry')
+      mock_registry = double('Registry')
       mock_registry.should_receive(:descriptor_registry)
       Crichton::Registry.stub(:new).and_return(mock_registry)
       Crichton.descriptor_registry
     end
 
     it 'returns descriptor_registry of the registry' do
-      Crichton.clear_registry
-      mock_registry = mock('Registry')
+      mock_registry = double('Registry')
       mock_descriptor_registry = mock('descriptor_registry')
       mock_registry.stub(:descriptor_registry).and_return(mock_descriptor_registry)
       Crichton::Registry.stub(:new).and_return(mock_registry)
@@ -77,24 +75,21 @@ describe Crichton do
 
   describe '.raw_descriptor_registry' do
     it 'initializes the registry if the registry is not already initialized' do
-      Crichton.clear_registry
-      mock_registry = mock('Registry')
+      mock_registry = double('Registry')
       mock_registry.stub(:raw_descriptor_registry)
       Crichton::Registry.should_receive(:new).and_return(mock_registry)
       Crichton.raw_descriptor_registry
     end
 
     it 'calls raw_descriptor_registry on the registry' do
-      Crichton.clear_registry
-      mock_registry = mock('Registry')
+      mock_registry = double('Registry')
       mock_registry.should_receive(:raw_descriptor_registry)
       Crichton::Registry.stub(:new).and_return(mock_registry)
       Crichton.raw_descriptor_registry
     end
 
     it 'returns raw_descriptor_registry of the registry' do
-      Crichton.clear_registry
-      mock_registry = mock('Registry')
+      mock_registry = double('Registry')
       mock_descriptor_registry = mock('raw_descriptor_registry')
       mock_registry.stub(:raw_descriptor_registry).and_return(mock_descriptor_registry)
       Crichton::Registry.stub(:new).and_return(mock_registry)
@@ -106,7 +101,7 @@ describe Crichton do
     it 'clears any registered resource descriptors' do
       stub_alps_requests
       Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
-      registry_obj = mock('Registry')
+      registry_obj = double('Registry')
       registry_obj.stub(:descriptor_registry)
       Crichton.stub(:config_directory).and_return(File.join('spec', 'fixtures', 'config'))
       # Initializes registry
