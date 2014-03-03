@@ -116,14 +116,14 @@ module Crichton
           it 'returns a list of links if the alps xml request contains no resource' do
             @media_type = 'text/html'
             @uri = "#{base_uri}"
-            body = Hash.from_xml(home_responder.call(env)[2].first)
+            body = Hash.from_xml(rack_response.body)
             body['alps']['link']['href'].should == "#{base_uri}/DRDs"
           end
 
           it 'returns a list of links if the alps json request contains no resource' do
             @media_type = 'application/alps+json'
             @uri = "#{base_uri}"
-            body = JSON.parse(home_responder.call(env)[2].first)
+            body = JSON.parse(rack_response.body)
             body['alps']['link']['href'].should == "#{base_uri}/DRDs"
           end
 
