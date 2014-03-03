@@ -85,11 +85,8 @@ module Crichton
           [200,  {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
         else
           unless profile_id
-            doc = Nokogiri::XML <<-EOXML
-              <alps>
-              </alps>
-            EOXML
-            alps_document = Crichton.raw_profile_registry.each do |k,v| 
+            doc = Nokogiri::XML('<alps></alps>')
+            alps_document = Crichton.raw_profile_registry.each do |k, v| 
               subalps = Nokogiri::XML(v.to_xml).xpath('/alps/link[@rel="self"]')[0]
               href = URI(subalps['href'])
               href.scheme = @scheme

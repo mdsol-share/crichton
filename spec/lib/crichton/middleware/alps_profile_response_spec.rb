@@ -124,9 +124,6 @@ module Crichton
             @uri = "#{base_uri}"
             body = JSON.parse(home_responder.call(env)[2].first)
             body['alps']['link']['href'].should == "#{base_uri}/DRDs"
-            
-
-#             body.should be_json_eql(alps_json_data)
           end
 
           it 'successfully responds to various alps paths' do
