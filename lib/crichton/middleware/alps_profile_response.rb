@@ -42,11 +42,9 @@ module Crichton
       def call(env)
         req = Rack::Request.new(env)
         # unless an alps path request, delegate to app
+        @scheme = URI(req.url).scheme
         if resource = alps_request(req.url)
           process_alps_response(resource['id'].first, env)
-        elsif req.url == config.alps_base_uri
-          # captures the "localhost:3000/alps" request
-          error_response(404, "Profile not found")
         else
           @app.call(env)
         end
@@ -73,7 +71,7 @@ module Crichton
           unsupported_media_type(SUPPORTED_MEDIA_TYPES, env)
         end
       end
-
+      
       ##
       #
       # send alps document response if resource found, else return 404 message
@@ -86,7 +84,22 @@ module Crichton
           return_content_type = media_type  == 'text/html' ? 'application/xml' : media_type
           [200,  {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
         else
-          error_response(404, "Profile #{profile_id} not found".split.join(' '))
+          unless profile_id
+            doc = Nokogiri::XML('<alps></alps>')
+            alps_document = Crichton.raw_profile_registry.each do |k, v| 
+              subalps = Nokogiri::XML(v.to_xml).xpath('/alps/link[@rel="self"]')[0]
+              href = URI(subalps['href'])
+              href.scheme = @scheme
+              subalps['rel'] = k
+              subalps['href'] = href.to_s
+              doc.root.add_child(subalps)
+            end
+            body = media_type == 'application/alps+json' ? Hash.from_xml(doc.to_xml).to_json : doc.to_xml
+            return_content_type = media_type  == 'text/html' ? 'application/xml' : media_type
+            [200,  {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
+          else
+            error_response(404, "Profile #{profile_id} not found")
+          end
         end
       end
     end

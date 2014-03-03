@@ -113,10 +113,18 @@ module Crichton
             response.should == [404, {'Content-Type' => 'text/html'}, ["Profile BLAH not found"]]
           end
 
-          it 'returns a 404 if the alps request contains no resource' do
+          it 'returns a list of links if the alps xml request contains no resource' do
             @media_type = 'text/html'
             @uri = "#{base_uri}"
-            response.should == [404, {'Content-Type' => 'text/html'}, ["Profile not found"]]
+            body = Hash.from_xml(rack_response.body)
+            body['alps']['link']['href'].should == "#{base_uri}/DRDs"
+          end
+
+          it 'returns a list of links if the alps json request contains no resource' do
+            @media_type = 'application/alps+json'
+            @uri = "#{base_uri}"
+            body = JSON.parse(rack_response.body)
+            body['alps']['link']['href'].should == "#{base_uri}/DRDs"
           end
 
           it 'successfully responds to various alps paths' do
@@ -150,4 +158,3 @@ module Crichton
     end
   end
 end
-
