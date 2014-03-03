@@ -34,9 +34,7 @@ module Crichton
       descriptor_reader :entry_point
 
       def transition_headers(target)
-        @headers ||= (descriptor_document[RESPONSE_HEADERS] || {}).tap do |h|
-          HeadersDecorator.new(h, target).to_h
-        end
+        HeadersDecorator.new(descriptor_document[RESPONSE_HEADERS] || {}, target).to_h
       end
 
       ##
