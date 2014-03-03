@@ -93,7 +93,9 @@ module Crichton
               ActionController::Renderers.add media_type do |obj, options|
                 type = media_type
                 if obj.is_a?(Crichton::Representor)
-                  obj.to_media_type(type, options)
+                  obj.to_media_type(type, options) do |serializer|
+                    response.headers.merge(serializer.serialize_headers)
+                  end
                 else
                   raise(ArgumentError,
                     "The object #{obj.inspect} is not a Crichton::Representor. " <<
@@ -127,6 +129,10 @@ module Crichton
 
       def used_datalists
         @used_datalists ||= []
+      end
+
+      def serialize_headers
+        @headers ||= {}
       end
 
       ##

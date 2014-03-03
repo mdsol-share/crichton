@@ -1,10 +1,14 @@
 require 'crichton/descriptor/base'
+require 'crichton/descriptor/headers_decorator'
 require 'addressable/template'
 
 module Crichton
   module Descriptor
     # Manages HTTP-protocol transition descriptors.
-    class Http < Base 
+    class Http < Base
+      # @private
+      RESPONSE_HEADERS = 'response_headers'
+
       # @!macro array_reader
       descriptor_reader :content_types
 
@@ -28,6 +32,12 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :entry_point
+
+      def transition_headers(target)
+        @headers ||= (descriptor_document[RESPONSE_HEADERS] || {}).tap do |h|
+          HeadersDecorator.new(h, target).to_h
+        end
+      end
 
       ##
       # Returns the url for a particular target. If the associated URI is templated, it raises an error if the

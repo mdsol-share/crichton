@@ -37,6 +37,10 @@ module Crichton
         @markup_builder.tag!(:a, @object.uuid, href: self_transition.url)
       end
 
+      def serialize_headers
+        super.merge(@object.response_headers)
+      end
+
     private
       def configure_markup_builder(options)
         require 'builder' unless defined?(::Builder)
