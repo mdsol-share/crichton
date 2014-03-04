@@ -37,7 +37,7 @@ module Crichton
         @markup_builder.tag!(:a, @object.uuid, href: self_transition.url)
       end
 
-      def serialize_headers
+      def response_headers
         super.merge(@object.response_headers)
       end
 

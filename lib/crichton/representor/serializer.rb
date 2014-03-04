@@ -94,7 +94,7 @@ module Crichton
                 type = media_type
                 if obj.is_a?(Crichton::Representor)
                   obj.to_media_type(type, options) do |serializer|
-                    response.headers.merge(serializer.serialize_headers)
+                    response.headers.merge(serializer.response_headers)
                   end
                 else
                   raise(ArgumentError,
@@ -131,8 +131,8 @@ module Crichton
         @used_datalists ||= []
       end
 
-      def serialize_headers
-        @headers ||= {}
+      def response_headers
+        @response_headers ||= {}
       end
 
       ##

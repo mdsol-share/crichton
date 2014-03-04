@@ -153,7 +153,7 @@ module Crichton
     end
 
     def response_headers
-      self_transition.protocol_descriptor.transition_headers(self)
+      @response_headers ||= self_transition.response_headers
     end
 
     ##
