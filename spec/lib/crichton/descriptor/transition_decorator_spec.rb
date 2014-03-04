@@ -318,6 +318,17 @@ module Crichton
           end
         end
       end
+
+      describe '#response_headers' do
+        it 'returns empty hash if state has no response headers defined' do
+          @state = 'navigation'
+          decorator.response_headers.should == {}
+        end
+
+        it 'returns the response headers associated with the state' do
+          decorator.response_headers.should == { 'Cache-Control' => 'no-cache' }
+        end
+      end
     end
   end
 end

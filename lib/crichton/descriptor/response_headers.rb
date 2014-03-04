@@ -30,7 +30,7 @@ module Crichton
       end
 
       def throw(message = '')
-        ->(message){ raise Crichton::TargetMethodResponseError, message }
+        ->(){ raise Crichton::TargetMethodResponseError, message }
       end
 
       def descriptor

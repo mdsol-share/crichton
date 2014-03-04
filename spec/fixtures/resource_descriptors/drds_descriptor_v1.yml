@@ -26,6 +26,8 @@ states:
     collection:
       doc: The entry point state for interacting with DRDs.
       location: entry
+      response_headers:
+        Cache-Control: no-cache
       transitions:
         list:
           name: self
