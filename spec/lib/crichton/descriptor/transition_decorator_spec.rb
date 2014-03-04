@@ -322,7 +322,7 @@ module Crichton
       describe '#response_headers' do
         it 'returns empty hash if state has no response headers defined' do
           @state = 'navigation'
-          decorator.response_headers.should == {}
+          decorator.response_headers.should be_empty
         end
 
         it 'returns the response headers associated with the state' do
