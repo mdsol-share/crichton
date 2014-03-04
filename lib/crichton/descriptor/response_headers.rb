@@ -9,7 +9,7 @@ module Crichton
         @target = target
       end
 
-      def to_h
+      def to_hash
         @header ||= if (external = descriptor[EXTERNAL])
           source = external[SOURCE]
           @target.respond_to?(source) ? respond_to_method(source) : {}

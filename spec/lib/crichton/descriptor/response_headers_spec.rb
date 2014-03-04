@@ -7,10 +7,10 @@ module Crichton
       let(:target) { double('target') }
       let(:response_headers) { ResponseHeaders.new(@descriptor, target) }
 
-      describe '#to_h' do
+      describe '#to_hash' do
         it 'returns response_headers content when source is local' do
           @descriptor = { 'Cache-Control' => 'no-cache' }
-          response_headers.to_h.should == @descriptor
+          response_headers.to_hash.should == @descriptor
         end
 
         context 'when descriptor points to external source' do
@@ -19,18 +19,18 @@ module Crichton
           end
 
           it 'returns empty hash when method does not exist on target' do
-            response_headers.to_h.should == {}
+            response_headers.to_hash.should == {}
           end
 
           it 'raises an error when method call result on target is not a hash' do
             target.stub(:method_on_target) { 'result' }
-            expect { response_headers.to_h }.to raise_error( Crichton::TargetMethodResponseError )
+            expect { response_headers.to_hash }.to raise_error( Crichton::TargetMethodResponseError )
           end
 
           it 'returns a hash as a result from method call on target' do
             result = { 'Cache-Control' => 'no-cache' }
             target.stub(:method_on_target) { result }
-            response_headers.to_h.should == result
+            response_headers.to_hash.should == result
           end
         end
       end

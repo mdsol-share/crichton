@@ -105,7 +105,7 @@ module Crichton
       end
 
       def response_headers
-        @response_headers ||= ResponseHeaders.new(state_descriptor.descriptor_document[RESPONSE_HEADERS] || {}, @target).to_h
+        @response_headers ||= ResponseHeaders.new(state_descriptor.descriptor_document[RESPONSE_HEADERS] || {}, @target).to_hash
       end
 
     private
