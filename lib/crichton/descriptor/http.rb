@@ -4,7 +4,7 @@ require 'addressable/template'
 module Crichton
   module Descriptor
     # Manages HTTP-protocol transition descriptors.
-    class Http < Base 
+    class Http < Base
       # @!macro array_reader
       descriptor_reader :content_types
 
