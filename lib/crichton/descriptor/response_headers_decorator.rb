@@ -1,6 +1,6 @@
 module Crichton
   module Descriptor
-    class ResponseHeaders
+    class ResponseHeadersDecorator
       EXTERNAL = 'external'
       SOURCE = 'source'
 
@@ -23,12 +23,12 @@ module Crichton
       private
       def respond_to_method(method)
         @target.send(method).tap do |result|
-          raise_if_invalid(result.is_a?(Hash), throw("#{method} method on target must return Hash object"))
+          raise_if_invalid(!result.is_a?(Hash), throw("#{method} method on target must return Hash object"))
         end
       end
 
       def raise_if_invalid(condition, throw_function)
-        throw_function.call unless condition
+        throw_function.call if condition
       end
 
       def throw(message = '')

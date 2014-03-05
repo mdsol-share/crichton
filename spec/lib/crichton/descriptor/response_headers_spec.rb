@@ -1,11 +1,11 @@
 require 'spec_helper'
-require 'crichton/descriptor/response_headers'
+require 'crichton/descriptor/response_headers_decorator'
 
 module Crichton
   module Descriptor
-    describe ResponseHeaders do
+    describe ResponseHeadersDecorator do
       let(:target) { double('target') }
-      let(:response_headers) { ResponseHeaders.new(@descriptor, target) }
+      let(:response_headers) { ResponseHeadersDecorator.new(@descriptor, target) }
 
       describe '#to_hash' do
         it 'returns response_headers content when source is local' do
