@@ -1,5 +1,6 @@
 require 'crichton/descriptor/base'
 require 'crichton/descriptor/state_transition'
+require 'crichton/descriptor/response_headers_decorator'
 
 module Crichton
   module Descriptor  
@@ -13,7 +14,11 @@ module Crichton
       #
       # @return [String] The state location, if any.
       descriptor_reader :location
-  
+
+      def decorate(target)
+        @response_headers ||= ResponseHeadersDecorator.new(descriptor_document['response_headers'] || {}, target)
+      end
+
       ##
       # Returns the transitions associated with the state.
       #

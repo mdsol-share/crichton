@@ -1,5 +1,4 @@
 require 'crichton/descriptor/detail_decorator'
-require 'crichton/descriptor/response_headers_decorator'
 require 'crichton/representor'
 
 module Crichton
@@ -7,8 +6,6 @@ module Crichton
     ##
     # Manages retrieving the transitions associated with transition descriptors from a target object.
     class TransitionDecorator < DetailDecorator
-      # @private
-      RESPONSE_HEADERS = 'response_headers'
 
       ##
       # @param [Hash, Object] target The target instance to generate transitions from.
@@ -105,7 +102,7 @@ module Crichton
       end
 
       def response_headers
-        @response_headers ||= ResponseHeadersDecorator.new(state_descriptor.descriptor_document[RESPONSE_HEADERS] || {}, @target).to_hash
+        @response_headers ||= state_descriptor.decorate(@target).to_hash
       end
 
     private
