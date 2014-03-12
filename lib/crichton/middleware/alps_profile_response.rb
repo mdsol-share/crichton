@@ -42,7 +42,7 @@ module Crichton
       def call(env)
         req = Rack::Request.new(env)
         # unless an alps path request, delegate to app
-        @scheme = URI(req.url).scheme
+        @scheme = URI(req.url).scheme.downcase
         if resource = alps_request(req.url)
           process_alps_response(resource['id'].first, env)
         else
@@ -56,14 +56,14 @@ module Crichton
       #
       # @param [String] full_uri the complete uri of the request
       def alps_request(full_uri)
-        uri = Addressable::URI.parse(full_uri.partition('#').first)
-        alps_uri = Addressable::URI.parse(config.alps_base_uri)
+        uri = Addressable::URI.parse(full_uri.downcase.partition('#').first)
+        alps_uri = Addressable::URI.parse(config.alps_base_uri.downcase)
         alps_uri.scheme = uri.scheme
         template = Addressable::Template.new("#{alps_uri}{/id*}")
         template.extract(uri)
       end
 
-     # test for apprropriate HTTP_ACCEPT content type and processes accordngly
+     # test for appropriate HTTP_ACCEPT content type and processes accordingly
       def process_alps_response(profile_id, env)
         if media_type = supported_media_type(SUPPORTED_MEDIA_TYPES, env)
           send_alps_response_for_id(profile_id, media_type)
@@ -79,7 +79,8 @@ module Crichton
       # @param [String] profile_id stringified id of the profile
       # @param [String] media_type the accepted content type for this request/response
       def send_alps_response_for_id(profile_id, media_type)
-        if alps_document = Crichton.raw_profile_registry[profile_id]
+        registry_key = Crichton.raw_profile_registry.keys.detect { |k| k.downcase == profile_id }
+        if alps_document = Crichton.raw_profile_registry[registry_key]
           body = media_type == 'application/alps+json' ? alps_document.to_json : alps_document.to_xml
           return_content_type = media_type  == 'text/html' ? 'application/xml' : media_type
           [200,  {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.new + @expiry).httpdate}"}, [body]]
