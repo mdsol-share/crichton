@@ -9,7 +9,7 @@ module Crichton
       include Crichton::Helpers::ConfigHelper
 
       let (:rack_app) { ->(e) { [202, e, {}] } }
-
+      
       before do
         Time.stub!(:new).and_return(Time.parse('Thu, 23 Jan 2014 18:00:00 GMT') )
         stub_example_configuration
@@ -22,7 +22,7 @@ module Crichton
         clear_configured_profiles
       end
       
-      shared_examples 'any_scheme' do 
+      shared_examples 'any_scheme' do        
         let(:response_type) { @media_type == 'text/html' ? 'application/xml' : @media_type}
         let(:headers) { {'Content-Type' => response_type, 'expires' => @expires} }
         let(:alps_middleware) { AlpsProfileResponse.new(rack_app) }
@@ -171,7 +171,8 @@ module Crichton
         context 'when not an alps path' do
           it 'invokes the parent rack app from the middleware' do
             @media_type = 'text/html'
-            @uri = '/drds'
+            base = base_uri =~ /http/i ? 'http://example.org' : 'tcp://1.1.1.1:1'
+            @uri = "#{base}/something/else"
             rack_app.should_receive(:call).with(env)
             alps_middleware.call(env)
           end
@@ -189,7 +190,7 @@ module Crichton
 
         context 'when the request scheme is TCP' do
           before do
-            @base_uri = 'tcp://alps.example.org'
+            @base_uri = 'tcp://123.456.789.1:5555'
           end
           
           it_behaves_like 'any_scheme'
