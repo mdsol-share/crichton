@@ -72,6 +72,7 @@ module Crichton
         alps_base_uri.dup.tap do |u|
           path = u.path
           u.scheme = uri.scheme
+          u.port = uri.port
           u.host = uri.host
           u.path = path
         end

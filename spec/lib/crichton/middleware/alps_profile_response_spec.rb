@@ -193,6 +193,15 @@ module Crichton
           end
           
           it_behaves_like 'any_scheme'
+          
+          # TODO: make fixtures less brittle so this pertinent failing test can succeed.
+          #context 'when alps_base_uri has a different port' do
+          #  before do
+          #    ::Crichton.config.stub(:alps_base_uri).and_return('http://alps.example.org:3000')
+          #  end
+          #
+          #  it_behaves_like 'any_scheme'
+          #end
         end
       end
     end
