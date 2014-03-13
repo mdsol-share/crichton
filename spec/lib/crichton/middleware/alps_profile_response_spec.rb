@@ -118,7 +118,7 @@ module Crichton
               it 'returns a 404 if the profile in the request is not valid' do
                 @media_type = 'text/html'
                 @uri = "#{base_uri}/BLAH"
-                response.should == [404, {'Content-Type' => 'text/html'}, ["Profile blah not found"]]
+                response.should == [404, {'Content-Type' => 'text/html'}, ["Profile blah not found."]]
               end
 
               context 'without a profile specified' do
@@ -171,8 +171,7 @@ module Crichton
         context 'when not an alps path' do
           it 'invokes the parent rack app from the middleware' do
             @media_type = 'text/html'
-            base = base_uri =~ /http/i ? 'http://example.org' : 'tcp://1.1.1.1:1'
-            @uri = "#{base}/something/else"
+            @uri = "#{base_uri}/DRDs/more"
             rack_app.should_receive(:call).with(env)
             alps_middleware.call(env)
           end
@@ -180,7 +179,7 @@ module Crichton
       end
       
       describe '#call' do
-        context 'when the request scheme is HTTP' do
+        context 'when the request scheme is HTTP domain' do
           before do
             @base_uri = "#{config.alps_base_uri}"
           end
