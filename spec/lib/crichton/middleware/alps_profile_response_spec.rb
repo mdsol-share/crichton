@@ -50,6 +50,15 @@ module Crichton
                   response.should == [200, headers, [alps_xml_data]]
                 end
               end
+
+              it 'accepts media-types with different cases' do
+                @media_type = 'appLication/alps+Json'
+                @expires = (Time.new + ten_minutes).httpdate
+                # go get the body of the response and JSON parse it.
+                obj = JSON.parse(rack_response.body)
+                body = JSON.pretty_generate(obj)
+                body.should be_json_eql(alps_json_data)
+              end
     
               it 'responds with an alps document associated with the profile id for application/alps+json requests' do
                 @media_type = 'application/alps+json'

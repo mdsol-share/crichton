@@ -40,6 +40,13 @@ module Crichton
             proxy_responder.stub_chain(:connection, :get).and_return(response)
             rack_response.status.should == 200
           end
+
+          it 'accepts media-types with different cases' do
+            @media_type = 'Application/Json'
+            response = Rack::MockResponse.new(200, {'Content-Type' => @media_type}, '')
+            proxy_responder.stub_chain(:connection, :get).and_return(response)
+            rack_response.status.should == 200
+          end
         end
 
         context 'when not a crichton proxy path' do

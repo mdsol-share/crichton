@@ -23,7 +23,7 @@ module Crichton
 
       describe '#call' do
         let(:env) { {'PATH_INFO' => '/', 'HTTP_ACCEPT' => @media_type} }
-        let(:headers) { {'Content-Type' => @media_type, 'expires' => @expires} }
+        let(:headers) { {'Content-Type' => @media_type.downcase, 'expires' => @expires} }
         let(:home_responder) { ResourceHomeResponse.new(rack_app) }
         let(:response) { home_responder.call(env) }
         let(:rack_response) { Rack::MockResponse.new(*response) }
@@ -32,6 +32,12 @@ module Crichton
         context 'when the root' do
           it 'respond to text/html' do
             @media_type = 'text/html'
+            @expires = (Time.new + ten_minutes).httpdate
+            response.should == [200, headers, [root_html_body]]
+          end
+
+          it 'accepts media-types of different cases' do
+            @media_type = 'teXt/Html'
             @expires = (Time.new + ten_minutes).httpdate
             response.should == [200, headers, [root_html_body]]
           end
