@@ -8,7 +8,7 @@ module Crichton
     class CrichtonProxyResponse < MiddlewareBase
       include Crichton::Helpers::ConfigHelper
 
-      SUPPORTED_MEDIA_TYPES = %w( application/json )
+      SUPPORTED_MEDIA_TYPES = %w(application/json)
 
       def initialize(app, options = {})
         @app = app
