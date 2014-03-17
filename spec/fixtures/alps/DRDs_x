@@ -27,6 +27,10 @@ Returns a list of DRDs that satisfy the search term.      </doc>
         <doc>
 The terms to search.        </doc>
       </descriptor>
+      <descriptor id="search_name" type="semantic" href="http://alps.io/schema.org/Text">
+        <doc>
+The name to search.        </doc>
+      </descriptor>
     </descriptor>
     <descriptor id="create" type="unsafe" rt="drd">
       <doc>
