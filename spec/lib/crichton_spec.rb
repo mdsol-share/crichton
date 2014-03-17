@@ -11,7 +11,8 @@ describe Crichton do
   # This restores the global setting - one of the tests sets this value to a generated value and that causes other
   # tests to fail later on - depending on the order of the tests.
   after do
-    Crichton::config_directory = File.join('spec', 'fixtures', 'config')
+    Crichton.clear_config
+    Crichton.config_directory = File.join('spec', 'fixtures', 'config')
     Crichton.clear_registry
   end
 

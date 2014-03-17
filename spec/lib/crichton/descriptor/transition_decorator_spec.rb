@@ -231,7 +231,7 @@ module Crichton
         context 'with query parameter semantic descriptors' do
           it 'returns the url with templated query parameters' do
             @transition = 'search'
-            decorator.templated_url.should =~ /{?search_term}/
+            decorator.templated_url.should =~ /{?search_term,search_name}/
           end
         end
       end

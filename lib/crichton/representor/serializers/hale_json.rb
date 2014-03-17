@@ -114,7 +114,7 @@ module Crichton
             else
               get_control(transition.name, semantic, "parameters")
             end
-            form_elements.merge!(elements)
+            form_elements.deep_merge!(elements)
           end
           link = get_link_transition(transition)
           link.deep_merge(form_elements)
