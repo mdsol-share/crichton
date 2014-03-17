@@ -175,6 +175,12 @@ descriptors:
             href: http://alps.io/schema.org/Text
             field_type: text
             sample: drd1
+          search_name:
+            doc: The name to search.
+            type: semantic
+            href: http://alps.io/schema.org/Text
+            field_type: text
+            sample: drd1
       create:
         doc: Creates a DRD.
         type: unsafe
