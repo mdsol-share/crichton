@@ -9,7 +9,7 @@
             "templated": true
         },
         "search": {
-            "href": "http://deployment.example.org/drds{?search_term}",
+            "href": "http://deployment.example.org/drds{?search_term,search_name}",
             "templated": true
         },
         "help": {

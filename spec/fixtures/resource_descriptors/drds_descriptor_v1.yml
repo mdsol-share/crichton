@@ -26,6 +26,8 @@ states:
     collection:
       doc: The entry point state for interacting with DRDs.
       location: entry
+      response_headers:
+        Cache-Control: no-cache
       transitions:
         list:
           name: self
@@ -169,6 +171,12 @@ descriptors:
         descriptors:
           search_term:
             doc: The terms to search.
+            type: semantic
+            href: http://alps.io/schema.org/Text
+            field_type: text
+            sample: drd1
+          search_name:
+            doc: The name to search.
             type: semantic
             href: http://alps.io/schema.org/Text
             field_type: text

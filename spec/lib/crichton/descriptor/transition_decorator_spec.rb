@@ -231,7 +231,7 @@ module Crichton
         context 'with query parameter semantic descriptors' do
           it 'returns the url with templated query parameters' do
             @transition = 'search'
-            decorator.templated_url.should =~ /{?search_term}/
+            decorator.templated_url.should =~ /{?search_term,search_name}/
           end
         end
       end
@@ -316,6 +316,17 @@ module Crichton
             @top_level = false
             decorator.url.should_not be(@overridden_url)
           end
+        end
+      end
+
+      describe '#response_headers' do
+        it 'returns empty hash if state has no response headers defined' do
+          @state = 'navigation'
+          decorator.response_headers.should be_empty
+        end
+
+        it 'returns the response headers associated with the state' do
+          decorator.response_headers.should == { 'Cache-Control' => 'no-cache' }
         end
       end
     end

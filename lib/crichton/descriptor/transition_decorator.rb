@@ -6,7 +6,7 @@ module Crichton
     ##
     # Manages retrieving the transitions associated with transition descriptors from a target object.
     class TransitionDecorator < DetailDecorator
-      
+
       ##
       # @param [Hash, Object] target The target instance to generate transitions from.
       # @param [Crichton::Descriptor::Detail] descriptor The Detail descriptor associated with the semantic data.
@@ -99,6 +99,10 @@ module Crichton
         else
           protocol_descriptor ? protocol_descriptor.url_for(@target) : nil
         end.tap { |url| logger.warn("The URL for the transition is not defined for #{@target.inspect}!") unless url }
+      end
+
+      def response_headers
+        @response_headers ||= state_descriptor.decorate(@target).to_hash
       end
 
     private

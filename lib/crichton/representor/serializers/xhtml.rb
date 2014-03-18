@@ -294,8 +294,10 @@ module Crichton
         def add_body(options)
           @markup_builder.body do
             @markup_builder.tag!(:div) { |html| html << custom_parameters } if config.js_uri.any? && config.css_uri.any?
-            add_embedded_element(options)
-            add_datalists(options)
+            @markup_builder.div({ class: 'main-content' }) do
+              add_embedded_element(options)
+              add_datalists(options)
+            end
           end
         end
 
@@ -386,8 +388,16 @@ module Crichton
           File.read(File.join(File.dirname(__FILE__), 'html/custom_html.html'))
         end
 
+        # Reads js file and substitutes crichton_controller_uri string with crichton_proxy_base_uri value
+        # found in crichton.yml. It proxies cross-domain javascript calls through a middleware.
+        #
         def javascript
-          File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
+          js = File.read(File.join(File.dirname(__FILE__), 'html/xhtml.js'))
+          if uri = config.crichton_proxy_base_uri
+            js.gsub!('crichton_controller_uri', uri)
+          else
+            js.gsub!('crichton_controller_uri?url=', '')
+          end
         end
 
         def xhtml_css

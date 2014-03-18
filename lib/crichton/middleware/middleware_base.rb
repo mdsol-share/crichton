@@ -10,7 +10,7 @@ module Crichton
 
       # generate an array of acceptable media types from the HTTP_ACCEPT header
       def accepted_media_types(env)
-        env["HTTP_ACCEPT"].to_s.split(/\s*,\s*/)
+        env["HTTP_ACCEPT"].to_s.split(/\s*,\s*/).map(&:downcase)
       end
 
       # returning 406 response for requests with unsupported media types in the HTTP_ACCEPT header entry

@@ -1,326 +1,431 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <link rel="profile" href="http://alps.example.org/DRDs"/>
-    <link rel="type" href="http://alps.example.org/DRDs#drds"/>
-    <link rel="help" href="http://documentation.example.org/Things/DRDs"/>
-    <link rel="stylesheet" href="http://example.org/resources/css.css"/>
-    <style>
-        *[itemprop]::before {
-            content: attr(itemprop) ": ";
-            text-transform: capitalize;
-        }
-    </style>
-    <script type="text/javascript" src="http://example.org/resources/js.js">
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            get_selector().each(function (index, element) {
-                $('span[itemprop]', element).each(function () {
-                    var attribute = $(this).attr('itemprop');
-                    var value = $(this).text();
-                    set_values(attribute, value, element);
-                })
-            });
-
-            $('.custom-parameters').click(function() {
-                $('.element-name').val('');
-                $('.element-value').val('');
-                $('.alert').hide();
-                $('#modal-dialog').modal('show');
-            });
-
-            $('.btn-primary').click(function() {
-                var name = $('.element-name').val(); var value = $('.element-value').val();
-                if (name == '' || value == '') {
-                    $('.alert').show();
-                    return false;
-                }
-                $('.custom-parameters-collection')
-                        .append(create_div_element({ class: 'input-group ' + name + '-' + value })
-                                .append(create_params_label(name, value)));
-                $('#modal-dialog').modal('hide');
-            })
-
-            $('form').submit(function() {
-                var form = $(this);
-                $('span[param-name]').each(function() {
-                    var name = $(this).attr('param-name');
-                    var value = $(this).attr('param-value');
-                    var input = create_input_element({ type: 'hidden', name: name, value: value });
-                    input.appendTo(form);
-                });
-                return true;
-            });
-
-            $('a').click(function() {
-                var link = $(this);
-                var url = link.attr('href');
-                $('span[param-name]').each(function() {
-                    url = add_parameters_to_url(url, $(this).attr('param-name'), $(this).attr('param-value'));
-                });
-                link.attr('href', url);
-                return true;
-            });
-
-            $('a[target]').each(function() {
-                var link = $(this);
-                var url = link.attr('href');
-                $.getJSON(url, function(data) {
-                    var select = build_selector_group(data, link.attr('prompt'), link.attr('target'));
-                    link.parent('label').empty().append(select);
-                });
-            });
-        });
-
-        //adds parameters key/value pair to the top of the page.
-        function create_params_label(name, value) {
-            var content = create_span_element(build_options(name, value), name + ' : ' + value);
-            var close = create_button({ class: 'close', type: 'button' }, '&times;', function() {
-                var selector = '.' + name + '-' + value;
-                $(selector).remove();
-            }).appendTo(content);
-            return content;
-        }
-
-        //parameters key/value pair representation
-        function build_options(name, value) {
-            var options =  { class: 'label label-info input-group-addon' };
-            options['param-name'] = name;
-            options['param-value'] = value;
-            return options;
-        }
-
-        //used to build selector from external resource
-        function build_selector_group(data, prompt, target) {
-            var select = create_select_element({class: 'select-item'});
-            $.each(data, function(index, item) {
-                create_option_element({value: item[target]}, item[prompt]).appendTo(select);
-            });
-            return select;
-        }
-
-        function create_div_element(options) {
-            return create_element('<div/>', options);
-        }
-
-        function create_label_element(options, text) {
-            return create_element('<label/>', options).text(text);
-        }
-
-        function create_input_element(options, text) {
-            return create_element('<input/>', options).text(text);
-        }
-
-        function create_span_element(options, text) {
-            return create_element('<span/>', options).text(text);
-        }
-
-        function create_button(options, text, click_event) {
-            return create_element('<button/>', options).html(text).button().click(click_event);
-        }
-
-        function create_select_element(options) {
-            return create_element('<select/>', options);
-        }
-
-        function create_option_element(options, text) {
-            return create_element('<option/>', options).text(text);
-        }
-
-        function create_element(element, options) {
-            return $(element, options)
-        }
-
-        function get_selector() {
-            ($("ul[itemtype]").length > 1) ? selector = $("ul[itemtype]:gt(0)") : selector = $("ul[itemtype]")
-            return selector
-        }
-
-        function add_parameters_to_url(url, key, value) {
-            var re = new RegExp("([?|&])" + key + "=.*?(&|$)", "i");
-            separator = url.indexOf('?') !== -1 ? "&" : "?";
-            if (url.match(re)) {
-                return url.replace(re, '$1' + key + "=" + value + '$2');
+<link rel="profile" href="http://alps.example.org/DRDs"/>
+<link rel="type" href="http://alps.example.org/DRDs#drds"/>
+<link rel="help" href="http://documentation.example.org/Things/DRDs"/>
+<link rel="stylesheet" href="http://example.org/resources/css.css"/>
+<style>
+    *[itemprop]::before {
+        content: attr(itemprop) ": ";
+        text-transform: capitalize;
+    }
+</style>
+<script type="text/javascript" src="http://example.org/resources/js.js">
+</script>
+<script type="text/javascript">
+$(document).ready(function () {
+    var crichtonAjax = {
+        buildSelectorCallback: function(name, value, link) {
+            var result = function(data) {
+                var select = buildSelectorGroup(name, value, data, link.attr('prompt'), link.attr('target'));
+                select.val(value);
+                link.parent('label').empty().append(select);
             }
-            else {
-                return url + separator + key + "=" + value;
+            return result;
+        },
+
+        updateBrowserUrl: function(context) {
+            var selfHref = $('a[rel="self"]', context).attr('href');
+            history.pushState({}, '', selfHref);
+        },
+
+        replaceCallback: function(selector) {
+            var result = function(data) {
+                var content = $(data).filter(selector);
+                $(selector).replaceWith(content);
+                crichtonAjax.updateBrowserUrl(content);
             }
-        }
+            return result;
+        },
 
-        function set_values(attribute, value, context) {
-            $('select[name="' + attribute + '"]', context).each(function (index, element) {
-                var option = 'option[value="' + value + '"]'
-                $(option, element).attr("selected", "selected")
-            })
-            $('input[name="' + attribute + '"]', context).each(function (index, element) {
-                if ($(this).attr('type') == 'checkbox') {
-                    if (value == 'true') {
-                        $(this).prop('checked', value)
-                    }
-                } else {
-                    $(this).val(value)
-                }
-            })
-        }
+        beforeSendCallback: function(xhr, settings) {
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+            $('span[header-name]').each(function() {
+                xhr.setRequestHeader($(this).attr('header-name'), $(this).attr('header-value'));
+            });
+        },
 
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        call: function(method, url, send, dataType) {
+            var result = function(success){
+                $.ajax({
+                    type: method,
+                    url: url,
+                    data: send,
+                    dataType: dataType,
+                    beforeSend: crichtonAjax.beforeSendCallback,
+                    success: success
+                });
+            };
+            return result;
         }
-    </script>
+    };
+
+    getSelector().each(function (index, element) {
+        $('span[itemprop]', element).each(function () {
+            var attribute = $(this).attr('itemprop');
+            var value = $(this).text();
+            setValues(attribute, value, element);
+        })
+    });
+
+    $('.custom-parameters').click(function() {
+        createModal('Additional Parameters', 'param', '.custom-parameters-collection');
+        $('.modal-body').append(buildControlGroup('name'));
+        $('.modal-body').append(buildControlGroup('value'));
+    });
+
+    $('.custom-headers').click(function() {
+        createModal('Custom Headers', 'header', '.custom-headers-collection');
+        $('.modal-body').append(buildControlGroup('name'));
+        $('.modal-body').append(buildControlGroup('value'));
+    });
+
+    $('.save').click(function() {
+        var name = $('.element-name').val(),
+                value = $('.element-value').val(),
+                input = $('input[type="hidden"]'),
+                container = input.attr('container'),
+                subtype = input.attr('subtype'),
+                div = createDivElement({ class: 'input-group ' + subtype + '-' + name });
+        if (name == '' || value == '') {
+            $('.alert').show();
+            return false;
+        };
+        $(container).append(div.append(createParamsLabel(subtype, name, value)));
+        $('#modal-dialog').modal('hide');
+    })
+
+    $('form').submit(function() {
+        var form = $(this);
+        addFieldsToTheForm(form);
+        var func = crichtonAjax.call(form.attr('method'), form.attr('action'), form.serialize(), 'html');
+        func(crichtonAjax.replaceCallback('.main-content'));
+        return false;
+    });
+
+    $('a').click(function() {
+        var link = $(this);
+        var url = addParametersToUrl(link.attr('href'));
+        link.attr('href', url);
+        var func = crichtonAjax.call('GET', url, '', 'html');
+        func(crichtonAjax.replaceCallback('.main-content'));
+        return false;
+    });
+
+    $('a[target]').each(function() {
+        var link = $(this),
+                url = link.attr('href'),
+                input = link.next('input'),
+                name = input.attr('name'),
+                value = input.val(),
+                url = 'http://example.org/crichton?url=' + url;
+        var func =  crichtonAjax.call('GET', url, '', 'json');
+        func(crichtonAjax.buildSelectorCallback(name, value, link));
+    });
+});
+
+
+function addFieldsToTheForm(form) {
+    $('span[param-name]').each(function() {
+        var name = $(this).attr('param-name');
+        var value = $(this).attr('param-value');
+        var input = createInputElement({ type: 'hidden', name: name, value: value });
+        input.appendTo(form);
+    });
+}
+
+function addParametersToUrl(url) {
+    $('span[param-name]').each(function() {
+        url = updateUrl(url, $(this).attr('param-name'), $(this).attr('param-value'));
+    });
+    return url;
+}
+
+function createModal(title, subtype, container) {
+    var modalObject = initializeModal(title);
+    var hidden = createInputElement({ type: 'hidden', subtype: subtype, container: container });
+    hidden.appendTo(modalObject)
+    modalObject.modal('show');
+}
+
+function initializeModal(title) {
+    var modalObject = $('#modal-dialog');
+    $('.modal-title').text(title);
+    $('.modal-body').empty();
+    $('.modal-body').append(buildAlertMessage());
+    $('input[subtype]').remove();
+    $('.alert').hide();
+    return modalObject;
+}
+
+//used to build label/input control group within bootstrap control-group element
+function buildControlGroup(elementGroup) {
+    var divControlGroup = createDivElement({ class: 'control-group' }),
+            label = createLabelElement({ for: elementGroup }, capitalizeFirstLetter(elementGroup)),
+            divControls = createDivElement({ class: 'controls' }),
+            input = createInputElement({ class: 'span5 element-' + elementGroup, type: 'text', name: 'value' }),
+            span = createSpanElement({ class: 'help-block hide' });
+    span.appendTo(divControls);
+    input.appendTo(divControls);
+    label.appendTo(divControlGroup);
+    divControls.appendTo(divControlGroup);
+    return divControlGroup;
+}
+
+function buildAlertMessage() {
+    return createDivElement({ class: 'alert alert-warning' })
+            .text("Warning! Input fields can't be blank!");
+}
+
+//adds parameters key/value pair to the top of the page.
+function createParamsLabel(subtype, name, value) {
+    var content = createSpanElement(buildOptions(subtype, name, value), name + ' : ' + value);
+    var close = createButton({ class: 'close', type: 'button' }, '&times;', function() {
+        var selector = '.' + subtype + '-' + name;
+        $(selector).remove();
+    }).appendTo(content);
+    return content;
+}
+
+//parameters key/value pair representation
+function buildOptions(subtype, name, value) {
+    var subtypeName = subtype + '-name',
+            subtypeValue = subtype + '-value',
+            options =  { class: 'label label-info input-group-addon' };
+    options[subtypeName] = name;
+    options[subtypeValue] = value;
+    return options;
+}
+
+//used to build selector from external resource
+function buildSelectorGroup(name, value, data, prompt, target) {
+    var select = createSelectElement({class: 'select-item', name: name});
+    $.each(data, function(index, item) {
+        createOptionElement({value: item[target]}, item[prompt]).appendTo(select);
+    });
+    return select;
+}
+
+function createDivElement(options) {
+    return createElement('<div/>', options);
+}
+
+function createLabelElement(options, text) {
+    return createElement('<label/>', options).text(text);
+}
+
+function createInputElement(options, text) {
+    return createElement('<input/>', options).text(text);
+}
+
+function createSpanElement(options, text) {
+    return createElement('<span/>', options).text(text);
+}
+
+function createButton(options, text, clickEvent) {
+    return createElement('<button/>', options).html(text).button().click(clickEvent);
+}
+
+function createSelectElement(options) {
+    return createElement('<select/>', options);
+}
+
+function createOptionElement(options, text) {
+    return createElement('<option/>', options).text(text);
+}
+
+function createElement(element, options) {
+    return $(element, options);
+}
+
+function getSelector() {
+    ($("ul[itemtype]").length > 1) ? selector = $("ul[itemtype]:gt(0)") : selector = $("ul[itemtype]")
+    return selector;
+}
+
+function updateUrl(url, key, value) {
+    var re = new RegExp("([?|&])" + key + "=.*?(&|$)", "i");
+    separator = url.indexOf('?') !== -1 ? "&" : "?";
+    if (url.match(re)) {
+        return url.replace(re, '$1' + key + "=" + value + '$2');
+    }
+    else {
+        return url + separator + key + "=" + value;
+    }
+}
+
+function setValues(attribute, value, context) {
+    $('select[name="' + attribute + '"]', context).each(function (index, element) {
+        var option = 'option[value="' + value + '"]'
+        $(option, element).attr("selected", "selected")
+    });
+    $('input[name="' + attribute + '"]', context).each(function (index, element) {
+        if ($(this).attr('type') == 'checkbox') {
+            if (value == 'true') {
+                $(this).prop('checked', value)
+            }
+        } else {
+            $(this).val(value)
+        }
+    });
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+</script>
 </head>
 <body>
 <div>
-    <div class="control-group">
-        <div class="controls custom-parameters-collection">
-            <button class="custom-parameters">Custom Parameters</button>
-            <label for="name">Parameters:</label>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="controls custom-parameters-collection">
+                <button class="custom-parameters">Custom Parameters</button>
+                <label for="name">Parameters:</label>
+            </div>
         </div>
-        <hr/>
+        <div class="col-md-6">
+            <div class="controls custom-headers-collection">
+                <button class="custom-headers">Custom Headers</button>
+                <label for="name">Headers:</label>
+            </div>
+        </div>
     </div>
+    <hr/>
     <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Additional Parameters</h4>
+                    <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-warning">
-                        <strong>Warning!</strong> Input fields can't be empty!
-                    </div>
-                    <div class="control-group">
-                        <label for="name">Name</label>
-                        <div class="controls">
-                            <input class="span5 element-name" type="text" name="value"></input>
-                            <span class="help-block hide"></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label for="value">Value</label>
-                        <div class="controls">
-                            <input class="span5 element-value" type="text" name="value"></input>
-                            <span class="help-block hide"></span>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary save">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drds">
-    <li>
-        <a rel="self" href="http://deployment.example.org/drds">self</a>
-    </li>
-    <li>
-        <form action="http://deployment.example.org/drds" method="GET">
-            <ul>
+<div class="main-content">
+    <ul itemscope="itemscope" itemtype="http://alps.example.org/DRDs#drds">
+        <li>
+            <a rel="self" href="http://deployment.example.org/drds">self</a>
+        </li>
+        <li>
+            <form action="http://deployment.example.org/drds" method="GET">
+                <ul>
+                    <li>
+                        <label itemprop="search_term">
+                            <input itemprop="search_term" type="text" name="search_term"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="search_name">
+                            <input itemprop="search_name" type="text" name="search_name"/>
+                        </label>
+                    </li>
+                </ul>
+                <input type="submit" value="search"/>
+            </form>
+        </li>
+        <li>
+            <form action="http://deployment.example.org/drds" method="post">
+                <ul>
+                    <li>
+                        <label itemprop="status">
+                            <select name="status">
+                                <option value="active">activated</option>
+                                <option value="inactive">deactivated</option>
+                                <option value="unknown">renegade</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="old_status">
+                            <select name="old_status">
+                                <option value="active">activated</option>
+                                <option value="inactive">deactivated</option>
+                                <option value="unknown">renegade</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="kind">
+                            <select name="kind">
+                                <option value="standard">standard</option>
+                                <option value="sentinel">sentinel</option>
+                            </select>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="size">
+                            <input itemprop="size" type="text" name="size" list="size"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="location">
+                            <a href="http://crichton.example.com/drd_location_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
+                            <input type="text" name="location"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="location_detail">
+                            <a href="http://crichton.example.com/drd_location_detail_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
+                            <input type="text" name="location_detail"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="form-destroyed">
+                            <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="name">
+                            <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="leviathan_uuid">
+                            <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="leviathan_health_points">
+                            <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0" max="100"/>
+                        </label>
+                    </li>
+                    <li>
+                        <label itemprop="leviathan_email">
+                            <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
+                        </label>
+                    </li>
+                </ul>
+                <input type="hidden" name="_method" value="POST"/>
+                <input type="submit" value="create"/>
+            </form>
+        </li>
+        <li>
+            <span itemprop="total_count">2</span>
+        </li>
+        <li>
+            <ul itemscope="itemscope" itemtype="http://alps.io/schema.org/Array" itemprop="items">
                 <li>
-                    <label itemprop="search_term">
-                        <input itemprop="search_term" type="text" name="search_term"/>
-                    </label>
+                    <a href="http://deployment.example.org/drds/0">0</a>
+                </li>
+                <li>
+                    <a href="http://deployment.example.org/drds/1">1</a>
                 </li>
             </ul>
-            <input type="submit" value="search"/>
-        </form>
-    </li>
-    <li>
-        <form action="http://deployment.example.org/drds" method="post">
-            <ul>
-                <li>
-                    <label itemprop="status">
-                        <select name="status">
-                            <option value="active">activated</option>
-                            <option value="inactive">deactivated</option>
-                            <option value="unknown">renegade</option>
-                        </select>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="old_status">
-                        <select name="old_status">
-                            <option value="active">activated</option>
-                            <option value="inactive">deactivated</option>
-                            <option value="unknown">renegade</option>
-                        </select>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="kind">
-                        <select name="kind">
-                            <option value="standard">standard</option>
-                            <option value="sentinel">sentinel</option>
-                        </select>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="size">
-                        <input itemprop="size" type="text" name="size" list="size"/>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="location">
-                        <a href="http://crichton.example.com/drd_location_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
-                        <input type="text" name="location"/>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="location_detail">
-                        <a href="http://crichton.example.com/drd_location_detail_list#items" prompt="location_detail_text" target="location_detail_id">source</a>
-                        <input type="text" name="location_detail"/>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="form-destroyed">
-                        <input itemprop="form-destroyed" type="checkbox" name="form-destroyed"/>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="name">
-                        <input itemprop="name" type="text" name="name" required="" maxlength="50"/>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="leviathan_uuid">
-                        <input itemprop="leviathan_uuid" type="text" name="leviathan_uuid"/>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="leviathan_health_points">
-                        <input itemprop="leviathan_health_points" type="number" name="leviathan_health_points" required="" min="0" max="100"/>
-                    </label>
-                </li>
-                <li>
-                    <label itemprop="leviathan_email">
-                        <input itemprop="leviathan_email" type="email" name="leviathan_email" required="" pattern="^.+@.+$"/>
-                    </label>
-                </li>
-            </ul>
-            <input type="hidden" name="_method" value="POST"/>
-            <input type="submit" value="create"/>
-        </form>
-    </li>
-    <li>
-        <span itemprop="total_count">2</span>
-    </li>
-    <li>
-        <ul itemscope="itemscope" itemtype="http://alps.io/schema.org/Array" itemprop="items">
-            <li>
-                <a href="http://deployment.example.org/drds/0">0</a>
-            </li>
-            <li>
-                <a href="http://deployment.example.org/drds/1">1</a>
-            </li>
-        </ul>
-    </li>
-</ul>
-<datalist id="size">
-    <option value="big">big</option>
-    <option value="small">small</option>
-</datalist>
+        </li>
+    </ul>
+    <datalist id="size">
+        <option value="big">big</option>
+        <option value="small">small</option>
+    </datalist>
+</div>
 </body>
 </html>

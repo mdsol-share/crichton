@@ -152,6 +152,10 @@ module Crichton
       @_self_transition ||= Crichton.descriptor_registry[self.class.resource_name].self_transition.decorate(self, {})
     end
 
+    def response_headers
+      @response_headers ||= self_transition.response_headers
+    end
+
     ##
     # Returns the profile, type and help links of the associated descriptor.
     #

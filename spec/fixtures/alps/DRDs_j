@@ -82,7 +82,15 @@
                 "id": "search_term",
                 "type": "semantic",
                 "href": "http://alps.io/schema.org/Text"
-              }
+              },
+              {
+                "doc": {
+                  "value": "The name to search."
+                },
+                "id": "search_name",
+                "type": "semantic",
+                "href": "http://alps.io/schema.org/Text"
+                }
             ]
           },
           {
