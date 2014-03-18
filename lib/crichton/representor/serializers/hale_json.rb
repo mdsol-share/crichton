@@ -51,6 +51,10 @@ module Crichton
         as_media_type(options).to_json
       end
 
+      def response_headers
+        super.merge(@object.response_headers)
+      end
+
       private
 
       def deep_merge(x, y)

@@ -94,7 +94,7 @@ module Crichton
                 type = media_type
                 if obj.is_a?(Crichton::Representor)
                   obj.to_media_type(type, options) do |serializer|
-                    response.headers.merge(serializer.response_headers)
+                    serializer.response_headers.each { |k, v| response.headers[k] = v }
                   end
                 else
                   raise(ArgumentError,
