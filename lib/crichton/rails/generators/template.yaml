@@ -1,0 +1,229 @@
+# A resource descriptor is a declarative configuration file that defines the semantic data,
+# states, and state transitions associated with a particular resource independent of protocol
+# media-type. Further, it also defines protocol specific templates for links that can be
+# and  included in the response and populated based on the associated state. By including
+# optional routes related metadata in the configuration, routes.rb mappings can be managed
+# DRYly in the resource descriptor file.
+#
+# The following sections facilitate a number of objectives including generating an ALPS profile
+# of the resource, generating human readable documents including sample representations,
+# decorating service responses, and scaffolding routes, controllers and models.
+
+id: {collection_name}
+doc: Describes the semantics, states and state transitions associated with {collection_name}.
+links:
+  profile: {collection_name}
+  help: {link_to_help}
+
+# This section define the semantics of the collection object indented under the semantics:
+# header.
+semantics:
+  # Example
+  # total_count:
+  #   doc: The total count of {collection_name}
+  #   href: http://alps.io/schema.org/Integer
+  #   sample: 1
+
+# TODO
+extensions:
+
+
+# Safe transitions represents links in this resource that does not modify the representation in the server.
+# Tipically it will retrieve a resource, either inline in the current representation when
+# the link's property embed is true or it will create a link to retrieve more data when the
+# embed property is not shown.
+# Also safe links can depend on parameters which can be send by clients to further define the
+# data to retrieve.
+# In case of using HTTP, safe links usually are retrieved using GET requests.
+safe:
+# Example of simple link
+#  list:
+#    doc: Returns a list of {collection_name}.
+#    name: self
+#    rt: {collection_name}
+
+# Example of link with parameters
+ # search:
+ #   doc: Returns a list of {collection_name} that satisfy the search term.
+ #   rt: drds
+ #   parameters:
+ #     - href: name
+# Example of embeded link
+#  {embedded_resource}-link:
+#    name: {embedded_resource}
+#    doc: A reference to the {embedded_resource}
+#    embed: true
+#    rt: http://alps.io/schema.org/{embedded_resource}
+
+
+# Idempotent links modify the resource in the server.
+# Following the same link more than once will always have the same effect.
+# An example of this is a link that deletes a resource in the server. This deletion is
+# idempotent if trying to delete an already deleted resource is a NOOP.
+idempotent:
+  # Example of a idempotent transition. We can activate many times, it will always be activated.
+#  activate:
+#    doc: Activates a {resource_name} if it is deactivated.
+#    rt: {resource_name}
+# Example of idempotent update. If the whole resource is sent to the server to substitute it,
+# that operation is idempotent
+#  update:
+#    doc: Updates a {resource_name}
+#    rt: none
+#    links:
+#      profile: {collection_name}
+#      help: {documentation_base_uri}/forms/update
+#    semantics:
+#      - href: status
+#        sample: deactivated
+#        field_type: select
+#        validators:
+#          - required
+#        options:
+#          id: {resource_name}_status_options
+#          hash:
+#            active: activated
+#            inactive: deactivated
+
+# Unsafe links modify the resource in the server.
+# These links are not idempotent, each time they are followed the effect in the server is different.
+unsafe:
+# Example
+#  create:
+#    doc: Creates a {resource_name}.
+#    rt: {resource_name}
+#    links:
+#      profile: {collection_name}
+#      help: {documentation_base_uri}/Forms/create
+#    href: update
+#    parameters:
+#      - href: name
+#        field_type: text
+
+
+# All the resources described in this document
+resources:
+  {collection_name}:
+    doc: A list of {collection_name}
+    links:
+      profile: {collection_name}
+#      help: {help_path}
+    descriptors:
+# Example
+#      - href: total_count
+     states:
+      collection:
+        doc: The entry point state for interacting with {collection_name}.
+        transitions:
+# Example
+#          list:
+#            name: self
+#            location: entry
+#            next:
+#              - collection
+
+  {resource_name}:
+    doc: This document should be explaining the meaning of this resource to humans
+    links:
+      profile: {resource_name}
+    descriptors:
+# Example
+#      - href: name
+#      - href: uuid
+#      - href: status
+#      - href: activate
+#      - href: deactivate
+#      - href: delete
+    states:
+# Example
+#      activated:
+#        doc: The default state of a {resource_name}.
+#        transitions:
+#          show:
+#            name: self
+#            next:
+#              - activated
+#          deactivate:
+#            conditions:
+#              - can_deactivate
+#            next:
+#             - deactivated
+#      deactivated:
+#        doc: The DRD is shut down.
+#        transitions:
+#          show:
+#            name: self
+#            next:
+#              - deactivated
+#          activate:
+#            conditions:
+#              - can_activate
+#            next:
+#             - activated
+
+# All the media types our server will accept and represent our hypermedia documents into if
+# requested.
+# Simply a list of media types
+media_types:
+  - application/json
+  - application/hal+json
+  - application/vnd.hale+json
+  - text/html
+
+# Specify details for the HTTP protocol
+http_protocol:
+# Each link can define its method, headers and slt
+# Below several examples that show the different HTTP methods and how they work
+# with the previous definitions.
+#  list:
+#    uri: {collection_name}
+#    method: GET
+#    headers:
+#      - Content-Type
+#      - ETag
+#    slt: &slt1
+#      99th_percentile: 100ms
+#      std_dev: 25ms
+#      requests_per_second: 50
+#  search:
+#    uri: {collection_name}
+#    method: GET
+#    headers:
+#    # slt is the performance characteristic of following this link
+#    slt: &slt2
+#      99th_percentile: 250ms
+#      std_dev: 50ms
+#      requests_per_second: 25
+#  create:
+#    uri: {collection_name}
+#    method: POST
+#    headers:
+#    slt: *slt2
+#  show:
+#    uri: {collection_name}/{uuid}
+#    method: GET
+#    headers:
+#    slt: *slt1
+#  activate:
+#    uri: {collection_name}/{uuid}/activate
+#    method: PUT
+#    headers:
+#    slt: *slt1
+
+# This is useful for the web framework to automatically create routes from this file
+routes:
+#  {collection_name}:
+#    list: &list
+#      controller: {collection_name}_controller
+#      action: index
+#    search: *list
+#    create:
+#      controller: {collection_name}_controller
+#      action: create
+#  {resource_name}:
+#    show:
+#      controller: {collection_name}_controller
+#      action: show
+#    update:
+#      controller: {collection_name}_controller
+#      action: update
