@@ -34,6 +34,7 @@ module Crichton
       end
 
       it 'uses the supplied storage path if it is explicitly passed into the new call' do
+        build_configuration_files({}, SPECS_TEMP_DIR)
         overridden_pathname = 'overridden/path'
         Crichton.config.stub(:external_documents_store_directory).and_return(@pathname)
         Dir.should_receive(:exists?).with(overridden_pathname).and_return(true)

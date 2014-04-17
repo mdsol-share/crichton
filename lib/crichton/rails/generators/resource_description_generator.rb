@@ -6,6 +6,7 @@ module Crichton
 
     argument :resource_name, type: :string, desc: "The name for the resource"
     argument :collection_name, type: :string, desc: "The name for the collection resource"
+    argument :api_dir, type: :string, default: 'api_descriptors', desc: 'directory for our api docs'
 
     desc "This generator will generate a resource description file."
     def create_description
@@ -16,7 +17,7 @@ module Crichton
 
     private
     def filename
-       "api_descriptors/#{collection_name}.yaml"
+       "#{api_dir}/#{collection_name}.yaml"
      end
   end
 end
