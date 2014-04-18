@@ -34,7 +34,7 @@ module Crichton
             @descriptor_document = {'source' => 'uuid'}
             value = mock('value')
             @target = Class.new do
-              self.class.define_method(:uuid) { value }
+              self.class.send(:define_method, :uuid) { value }
             end
             decorator.should be_present
           end
@@ -62,7 +62,7 @@ module Crichton
             @descriptor_document = {'source' => 'uuid'}
             value = mock('value')
             @target = Class.new do 
-              self.class.define_method('uuid') { value }
+              self.class.send(:define_method, :uuid) { value }
             end
             decorator.value.should == value
           end
