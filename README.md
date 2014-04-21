@@ -1,5 +1,7 @@
 # Crichton
 
+[![Build Status](https://travis-ci.org/mdsol/crichton.svg)](https://travis-ci.org/mdsol/crichton)
+
 Crichton is a library to simplify generating and consuming Hypermedia API responses. It has the knowledge of Hypermedia 
 from the Ancients.
 

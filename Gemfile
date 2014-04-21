@@ -23,5 +23,5 @@ group :test do
   gem 'simplecov',      '~> 0.7.1'
   gem 'json_spec',      '~> 1.1.1'
   #TODO: replace with 0.6.0 version when released
-  gem 'appraisal', :git => 'git@github.com:thoughtbot/appraisal.git', :branch => 'master'
+  gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git', branch: 'master'
 end

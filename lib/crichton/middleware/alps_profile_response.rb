@@ -62,7 +62,7 @@ module Crichton
         template = Addressable::Template.new("#{alps_uri}{/id*}")
         extracted_id = template.extract(uri)
         # If it is more than one id, then it is not an alps path.
-        profile_id = extracted_id && extracted_id['id'].one? && extracted_id['id'].first
+        profile_id = extracted_id && extracted_id['id'] && extracted_id['id'].one? && extracted_id['id'].first
 
         {'profile_id' => profile_id} if profile_id || uri.path == alps_uri.path
       end
