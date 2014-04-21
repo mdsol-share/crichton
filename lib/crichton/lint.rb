@@ -9,6 +9,9 @@ require 'crichton/lint/protocol_validator'
 require 'crichton/lint/datalists_validator'
 require 'colorize'
 
+# Needed to avoid warnings when using this library
+I18n.enforce_available_locales = false
+
 module Crichton
   module Lint
     ##
