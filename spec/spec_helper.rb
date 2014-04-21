@@ -23,7 +23,7 @@ require 'crichton'
 
 # Delete the tmp specs directory and all its contents.
 require 'fileutils'
-FileUtils.rm_r SPECS_TEMP_DIR
+FileUtils.rm_r SPECS_TEMP_DIR if File.exists?(SPECS_TEMP_DIR)
 Dir.mkdir SPECS_TEMP_DIR
 
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
