@@ -170,7 +170,6 @@ module Crichton
       end
 
       it 'loads external documents', :pending do
-        pending("This spec fails randomly, rspec --seed 14613 to see it fail")
         eds = ExternalDocumentStore.new(@pathname)
         eds.store_all_external_documents
         files = Dir.glob(File.join([@pathname, '*'])).collect {|f| f.split('schema_org_').last}
