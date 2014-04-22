@@ -16,40 +16,6 @@ describe Crichton do
     Crichton.clear_registry
   end
 
-  describe '.logger' do
-    let(:logger) { double('logger') }
-
-    after do
-      Crichton.logger = nil
-    end
-
-    it 'sets a logger' do
-      Crichton.logger = logger
-      Crichton.logger.should == logger
-    end
-
-    context 'without Rails' do
-      it 'returns a logger configured to STDOUT by default' do
-        ::Logger.stub(:new).with(STDOUT).and_return(logger)
-        Crichton.logger.should == logger
-      end
-    end
-
-    context 'with Rails' do
-      after do
-        Object.send(:remove_const, :Rails)
-      end
-
-      it 'returns the Rails logger by default' do
-        rails = double('Rails')
-        rails.stub(:logger).and_return(logger)
-        Object.const_set(:Rails, rails)
-
-        Crichton.logger.should == logger
-      end
-    end
-  end
-
   describe '.descriptor_registry' do 
     it 'initializes the registry if the registry is not already initialized' do
       mock_registry = double('Registry')

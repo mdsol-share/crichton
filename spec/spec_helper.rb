@@ -23,6 +23,9 @@ Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
 
 Crichton::config_directory = File.join('spec', 'fixtures', 'config')
 
+Crichton.logger = ::Logger.new(STDOUT)
+Crichton.logger.level = Logger::ERROR # Avoid non-error to populate the terminal when running specs
+
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
