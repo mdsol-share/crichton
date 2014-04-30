@@ -81,7 +81,7 @@ describe Crichton do
       Crichton.descriptor_registry
     end
   end
-  
+
   describe '.config' do
     it 'raises an error if there is not crichton.yml configuration file' do
       Crichton.config_directory = 'non-existent'
@@ -90,26 +90,26 @@ describe Crichton do
     end
 
     it 'loads the crichton.yml file from the configuration directory' do
-      Crichton.config_directory = 'tmp'
-      build_configuration_files(example_environment_config, 'tmp')
-      
+
+      build_configuration_files(example_environment_config, SPECS_TEMP_DIR)
+
       %w(alps deployment discovery documentation).each do |type|
         attribute = "#{type}_base_uri"
         Crichton.config.send(attribute).should == example_environment_config[attribute]
       end
     end
   end
-  
+
   describe '.config_directory' do
     it 'sets the path to the config directory' do
       Crichton.config_directory = 'path/to/config'
       Crichton.config_directory.should == 'path/to/config'
     end
   end
-  
+
   describe '.config_file' do
     let(:file_path) { File.join(@root, 'config', 'crichton.yml') }
-    
+
     it 'returns the path to the crichton.yml file' do
       @root = Dir.pwd
       Crichton.config_file.should == file_path
@@ -119,7 +119,7 @@ describe Crichton do
       before do
         @app = mock('app')
       end
-      
+
       after do
         Crichton.clear_config
       end
@@ -146,7 +146,7 @@ describe Crichton do
         it 'returns the config directory under the Sinatra root' do
           ::Sinatra = @app unless defined?(Sinatra)
           @root = 'sinatra_root'
-          
+
           ::Sinatra.stub_chain(:settings, :root).and_return(@root)
           Crichton.config_file.should == file_path
         end
@@ -168,4 +168,4 @@ describe Crichton do
     end
   end
 end
-                                                   
+
