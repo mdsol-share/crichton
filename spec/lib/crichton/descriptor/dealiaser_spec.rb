@@ -36,42 +36,42 @@ resources:
 
       describe '#dealiase' do
         it 'dealiases document under descriptors tag' do
-          subject.keys.should == ['descriptors']
+          expect(subject.keys).to eq(['descriptors'])
         end
 
         it 'specifies type attribute for all dealiased elements' do
           [ 'total_count', 'list', 'update', 'create', 'drd' ].each do |type|
-            subject['descriptors'][type].should have_key('type')
+            expect(subject['descriptors'][type]).to have_key('type')
           end
         end
 
         it 'sets valid element type for semantic elements' do
-          subject['descriptors']['total_count']['type'].should == 'semantic'
+          expect(subject['descriptors']['total_count']['type']).to eq('semantic')
         end
 
         it 'sets valid element type for safe transitions' do
-          subject['descriptors']['list']['type'].should == 'safe'
+          expect(subject['descriptors']['list']['type']).to eq('safe')
         end
 
         it 'sets valid element type for idempotent transitions' do
-          subject['descriptors']['update']['type'].should == 'idempotent'
+          expect(subject['descriptors']['update']['type']).to eq('idempotent')
         end
 
         it 'sets valid element type for unsafe transitions' do
-          subject['descriptors']['create']['type'].should == 'unsafe'
+          expect(subject['descriptors']['create']['type']).to eq('unsafe')
         end
 
         it 'sets valid element type for resources elements' do
-          subject['descriptors']['drd']['type'].should == 'semantic'
+          expect(subject['descriptors']['drd']['type']).to eq('semantic')
         end
 
         it 'dealiases parameters tag into descriptors' do
-          subject['descriptors']['update'].should have_key('descriptors')
+          expect(subject['descriptors']['update']).to have_key('descriptors')
         end
 
         it 'creates scope:uri key value for url parameters descriptors' do
           value = subject['descriptors']['update']['descriptors'].first
-          value.should  include({ 'scope' => 'url' })
+          expect(value).to include({ 'scope' => 'url' })
         end
       end
     end
