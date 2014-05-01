@@ -12,7 +12,7 @@ module Crichton
 
       ##
       # @param [Hash] resource_descriptor Resource descriptor document hash.
-      # @return [Hash] The de-aliases descriptor document.
+      # @return [Hash] The de-aliased descriptor document.
       def self.dealias(hash)
         {}.tap do |acc|
           hash.each do |k,v|
