@@ -1,3 +1,5 @@
+require 'rails/generators'
+
 module Crichton
   # registers a Generator with Rails invoked as crichton:resource_description
   class ResourceDescriptionGenerator <  Rails::Generators::Base
