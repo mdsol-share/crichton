@@ -115,56 +115,110 @@ module Crichton
             deref_hash.should == reference_hash
           end
 
-          it 'doesnt dereference a case different local reference' do
-            @ids_registry = {
-                'example#other_name' =>
-                    {
-                        'value2' => 'something else'
-                    }}
-            descriptor_hash = {
-                'id' => "example",
-                'links' => {
-                    'self' => 'example'
-                },
-                'descriptors' => {
-                    'example' => {
-                        'descriptors' => {
-                            'some_name' => {
-                                'href' => 'Example#other_name',
-                                'value' => 'something'
-                            },
-                            'other_name' => {
-                                'value2' => 'something else'
-                            }
+          context 'case different local reference' do
+            it 'doesnt dereference a local reference with case different document id' do
+              @ids_registry = {
+                  'example#other_name' =>
+                      {
+                          'value2' => 'something else'
+                      }}
+              descriptor_hash = {
+                  'id' => "example",
+                  'links' => {
+                      'self' => 'example'
+                  },
+                  'descriptors' => {
+                      'example' => {
+                          'descriptors' => {
+                              'some_name' => {
+                                  'href' => 'example#Other_name',
+                                  'value' => 'something'
+                              },
+                              'other_name' => {
+                                  'value2' => 'something else'
+                              }
 
-                        }
-                    }
-                }
-            }
-            reference_hash = {
-                'id' => "example",
-                'links' => {
-                    'self' => 'example'
-                },
-                'descriptors' => {
-                    'example' => {
-                        'descriptors' => {
-                            'some_name' => {
-                                'dhref' => 'Example#other_name',
-                                'value2' => 'something else',
-                                'value' => 'something'
-                            },
-                            'other_name' => {
-                                'value2' => 'something else'
-                            }
-                        }
-                    }
-                }
-            }
+                          }
+                      }
+                  }
+              }
+              reference_hash = {
+                  'id' => "example",
+                  'links' => {
+                      'self' => 'example'
+                  },
+                  'descriptors' => {
+                      'example' => {
+                          'descriptors' => {
+                              'some_name' => {
+                                  'dhref' => 'example#Other_name',
+                                  'value2' => 'something else',
+                                  'value' => 'something'
+                              },
+                              'other_name' => {
+                                  'value2' => 'something else'
+                              }
+                          }
+                      }
+                  }
+              }
 
-            dereferencer = Dereferencer.new(descriptor_hash, &build_options_registry)
-            deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
-            deref_hash.should_not == reference_hash
+              dereferencer = Dereferencer.new(descriptor_hash, &build_options_registry)
+              deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
+              deref_hash.should_not == reference_hash
+            end
+
+            it 'doesnt dereference a local reference with case different descriptor id' do
+              @ids_registry = {
+                  'example#other_name' =>
+                      {
+                          'value2' => 'something else'
+                      }}
+              descriptor_hash = {
+                  'id' => "example",
+                  'links' => {
+                      'self' => 'example'
+                  },
+                  'descriptors' => {
+                      'example' => {
+                          'descriptors' => {
+                              'some_name' => {
+                                  'href' => 'Example#other_name',
+                                  'value' => 'something'
+                              },
+                              'other_name' => {
+                                  'value2' => 'something else'
+                              }
+
+                          }
+                      }
+                  }
+              }
+              reference_hash = {
+                  'id' => "example",
+                  'links' => {
+                      'self' => 'example'
+                  },
+                  'descriptors' => {
+                      'example' => {
+                          'descriptors' => {
+                              'some_name' => {
+                                  'dhref' => 'Example#other_name',
+                                  'value2' => 'something else',
+                                  'value' => 'something'
+                              },
+                              'other_name' => {
+                                  'value2' => 'something else'
+                              }
+                          }
+                      }
+                  }
+              }
+
+              dereferencer = Dereferencer.new(descriptor_hash, &build_options_registry)
+              deref_hash = dereferencer.dereference_hash_descriptor(@ids_registry, {})
+              deref_hash.should_not == reference_hash
+            end
           end
         end
 
