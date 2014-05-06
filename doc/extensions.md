@@ -1,4 +1,4 @@
-@title Data Descriptors extensions
+# @title Data Descriptors extensions
 # Overview
 Extensions can be used to extend data descriptor elements with specific information: field type, 
 options for select field types and validators. Extensions are grouped under top-level `extensions` element.
