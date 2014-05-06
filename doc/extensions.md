@@ -74,7 +74,7 @@ extensions:
       - required
 ```
 
-### Using data descriptor extensions
+### Using data descriptor extensions and extending data descriptors as part of referenced descriptor
 ```yaml
 safe:
   search:
