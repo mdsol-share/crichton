@@ -13,13 +13,14 @@ can be used: (all are optional - but skipping all is pointless)
     * `list` - Contains an array of values
     * `hash` - Contains a hash of key-value pairs
     * `external` - Retrieves values from an external source
-   Only one of `list`, `hash` or `external` may be present, this applies also for included href entries.
-   In the case of `external`, the `source` element may contain a link to external resource or method to call on
-   a target object. If `source` is a link to external resource, `prompt` and `target` elements must be present.
+Only one of `list`, `hash` or `external` may be present, this applies also for included href entries.
+In the case of `external`, the `source` element may contain a link to external resource or method to call on
+a target object. If `source` is a link to external resource, `prompt` and `target` elements must be present.
    * `target` - specifies the name of the attribute inside the element that the value will be taken from
    * `prompt` - specifies the attribute the text of the item will be taken from
-   are used to specify the fields that are to be used to assemble the list or hash.
-   In case of the list, the target and prompt are identical.
+are used to specify the fields that are to be used to assemble the list or hash.
+In case of the list, the target and prompt are identical.
+
 * `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
 [HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
 * `validators` - Hash of validator objects associated with a field: OPTIONAL.
