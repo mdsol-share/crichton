@@ -35,5 +35,5 @@ following the `routes` key.
 * MUST have related Transition Descriptors whose ID (YAML key) is the same as the YAML keys immediately
 following the Data Descriptor keys.
 
-[Back to Resource Descriptors](resource_descriptors.md)
-[Example Resource Descriptor]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Back to Resource Descriptor Document](descriptors_document.md)
+[Example Resource Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
