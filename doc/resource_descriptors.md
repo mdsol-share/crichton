@@ -1,4 +1,4 @@
-@title Resource descriptors
+#@ title Resource descriptors
 # Overview
 Resources are data descriptor elements which are grouped under `resources` tag and define `states` section. 
 Resources also define `descriptors` section which contains semantics and transition descriptors available for 
