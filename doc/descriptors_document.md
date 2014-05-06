@@ -93,7 +93,7 @@ Other properties are defined in the sections that follow.
 
 * [Profile Metadata](profile_metadata.md)
 * [Data Descriptors](data_descriptors.md)
-* [Extensions](extentions.md)
+* [Extensions](extensions.md)
 * [Transition Descriptors](transition_descriptors.md)
 * [Resources](resource_descriptors.md)
 * [Media Types](media_types.md)
