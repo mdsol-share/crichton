@@ -35,7 +35,7 @@ It is best practice to define data descriptors grouped under top-level `semantic
 `semantics` and `href` property to reference already defined data descriptors elements in transitions. See examples below.
 
 ## Examples
-# Data descriptors defined under top-level `semantics` element
+### Data descriptors defined under top-level `semantics` element
 The following example highlights a few parts of the [Example Resource Descriptor Document][] `semantics` section associated
 with data descriptors.
 
@@ -77,7 +77,7 @@ semantics:
     sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
 ```
 
-# Referenced data descriptors defined under `parameters` element
+### Referenced data descriptors defined under `parameters` element
 ```yaml
 safe:
   search:
@@ -97,7 +97,7 @@ idempotent:
       - href: name
 ```
 
-# Data descriptors defined under `parameters` element
+### Data descriptors defined under `parameters` element
 ```yaml
 safe:
   search:
