@@ -6,7 +6,6 @@ module Crichton
     ##
     # Manages dealiasing human-friendly tags in resource descriptor documents
     # to their base ALPS-related tags underlying the resource descriptor functionality.
-    # De-aliases resource descriptor document. Converts from new format to the old one.
     class Dealiaser
       KEYWORDS = TYPES + [TAG, PARAMETERS, RESOURCES]
 
@@ -47,7 +46,6 @@ module Crichton
         ->(obj) { obj.is_a?(Hash) ?  obj.each { |_, v| v.deep_merge!(hash) } : obj }
       end
 
-      ##
       # Special case semantics. Used as singular in ALPS.
       def self.map_key(key)
         TYPES.include?(key) ? key.singularize : SEMANTIC
