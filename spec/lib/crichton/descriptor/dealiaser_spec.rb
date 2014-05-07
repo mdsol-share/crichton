@@ -4,7 +4,7 @@ require 'crichton/descriptor/dealiaser'
 module Crichton
   module Descriptor
     describe Dealiaser do
-      before (:all) do
+      before(:all) do
         @resource_descriptor = <<-DESCRIPTOR
           semantics:
             total_count:
@@ -29,7 +29,7 @@ module Crichton
               descriptors:
                 - href: name
                 - href: list
-DESCRIPTOR
+        DESCRIPTOR
       end
 
       let(:resource_descriptor) { YAML.load(@resource_descriptor) }
