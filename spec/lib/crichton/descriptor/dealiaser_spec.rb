@@ -6,36 +6,36 @@ module Crichton
     describe Dealiaser do
       before (:all) do
         @resource_descriptor = <<-DESCRIPTOR
-semantics:
-  total_count:
-    doc: The total count of DRDs.
-    href: http://alps.io/schema.org/Integer
-    sample: 1
-safe:
-  list:
-    doc: Returns a list of DRDs.
-    name: self
-    rt: drds
-idempotent:
-  update:
-    parameters:
-      - href: name
-unsafe:
-  create:
-    descriptors:
-      - href: name
-resources:
-  drd:
-    descriptors:
-      - href: name
-      - href: list
+          semantics:
+            total_count:
+              doc: The total count of DRDs.
+              href: http://alps.io/schema.org/Integer
+              sample: 1
+          safe:
+            list:
+              doc: Returns a list of DRDs.
+              name: self
+              rt: drds
+          idempotent:
+            update:
+              parameters:
+                - href: name
+          unsafe:
+            create:
+              descriptors:
+                - href: name
+          resources:
+            drd:
+              descriptors:
+                - href: name
+                - href: list
 DESCRIPTOR
       end
 
       let(:resource_descriptor) { YAML.load(@resource_descriptor) }
       let(:subject) { Dealiaser.dealias(resource_descriptor) }
 
-      describe '#dealiase' do
+      describe '#dealias' do
         it 'returns empty hash when resource descriptor has no keywords' do
           subject = Dealiaser.dealias({})
           expect(subject).to eq({})
