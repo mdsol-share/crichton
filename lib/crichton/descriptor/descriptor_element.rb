@@ -1,12 +1,11 @@
 require 'crichton/helpers'
+require 'crichton/descriptor/descriptor_keywords'
 
 module Crichton
   module Descriptor
     ##
     # Represents descriptor. Responsible for self-dereferencing.
     class DescriptorElement
-      include Crichton::Helpers::ConfigHelper
-      include Crichton::Helpers::DescriptorKeywords
 
       attr_reader :descriptor_id
       attr_reader :descriptor_document
@@ -57,7 +56,7 @@ module Crichton
 
       def resolve_descriptors(descriptors, registry, dereferenced_hash)
         if descriptors.is_a?(Hash)
-          descriptors.inject({}) { |acc, (k,v)| acc.merge!({ k => dereferenced_hash[registry_key(k)].merge(v) }) }
+          descriptors.inject({}) { |acc, (k, v)| acc.merge!({ k => dereferenced_hash[registry_key(k)].merge(v) }) }
         else
           descriptors.inject({}) do |acc, hash|
             key = registry_key(hash[HREF])
@@ -81,10 +80,10 @@ module Crichton
       end
 
       def extensions_dereference(registry, dereferenced_hash, original, dereferenced)
-        dereferenced.deep_merge(original.reject{|k,_| k == HREF}).tap do |acc|
+        dereferenced.deep_merge(original.reject{|k, _| k == HREF}).tap do |acc|
           if key = original[EXT]
             raw_registry_lookup(registry_key(key), registry, dereferenced_hash) do |h|
-              acc.merge!(h).reject!{|k,_| k == EXT }
+              acc.merge!(h).reject!{|k, _| k == EXT }
             end
           end
         end
@@ -112,7 +111,7 @@ module Crichton
       def external_alps_profile_dereference(uri, registry, dereferenced_hash)
         {}.tap do |acc|
           hash = registry.get_external_deserialized_profile(uri)
-          (descriptors = hash[TAG]) && descriptors.each do |k,v|
+          (descriptors = hash[TAG]) && descriptors.each do |k, v|
             descriptor_element = DescriptorElement.new(uri, k, v)
             descriptor_element.dereference(registry, dereferenced_hash) { |h| acc.merge!({ k => h}) }
           end
@@ -132,7 +131,7 @@ module Crichton
 
       def resolve_options(registry, hash)
         doc = dereference_options(registry, self.descriptor_document.deep_dup)
-        deref_hash = hash.inject({}) do |acc, (k,v)|
+        deref_hash = hash.inject({}) do |acc, (k, v)|
           acc.merge!({ k => dereference_options(registry, v) })
         end
         deref_hash.any? ? doc.deep_merge({ TAG => deref_hash }) : doc
