@@ -4,11 +4,14 @@ require 'crichton/descriptor/descriptor_keywords'
 module Crichton
   module Descriptor
     ##
+    # Manages dealiasing human-friendly tags in resource descriptor documents
+    # to their base ALPS-related tags underlying the resource descriptor functionality.
     # De-aliases resource descriptor document. Converts from new format to the old one.
     class Dealiaser
       KEYWORDS = TYPES + [TAG, PARAMETERS, RESOURCES]
 
       ##
+      # Recursively dealiases human-friendly tags.
       # @param [Hash] resource_descriptor Resource descriptor document hash.
       # @return [Hash] The de-aliased descriptor document.
       def self.dealias(hash)
@@ -19,7 +22,6 @@ module Crichton
       end
 
       private
-      ##
       # Replaces semantics, safe, unsafe, idempotent, descriptors, parameters and resources keywords
       # with descriptors keyword.
       def self.normalize(key, value, hash)
@@ -30,7 +32,6 @@ module Crichton
         hash.include?(TAG) ? hash[TAG].merge!(func.(value)) : hash[TAG] = func.(value)
       end
 
-      ##
       # Special keyword parameters. Defines semantics descriptors as url parameters.
       # Such descriptor elements will have extra information to indicate that: scope: url.
       # Otherwise, as per ALPS, we add type attribute to descriptor element, e.g. type: semantic
