@@ -1,3 +1,4 @@
+
 module Crichton
   ##
   # Logger
@@ -236,4 +237,5 @@ require 'crichton/discovery/entry_points'
 if defined?(Rails)
   require 'crichton/rake_lint'
   require 'core_ext/action_controller/responder'
+  require 'crichton/rails/generators/resource_description_generator'
 end

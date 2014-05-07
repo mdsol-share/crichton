@@ -3,6 +3,8 @@ lib_dir = File.expand_path("../lib", SPEC_DIR)
 LINT_DIR = File.expand_path("../lib/crichton/lint", SPEC_DIR)
 DISCOVERY_DIR = File.expand_path("../lib/crichton/discovery", SPEC_DIR)
 
+SPECS_TEMP_DIR = 'tmp'
+
 $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
 
@@ -18,6 +20,11 @@ Debugger.start
 Bundler.setup
 
 require 'crichton'
+
+# Delete the tmp specs directory and all its contents.
+require 'fileutils'
+FileUtils.rm_r SPECS_TEMP_DIR if File.exists?(SPECS_TEMP_DIR)
+Dir.mkdir SPECS_TEMP_DIR
 
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
 
