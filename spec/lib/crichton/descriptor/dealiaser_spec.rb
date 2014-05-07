@@ -5,7 +5,7 @@ module Crichton
   module Descriptor
     describe Dealiaser do
       before (:all) do
-        @resource_descriptor = '
+        @resource_descriptor = <<-DESCRIPTOR
 semantics:
   total_count:
     doc: The total count of DRDs.
@@ -28,21 +28,26 @@ resources:
   drd:
     descriptors:
       - href: name
-      - href: list'
+      - href: list
+DESCRIPTOR
       end
 
       let(:resource_descriptor) { YAML.load(@resource_descriptor) }
       let(:subject) { Dealiaser.dealias(resource_descriptor) }
 
       describe '#dealiase' do
+        it 'returns empty hash when resource descriptor has no keywords' do
+          subject = Dealiaser.dealias({})
+          expect(subject).to eq({})
+        end
+
         it 'dealiases document under descriptors tag' do
           expect(subject.keys).to eq(['descriptors'])
         end
 
         it 'specifies type attribute for all dealiased elements' do
-          [ 'total_count', 'list', 'update', 'create', 'drd' ].each do |type|
-            expect(subject['descriptors'][type]).to have_key('type')
-          end
+          properties =  %w(total_count list update create drd)
+          expect(properties.all? { |property| subject['descriptors'][property].include?('type') }).to be_true
         end
 
         it 'sets valid element type for semantic elements' do
