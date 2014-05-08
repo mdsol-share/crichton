@@ -136,7 +136,7 @@ module Crichton
           if dereferenced_hash[key]
             (result = dereferenced_hash[key]) ? result : {}
           else
-            raw_registry_lookup(key, registry, dereferenced_hash)
+            raw_registry_lookup(key, registry, dereferenced_hash) || {}
           end
         end
       end
