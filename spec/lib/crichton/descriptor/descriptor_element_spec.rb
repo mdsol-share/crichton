@@ -51,17 +51,13 @@ module Crichton
       end
 
       let(:options_registry) do
-        {}.tap do |hash|
-          raw_descriptors.each { |_, descriptor_element| hash.merge!(descriptor_element.descriptor_options) }
-        end
+        raw_descriptors.each_with_object({}) { |(_, descriptor_element), hash| hash.merge!(descriptor_element.descriptor_options) }
       end
 
       let(:dereferenced_hash) do
-        {}.tap do |dereferenced_hash|
-          raw_descriptors.each do |k, descriptor_element|
-            descriptor_element.dereference(registry, dereferenced_hash) do |h|
-              dereferenced_hash.merge!({ k => h })
-            end
+        raw_descriptors.each_with_object({}) do |(k, descriptor_element), dereferenced_hash|
+          descriptor_element.dereference(registry, dereferenced_hash) do |h|
+            dereferenced_hash.merge!({ k => h })
           end
         end
       end
