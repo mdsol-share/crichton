@@ -114,19 +114,9 @@ module Crichton
       def external_dereference
         lambda do |uri, registry, dereferenced_hash|
           unless dereferenced_hash[uri.to_s]
-            dereferenced_hash[uri.to_s] = external_profile_dereference(uri, registry, dereferenced_hash)
+            dereferenced_hash[uri.to_s] = registry.external_profile_dereference(uri, registry)
           end
           dereferenced_hash[uri.to_s]
-        end
-      end
-
-      def external_profile_dereference(uri, registry, dereferenced_hash)
-        {}.tap do |acc|
-          hash = registry.get_external_deserialized_profile(uri)
-          (hash[TAG] || {}).each do |tag, content|
-            descriptor_element = DescriptorElement.new(uri, tag, content)
-            descriptor_element.dereference(registry, dereferenced_hash) { |h| acc.merge!(h) }
-          end
         end
       end
 

@@ -6,163 +6,188 @@ module Crichton
     describe DescriptorElement do
       let(:registry) do
         registry = double('Registry')
-        registry.stub('raw_descriptors').and_return(@raw_descriptors)
-        registry.stub('get_external_deserialized_profile').and_return(@external_profile_registry)
-        registry.stub('options_registry').and_return(@options_registry = {})
+        registry.stub('raw_descriptors').and_return(raw_descriptors)
+        registry.stub('options_registry').and_return(options)
+        registry.stub('external_profile_dereference').and_return(external_dereference)
         registry
       end
-      let(:subject) { DescriptorElement.new('DRDs', @descriptor_id, @descriptor_element) }
 
-      let(:dereferenced_hash) do
-        subject.dereference(registry, @dereferenced_hash) do |h|
-          @dereferenced_hash.deep_merge!({ 'DRDs#name' => h })
-        end
-        @dereferenced_hash
+      let(:options) { { 'DRDs#names' => { 'id' => 'names', 'list' => [ 'samplename', 'drdname' ] } } }
+      let(:raw_descriptors) do
+        {
+            'DRDs#name' => DescriptorElement.new('DRDs', 'name', { 'type' => 'semantic' }),
+            'DRDs#update' => DescriptorElement.new('DRDs', 'update', {
+                'type' => 'idempotent', 'doc' => 'update transition',
+                'descriptors' => [{ 'href' => 'name', 'ext' => '_update_name' }]
+            }),
+            'DRDs#create' => DescriptorElement.new('DRDs', 'create', {
+                'type' => 'unsafe', 'href' => @update,
+                'descriptors' => [{ 'href' => 'name', 'ext' => '_create_name' }]
+            }),
+            'DRDs#_create_name' => DescriptorElement.new('DRDs', '_create_name', {
+                'doc' => 'Create name', 'field_type' => 'text',
+                'options' => { 'href' => 'DRDs#names' }
+            }),
+            'DRDs#_update_name' => DescriptorElement.new('DRDs', '_update_name', {
+                'doc' => 'Update name', 'sample' => 'samplename',
+                'options' => { 'id' => 'names', 'list' => [ 'samplename', 'drdname' ] }
+            }),
+            'DRDs#_size' => DescriptorElement.new('DRDs', '_size', {
+                'doc' => 'Size of the DRD', 'options' => { 'list' => [ 'small', 'large' ] }
+            })
+        }
       end
 
+      let(:external_dereference) do
+        {
+          'type' => 'idempotent', 'doc' => 'update transition',
+          'descriptors' => {
+              'name' => {
+                  'type' => 'semantic', 'doc' => 'Update name', 'sample' => 'samplename',
+                  'options' => { 'id' => 'names', 'list' => [ 'samplename', 'drdname' ] }
+              }
+          }
+        }
+      end
+
+      let(:options_registry) do
+        {}.tap do |hash|
+          raw_descriptors.each { |_, descriptor_element| hash.merge!(descriptor_element.descriptor_options) }
+        end
+      end
+
+      let(:dereferenced_hash) do
+        {}.tap do |dereferenced_hash|
+          raw_descriptors.each do |k, descriptor_element|
+            descriptor_element.dereference(registry, dereferenced_hash) do |h|
+              dereferenced_hash.merge!({ k => h })
+            end
+          end
+        end
+      end
+
+      let(:subject) { DescriptorElement.new(@document_id, @descriptor_id, @document) }
+
       describe '#initialize' do
-        before do
-          @dereferenced_hash = {}
-          @descriptor_id = 'name'
-          @descriptor_element = { 'doc' => 'The name of DRD', 'href' => 'http://alps.io/schema.org/Text' }
-          @raw_descriptors = { 'DRDs#name' => @descriptor_element }
-          @external_profile_registry = {}
+        before(:all) do
+          @document = { 'id' => 'ID', 'doc' => 'The name of DRD', 'href' => 'http://alps.io/schema.org/Text' }
         end
 
         it 'sets document id as descriptor id if passed descriptor id is nil' do
-          @descriptor_element = { 'id' => 'ID', 'doc' => 'The name of DRD', 'href' => 'http://alps.io/schema.org/Text' }
           @descriptor_id = nil
+          @document_id = nil
           expect(subject.descriptor_id).to eq('ID')
         end
 
         it 'sets empty hash if passed descriptor document is nil' do
-          @descriptor_element = nil
+          @document = nil
           expect(subject.descriptor_document).to be_empty
         end
 
         it 'sets descriptor_element passed to constructor' do
-          expect(subject.descriptor_document).to eq(@descriptor_element)
+          expect(subject.descriptor_document).to eq(@document)
         end
 
         it 'sets descriptor id passed to constructor' do
+          @descriptor_id = 'name'
           expect(subject.descriptor_id).to eq('name')
         end
 
         it 'sets document id passed to constructor' do
+          @document_id = 'DRDs'
           expect(subject.document_id).to eq('DRDs')
         end
       end
 
       describe '#descriptor_options' do
-        before(:all) do
-          @dereferenced_hash = {}
-          @descriptor_id = 'name'
-        end
-
         it 'returns empty hash if no options found in descriptor element' do
-          @descriptor_element = {}
-          expect(subject.descriptor_options).to be_empty
+          expect(raw_descriptors['DRDs#name'].descriptor_options).to be_empty
         end
 
         it 'registers available options found in descriptor element' do
-          @descriptor_element = {
-              'doc' => 'The name of DRD',
-              'href' => 'http://alps.io/schema.org/Integer',
-              'options' => { 'id' => 'name_list', 'list' => ['samplename','drdname'] }
-          }
-          expect(subject.descriptor_options.keys).to eq([ 'DRDs#name_list' ])
-        end
-
-        it 'returns registered options found in descriptor element' do
-          @descriptor_element = {
-              'doc' => 'The name of DRD',
-              'href' => 'http://alps.io/schema.org/Integer',
-              'options' => { 'id' => 'name_list', 'list' => ['samplename','drdname'] }
-          }
-          expect(subject.descriptor_options['DRDs#name_list']).to eq({ 'id' => 'name_list', 'list' => ['samplename','drdname'] })
+          expected = { 'DRDs#names' => { 'id' => 'names', 'list' => [ 'samplename', 'drdname' ] } }
+          expect(raw_descriptors['DRDs#_update_name'].descriptor_options).to eq(expected)
         end
 
         it 'returns empty hash if options does not have id' do
-          @descriptor_element = {
-              'doc' => 'The name of DRD',
-              'href' => 'http://alps.io/schema.org/Integer',
-              'options' => { 'list' => ['samplename','drdname'] }
-          }
-          expect(subject.descriptor_options).to be_empty
+          expect(raw_descriptors['DRDs#_size'].descriptor_options).to be_empty
+        end
+
+        it 'returns correctly dereferenced options' do
+          expect(options_registry).to eq(options)
         end
       end
 
       describe '#dereference' do
-        before do
-          @dereferenced_hash = {}
-          @descriptor_id = 'name'
-          @descriptor_element = { 'doc' => 'The name of DRD', 'href' => 'http://alps.io/schema.org/Text' }
-          @raw_descriptors = { 'DRDs#name' => @descriptor_element }
-          @external_profile_registry = {}
-        end
-
         it 'returns the same hash if nothing to dereference' do
-          expect(dereferenced_hash['DRDs#name']).to eq(registry.raw_descriptors['DRDs#name'])
+          expect(dereferenced_hash['DRDs#name']).to eq(raw_descriptors['DRDs#name'].descriptor_document)
         end
 
-        context 'when dereferencing external href' do
-          before do
-            @external_profile_registry = { 'descriptors' => { 'Text' => { 'doc' => 'Simple text', 'field' => 'fieldvalue' } } }
+        share_examples_for 'dereferencing href' do
+          it 'contains additional properties from dereferenced descriptor' do
+            expect(dereferenced_hash['DRDs#create']).to have_key('doc')
           end
 
-          it 'contains local property values instead of dereferenced property values' do
-            @external_profile_registry = { 'descriptors' => { 'Text' => { 'doc' => 'Simple text' } } }
-            expect(dereferenced_hash['DRDs#name']['doc']).to eq('The name of DRD')
+          it 'contains additional properties from dereferenced descriptor and value is valid' do
+            expect(dereferenced_hash['DRDs#create']['doc']).to eq('update transition')
           end
 
-          it 'contains extra properties from dereferenced descriptors' do
-            expect(dereferenced_hash['DRDs#name']).to have_key('field')
+          it 'contains correct values which are not overridden after dereferencing' do
+            expect(dereferenced_hash['DRDs#create']['type']).to eq('unsafe')
           end
 
-          it 'contains correct property values from dereferenced descriptors' do
-            expect(dereferenced_hash['DRDs#name']['field']).to eq('fieldvalue')
+          it 'contains dereferenced nested property' do
+            expect(dereferenced_hash['DRDs#create']['descriptors']).to have_key('name')
+          end
+
+          it 'contains extensions dereferenced nested property' do
+            expect(dereferenced_hash['DRDs#create']['descriptors']['name']).to have_key('field_type')
+          end
+
+          it 'contains property from nested dereferenced descriptor' do
+            expect(dereferenced_hash['DRDs#create']['descriptors']['name']).to have_key('sample')
+          end
+
+          it 'contains original property value of nested descriptor after dereferencing' do
+            expect(dereferenced_hash['DRDs#create']['descriptors']['name']['doc']).to eq('Create name')
+          end
+
+          it 'contains correctly dereferenced descriptor' do
+            expected_result = {
+                'type' => 'unsafe',
+                'doc' => 'update transition',
+                'href' => @update,
+                'descriptors' => {
+                    'name' => {
+                        'type' => 'semantic',
+                        'doc' => 'Create name',
+                        'field_type' => 'text',
+                        'sample' => 'samplename',
+                        'options' => {
+                            'id' => 'names',
+                            'list' => [ 'samplename', 'drdname' ]
+                        }
+                    }
+                }
+            }
+            expect(dereferenced_hash['DRDs#create']).to eq(expected_result)
           end
         end
 
         context 'when dereferencing local href' do
-          it 'contains additional properties from referenced descriptor' do
-            @descriptor_element = { 'doc' => 'The name of DRD', 'href' => 'alias' }
-            @raw_descriptors = { 'DRDs#alias' => DescriptorElement.new('DRDs', 'alias', { 'field' => 'value' }) }
-            expect(dereferenced_hash['DRDs#name']).to have_key('field')
+          before(:all) do
+            @update = 'update'
           end
 
-          it 'contains dereferenced nested property' do
-            @dereferenced_hash = { 'DRDs#other_name' => { 'doc' => 'Other name' } }
-            @descriptor_element  = { 'doc' => 'The name of DRD', 'descriptors' => [{ 'href' => 'other_name' }] }
-            expect(dereferenced_hash['DRDs#name']['descriptors']).to have_key('other_name')
+          it_behaves_like 'dereferencing href'
+        end
+
+        context 'when dereferencing external href' do
+          before(:all) do
+            @update = 'http://example.org/Something'
           end
 
-          it 'contains dereferenced nested property and valid value' do
-            @dereferenced_hash = { 'DRDs#other_name' => { 'doc' => 'Other name' } }
-            @descriptor_element  = { 'doc' => 'The name of DRD', 'descriptors' => [{ 'href' => 'other_name' }] }
-            expect(dereferenced_hash['DRDs#name']['descriptors']['other_name']).to eq({'doc' => 'Other name'})
-          end
-
-          it 'contains local dereferenced nested value' do
-            @descriptor_element  = { 'doc' => 'The name of DRD', 'href' => 'alias', 'descriptors' => [{ 'href' => 'other_name' }] }
-            @dereferenced_hash = { 'DRDs#other_name' => { 'doc' => 'Other name' },
-                                   'DRDs#alias' => { 'descriptors' => { 'other_name' => { 'doc' => 'Alias' } } } }
-            expect(dereferenced_hash['DRDs#name']['descriptors']['other_name']).to eq({'doc' => 'Other name'})
-          end
-
-          it 'contains property from nested dereferenced descriptor' do
-            @descriptor_element  = { 'doc' => 'The name of DRD', 'href' => 'alias', 'descriptors' => [{ 'href' => 'other_name' }] }
-            @dereferenced_hash = { 'DRDs#other_name' => { 'doc' => 'Other name' },
-                                   'DRDs#alias' => { 'descriptors' => { 'other_name' => { 'sample' => 'Alias' } } } }
-            expect(dereferenced_hash['DRDs#name']['descriptors']['other_name']).to have_key('sample')
-          end
-
-          it 'contains nested dereferenced descriptor' do
-            @descriptor_element  = { 'doc' => 'The name of DRD', 'href' => 'alias', 'descriptors' => [{ 'href' => 'other_name' }] }
-            @dereferenced_hash = { 'DRDs#other_name' => { 'doc' => 'Other name' },
-                                   'DRDs#alias' => { 'descriptors' => { 'last_name' => { 'sample' => 'Alias' } } } }
-            expect(dereferenced_hash['DRDs#name']['descriptors']).to have_key('last_name')
-          end
+          it_behaves_like 'dereferencing href'
         end
       end
     end
