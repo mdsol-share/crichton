@@ -10,6 +10,7 @@ module Crichton
     # De-references itself.
     class ResourceDereferencer
       KEYWORDS = [ID, DOC, LINKS, TAG, EXTENSIONS]
+
       attr_reader :resource_id
       attr_reader :resource_document
       attr_reader :dealiased_document
@@ -20,10 +21,10 @@ module Crichton
       #
       # @param [Hash] document Resource descriptor document.
       def initialize(document)
-        @resource_document ||= document
-        @dealiased_document ||= Dealiaser.dealias(document)
-        @raw_profile_document ||= dealiased_document.select { |k, _| KEYWORDS.include?(k) }
-        @resource_id ||= document[ID]
+        @resource_document = document
+        @dealiased_document = Dealiaser.dealias(document)
+        @raw_profile_document = dealiased_document.select { |k, _| KEYWORDS.include?(k) }
+        @resource_id = document[ID]
       end
 
       ##
