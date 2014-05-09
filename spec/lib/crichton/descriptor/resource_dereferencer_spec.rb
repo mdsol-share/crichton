@@ -62,6 +62,10 @@ module Crichton
           }
         end
 
+        it 'returns valid document id' do
+          expect(dereferenced_document['id']).to eq(hash['id'])
+        end
+
         it 'returns valid dereferenced descriptor' do
           expect(dereferenced_document['descriptors']['name']).to eq(@descriptors['DRDs#name'])
         end
