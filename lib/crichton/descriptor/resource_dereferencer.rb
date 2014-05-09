@@ -9,9 +9,7 @@ module Crichton
     # raw document, de-aliased document, dereferenced document.
     # De-references itself.
     class ResourceDereferencer
-
       KEYWORDS = [ID, DOC, LINKS, TAG, EXTENSIONS]
-
       attr_reader :resource_id
       attr_reader :resource_document
       attr_reader :dealiased_document
@@ -44,7 +42,7 @@ module Crichton
       # @return [Hash] Dereferenced resource descriptor document.
       def dereference(registry)
         @dereferenced_document ||= dealiased_document.deep_dup.tap do |acc|
-          acc[TAG].each do |tag, _|
+          acc[TAG].keys.each do |tag|
             registry["#{resource_id}\##{tag}"] ? acc[TAG][tag] = registry["#{resource_id}\##{tag}"] : {}
           end
         end

@@ -39,7 +39,7 @@ module Crichton
         let(:resource_descriptors) { subject.resource_descriptors }
 
         it 'registers all available descriptor elements in the document' do
-          expect(resource_descriptors.keys).to eq([ 'DRDs#name', 'DRDs#update', 'DRDs#_name' ])
+          expect(resource_descriptors.keys).to eq(%w(DRDs#name DRDs#update DRDs#_name))
         end
 
         it 'registers descriptor element in the document with valid content' do
@@ -57,8 +57,8 @@ module Crichton
         before(:all) do
           hash = { 'type' => 'semantic', 'href' => 'href: http://alps.io/schema.org/Text' }
           @descriptors = {
-              'DRDs#name' => hash,
-              'DRDs#update' => { 'type' => 'unsafe', 'descriptors' => { 'name' => hash.merge({ 'scope' => 'uri' }) } }
+            'DRDs#name' => hash,
+            'DRDs#update' => { 'type' => 'unsafe', 'descriptors' => { 'name' => hash.merge({ 'scope' => 'uri' }) } }
           }
         end
 
