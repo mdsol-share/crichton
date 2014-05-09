@@ -37,7 +37,7 @@ idempotent:
         end
 
         it 'registers descriptors elements in registry' do
-          resource_descriptors.values.each { |v| expect(v).to be_a Crichton::Descriptor::DescriptorElement }
+          expect(resource_descriptors.values.all? { |v| v.is_a?(Crichton::Descriptor::DescriptorElement) }).to be_true
         end
       end
     end

@@ -1,5 +1,6 @@
 require 'crichton/descriptor/dealiaser'
 require 'crichton/descriptor/descriptor_element'
+require 'crichton/descriptor/descriptor_keywords'
 
 module Crichton
   module Descriptor
@@ -8,7 +9,6 @@ module Crichton
     # raw document, de-aliased document, dereferenced document.
     # De-references itself.
     class ResourceDereferencer
-      include Crichton::Helpers::DescriptorKeywords
 
       KEYWORDS = [ID, DOC, LINKS, TAG, EXTENSIONS]
 
@@ -37,7 +37,6 @@ module Crichton
           register(raw_profile_document) { |h| hash.deep_merge!(h) }
         end
       end
-
 
       ##
       # Returns dealiased, dereferenced resource descriptor document.
