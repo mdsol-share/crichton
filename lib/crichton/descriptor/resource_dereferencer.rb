@@ -24,7 +24,7 @@ module Crichton
       def initialize(document)
         @resource_document ||= document
         @dealiased_document ||= Dealiaser.dealias(document)
-        @raw_profile_document ||= dealiased_document.select { |k,_| KEYWORDS.include?(k) }
+        @raw_profile_document ||= dealiased_document.select { |k, _| KEYWORDS.include?(k) }
         @resource_id ||= document[ID]
       end
 
@@ -41,19 +41,20 @@ module Crichton
       ##
       # Returns dealiased, dereferenced resource descriptor document.
       #
-      # @return [Hash] Old-style dereferenced resource descriptor document.
+      # @return [Hash] Dereferenced resource descriptor document.
       def dereference(registry)
         @dereferenced_document ||= dealiased_document.deep_dup.tap do |acc|
-          acc[TAG].each do |k,v|
-            registry["#{resource_id}\##{k}"] ? acc[TAG][k] = registry["#{resource_id}\##{k}"] : {}
+          acc[TAG].each do |tag, _|
+            registry["#{resource_id}\##{tag}"] ? acc[TAG][tag] = registry["#{resource_id}\##{tag}"] : {}
           end
         end
       end
 
       private
       def register(hash, &block)
-        descriptors(hash).each do |k,v|
-          yield({"#{resource_id}\##{k}" => DescriptorElement.new(resource_id, k, v)}, register(v, &block)) if v.is_a?(Hash)
+        descriptors(hash).each do |tag, obj|
+          key = "#{resource_id}\##{tag}"
+          yield({ key => DescriptorElement.new(resource_id, tag, obj) }, register(obj, &block)) if obj.is_a?(Hash)
         end
       end
 
