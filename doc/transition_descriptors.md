@@ -15,7 +15,7 @@ by their type under corresponding top-level element.
     * `rt` - The return type, as an absolute or relative URI to an ALPS profile: REQUIRED.
 
 ## Example
-The following example highlights a few parts of the [Example Resource Descriptor Document][] Sections associated
+The following example highlights a few parts of the [Example API Descriptor Document][] Sections associated
 with transition descriptors and any related data descriptors. In-line comments are expounded in the structure and some 
 material is removed for simplicity (indicated by # ...). 
 
@@ -81,5 +81,5 @@ media-type.
 media-type if the ID of the descriptor is not the required semantic of the descriptor, and is rather a uniqueified ID.
 * MUST have a related transition in a State Descriptor for the associated resource.
 
-[Back to Resource Descriptor Document](descriptors_document.md)
-[Example Resource Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Back to API Descriptor Document](descriptors_document.md)
+[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml

@@ -89,6 +89,6 @@ resources:
               - error 
 ```
 
-[Back to Resource Descriptor Document](descriptors_document.md)
-[Example Resource Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Back to API Descriptor Document](descriptors_document.md)
+[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
 [Data Descriptors]: data_descriptors.md
