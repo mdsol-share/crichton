@@ -58,10 +58,6 @@ semantics:
     doc: An array of embedded DRD resources.
     href: http://alps.io/schema.org/Array
     embed: multiple-optional
-  uuid:
-    doc: The UUID of the DRD.
-    href: http://alps.io/schema.org/Text
-    sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
 ```
 
 ### Referenced data descriptors defined under `parameters` element
