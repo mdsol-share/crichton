@@ -4,7 +4,7 @@ require 'crichton/descriptor/base'
 module Crichton
   module Descriptor
     describe Base do
-      let(:descriptor_document) { drds_descriptor }
+      let(:descriptor_document) { new_drds_descriptor }
       let(:resource_descriptor) { mock('resource_descriptor') }
       let(:descriptor) { Base.new(resource_descriptor, descriptor_document) }
   
