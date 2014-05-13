@@ -75,7 +75,7 @@ module Crichton
       it 'returns a hash of registered resource descriptors keyed by document id' do
         resources_registry = registry.register_single(new_drds_descriptor)
 
-        resources_registry.each do |key,resource_dereferencer|
+        resources_registry.each do |key, resource_dereferencer|
           expect(registry.resources_registry[key]).to eq(resource_dereferencer)
         end
       end
@@ -123,7 +123,7 @@ module Crichton
       end
 
       it 'returns a hash of registered resource dereferencer instances' do
-        registry.register_single(new_drds_descriptor).each do |_,v|
+        registry.register_single(new_drds_descriptor).values.each do |v|
           expect(v).to be_a(Crichton::Descriptor::ResourceDereferencer)
         end
       end
