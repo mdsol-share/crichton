@@ -5,13 +5,13 @@ module Crichton
   describe Registry do
     describe '.initialize' do
       context 'with a directory of resource descriptors specified' do
-        # before do
-        #   Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
-        # end
-        #
-        # it 'loads resource descriptors from a resource descriptor directory if configured' do
-        #   expect(Registry.new.descriptor_registry.count).to eq(29)
-        # end
+        before do
+          Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
+        end
+
+        it 'loads resource descriptors from a resource descriptor directory if configured' do
+          expect(Registry.new.descriptor_registry).to have(29).items
+        end
       end
 
       context 'without a directory of resource descriptors specified' do
@@ -41,7 +41,7 @@ module Crichton
       it 'loads all descriptors from a resource descriptor' do
         registry = Registry.new(automatic_load: false)
         registry.register_single(new_drds_descriptor)
-        expect(registry.raw_descriptor_registry.keys.count).to eq(29)
+        expect(registry.raw_descriptor_registry.keys).to have(29).items
       end
     end
 
@@ -145,7 +145,7 @@ module Crichton
 
       context 'with a filename as an argument' do
         before do
-          @descriptor = drds_filename
+          @descriptor = new_drds_filename
         end
 
         it_behaves_like 'a resource descriptor registration'
@@ -158,7 +158,7 @@ module Crichton
 
       context 'with a hash resource descriptor as an argument' do
         before do
-          @descriptor = drds_descriptor
+          @descriptor = new_drds_descriptor
         end
 
         it_behaves_like 'a resource descriptor registration'
@@ -177,6 +177,28 @@ module Crichton
         registry.register_single(new_drds_descriptor)
         expect(registry.registrations?).to be_true
       end
+    end
+
+    describe '#external_profile_dereference' do
+      let(:registry) { Registry.new(automatic_load: false) }
+      let(:uri) { @uri }
+
+      it 'returns empty hash when uri can not be resolved' do
+        @uri = 'http://example.org/Something'
+        expect(registry.external_profile_dereference(uri)).to be_empty
+      end
+
+      it 'returns empty hash when deserialized hash does not have descriptors' do
+        registry.stub('get_external_deserialized_profile').and_return({ 'doc' => 'Some doc' })
+        expect(registry.external_profile_dereference(uri)).to be_empty
+      end
+
+      it 'returns dereferenced hash when can be dereferenced' do
+        @uri = 'http://alps.io/schema.org/DataType'
+        expected_result = { 'type' => 'semantic', 'doc' => { 'html' => 'The basic data types such as Integers, Strings, etc.' } }
+        expect(registry.external_profile_dereference(uri)).to eq(expected_result)
+      end
+
     end
   end
 end
