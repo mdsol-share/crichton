@@ -1,6 +1,6 @@
 # @title Profile Metadata
 # Profile Metadata
-The top-level of a _Resource Descriptor Document_ contains metadata associated with the profile itself.
+The top-level of an _API Descriptor Document_ contains metadata associated with the resource profile itself.
 
 ## Properties
 * `id` - The ID of the profile as a upper camel-case name of the profile. Used to generate the profile URI: REQUIRED.
@@ -29,6 +29,6 @@ links:
 
 The associated profile URI would be: http://alps.example.org/DRDs.
 
-[Back to Resource Descriptor Document](descriptors_document.md)
-[Example Resource Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Back to API Descriptor Document](descriptors_document.md)
+[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
 [Crichton Configuration]:(crichton_configuration.md)
