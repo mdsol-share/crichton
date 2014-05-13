@@ -245,7 +245,7 @@ module Support
   end
 
   module ALPSSchema
-    AlpsInteger = <<-'HERE'
+    AlpsInteger = <<-HERE
     <alps>
      <descriptor id="Integer" type="semantic" href="http://alps.io/schema.org/Number">
       <doc format="html">
@@ -255,7 +255,7 @@ module Support
     </alps>
     HERE
 
-    AlpsArray = <<-'HERE'
+    AlpsArray = <<-HERE
     <alps>
      <descriptor id="Array" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -265,7 +265,7 @@ module Support
     </alps>
     HERE
 
-    AlpsText = <<-'HERE'
+    AlpsText = <<-HERE
     <alps>
      <descriptor id="Text" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -275,7 +275,7 @@ module Support
     </alps>
     HERE
 
-    AlpsDateTime = <<-'HERE'
+    AlpsDateTime = <<-HERE
     <alps>
      <descriptor id="DateTime" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -285,7 +285,7 @@ module Support
     </alps>
     HERE
 
-    AlpsBoolean = <<-'HERE'
+    AlpsBoolean = <<-HERE
     <alps>
      <descriptor id="Boolean" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -295,7 +295,7 @@ module Support
     </alps>
     HERE
 
-    AlpsLeviathan = <<-'HERE'
+    AlpsLeviathan = <<-HERE
     <alps>
      <descriptor id="Leviathan" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -305,7 +305,7 @@ module Support
     </alps>
     HERE
 
-    AlpsDataType = <<-'HERE'
+    AlpsDataType = <<-HERE
     <alps>
      <descriptor id="DataType" type="semantic">
       <doc format="html">
@@ -315,7 +315,7 @@ module Support
     </alps>
     HERE
 
-    AlpsNumber = <<-'HERE'
+    AlpsNumber = <<-HERE
     <alps>
      <descriptor id="Number" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
