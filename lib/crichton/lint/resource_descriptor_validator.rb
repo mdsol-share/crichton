@@ -5,7 +5,7 @@ module Crichton
     # class to lint validate with respect to catastrophic errors
     class ResourceDescriptorValidator < BaseValidator
       # @private the three major mandatory sections in a resource descriptor document
-      MAJOR_SECTIONS = %w(states descriptors protocols)
+      MAJOR_SECTIONS = %w(descriptors protocols)
       section :catastrophic
 
       # standard lint validate method
@@ -35,7 +35,7 @@ module Crichton
         add_error('catastrophic.missing_main_id') unless resource_descriptor.id
         add_warning('profile.missing_version') unless resource_descriptor.version
         add_error('profile.missing_doc') unless resource_descriptor.doc
-        add_error('profile.missing_self') unless resource_descriptor.links['self'].href
+        add_error('profile.missing_self') unless resource_descriptor.links['profile'].href
         add_error('profile.missing_help') unless resource_descriptor.links['help'].href
       end
     end
