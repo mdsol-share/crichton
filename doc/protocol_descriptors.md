@@ -1,8 +1,8 @@
 # @title Protocol Descriptors
 # Overview
 Protocol descriptors define the protocol specific implementation of the transitions defined semantically for the 
-resource(s) in the a _Resource Descriptor Document_. Currently, only `http` is implemented. Protocol descriptors MUST be 
-defined using "protocolname_protocol" naming convention. For example, 'http_protocol', 'tcp_protocol'...etc.
+resource(s) in the _API Descriptor Document_. Currently, only `http` is implemented. Protocol descriptors MUST be
+defined using "[protocol name]_protocol" naming convention. For example, 'http_protocol', 'tcp_protocol', etc.
 
 ## Properties
 The following highlight the properties of supported protocol descriptors.
@@ -44,5 +44,5 @@ _Resource Descriptor_. Thus a protocol descriptor:
 * MUST correspond to a supported protocol (currently only HTTP).
 * MUST correspond to transition descriptor associated with a resource profile in the _Resource Descriptor_.
 
-[Back to Resource Descriptor Document](descriptors_document.md)
-[Example Resource Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Back to API Descriptor Document](descriptors_document.md)
+[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
