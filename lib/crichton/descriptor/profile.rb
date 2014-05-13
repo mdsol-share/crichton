@@ -29,11 +29,14 @@ module Crichton
       end
 
       def descriptors
-        @descriptors[:all] ||= (descriptor_document['descriptors'] || {}).keys.map do |id|
-          descriptor = Detail.new(resource_descriptor, self, id)
-          @self_transition = descriptor if descriptor.name == 'self' && descriptor.transition?
-          descriptor
-        end.freeze
+        @descriptors[:all] ||= begin
+          doc = descriptor_document['descriptors'] && descriptor_document['descriptors'].is_a?(Hash)
+          (doc ? descriptor_document['descriptors'] : {}).keys.map do |id|
+            descriptor = Detail.new(resource_descriptor, self, id)
+            @self_transition = descriptor if descriptor.name == 'self' && descriptor.transition?
+            descriptor
+          end.freeze
+        end
       end
 
       # Returns the descriptor help link descriptor. If no help link is defined on the descriptor is defined, it 
