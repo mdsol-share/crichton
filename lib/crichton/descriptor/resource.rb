@@ -151,7 +151,6 @@ module Crichton
       def verify_descriptor(descriptor)
         err_msg = ''
         err_msg << " missing id in #{descriptor.inspect}" unless descriptor['id']
-        err_msg << " missing version for the resource #{descriptor['name']}." unless descriptor['version']
         
         raise ArgumentError, 'Resource descriptor:' << err_msg unless err_msg.empty?
       end
