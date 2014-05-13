@@ -45,7 +45,7 @@ module Crichton
     # @return [Hash] The registered resource descriptors, if any.
     def descriptor_registry
       @descriptor_registry ||= {}.tap do |registry|
-        resources_registry.each do |_, resource_dereferencer|
+        resources_registry.values.each do |resource_dereferencer|
           hash = resource_dereferencer.dereference(dereferenced_descriptors)
           resource = Crichton::Descriptor::Resource.new(hash)
           resource.descriptors.each { |descriptor| registry[descriptor.id] = descriptor }
@@ -59,7 +59,7 @@ module Crichton
     # @return [Hash] The registered resource descriptors, if any.
     def raw_descriptor_registry
       @raw_descriptor_registry ||= {}.tap do |registry|
-        resources_registry.each do |_, resource_dereferencer|
+        resources_registry.values.each do |resource_dereferencer|
           resource = Crichton::Descriptor::Resource.new(resource_dereferencer.dealiased_document)
           resource.descriptors.each { |descriptor| registry[descriptor.id] = descriptor }
         end
@@ -85,7 +85,7 @@ module Crichton
     # @return [Hash] The registered options descriptors, if any.
     def options_registry
       @options_registry ||= {}.tap do |hash|
-        raw_descriptors.each { |_, descriptor_element| hash.merge!(descriptor_element.descriptor_options) }
+        raw_descriptors.values.each { |descriptor_element| hash.merge!(descriptor_element.descriptor_options) }
       end
     end
 
@@ -108,9 +108,7 @@ module Crichton
     # Contains hash of all descriptors from all resource descriptor files. Links are dereferenced.
     def dereferenced_descriptors
       @dereferenced_descriptors ||= raw_descriptors.each_with_object({}) do |(k, descriptor_element), hash|
-        descriptor_element.dereference(self, hash) do |h|
-          hash.deep_merge!({ k => h })
-        end
+        descriptor_element.dereference(self, hash) { |h| hash.deep_merge!({ k => h }) }
       end
     end
 
@@ -122,7 +120,7 @@ module Crichton
           dereferenced_hash.deep_merge!({ uri.to_s => h })
         end
       end
-      result[uri.to_s]
+      result[uri.to_s] || {}
     end
 
     def resources_registry
