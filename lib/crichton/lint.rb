@@ -6,7 +6,6 @@ require 'crichton/lint/resource_descriptor_validator'
 require 'crichton/lint/states_validator'
 require 'crichton/lint/descriptors_validator'
 require 'crichton/lint/protocol_validator'
-require 'crichton/lint/datalists_validator'
 require 'colorize'
 
 # Needed to avoid warnings when using this library
@@ -22,8 +21,11 @@ module Crichton
     def self.validate(filename, options = {})
       # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.
       begin
-        yml_output = YAML.load_file(filename)
-        resource_descriptor = Crichton::Descriptor::Resource.new(yml_output)
+        registry = Crichton::Registry.new(automatic_load: false)
+        registry.register_single(filename)
+        resource_dereferencer = registry.resources_registry.values.first
+        hash = resource_dereferencer.dereference(registry.dereferenced_descriptors)
+        resource_descriptor = Crichton::Descriptor::Resource.new(hash)
       rescue StandardError => e
         puts I18n.t('catastrophic.cant_load_file', exception_message: e.message).red
         return
@@ -53,7 +55,6 @@ module Crichton
       validators << StatesValidator.new(resource_descriptor, filename, options)
       validators << DescriptorsValidator.new(resource_descriptor, filename, options)
       validators << ProtocolValidator.new(resource_descriptor, filename, options)
-      validators << DatalistsValidator.new(resource_descriptor, filename, options)
 
       validators.each do |validator|
         validator.validate
