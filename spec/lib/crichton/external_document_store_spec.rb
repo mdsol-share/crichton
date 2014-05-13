@@ -31,6 +31,7 @@ module Crichton
         Crichton.config.stub(:external_documents_store_directory).and_return(@pathname)
         Dir.should_receive(:exists?).with(@pathname).and_return(true)
         ExternalDocumentStore.new
+        Crichton.clear_config
       end
 
       it 'uses the supplied storage path if it is explicitly passed into the new call' do
@@ -39,6 +40,7 @@ module Crichton
         Crichton.config.stub(:external_documents_store_directory).and_return(@pathname)
         Dir.should_receive(:exists?).with(overridden_pathname).and_return(true)
         ExternalDocumentStore.new(overridden_pathname)
+        Crichton.clear_config
       end
 
       it 'creates the storage path if it does not exist' do
