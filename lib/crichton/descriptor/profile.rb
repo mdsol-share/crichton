@@ -1,6 +1,7 @@
 require 'crichton/descriptor/base'
 require 'crichton/descriptor/link'
 require 'crichton/alps/serialization'
+
 module Crichton
   
   module Descriptor
@@ -30,8 +31,8 @@ module Crichton
 
       def descriptors
         @descriptors[:all] ||= begin
-          doc = descriptor_document['descriptors'] && descriptor_document['descriptors'].is_a?(Hash)
-          (doc ? descriptor_document['descriptors'] : {}).keys.map do |id|
+          doc = descriptor_document['descriptors'].is_a?(Hash) && descriptor_document['descriptors'] || {}
+          doc.keys.map do |id|
             descriptor = Detail.new(resource_descriptor, self, id)
             @self_transition = descriptor if descriptor.name == 'self' && descriptor.transition?
             descriptor
