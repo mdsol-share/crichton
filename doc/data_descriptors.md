@@ -10,24 +10,24 @@ unique within the document. The `name` property can be used to specify the seman
 response. Otherwise, the ID will be the name of the associated attribute in the representation of the resource.
 
 * \[descriptor_key\] - A YAML key that is the unique ID of the associated ALPS profile.
-    * `doc` - The description of the semantic descriptor: REQUIRED.
-    * `name` - The name associated with the related element in a response. Overrides the ID of the descriptor as the
+   * `doc` - The description of the semantic descriptor: REQUIRED.
+   * `name` - The name associated with the related element in a response. Overrides the ID of the descriptor as the
   default name: OPTIONAL.
-    * `type` - The type of the descriptor. For data related descriptors, only use `semantic`. When data descriptors are 
+   * `type` - The type of the descriptor. For data related descriptors, only use `semantic`. When data descriptors are 
   grouped under `semantics` or `parameters` tags, the underlying `type` is `semantic`: OPTIONAL
-    * `href` - The underlying ALPS profile, either representing another resource or a primitive profile. See 
+   * `href` - The underlying ALPS profile, either representing another resource or a primitive profile. See 
   [Primitive Profiles](primitive_profiles.md) for more information: REQUIRED.
-    * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
-    * `embed` - Indicates that this resource should be embedded in a response either inline or as a link.
-        Valid values are:
-        - `single`
-        - `multiple`
-        - `single-link`
-        - `multiple-link`
-        - `single-optional`
-        - `multiple-optional`
-        - `single-optional-link`
-        - `multiple-optional-link`
+   * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
+   * `embed` - Indicates that this resource should be embedded in a response either inline or as a link.
+    Valid values are:
+      * `single`
+      * `multiple`
+      * `single-link`
+      * `multiple-link`
+      * `single-optional`
+      * `multiple-optional`
+      * `single-optional-link`
+      * `multiple-optional-link`
 
 The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
 embedded as an array. The values that contain `optional` indicate that the client can request the
@@ -58,10 +58,6 @@ semantics:
     doc: An array of embedded DRD resources.
     href: http://alps.io/schema.org/Array
     embed: multiple-optional
-  uuid:
-    doc: The UUID of the DRD.
-    href: http://alps.io/schema.org/Text
-    sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
 ```
 
 ### Referenced data descriptors defined under `parameters` element

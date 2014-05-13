@@ -78,8 +78,8 @@ A number of the properties in a _API Descriptor Document_ directly correspond to
 * `id` - Unless explicitly defined for a particular descriptor, it is defined by the YAML key associated with a 
 descriptor.
 * `doc` - A human-readable description.
-* `href` - The URI of the associated ALPS profile corresponding to the attribute. A relative URI indicates an element
-in another local _API Descriptor Document_.
+* `href` - The URI of the associated ALPS profile corresponding to the attribute.
+A relative URI indicates an element in another local _API Descriptor Document_.
 * `links` - Related links. The YAML keys correspond to a link `rel` attribute and the value with the URI 
 specified in the link `href` attribute.
 * `name` - Used to specify descriptor names which would otherwise have the same, non-unique `id` (YAML key).
