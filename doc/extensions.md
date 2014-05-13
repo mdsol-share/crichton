@@ -59,15 +59,22 @@ semantics:
     href: http://alps.io/schema.org/Text
 
 extensions:
+  # creates an extension descriptor based on semantic descriptor: name
   _name: &_name
     <<: *name
     field_type: text
     sample: drdname
+  # creates an extension descriptor based on extension descriptor: _name
+  # to be used as extension descriptor in create transition
+  # see example below
   _create_name:
     <<: *_name
     validators:
       - required
       - maxlength: 50
+  # creates an extension descriptor based on extension descriptor: _name
+  # to be used as extension descriptor in update transition
+  # see example below
   _update_name:
     <<: *_name
     validators:
@@ -87,6 +94,20 @@ safe:
       	field_type: text
 	    validators:
 	      - required
+unsafe:
+  create:
+    doc: Creates a DRD.
+    rt: drd
+    parameters:
+      - href: name
+        ext: _create_name
+idempotent:
+  update:
+    doc: Returns a list of DRDs that satisfy the search term.
+    rt: drds
+    parameters:
+      - href: name
+        ext: _update_name
 ```
 
 [Back to API Descriptor Document](descriptors_document.md)
