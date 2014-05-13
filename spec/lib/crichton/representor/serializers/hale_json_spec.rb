@@ -14,7 +14,7 @@ module Crichton
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
         stub_example_configuration
-        Crichton.initialize_registry(drds_descriptor)
+        Crichton.initialize_registry(new_drds_descriptor)
         @serializer = HaleJsonSerializer
       end
       
