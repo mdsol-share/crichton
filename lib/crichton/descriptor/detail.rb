@@ -133,7 +133,7 @@ module Crichton
       ##
       # Whether descriptor has scope attribute. If it has, considered to be parameter for url.
       def scope?
-        descriptor_document['scope']
+        descriptor_document['scope'].present?
       end
 
       ##
