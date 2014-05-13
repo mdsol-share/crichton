@@ -114,7 +114,7 @@ module Crichton
       def external_dereference
         lambda do |uri, registry, dereferenced_hash|
           unless dereferenced_hash[uri.to_s]
-            dereferenced_hash[uri.to_s] = registry.external_profile_dereference(uri, registry)
+            dereferenced_hash[uri.to_s] = registry.external_profile_dereference(uri)
           end
           dereferenced_hash[uri.to_s]
         end
