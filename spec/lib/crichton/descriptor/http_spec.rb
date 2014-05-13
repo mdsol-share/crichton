@@ -4,7 +4,7 @@ require 'crichton/descriptor/http'
 module Crichton
   module Descriptor
     describe Http do
-      let(:http_protocol) { drds_descriptor['protocols']['http'] }
+      let(:http_protocol) { normalized_drds_descriptor['protocols']['http'] }
       let(:http_descriptor) { http_protocol[@protocol_transition || 'list'] }
       let(:resource_descriptor) { mock('resource_descriptor') }
       let(:descriptor) { Http.new(resource_descriptor, http_descriptor, @protocol_transition) }
