@@ -109,24 +109,15 @@ module Crichton
       #
       # @return [Hash] The state instances.
       def states
-        @descriptors[:state] ||= (resources || {}).inject({}) do |h,(resource, hash)|
-          h[resource] = hash[Crichton::Descriptor::STATES].inject({}) do |states, (id, state_descriptor)|
+        @descriptors[:state] ||= (resources || {}).inject({}) do |h, resource|
+          hash = resource.descriptor_document
+          h[resource.name] = hash[Crichton::Descriptor::STATES].inject({}) do |states, (id, state_descriptor)|
             state = State.new(self, state_descriptor, id)
             states[state.name] = state
             states
           end
           h
         end.freeze
-      end
-
-      ##
-      # Returns the resources defined for the resource descriptor.
-      #
-      # @return [Hash] The resources instances.
-      def resources
-        @descriptors[:resources] ||= descriptor_document[Crichton::Descriptor::TAG].select do |_, hash|
-           hash[Crichton::Descriptor::STATES]
-        end
       end
 
       ##
