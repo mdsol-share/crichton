@@ -121,6 +121,16 @@ module Crichton
       end
 
       ##
+      # Returns the resources defined for the resource descriptor.
+      #
+      # @return [Array] List of [Crichton::Descriptor::Detail] object which represent resources.
+      def resources
+        @descriptors[:resources] ||= begin
+          descriptors.select{ |descriptor| descriptor.resource? }
+        end
+      end
+
+      ##
       # Converts the descriptor to a key for registration.
       #
       # @return [String] The key.
