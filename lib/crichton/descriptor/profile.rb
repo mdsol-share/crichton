@@ -40,17 +40,7 @@ module Crichton
         end
       end
 
-      ##
-      # Returns the resources defined for the resource descriptor.
-      #
-      # @return [Array] List of [Crichton::Descriptor::Detail] object which represent resources.
-      def resources
-        @descriptors[:resources] ||= begin
-          descriptors.select{ |descriptor| descriptor.descriptor_document[Crichton::Descriptor::STATES].present? }
-        end
-      end
-
-      # Returns the descriptor help link descriptor. If no help link is defined on the descriptor is defined, it 
+      # Returns the descriptor help link descriptor. If no help link is defined on the descriptor is defined, it
       # returns the resource descriptor help link.
       #
       # @return [Crichton::Descriptor::Link] The link.
