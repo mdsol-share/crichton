@@ -31,12 +31,22 @@ module Crichton
 
       def descriptors
         @descriptors[:all] ||= begin
-          doc = descriptor_document['descriptors'].is_a?(Hash) && descriptor_document['descriptors'] || {}
+          doc = descriptor_document[Crichton::Descriptor::TAG].is_a?(Hash) && descriptor_document[Crichton::Descriptor::TAG] || {}
           doc.keys.map do |id|
             descriptor = Detail.new(resource_descriptor, self, id)
             @self_transition = descriptor if descriptor.name == 'self' && descriptor.transition?
             descriptor
           end.freeze
+        end
+      end
+
+      ##
+      # Returns the resources defined for the resource descriptor.
+      #
+      # @return [Array] List of [Crichton::Descriptor::Detail] object which represent resources.
+      def resources
+        @descriptors[:resources] ||= begin
+          descriptors.select{ |descriptor| descriptor.descriptor_document[Crichton::Descriptor::STATES].present? }
         end
       end
 
