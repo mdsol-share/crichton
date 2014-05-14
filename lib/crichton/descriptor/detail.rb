@@ -137,6 +137,12 @@ module Crichton
       end
 
       ##
+      # Whether descriptor is resource descriptor. It is resource descriptor if it has states defined.
+      def resource?
+        descriptor_document[Crichton::Descriptor::STATES].present?
+      end
+
+      ##
       # Returns attributes associated with descriptor.
       #
       # @return [Hash] Attributes.
