@@ -119,6 +119,7 @@ module Crichton
         end
       end
 
+      #TODO: uncomment when ALPS serializatin is fixed.
       # context 'with serialization' do
       #   let(:descriptor) { Resource.new(leviathans_descriptor) }
       #
