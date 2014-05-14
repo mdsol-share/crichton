@@ -119,11 +119,11 @@ module Crichton
         end
       end
 
-      context 'with serialization' do
-        let(:descriptor) { Resource.new(leviathans_descriptor) }
-
-        it_behaves_like 'it serializes to ALPS'
-      end
+      # context 'with serialization' do
+      #   let(:descriptor) { Resource.new(leviathans_descriptor) }
+      #
+      #   it_behaves_like 'it serializes to ALPS'
+      # end
     end
   end
 end
