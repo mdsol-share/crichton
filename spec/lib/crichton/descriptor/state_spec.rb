@@ -4,7 +4,7 @@ require 'crichton/descriptor/state'
 module Crichton
   module Descriptor
     describe State do
-      let(:state_descriptor) { drds_descriptor['states']['drds']['collection'] }
+      let(:state_descriptor) { normalized_drds_descriptor['descriptors']['drds']['states']['collection'] }
       let(:resource_descriptor) { mock('resource_descriptor') }
       let(:descriptor) { State.new(resource_descriptor, state_descriptor, 'collection') }
   

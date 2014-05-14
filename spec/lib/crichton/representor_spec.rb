@@ -36,7 +36,7 @@ module Crichton
     context 'with associated class-level descriptors' do
       before do
         @resource_name = 'drds'
-        Crichton.initialize_registry(drds_descriptor)
+        Crichton.initialize_registry(new_drds_descriptor)
       end
       
       describe '.data_semantic_descriptors' do
@@ -103,7 +103,7 @@ module Crichton
 
     context 'with_registered resource descriptor' do
       before do
-        Crichton.initialize_registry(drds_descriptor)
+        Crichton.initialize_registry(new_drds_descriptor)
       end
 
       describe '#each_data_semantic' do
@@ -412,12 +412,6 @@ module Crichton
       describe '#response_headers' do
         before do
           @state_method = 'my_state_method'
-        end
-
-        it 'returns the response headers associated with the state' do
-          @resource_name = 'drds'
-          attributes = { 'my_state_method' => 'collection' }
-          simple_test_class.new(attributes).response_headers.should == { 'Cache-Control' => 'no-cache'  }
         end
 
         it 'returns empty hash if not response headers are specified' do

@@ -245,7 +245,7 @@ module Support
   end
 
   module ALPSSchema
-    AlpsInteger = <<-'HERE'
+    AlpsInteger = <<-HERE
     <alps>
      <descriptor id="Integer" type="semantic" href="http://alps.io/schema.org/Number">
       <doc format="html">
@@ -255,9 +255,9 @@ module Support
     </alps>
     HERE
 
-    AlpsArray = <<-'HERE'
+    AlpsArray = <<-HERE
     <alps>
-     <descriptor id="Array" type="semantic" href="http://alps.io/schema.org/Array">
+     <descriptor id="Array" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
        Data type: Array.
       </doc>
@@ -265,7 +265,7 @@ module Support
     </alps>
     HERE
 
-    AlpsText = <<-'HERE'
+    AlpsText = <<-HERE
     <alps>
      <descriptor id="Text" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -275,7 +275,7 @@ module Support
     </alps>
     HERE
 
-    AlpsDateTime = <<-'HERE'
+    AlpsDateTime = <<-HERE
     <alps>
      <descriptor id="DateTime" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -285,9 +285,9 @@ module Support
     </alps>
     HERE
 
-    AlpsBoolean = <<-'HERE'
+    AlpsBoolean = <<-HERE
     <alps>
-     <descriptor id="Boolean" type="semantic" href="http://alps.io/schema.org/Boolean">
+     <descriptor id="Boolean" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
        A combination of Boolean.
       </doc>
@@ -295,9 +295,9 @@ module Support
     </alps>
     HERE
 
-    AlpsLeviathan = <<-'HERE'
+    AlpsLeviathan = <<-HERE
     <alps>
-     <descriptor id="Leviathan" type="semantic" href="http://alps.io/schema.org/Thing/Leviathan">
+     <descriptor id="Leviathan" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
        Data type: Leviathan.
       </doc>
@@ -305,7 +305,29 @@ module Support
     </alps>
     HERE
 
+    AlpsDataType = <<-HERE
+    <alps>
+     <descriptor id="DataType" type="semantic">
+      <doc format="html">
+       The basic data types such as Integers, Strings, etc.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsNumber = <<-HERE
+    <alps>
+     <descriptor id="Number" type="semantic" href="http://alps.io/schema.org/DataType">
+      <doc format="html">
+       Data type: Number.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
     StubUrls = {
+      'http://alps.io/schema.org/Number' => AlpsNumber,
+      'http://alps.io/schema.org/DataType' => AlpsDataType,
       'http://alps.io/schema.org/Integer' => AlpsInteger,
       'http://alps.io/schema.org/Text' => AlpsText,
       'http://alps.io/schema.org/Array' => AlpsArray,

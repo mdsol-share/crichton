@@ -1,5 +1,6 @@
 module Crichton
   module Descriptor
+    STATES = 'states'
     TAG = 'descriptors'
     OPTIONS = 'options'
     PARAMETERS = 'parameters'

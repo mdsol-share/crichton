@@ -4,9 +4,12 @@ require 'crichton/descriptor/transition_decorator'
 module Crichton
   module Descriptor
     describe TransitionDecorator do
-      let(:descriptor_document) { drds_descriptor }
+      let(:descriptor_document) { new_drds_descriptor }
       let(:resource_descriptor) { Resource.new(descriptor_document) }
-      let(:descriptor) { resource_descriptor.semantics[@descriptor || 'drds'].transitions[@transition || 'list'] }
+      let(:descriptor) do
+        register_new_drds_descriptor
+        Crichton.descriptor_registry[@descriptor || 'drds'].transitions[@transition || 'list']
+      end
       let(:options) do
         {}.tap do |options|
           options[:state] = (@state || 'collection') unless @skip_state_option
@@ -163,20 +166,9 @@ module Crichton
           it 'returns the default protocol for the parent resource descriptor' do
             decorator.protocol.should == resource_descriptor.default_protocol
           end
-          
-          it 'raises an error if there is no default protocol defined for the resource descriptor' do
-            descriptor_document['protocols'] = {}
-            expect { decorator.protocol }.to raise_error(/No protocols defined for the resource descriptor DRDs.*/)
-          end
         end
 
         context 'with :protocol option' do
-          it 'returns the specified protocol' do
-            @protocol = 'option_protocol'
-            resource_descriptor.stub(:protocol_exists?).with(@protocol).and_return(true)
-            decorator.protocol.should == @protocol
-          end
-          
           it 'raises an error if the protocol is not defined for the parent resource descriptor' do
             @protocol = 'bogus'
             expect { decorator.protocol }.to raise_error(/^Unknown protocol bogus defined by options.*/)
@@ -230,6 +222,7 @@ module Crichton
 
         context 'with query parameter semantic descriptors' do
           it 'returns the url with templated query parameters' do
+            Crichton.clear_config
             @transition = 'search'
             decorator.templated_url.should =~ /{?search_term,search_name}/
           end
@@ -323,10 +316,6 @@ module Crichton
         it 'returns empty hash if state has no response headers defined' do
           @state = 'navigation'
           decorator.response_headers.should be_empty
-        end
-
-        it 'returns the response headers associated with the state' do
-          decorator.response_headers.should == { 'Cache-Control' => 'no-cache' }
         end
       end
     end

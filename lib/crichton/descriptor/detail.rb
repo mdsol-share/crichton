@@ -125,9 +125,21 @@ module Crichton
       end
       
       def type_link
-        @descriptors[:type_link] ||= if semantic? && (self_link = links['self'])
+        @descriptors[:type_link] ||= if semantic? && (self_link = links['profile'])
           Crichton::Descriptor::Link.new(resource_descriptor, 'type', self_link.absolute_href)
         end
+      end
+
+      ##
+      # Whether descriptor has scope attribute. If it has, considered to be parameter for url.
+      def scope?
+        descriptor_document['scope'].present?
+      end
+
+      ##
+      # Whether descriptor is resource descriptor. It is resource descriptor if it has states defined.
+      def resource?
+        descriptor_document[Crichton::Descriptor::STATES].present?
       end
 
       ##

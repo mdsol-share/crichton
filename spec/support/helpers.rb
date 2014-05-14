@@ -32,13 +32,35 @@ module Support
       YAML.load_file(drds_filename)
     end
 
+    def new_drds_descriptor
+      YAML.load_file(new_drds_filename)
+    end
+
+    def normalized_drds_descriptor
+      Crichton.clear_registry
+      registry = Crichton::Registry.new(automatic_load: false)
+      registry.register_single(new_drds_descriptor)
+      resource_dereferencer = registry.resources_registry.values.first
+      resource_dereferencer.dereference(registry.dereferenced_descriptors)
+    end
+
+    #TODO: DRY here and above
     def register_drds_descriptor
       Crichton.clear_registry
       Crichton.initialize_registry(drds_descriptor)
     end
 
+    def register_new_drds_descriptor
+      Crichton.clear_registry
+      Crichton.initialize_registry(new_drds_descriptor)
+    end
+
     def drds_filename
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
+    end
+
+    def new_drds_filename
+      fixture_path('resource_descriptors', 'new_drds_descriptor_v1.yml')
     end
 
     def drds_non_existent_filename
