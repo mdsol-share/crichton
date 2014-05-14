@@ -10,7 +10,7 @@ module Crichton
         end
 
         it 'loads resource descriptors from a resource descriptor directory if configured' do
-          expect(Registry.new.descriptor_registry).to have(29).items
+          expect(Registry.new.descriptor_registry).to have(3).items
         end
       end
 
@@ -29,19 +29,19 @@ module Crichton
       it 'accepts a descriptor document' do
         registry = Registry.new(automatic_load: false)
         registry.register_single(new_drds_descriptor)
-        expect(registry.raw_descriptor_registry.keys).to include('drds', 'drd', 'total_count', 'items')
+        expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd))
       end
 
       it 'accepts a filename' do
         registry = Registry.new(automatic_load: false)
-        registry.register_single(new_drds_descriptor)
-        expect(registry.raw_descriptor_registry.keys).to include('show', 'leviathan-link', 'repair-history', 'activate')
+        registry.register_single(new_drds_filename)
+        expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd))
       end
 
       it 'loads all descriptors from a resource descriptor' do
         registry = Registry.new(automatic_load: false)
         registry.register_single(new_drds_descriptor)
-        expect(registry.raw_descriptor_registry.keys).to have(29).items
+        expect(registry.raw_descriptor_registry.keys).to have(2).items
       end
     end
 
@@ -49,19 +49,19 @@ module Crichton
       it 'accepts descriptor documents' do
         registry = Registry.new(automatic_load: false)
         registry.register_multiple([new_drds_descriptor, leviathans_descriptor])
-        expect(registry.raw_descriptor_registry.keys).to include('drds', 'drd', 'leviathan')
+        expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd leviathan))
       end
 
       it 'accepts filenames' do
         registry = Registry.new(automatic_load: false)
         registry.register_multiple([new_drds_filename, leviathans_filename])
-        expect(registry.raw_descriptor_registry.keys).to include('drds', 'drd', 'leviathan')
+        expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd leviathan))
       end
 
       it 'accepts a document and a filename' do
         registry = Registry.new(automatic_load: false)
-        registry.register_multiple([drds_descriptor, leviathans_filename])
-        expect(registry.raw_descriptor_registry.keys).to include('drds', 'drd', 'leviathan')
+        registry.register_multiple([new_drds_descriptor, leviathans_filename])
+        expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd leviathan))
       end
     end
 
@@ -93,7 +93,7 @@ module Crichton
         dealiased_hash = resources_registry['DRDs'].dealiased_document
         resource_descriptor = Crichton::Descriptor::Resource.new(dealiased_hash)
 
-        resource_descriptor.descriptors.each do |descriptor|
+        resource_descriptor.resources.each do |descriptor|
           expect(registry.raw_descriptor_registry[descriptor.id].name).to eq(descriptor.name)
         end
       end
