@@ -48,7 +48,7 @@ module Crichton
         resources_registry.values.each do |resource_dereferencer|
           hash = resource_dereferencer.dereference(dereferenced_descriptors)
           resource = Crichton::Descriptor::Resource.new(hash)
-          resource.descriptors.each { |descriptor| registry[descriptor.id] = descriptor }
+          resource.resources.each { |descriptor| registry[descriptor.id] = descriptor }
         end
       end
     end
@@ -61,7 +61,7 @@ module Crichton
       @raw_descriptor_registry ||= {}.tap do |registry|
         resources_registry.values.each do |resource_dereferencer|
           resource = Crichton::Descriptor::Resource.new(resource_dereferencer.dealiased_document)
-          resource.descriptors.each { |descriptor| registry[descriptor.id] = descriptor }
+          resource.resources.each { |descriptor| registry[descriptor.id] = descriptor }
         end
       end
     end
