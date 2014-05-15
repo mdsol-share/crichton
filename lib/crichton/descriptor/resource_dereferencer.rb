@@ -43,7 +43,7 @@ module Crichton
       # @return [Hash] Dereferenced resource descriptor document.
       def dereference(registry)
         @dereferenced_document ||= dealiased_document.deep_dup.tap do |acc|
-          acc[TAG].keys.each do |tag|
+          (acc[TAG] || {}).keys.each do |tag|
             registry["#{resource_id}\##{tag}"] ? acc[TAG][tag] = registry["#{resource_id}\##{tag}"] : {}
           end
         end
