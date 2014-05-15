@@ -13,6 +13,7 @@ semantics:
     doc: An array of embedded DRD resources.
     href: http://alps.io/schema.org/Array
     embed: multiple-optional
+    sample: DRDs#drds
   uuid:
     doc: The UUID of the DRD.
     href: http://alps.io/schema.org/Text
@@ -23,6 +24,7 @@ semantics:
   status:
     doc: How is the DRD.
     href: http://alps.io/schema.org/Text
+    sample: renegade
   old_status:
     doc: How was the DRD before the last change
     href: http://alps.io/schema.org/Text
@@ -47,6 +49,7 @@ semantics:
     doc: The associated Leviathan resource.
     href: http://alps.io/schema.org/Thing/Leviathan
     embed: single-optional
+    sample: http://alps.io/schema.org/Thing/Leviathan
   location:
     doc: The area the DRD is currently in
     href: http://alps.io/schema.org/Text
@@ -66,13 +69,14 @@ semantics:
   destroyed:
     doc: This DRD has been destroyed
     href: http://alps.io/schema.org/Boolean
-    sample: false
+    sample: destroyed
   leviathan_health_points:
     doc: The health points of Leviathan.
     href: http://alps.io/schema.org/Integer
   term:
     doc: The terms to search.
     href: http://alps.io/schema.org/Text
+    sample: searchterm
 
 extensions:
   _name: &_name
@@ -154,7 +158,7 @@ idempotent:
         validators:
           - required
         options:
-          href: DRDs#drds_status_options
+          href: DRDs#drd_status_options
       - href: kind
         field_type: select
         options:
@@ -258,6 +262,7 @@ resources:
       profile: DRDs#drd
     descriptors:
       - href: name
+        ext: _name
       - href: uuid
       - href: status
       - href: old_status
@@ -389,6 +394,7 @@ protocols:
       status_codes:
         200:
           description: OK
+          notes: OK
       slt: &slt2
         99th_percentile: 250ms
         std_dev: 50ms
@@ -403,8 +409,10 @@ protocols:
       status_codes:
         201:
           description: Created
+          notes: Created
         403:
           description: Permission denied
+          notes: Created
       slt: *slt2
     show:
       uri: drds/{uuid}
@@ -416,7 +424,11 @@ protocols:
       status_codes:
         200:
           description: OK
-      slt: *slt1
+          notes: OK
+      slt:
+        99th_percentile: 100ms
+        std_dev: 25ms
+        requests_per_second: 50
     activate:
       uri: drds/{uuid}/activate
       method: PUT
@@ -427,6 +439,7 @@ protocols:
       status_codes:
         200:
           description: OK
+          notes: OK
       slt: *slt1
     deactivate:
       uri: drds/{uuid}/deactivate
@@ -438,6 +451,7 @@ protocols:
       status_codes:
         200:
           description: OK
+          notes: OK
       slt: *slt1
     update:
       uri: drds/{uuid}
@@ -449,6 +463,7 @@ protocols:
       status_codes:
         200:
           description: Updated
+          notes: OK
       slt: *slt2
     delete:
       uri: drds/{uuid}
@@ -460,12 +475,13 @@ protocols:
       status_codes:
         200:
           description: Deleted
+          notes: OK
         403:
           description: Permission denied
+          notes: OK
       slt: *slt1
     leviathan-link:
       uri_source: leviathan_url
-      method: GET
     repair-history:
       uri_source: repair_history_url
 
