@@ -99,7 +99,7 @@ module Crichton
 
       # used by subclasses to perform transition equivalency tests
       def build_descriptor_transition_list
-        find_descriptor_transitions(@resource_descriptor.descriptors, [])
+        find_descriptor_transitions(@resource_descriptor.resources, [])
       end
 
       ##
