@@ -43,7 +43,7 @@ module Crichton
       end
 
       def self.add_type(hash)
-        ->(obj) { obj.is_a?(Hash) ?  obj.each { |_, v| v.deep_merge!(hash) } : obj }
+        ->(obj) { obj.is_a?(Hash) ?  obj.each { |_, v| v.deep_merge!(hash) unless v[TYPE].present? } : obj }
       end
 
       # Special case semantics. Used as singular in ALPS.
