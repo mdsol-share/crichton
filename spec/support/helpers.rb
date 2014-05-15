@@ -36,6 +36,16 @@ module Support
       YAML.load_file(new_drds_filename)
     end
 
+    def create_drds_file(descriptor, filename)
+      path = temporary_drds_filepath(filename)
+      File.open(path, 'w') { |file| file.write descriptor.to_yaml }
+      path
+    end
+
+    def temporary_drds_filepath(filename)
+      File.join(SPECS_TEMP_DIR, filename)
+    end
+
     def normalized_drds_descriptor
       Crichton.clear_registry
       registry = Crichton::Registry.new(automatic_load: false)
@@ -166,11 +176,6 @@ module Support
           descriptor.to_xml.should be_equivalent_to(alps_xml)
         end
       end
-    end
-
-    def lint_spec_filename(*args)
-      folder, filename = args.count == 1 ? ['', args.first] : args
-      fixture_path('lint_resource_descriptors', folder, filename)
     end
 
     def load_lint_translation_file
