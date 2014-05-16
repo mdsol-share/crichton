@@ -10,7 +10,7 @@ module Crichton
       let(:filename) { create_drds_file(@descriptor, @filename) }
 
       before(:all) do
-        @filename = 'drds_lint.yml'
+        @filename = 'drds_lint'
       end
 
       before do

@@ -8,7 +8,7 @@ module Crichton
       let(:filename) { create_drds_file(@descriptor, @filename) }
 
       before(:all) do
-        @filename = 'drds_lint.yml'
+        @filename = 'drds_lint'
       end
 
       before do
@@ -19,7 +19,7 @@ module Crichton
         context 'when it encounters a protocol without properties' do
           it 'reports a no protocol defined error' do
             descriptor = new_drds_descriptor.tap { |document| document['protocols']['http'].replace({}) }
-            filename = create_drds_file(descriptor, 'drds_lint.yml')
+            filename = create_drds_file(descriptor, 'drds_lint')
             errors = expected_output(:error, 'protocols.protocol_empty', protocol: 'http')
             expect(capture(:stdout) { validator.validate(filename) }).to include(errors)
           end
