@@ -127,6 +127,10 @@ module Crichton
       @resources_registry ||= {}
     end
 
+    def external_descriptor_documents
+      @external_descriptor_documents ||= {}
+    end
+
     private
     def load_resource_descriptor(resource_descriptor)
       hash_descriptor = case resource_descriptor
@@ -141,14 +145,16 @@ module Crichton
     end
 
     def get_external_deserialized_profile(uri)
-      begin
-        data = external_document_store.get(uri) || external_document_cache.get(uri)
-        Crichton::ALPS::Deserialization.new(data).to_hash
-      rescue => e
-        error_message = "Link #{uri} that was referenced in profile had an error: #{e.inspect}\n#{e.backtrace}"
-        logger.warn error_message
-        raise Crichton::ExternalProfileLoadError, error_message
+      unless external_descriptor_documents[uri]
+        begin
+          external_descriptor_documents[uri] = external_document_store.get(uri) || external_document_cache.get(uri)
+        rescue => e
+          error_message = "Link #{uri} that was referenced in profile had an error: #{e.inspect}\n#{e.backtrace}"
+          logger.warn error_message
+          raise Crichton::ExternalProfileLoadError, error_message
+        end
       end
+      Crichton::ALPS::Deserialization.new(external_descriptor_documents[uri]).to_hash
     end
 
     def external_document_store
