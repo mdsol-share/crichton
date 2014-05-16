@@ -81,7 +81,7 @@ module Crichton
           add_error('descriptors.property_missing', options.merge({prop: 'type'}))
         end
 
-        if resource_descriptor.resources.map{ |resource| resource.name }.include?(descriptor.name)
+        if resource_descriptor.resources.map(&:name).include?(descriptor.name)
           add_error('catastrophic.no_descriptors', options) if descriptor.descriptors.empty?
 
           #23 should have a valid link property
@@ -163,9 +163,9 @@ module Crichton
       #60, the descriptor hash of subresources must equal the state hash
       def compare_with_state_resources
         # TODO: change descriptor array into a hash with name as keys, or convert state names to an array of names
-        compare_with_other_hash(resource_descriptor.resources.map { |resource| resource.name }, resource_descriptor.states.keys,
+        compare_with_other_hash(resource_descriptor.resources.map(&:name), resource_descriptor.states.keys,
           'descriptors.descriptor_resource_not_found')
-        compare_with_other_hash(resource_descriptor.states.keys, resource_descriptor.resources.map { |resource| resource.name },
+        compare_with_other_hash(resource_descriptor.states.keys, resource_descriptor.resources.map(&:name),
           'descriptors.state_resource_not_found')
       end
 
