@@ -1,47 +1,33 @@
 # @title Data Descriptors
 # Overview
-Data Descriptors define the semantics, or vocabulary, of the data-related attributes of a resource and/or the semantics 
-of the data associated with 'forms' in transitions that either template queries for a `safe` transition 
-or template bodies in `unsafe` and `idempotent` transitions. 
+Data descriptors define the semantics, or vocabulary, of the data-related attributes of a resource and/or the semantics of the data associated with 'forms' in transitions that either template queries for a `safe` transition 
+or template bodies in `unsafe` and `idempotent` transitions.
 
 ## Properties
-The YAML keys directly under the `semantics`/`parameters` property are the ALPS IDs of the individual descriptors and thus must be
-unique within the document. The `name` property can be used to specify the semantic name that will be used in a
-response. Otherwise, the ID will be the name of the associated attribute in the representation of the resource.
+The YAML keys, which appear directly under the `semantics`/`parameters` property, are the ALPS IDs of the individual descriptors. Therefore, they must be unique within the document. You can use the `name` property to specify the semantic name that will be used in a response. Otherwise, the ID is the name of the associated attribute in the representation of the resource.
 
 * \[descriptor_key\] - A YAML key that is the unique ID of the associated ALPS profile.
-   * `doc` - The description of the semantic descriptor: REQUIRED.
-   * `name` - The name associated with the related element in a response. Overrides the ID of the descriptor as the
-  default name: OPTIONAL.
-   * `type` - The type of the descriptor. For data related descriptors, only use `semantic`. When data descriptors are 
-  grouped under `semantics` or `parameters` tags, the underlying `type` is `semantic`: OPTIONAL
-   * `href` - The underlying ALPS profile, either representing another resource or a primitive profile. See 
-  [Primitive Profiles](primitive_profiles.md) for more information: REQUIRED.
-   * `sample` - A sample data value for use in generating sample representations by media-type: RECOMMENDED.
-   * `embed` - Indicates that this resource should be embedded in a response either inline or as a link.
-    Valid values are:
-      * `single`
-      * `multiple`
-      * `single-link`
-      * `multiple-link`
-      * `single-optional`
-      * `multiple-optional`
-      * `single-optional-link`
-      * `multiple-optional-link`
+   * `doc` - Required. The description of the semantic descriptor. 
+   * `name` - Optional. The name associated with the related element in a response. `Name` overrides the ID of the descriptor as the default name. 
+   * `type` - Optional. The type of the descriptor. For data-related descriptors, only use `semantic`. When you group data descriptors under `semantics` or `parameters` tags, the underlying `type` is `semantic`. 
+   * `href` - Required. The underlying ALPS profile, which either represents another resource or a primitive profile. See [Primitive Profiles](primitive_profiles.md) for more information. 
+   * `sample` - Recommended. A sample data value for use in generating sample representations by media-type.
+   * `embed` - Indicates that the resource should be embedded in a response either inline or as a link.
+      Valid values for `embed` include the following:
+       - `single` - Default value when you do not specify another value.
+       - `multiple` - Indicates the item should be embedded as an array.
+       - `single-link` - Allows setting the mode of embedding.
+       - `multiple-link` - Indicates the item should be embedded as an array.
+       - `single-optional` - Client can request the way the item is to be embedded.
+       - `multiple-optional` - Client can request the way the item is to be embedded.
+       - `single-optional-link` - Allows setting the mode of embedding.
+       - `multiple-optional-link` - Allows setting the mode of embedding.
 
-The default, if not specified, is `single`. The values `multiple` and `multiple-link` indicate the item should be
-embedded as an array. The values that contain `optional` indicate that the client can request the
-way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed` otherwise.
-The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the
-values - allows setting the mode of embedding.
+      If you do not specify a value for `embed`, the default value is `single`. The values `multiple` and `multiple-link` indicate the item should be embedded as an array. The values that contain `optional` indicate that the client can request the way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed` otherwise. The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the values - allows setting the mode of embedding.
 
 ## Defining data descriptors
-It is possible to define all data descriptors grouped under top-level `semantics` element,
-however, it is not a requirement: data descriptors can be defined as a child descriptors of transition elements.
-Data descriptors under `parameters` tag of transition element define templated url properties;
-data descriptors under `semantics` tag of transition element define template bodies.
-Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` or/and
-`semantics` and `href` property to reference already defined data descriptors elements in transitions. See examples below.
+You can define all data descriptors grouped under the top-level `semantics` element; however, it is not a requirement. You can define data descriptors as child descriptors of transition elements. Data descriptors under the `parameters` tag of the transition element define templated url properties. Data descriptors under the `semantics` tag of the transition element define template bodies.
+Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. See the examples below.
 
 ## Examples
 ### Data descriptors defined under top-level `semantics` element
