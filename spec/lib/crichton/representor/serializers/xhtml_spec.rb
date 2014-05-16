@@ -22,11 +22,11 @@ module Crichton
       end
       
       it 'self-registers as a serializer for the xhtml media-type' do
-        Serializer.registered_serializers[:xhtml].should == XHTMLSerializer
+        expect(Serializer.registered_serializers[:xhtml]).to eq(XHTMLSerializer)
       end
 
       it 'self-registers as a serializer for the html media-type' do
-        Serializer.registered_serializers[:html].should == XHTMLSerializer
+        expect(Serializer.registered_serializers[:html]).to eq(XHTMLSerializer)
       end
       
       describe '#as_media_type' do
@@ -34,19 +34,19 @@ module Crichton
 
         context 'without styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
-            serializer.as_media_type(conditions: 'can_do_anything').should be_equivalent_to(drds_microdata_html)
+            expect(serializer.as_media_type(conditions: 'can_do_anything')).to be_equivalent_to(drds_microdata_html)
           end
         end
 
         context 'with styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
             options = {conditions: 'can_do_anything', semantics: :styled_microdata}
-            serializer.as_media_type(options).should be_equivalent_to(drds_styled_microdata_html)
+            expect(serializer.as_media_type(options)).to be_equivalent_to(drds_styled_microdata_html)
           end
 
           it 'returns the resource represented as xhtml with linked resources' do
             options = {conditions: 'can_do_anything', semantics: :styled_microdata, embed_optional: {'items' => :link}}
-            serializer.as_media_type(options).should be_equivalent_to(drds_styled_microdata_embed_html)
+            expect(serializer.as_media_type(options)).to be_equivalent_to(drds_styled_microdata_embed_html)
           end
         end
       end
