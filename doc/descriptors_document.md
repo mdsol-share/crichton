@@ -1,95 +1,88 @@
 # @title API Descriptor Document
+## Contents
+- [Overview](#overview)
+ - [Document Descriptor Underlying Concepts](#document-descriptor-underlying-concepts)
+ - [Purposes of an API Descriptor Document](#purpose-of-an-API-descriptor-document)
+ - [API Descriptor Document Properties and Examples](#API-descriptor-document-properties-and-examples)
+ - [API Descriptor Document Properties/ALPS Correlation](#API-descriptor-document-properties/ALPS-Correlation)
+ - [External Resources](#external-resources)
+
 # Overview
-An _API Descriptor Document_ is a declarative YAML document that profiles the semantics, states, state transitions and 
-protocol specific implementations of a single resource, or possibly several closely related resources returned by
-Hypermedia APIs powered by Crichton. It details a Domain Application Protocol (DAP) for the referenced resources 
-layered on top of the transport protocol(s) supported for the resource(s).
+An _API Descriptor Document_ is a declarative YAML document that profiles the semantics, states, state transitions, and protocol-specific implementations of a single resource or possibly several closely related resources, which Crichton returns as hypermedia APIs. The API Descriptor Document details a Domain Application Protocol (DAP) for the referenced resources that are layered on top of the transport protocol(s) that the resource(s) support.
 
-There are a number of key concepts underlying _API Descriptor Document_ design and properties:
+## Document Descriptor Underlying Concepts
+An _API Descriptor Document_ has a number of key concepts underlying its design and properties. These concepts include the following:
+- A major concept behind the design of an API Descriptor Document is the [ALPS specification][]. This specification defines a protocol and media-type independent resource semantic profile that is machine-readable.
+- In principle, an _API Descriptor Document_ does not define a schema or actions. Instead it defines the semantics or "vocabulary" that is associated with the referenced resource's data and state transitions. Therefore, it can define terms or it can reference external semantic documents, depending on requirements. Further, it establishes the semantics of the affordances, the links and forms, that are associated with a resource's state transitions. Again, it may define these or reference an external semantic document.
+- The Descriptor Document assumes that it can reference an external, human-readable semantic documentation of any properties or affordances such as the links and forms that the Descriptor Document exposes. You can use an _API Descriptor Document_ to generate some of human-readable information; however, the Document presupposes external repositories for the URIs that it references.
+- The Descriptor Document separates the definition of protocol and media-type information from the semantic definition of the resource's semantic data and transitions as a RESTful design tool.
+- The Descriptor Document facilitates API design in a contract-first fashion. By first focusing on the semantic definitions of a resource and its states, you can design an API and generate a human-readable contract directly from the _API Descriptor Document_.
 
-1. The underlying concept behind the design is the [ALPS specification][], which defines 
-a protocol and media-type independent resource semantic profile in a machine-readable format.
+The Crichton library parses _Resource Descriptors_ to generate service responses and to generate ALPS profiles. These profiles can further be included in responses that ALPS-aware Hypermedia agents can consume for different media-types.
 
-2. In principle, an _API Descriptor Document_ does not define a schema or actions, but rather the semantics (vocabulary)
-associated with the referenced resource's data and state transitions. As such, it may define terms or it may reference 
-external semantic documents as appropriate. Further, it establishes the semantics of the affordances (links and forms)
-associated with state transitions for a resource. Again, it may define these or reference external semantic documents.
+This document uses key words that follow [RFC2119](http://tools.ietf.org/html/rfc2119) standards. These key words include: "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and 
+"OPTIONAL".
 
-3. It assumes an external, referenceable source of human-readable semantic documentation of any properties or 
-affordances it exposes. An _API Descriptor Document_ may be used to generate some of this information, but it presupposes
-the existence of external repositories for any URIs it references.
+## Purposes of an API Descriptor Document
+An _API Descriptor Document_ serves multiple purposes. These purposes include defining the following items:
 
-4. It separates the definition of protocol and media-type information from the semantic definition of the resource 
-semantic data and transitions as a RESTful design tool.
-
-5. It facilitates API design in a contract first fashion. By initially focusing on the semantic definitions of a 
-resource and its states, an API can be designed and a human-readable contract generated directly from the 
-_API Descriptor Document_.
-
-The Crichton library parses _Resource Descriptors_ to generate service responses and generate ALPS profiles that can
-be included in responses that ALPS-aware Hypermedia agents can consume for different media-types.
-
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and 
-"OPTIONAL" in this document are to be interpreted as described in [RFC2119](http://tools.ietf.org/html/rfc2119).
-
-## Purpose
-An _API Descriptor Document_ serves multiple purposes, including defining:
-
-1. Protocol and media-type independent semantics of resources.
-  * Delineates semantic data (properties and optionally embedded resources), semantic links, and transition controls 
+- Protocol and media-type independent semantics of resources.
+ - Delineates semantic data (properties and optionally embedded resources), semantic links, and transition controls 
   (links and forms).
-  * Facilitates generating m2m readable ALPS profiles in XML and JSON.
-  * Facilitates generating service responses for [supported Hypermedia-aware media-types](doc/media_type.md).
-2. States and associated state transitions to facilitate generating responses that include complete state 
+ - Facilitates generating machine-to-machine readable ALPS profiles in XML and JSON.
+ - Facilitates generating service responses for [supported Hypermedia-aware media-types](doc/media_type.md).
+- States and associated state transitions to facilitate generating responses that include complete state 
 information.
-  * References semantic definitions of transitions.
-  * Supports business logic limiting the available transitions in a response.
-  * Supports diagramming state machines and registering resources and their relationships as a state machine graph.
-3. Protocol specific idioms associated with a resource.
-  * E.g., for HTTP the methods, headers, and status codes. 
-  * Facilitates generating form controls that are protocol-dependent.
-4. Documentation related descriptions and references for generating human-readable documentation.
-  * Includes sample data values for generating sample representations in supported media-types.
-  * Includes protocol specific documentation.
-5. Routing metadata to generate routes and scaffold models and controllers.
-6. Testing metadata to facilitate testing a service or external resource dependencies:
-  * Factory generation of mock resources for testing.
-  * Services self-testing resources.
+ - References semantic definitions of transitions.
+ - Supports business logic limiting the available transitions in a response.
+ - Supports diagramming state machines and registering resources and their relationships as a state machine graph.
+- Protocol-specific idioms associated with a resource.
+ - These can include idioms such as HTTP methods, headers, and status codes. 
+ - Facilitates generating form controls that are protocol-dependent.
+- Documentation-related descriptions and references for generating human-readable documentation.
+ - Includes sample data values for generating sample representations in supported media-types.
+ - Includes protocol-specific documentation.
+- Routing metadata to generate routes and scaffold models and controllers.
+- Testing metadata to facilitate testing service or external resource dependencies:
+ - Factory generation of mock resources for testing.
+ - Services self-testing resources.
 
-## Properties
-_API Descriptor Documents_ are built by specifying a specific set of metadata and properties. Though the document sections 
-can be maintained in any order, the example below reflects a structure associated with the progressive design of a 
-Hypermedia API:
+## API Descriptor Document Properties and Examples
+_API Descriptor Documents_ are built by specifying a set of metadata and properties. Though the document sections can be maintained in any order, the following steps reflect a workflow associated with the progressive design of a Hypermedia API. 
+1. Document metadata about the profile.
 
-* Document metadata about the profile
-* Analyze the resources, states and transitions associated with the underlying workflow
-* Define the semantics of the resources
-* Define the semantics of the state transitions
-* Define the semantics of any templates (media-type form, in contrast to a link) used in transitions that require a 
-formatted body
-* Define the particulars of how the transitions are implemented for different protocols
-* Define routing/scaffolding information for the resource (OPTIONAL).
+2. Analyze the resources, states and transitions associated with the underlying workflow.
+
+3. Define the semantics of the resources.
+
+4. Define the semantics of the state transitions.
+
+5. Define the semantics of any templates (media-type form, in contrast to a link) used in transitions that require a 
+formatted body.
+
+6. Define the particulars of how the transitions are implemented for different protocols.
+
+7. Define routing/scaffolding information for the resource (OPTIONAL).
 
 [Example API Descriptor Document][]
 
-A number of the properties in a _API Descriptor Document_ directly correspond to their meaning in the 
-[ALPS specification][]. These are:
-
-* `id` - Unless explicitly defined for a particular descriptor, it is defined by the YAML key associated with a 
+## API Descriptor Document Properties/ALPS Correlation
+A number of the properties in a _API Descriptor Document_ correspond directly to their related meanings in the 
+[ALPS specification][]. These properties include the following:
+- `id` - Unless explicitly defined for a particular descriptor, `id` is defined by the YAML key associated with a 
 descriptor.
-* `doc` - A human-readable description.
-* `href` - The URI of the associated ALPS profile corresponding to the attribute.
-A relative URI indicates an element in another local _API Descriptor Document_.
-* `links` - Related links. The YAML keys correspond to a link `rel` attribute and the value with the URI 
+- `doc` - A human-readable description.
+- `href` - The URI of the associated ALPS profile that corresponds to the attribute. A relative URI indicates an element in another local _API Descriptor Document_.
+- `links` - Related links. The YAML keys correspond to a link `rel` attribute and the value with the URI 
 specified in the link `href` attribute.
-* `name` - Used to specify descriptor names which would otherwise have the same, non-unique `id` (YAML key).
-* `rt` - The return type of a transition that is an ALPS profile URI. This can be a relative URI indicating it is 
-associated with secondary profile in the existing resource descriptor or fully-qualified fragment URI associated 
-with an external ALPS profile. See [ALPS specification][] discussion of `id` for more information.
-* `type` - The type of the descriptor. Valid values are `semantic`, `safe`, `unsafe`, or `idempotent`. See 
-[ALPS specification][] discussion of `type` for more information.
+- `name` - Specifies descriptor names that would otherwise have the same, non-unique `id` (also known as the YAML key).
+- `rt` - The return type of a transition that is an ALPS-profile URI. This can be a relative URI that indicates it is 
+associated with a secondary profile in the existing resource descriptor or fully qualified fragment URI associated 
+with an external ALPS profile. See the [ALPS specification][] discussion of `id` for more information.
+- `type` - The type of the descriptor. Valid values are `semantic`, `safe`, `unsafe`, or `idempotent`. See the [ALPS specification][] discussion of `type` for more information.
 
-The properties of the subsections of an _API Descriptor Document_ are detailed in the following:
+## External References
+Click the following links to view documents that detail the properties of each subsection of an _API Descriptor Document_:
 
 * [Profile Metadata](profile_metadata.md)
 * [Data Descriptors](data_descriptors.md)
