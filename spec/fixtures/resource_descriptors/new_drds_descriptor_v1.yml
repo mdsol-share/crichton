@@ -139,7 +139,7 @@ idempotent:
     links:
       profile: DRDs#update
       help: forms/update
-    semantics:
+    parameters:
       - href: status
         sample: renegade
         field_type: select
