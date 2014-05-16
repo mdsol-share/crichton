@@ -1,4 +1,5 @@
 require 'colorize'
+require 'tempfile'
 
 module Support
   module Helpers
@@ -37,13 +38,10 @@ module Support
     end
 
     def create_drds_file(descriptor, filename)
-      path = temporary_drds_filepath(filename)
-      File.open(path, 'w') { |file| file.write descriptor.to_yaml }
-      path
-    end
-
-    def temporary_drds_filepath(filename)
-      File.join(SPECS_TEMP_DIR, filename)
+      file = Tempfile.new([filename, '.yml'], SPECS_TEMP_DIR)
+      file.write(descriptor.to_yaml)
+      file.close
+      file.path
     end
 
     def normalized_drds_descriptor
