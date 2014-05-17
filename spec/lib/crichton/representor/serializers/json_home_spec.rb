@@ -23,21 +23,21 @@ module Crichton
       end
 
       it 'self-registers as a serializer for the json+home media-type' do
-        Serializer.registered_serializers[:json_home].should == @serializer
+        expect(Serializer.registered_serializers[:json_home]).to eq(@serializer)
       end
 
       describe '#to_media_type' do
         it 'returns the resource represented as application/json+home' do
           serializer = @serializer.new(entry_points)
-          serializer.to_media_type.should be_json_eql(entry_points_json)
+          expect(serializer.to_media_type).to be_json_eql(entry_points_json)
         end
 
         it 'returns a valid html output when to_media_type is set to :html' do
-          entry_points.to_media_type(:html).should be_equivalent_to(entry_points_html)
+          expect(entry_points.to_media_type(:html)).to be_equivalent_to(entry_points_html)
         end
 
         it 'returns a valid html output when to_media_type is set to :xhtml' do
-          entry_points.to_media_type(:xhtml).should be_equivalent_to(entry_points_xhtml)
+          expect(entry_points.to_media_type(:xhtml)).to be_equivalent_to(entry_points_xhtml)
         end
       end
 
@@ -49,13 +49,13 @@ module Crichton
       it 'generates a valid url with a forward slashes on a resource uri' do
         resources = [Crichton::Discovery::EntryPoint.new('/drds', 'drds', 'list', 'DRDs')]
         serializer = @serializer.new(Crichton::Discovery::EntryPoints.new(resources))
-        serializer.to_media_type.should == json_output
+        expect(serializer.to_media_type).to eq(json_output)
       end
 
       it 'generates a valid url without a forward slashes on a resource uri' do
         resources = [Crichton::Discovery::EntryPoint.new('drds', 'drds', 'list', 'DRDs')]
         serializer = @serializer.new(Crichton::Discovery::EntryPoints.new(resources))
-        serializer.to_media_type.should == json_output
+        expect(serializer.to_media_type).to eq(json_output)
       end
     end
   end
