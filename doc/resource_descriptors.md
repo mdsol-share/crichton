@@ -1,45 +1,39 @@
-#@ title Resource descriptors
+#@ title Resource Descriptors
+## Contents
+- [Overview](#overview)
+ - [Descriptors Section](#descriptors-section)
+ - [States Section](#states-section)
+	- [State Properties](#state-properties)
+ - [Code Examples](#code-examples)
+ - [External References](#external-references)
+
 # Overview
-Resources are data descriptor elements which are grouped under `resources` tag and define `states` section. 
-Resources also define `descriptors` section which contains semantics and transition descriptors available for 
-this resource. 
+Resources are data descriptor elements that you group under the `resources` tag and define in the [States](#states-section) section. The [Descriptors](#descriptors-section) section also contains semantics and transition descriptors that are available for a resource. 
 
-## States section
-The `states` section of a _resource_ defines the metadata associated with the states of a 
-resource. Crichton uses these descriptors to determine which transitions are available for responses as a function of 
-the resource state and any conditions that must be satisfied for inclusion. The section also includes properties to 
-graphically generate the state machine of the resource(s) described.
+## Descriptors Section
+The `descriptors` section MAY contain a list of referenced data descriptor and transition elements. You can also define semantic and transition elements as child elements grouped under the `descriptors` tag.
 
-Technically, for any resource there are infinite states possible when one considers that changing the value of
-any property results in the a different 'state' for the resource. However, categorically, there will be limited set of
-states associated with a resource and these categories will be associated with different sets of possible transitions
-that can be exercised on the resource in that state. Thus, when we talk about states in Crichton, we mean the 
-categorical states of the state machine, each with its own unique set of available transitions.
+## States Section
+The `states` section of a _resource_ defines the metadata for a resource's states. Crichton uses descriptors to determine which transitions are available for responses. These responses are a function of the resource state and any conditions that must be satisfied for inclusion in the response. 
 
-## State properties
-* `states` - Defines the states associated with each resource specified as the keys of this property. The 
+NOTE: The `states` section also includes properties to graphically generate the state machine of the resource(s) that are described.
+
+Technically, for any resource there are an infinite number of possible states when one considers that if you change a value of any property it produces a different resource 'state'. However, categorically, there will be a limited set of states associated with a resource. These categories will be associated with different sets of possible transitions that can be exercised on the resource in that state. Thus, when we talk about states in Crichton, we mean the categorical states of the state machine, each state having its own set of available transitions.
+
+### State Properties
+States can have the following properties.
+- `states` - Defines the states associated with each resource. Specified as the keys of this property. The 
 actual state names are the keys under the resource.
-	* \[state name\] The name of the state.
-        * `doc` - Documents a particular state.
-        * `location` - The location of the state. Valid values are `entry`, `exit`, or a URI to an external ALPS type that 
-        is associated with the transition from an application vs. resource state standpoint. 
-        * `transitions` - The transtions available for the particular state. These can represent link or form based 
-        transitions.
-            * `name` - Overrides the name to be set on the affordance in a response. Otherwise, the ID (YAML key) for the 
-            transition is used. 'name:self' MUST be defined for at least one transition for the particular state.
-            * `conditions` - An array of conditions applied as a Boolean __OR__ that must exist for the transtion to be 
-            included. By passing an option including a list satisfied conditions when generating responses, Crichton 
-            determines which state's transitions should be included in a response. These strings are defined in your
-            own applications authorization logic and passed to Crichton (the following conditions are examples only).
-            * `next` - An array of next states in the state machine possible by following the transition. Typically, this will be
-only one state, unless an error state is a possibility. If a transition is associated with an external a hash resource,
-a hash with the `location` key is used and the value is an ALPS type specifing the profile of the external resource.
+	- \[state name\] The name of the state.
+	- `doc` - Documents a particular state in human-readable form.
+	- `transitions` - The transtions that are available for the specified state. These transitions can represent link- or form-based transitions.
+		- `name` - Overrides the name to be set on the affordance in a response. Otherwise, Crichton uses the ID - which is the YAML key - for the transition. You must define 'name:self' for at least one transition for the particular state.
+		- `location` - The location of the state. Valid values include: `entry`, `exit`, or a URI to an external ALPS type that is associated with the transition. Location here is from an application standpoint versus the resource state standpoint. 
+		- `conditions` - An array of conditions that are applied as a Boolean __OR__. This must exist for the transition to be included. When you pass an option that includes a list of satisfied conditions when generating responses, Crichton can determine which state's transitions to provide in a response. These condition strings are defined in your own application's authorization logic and are passed to Crichton. The conditions in the [Code Example](#code-example) are examples only.
+		- `next` - An array of next states in the state machine that are possible when the client follows the transition. Typically, this is only one state, unless an error state is a possibility. If you have a transition that is associated with an external hash resource, use a hash with the `location` key and a value that is an ALPS-type that specifies the profile of the external resource.
 
-## Descriptors
-The `descriptors` section MAY contain a list of referenced data descriptor and transition elements. It is also possible to define
-semantic and transition elements as child elements grouped under `descriptors` tag.
-
-## Example
+## Code Example
+The following example shows the Descriptors and State sections.
 
 ```yaml
 resources:
@@ -89,6 +83,7 @@ resources:
               - error 
 ```
 
-[Back to API Descriptor Document](descriptors_document.md)
-[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
-[Data Descriptors]: data_descriptors.md
+## Related Topics
+- [Back to API Descriptor Document](descriptors_document.md)
+- [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
+- [Data Descriptors](data_descriptors.md)
