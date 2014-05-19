@@ -10,27 +10,19 @@ describe 'DRDs resource descriptor' do
 
   # Lint reports information to stdout. Add the following method if you do not want to see Lint output
   before do
+    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
     $stdout.stub(:write)
   end
 
   it 'exists' do
-    File.exists?(filename).should be_true
-  end
-
-  it 'contains no errors' do
-    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
-    @filename = %w(clean_descriptor_file.yml)
-     validator.validate(filename, {count: :error}).should == 0
+    expect(File.exists?(filename)).to be_true
   end
 
   it 'contains the proper number of warnings' do
-    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
-    validator.validate(filename, {count: :warning}).should == 21
+    expect(validator.validate(filename, {count: :warning})).to eq(0)
   end
 
   it 'passes validation with the --strict option' do
-    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
-    result = validator.validate(filename, {strict: true})
-    result.should be_true
+    expect(validator.validate(filename, {strict: true})).to be_true
   end
 end
