@@ -325,6 +325,26 @@ module Support
     </alps>
     HERE
 
+    AlpsThing = <<-HERE
+    <alps>
+     <descriptor id="Thing" type="semantic" href="http://alps.io/schema.org/DataType">
+      <doc format="html">
+       Data type: Thing.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsWarrantyPromise = <<-HERE
+    <alps>
+     <descriptor id="WarrantyPromise" type="semantic" href="http://alps.io/schema.org/DataType">
+      <doc format="html">
+       Data type: WarrantyPromise.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
     StubUrls = {
       'http://alps.io/schema.org/Number' => AlpsNumber,
       'http://alps.io/schema.org/DataType' => AlpsDataType,
@@ -333,7 +353,9 @@ module Support
       'http://alps.io/schema.org/Array' => AlpsArray,
       'http://alps.io/schema.org/DateTime' => AlpsDateTime,
       'http://alps.io/schema.org/Boolean' => AlpsBoolean,
-      'http://alps.io/schema.org/Thing/Leviathan' => AlpsLeviathan
+      'http://alps.io/schema.org/Thing/Leviathan' => AlpsLeviathan,
+      'http://alps.io/schema.org/Thing' => AlpsThing,
+      'http://alps.io/schema.org/WarrantyPromise' => AlpsWarrantyPromise
     }
   end
 
