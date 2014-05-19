@@ -12,6 +12,10 @@ describe 'rdlint' do
     @filename = 'drds_lint.yml'
   end
 
+  after(:all) do
+    FileUtils.rm_rf('api_descriptors')
+  end
+
   before do
     load_lint_translation_file
   end
