@@ -149,7 +149,7 @@ describe Crichton::Lint do
   context 'with the descriptor file config folder' do
     context 'containing files with errors' do
       before do
-        FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*"))
+        FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*.yml"))
         Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
         create_drds_file(normalized_drds_descriptor.except('descriptors'), 'nodescriptors_descriptor.yml')
         create_drds_file(normalized_drds_descriptor.except('protocols'), 'noprotocols_descriptor.yml')
@@ -162,7 +162,7 @@ describe Crichton::Lint do
 
     context 'containing files with no errors' do
       before do
-        FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*"))
+        FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*.yml"))
         Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
         create_drds_file(new_drds_descriptor, 'clean_descriptor_file.yml')
         descriptor = new_drds_descriptor.tap do |document|
