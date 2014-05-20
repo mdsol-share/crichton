@@ -36,14 +36,14 @@ module Support
       YAML.load_file(new_drds_filename)
     end
 
-    def create_drds_file(descriptor, filename)
-      path = temporary_drds_filepath(filename)
+    def create_drds_file(descriptor, filename, directory = SPECS_TEMP_DIR)
+      path = temporary_drds_filepath(filename, directory)
       File.open(path, 'w') { |file| file.write descriptor.to_yaml }
       path
     end
 
-    def temporary_drds_filepath(filename)
-      File.join(SPECS_TEMP_DIR, filename)
+    def temporary_drds_filepath(filename, directory)
+      File.join(directory, filename)
     end
 
     def normalized_drds_descriptor
@@ -272,6 +272,14 @@ module Support
     def stub_configured_profiles
       copy_resource_to_config_dir('api_descriptors', 'fixtures/resource_descriptors')
       FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')
+    end
+
+    def stub_crichton_config_for_rdlint
+      copy_resource_to_config_dir('config', 'fixtures/config')
+    end
+
+    def clear_crichton_config_dir
+      FileUtils.rm_rf('config')
     end
 
     def clear_configured_profiles
