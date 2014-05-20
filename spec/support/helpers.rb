@@ -121,15 +121,15 @@ module Support
 
     shared_examples_for 'a nested descriptor' do
       it 'responds to descriptors' do
-        descriptor.should respond_to(:semantics)
+        expect(descriptor).to respond_to(:semantics)
       end
 
       it 'responds to semantics' do
-        descriptor.should respond_to(:semantics)
+        expect(descriptor).to respond_to(:semantics)
       end
 
       it 'responds to transitions' do
-        descriptor.should respond_to(:transitions)
+        expect(descriptor).to respond_to(:transitions)
       end
     end
 
@@ -138,13 +138,13 @@ module Support
         describe '#to_alps_hash' do
           context 'without options' do
             it 'returns a hash in an ALPS profile structure' do
-              descriptor.to_alps_hash.should == alps_profile_with_absolute_links
+              expect(descriptor.to_alps_hash).to eq(alps_profile_with_absolute_links)
             end
           end
 
           context 'with top_level option false' do
             it 'returns a hash in an ALPS descriptor structure' do
-              descriptor.to_alps_hash(top_level: false)['alps'].should be_nil
+              expect(descriptor.to_alps_hash(top_level: false)['alps']).to be_nil
             end
           end
         end
@@ -154,7 +154,7 @@ module Support
         describe '#to_json' do
           context 'without options' do
             it 'returns a JSON ALPS profile structure' do
-              JSON.parse(descriptor.to_json).should == alps_profile_with_absolute_links
+              expect(JSON.parse(descriptor.to_json)).to eq(alps_profile_with_absolute_links)
             end
           end
 
@@ -169,7 +169,7 @@ module Support
 
       context 'when XML' do
         it 'returns an XML ALPS profile structure' do
-          descriptor.to_xml.should be_equivalent_to(alps_xml)
+          expect(descriptor.to_xml).to be_equivalent_to(alps_xml)
         end
       end
     end
