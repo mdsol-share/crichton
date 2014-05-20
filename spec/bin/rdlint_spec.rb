@@ -10,10 +10,17 @@ describe 'rdlint' do
 
   before(:all) do
     @filename = 'drds_lint.yml'
+    stub_crichton_config_for_rdlint
+    eds = Crichton::ExternalDocumentStore.new('api_descriptors/external_documents_store')
+    Support::ALPSSchema::StubUrls.each do |url, body|
+      stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
+      eds.download_link_and_store_in_document_store(url)
+    end
   end
 
   after(:all) do
-    FileUtils.rm_rf('api_descriptors')
+    clear_configured_profiles
+    clear_crichton_config_dir
   end
 
   before do
@@ -21,14 +28,6 @@ describe 'rdlint' do
   end
 
   context 'in various modes with and without options' do
-    before(:all) do
-      eds = Crichton::ExternalDocumentStore.new('api_descriptors/external_documents_store')
-      Support::ALPSSchema::StubUrls.each do |url, body|
-        stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
-        eds.download_link_and_store_in_document_store(url)
-      end
-    end
-
     after do
       expect(%x(bundle exec rdlint #{@option} #{filename})).to eq(@expected_rdlint_output)
     end
@@ -116,10 +115,10 @@ describe 'rdlint' do
   context 'with the --all option' do
     # stub does not work in a new shell apparently, so a forced copy to the default api_descriptor dir is made
     before(:all) do
-      FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/crichton.yml"))
-      create_drds_file(normalized_drds_descriptor.tap { |doc| doc.except!('protocols') }, 'noprotocols.yml')
-      create_drds_file(normalized_drds_descriptor.tap { |doc| doc.except!('descriptors') }, 'nodescriptors.yml')
-      build_dir_for_lint_rspec('api_descriptors', "../#{SPECS_TEMP_DIR}")
+      descriptor = normalized_drds_descriptor.tap { |doc| doc.except!('protocols') }
+      create_drds_file(descriptor, 'noprotocols.yml', 'api_descriptors')
+      descriptor = normalized_drds_descriptor.tap { |doc| doc.except!('descriptors') }
+      create_drds_file(descriptor,'nodescriptors.yml', 'api_descriptors')
     end
 
     it 'processes all the files in the config folder' do
