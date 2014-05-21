@@ -139,9 +139,7 @@ idempotent:
     links:
       profile: DRDs#update
       help: forms/update
-    semantics:
-      - href: name
-        ext: _update_name
+    parameters:
       - href: status
         sample: renegade
         field_type: select
@@ -261,18 +259,18 @@ resources:
     links:
       profile: DRDs#drd
     descriptors:
+      - href: uuid
       - href: name
         ext: _name
-      - href: uuid
       - href: status
       - href: old_status
       - href: kind
       - href: size
-      - href: built_at
       - href: leviathan_uuid
+      - href: built_at
       - href: leviathan
-      - href: location_detail
       - href: location
+      - href: location_detail
       - href: destroyed
       - href: show
       - href: activate
