@@ -36,14 +36,14 @@ module Support
       YAML.load_file(new_drds_filename)
     end
 
-    def create_drds_file(descriptor, filename)
-      path = temporary_drds_filepath(filename)
+    def create_drds_file(descriptor, filename, directory = SPECS_TEMP_DIR)
+      path = temporary_drds_filepath(filename, directory)
       File.open(path, 'w') { |file| file.write descriptor.to_yaml }
       path
     end
 
-    def temporary_drds_filepath(filename)
-      File.join(SPECS_TEMP_DIR, filename)
+    def temporary_drds_filepath(filename, directory)
+      File.join(directory, filename)
     end
 
     def normalized_drds_descriptor
@@ -121,15 +121,15 @@ module Support
 
     shared_examples_for 'a nested descriptor' do
       it 'responds to descriptors' do
-        descriptor.should respond_to(:semantics)
+        expect(descriptor).to respond_to(:semantics)
       end
 
       it 'responds to semantics' do
-        descriptor.should respond_to(:semantics)
+        expect(descriptor).to respond_to(:semantics)
       end
 
       it 'responds to transitions' do
-        descriptor.should respond_to(:transitions)
+        expect(descriptor).to respond_to(:transitions)
       end
     end
 
@@ -138,13 +138,13 @@ module Support
         describe '#to_alps_hash' do
           context 'without options' do
             it 'returns a hash in an ALPS profile structure' do
-              descriptor.to_alps_hash.should == alps_profile_with_absolute_links
+              expect(descriptor.to_alps_hash).to eq(alps_profile_with_absolute_links)
             end
           end
 
           context 'with top_level option false' do
             it 'returns a hash in an ALPS descriptor structure' do
-              descriptor.to_alps_hash(top_level: false)['alps'].should be_nil
+              expect(descriptor.to_alps_hash(top_level: false)['alps']).to be_nil
             end
           end
         end
@@ -154,7 +154,7 @@ module Support
         describe '#to_json' do
           context 'without options' do
             it 'returns a JSON ALPS profile structure' do
-              JSON.parse(descriptor.to_json).should == alps_profile_with_absolute_links
+              expect(JSON.parse(descriptor.to_json)).to eq(alps_profile_with_absolute_links)
             end
           end
 
@@ -169,7 +169,7 @@ module Support
 
       context 'when XML' do
         it 'returns an XML ALPS profile structure' do
-          descriptor.to_xml.should be_equivalent_to(alps_xml)
+          expect(descriptor.to_xml).to be_equivalent_to(alps_xml)
         end
       end
     end
@@ -272,6 +272,14 @@ module Support
     def stub_configured_profiles
       copy_resource_to_config_dir('api_descriptors', 'fixtures/resource_descriptors')
       FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')
+    end
+
+    def stub_crichton_config_for_rdlint
+      copy_resource_to_config_dir('config', 'fixtures/config')
+    end
+
+    def clear_crichton_config_dir
+      FileUtils.rm_rf('config')
     end
 
     def clear_configured_profiles

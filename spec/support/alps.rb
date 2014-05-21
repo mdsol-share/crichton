@@ -99,8 +99,10 @@ module Support
             'value' => 'Describes Leviathans.'
           },
           'ext' => [
-            {'href' => 'http://alps.io/extensions/serialized_datalist',
-             'value' => "{\"size-list\":[\"small\",\"medium\",\"large\"]}"}
+            {
+              'href' => 'http://alps.example.com/Leviathans#alt',
+              'value' => 'Alternate.'
+            }
           ],
           'link' => [
             {
@@ -114,7 +116,6 @@ module Support
           ],
           'descriptor' => [
             {
-              'id' => 'leviathan',
               'doc' => {
                 'format' => 'html',
                 'value' => '<p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>'
@@ -125,49 +126,44 @@ module Support
                   'value' => 'A note.'
                 }
               ],
+              'id' => 'leviathan',
               'type' => 'semantic',
               'descriptor' => [
                 {
-                  'id' => 'uuid',
                   'doc' => {
                     'value' => 'The UUID of the Leviathan.'
                   },
+                  'id' => 'uuid',
                   'type' => 'semantic',
                   'href' => 'http://alps.io/schema.org/Text'
                 },
                 {
-                  'id' => 'name',
                   'doc' => {
                     'value' => 'The name of the Leviathan.'
                 },
+                  'id' => 'name',
                   'type' => 'semantic',
                   'href' => 'http://alps.io/schema.org/Text'
                 },
                 {
-                  'id' => 'status',
                   'doc' => {
                     'value' => 'How is the Leviathan.'
                   },
-                  'type' => 'semantic',
-                  'href' => 'http://alps.io/schema.org/Text',
                   'ext' => [
-                    {
-                      "value" => "{\"id\":\"leviathan_status_options\",\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
-                      'href' => 'http://alps.io/extensions/serialized_options_list'}
+                      {
+                          "value" => "{\"id\":\"leviathan_status_options\",\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
+                          'href' => 'http://alps.io/extensions/serialized_options_list'}
                   ],
+                  'id' => 'status',
+                  'type' => 'semantic',
+                  'href' => 'http://alps.io/schema.org/Text'
                 },
                 {
-                 'id' => 'size',
                   'doc' => {
                     'value' => 'How large it is'
                   },
+                  'id' => 'size',
                  'type' => 'semantic',
-                 'ext' => [
-                   {
-                     "value" => "{\"datalist\":\"size-list\"}", 
-                     'href' => 'http://alps.io/extensions/serialized_options_list'
-                   }
-                  ],
                  'href' => 'http://alps.io/schema.org/Text'},
                 {
                   'id' => 'create',
@@ -177,43 +173,26 @@ module Support
                   'type' => 'unsafe',
                   'rt' => 'leviathan',
                   'descriptor' => [
-                    {
-                      'id' => 'create-leviathan',
-                      'link' => [
-                        {
-                          'rel' => 'self',
-                          'href' => 'http://alps.example.com/Leviathans#create-leviathan'
-                        },
-                        {
-                          'rel' => 'help',
-                          'href' => 'http://docs.example.org/Forms/create-leviathan'
-                        }
-                      ],
-                      'type' => 'semantic',
-                      'descriptor' => [
-                        {
+                      {
                           'id' => 'form_name',
                           'doc' => {
-                            'value' => 'The name of the Leviathan.'
+                              'value' => 'The name of the Leviathan.'
                           },
                           'name' => 'name',
                           'type' => 'semantic',
                           'href' => 'http://alps.io/schema.org/Text'
-                        },
-                        {"doc" => {"value" => "How large it is"},
-                         "ext" => [{"value" => "{\"datalist\":\"size-list\"}", "href" => "http://alps.io/extensions/serialized_options_list"}],
-                         "id" => "form-size",
-                         "name" => "size",
-                         "type" => "semantic",
-                         "href" => "http://alps.io/schema.org/Text"},
-                        {"doc" => {"value" => "How is the Leviathan."},
-                         "ext" => [{"value" => "{\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
-                                    "href" => "http://alps.io/extensions/serialized_options_list"}],
-                         "id" => "form-status",
-                         "name" => "status",
-                         "type" => "semantic", "href" => "http://alps.io/schema.org/Text"}
-                      ]
-                    }
+                      },
+                      {"doc" => {"value" => "How large it is"},
+                       "id" => "form-size",
+                       "name" => "size",
+                       "type" => "semantic",
+                       "href" => "http://alps.io/schema.org/Text"},
+                      {"doc" => {"value" => "How is the Leviathan."},
+                       "ext" => [{"value" => "{\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
+                                  "href" => "http://alps.io/extensions/serialized_options_list"}],
+                       "id" => "form-status",
+                       "name" => "status",
+                       "type" => "semantic", "href" => "http://alps.io/schema.org/Text"}
                   ]
                 }
               ]

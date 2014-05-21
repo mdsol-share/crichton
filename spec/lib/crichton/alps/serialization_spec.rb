@@ -43,19 +43,19 @@ module Crichton
 
       describe '#alps_attributes' do
         it 'returns a hash of alps descriptor attributes' do
-          descriptor.alps_attributes.should == {'id' => 'Leviathans'}
+          expect(descriptor.alps_attributes).to eq({'id' => 'Leviathans'})
         end
       end
 
       describe '#alps_descriptors' do
         it 'returns an array of alps descriptor hashes' do
-          descriptor.alps_descriptors.map { |descriptor| descriptor['id'] }.should == %w(leviathan)
+          expect(descriptor.alps_descriptors.map { |descriptor| descriptor['id'] }).to eq(%w(leviathan))
         end
       end
 
       describe '#alps_elements' do
         it 'returns a hash of alps descriptor elements' do
-          descriptor.alps_elements.should == {
+          expect(descriptor.alps_elements).to  eq({
               'doc' => {'value' => 'Describes Leviathans.'},
               'ext' => [
                 {'href' => 'http://alps.example.com/Leviathans#alt', 'value' => 'Alternate.'}
@@ -64,7 +64,7 @@ module Crichton
                   {'rel' => 'self', 'href' => 'http://alps.example.com/Leviathans'},
                   {'rel' => 'help', 'href' => 'http://docs.example.org/Things/Leviathans'}
               ]
-          }
+          })
         end
       end
 
@@ -73,7 +73,7 @@ module Crichton
 
       describe 'absolute_link' do
         it 'returns the original link if it is already absolute' do
-          descriptor.send(:absolute_link, 'http://original.link.com', 'something').should == 'http://original.link.com'
+          expect(descriptor.send(:absolute_link, 'http://original.link.com', 'something')).to eq('http://original.link.com')
         end
       end
     end
