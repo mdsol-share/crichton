@@ -7,7 +7,7 @@ describe Crichton::Lint do
   let(:filename) { create_drds_file(@descriptor, @filename) }
 
   before(:all) do
-    @filename = 'drds_lint'
+    @filename = 'drds_lint.yml'
   end
 
   before do
@@ -151,8 +151,8 @@ describe Crichton::Lint do
       before do
         FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*"))
         Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
-        create_drds_file(normalized_drds_descriptor.except('descriptors'), 'nodescriptors_descriptor')
-        create_drds_file(normalized_drds_descriptor.except('protocols'), 'noprotocols_descriptor')
+        create_drds_file(normalized_drds_descriptor.except('descriptors'), 'nodescriptors_descriptor.yml')
+        create_drds_file(normalized_drds_descriptor.except('protocols'), 'noprotocols_descriptor.yml')
       end
 
       it 'returns false when both --strict and --all options are set' do
@@ -164,12 +164,12 @@ describe Crichton::Lint do
       before do
         FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*"))
         Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
-        create_drds_file(new_drds_descriptor, 'clean_descriptor_file')
+        create_drds_file(new_drds_descriptor, 'clean_descriptor_file.yml')
         descriptor = new_drds_descriptor.tap do |document|
           document['protocols']['http']['list']['status_codes'][200].replace({ 'description' => 'OK' })
           document['protocols']['http']['create']['status_codes'][403].replace({})
         end
-        create_drds_file(descriptor, 'warnings_status_codes')
+        create_drds_file(descriptor, 'warnings_status_codes.yml')
       end
 
       it 'returns true if the --strict option is set' do

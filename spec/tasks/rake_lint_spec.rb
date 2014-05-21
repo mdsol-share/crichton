@@ -79,11 +79,11 @@ describe 'rake crichton.lint' do
     it 'processes all the files in the config folder' do
       Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
       descriptor = new_drds_descriptor.tap { |document| document.except!('protocols') }
-      create_drds_file(descriptor, 'noprotocols')
+      create_drds_file(descriptor, 'noprotocols.yml')
       descriptor = normalized_drds_descriptor.tap { |document| document.except!('descriptors') }
-      create_drds_file(descriptor, 'nodescriptors')
+      create_drds_file(descriptor, 'nodescriptors.yml')
       execution_output = capture(:stdout) { Rake.application.invoke_task "crichton:lint[all]" }
-      all_files_processed = %w(noprotocols nodescriptors).all? { |f| execution_output.include?(f) }
+      all_files_processed = %w(noprotocols.yml nodescriptors.yml).all? { |f| execution_output.include?(f) }
       expect(all_files_processed).to be_true
     end
   end
