@@ -36,7 +36,7 @@ module Crichton
     context 'with associated class-level descriptors' do
       before do
         @resource_name = 'drds'
-        Crichton.initialize_registry(new_drds_descriptor)
+        Crichton.initialize_registry(drds_descriptor)
       end
       
       describe '.data_semantic_descriptors' do
@@ -103,7 +103,7 @@ module Crichton
 
     context 'with_registered resource descriptor' do
       before do
-        Crichton.initialize_registry(new_drds_descriptor)
+        Crichton.initialize_registry(drds_descriptor)
       end
 
       describe '#each_data_semantic' do

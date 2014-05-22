@@ -9,7 +9,7 @@ module Crichton
       end
   
       describe '.new' do
-        let(:descriptor) { Resource.new(new_drds_descriptor) }
+        let(:descriptor) { Resource.new(drds_descriptor) }
   
         it 'returns a subclass of Profile' do
           descriptor.should be_a(Profile)
@@ -19,7 +19,7 @@ module Crichton
       end
   
 
-      let(:descriptor_document) { new_drds_descriptor }
+      let(:descriptor_document) { drds_descriptor }
       let(:resource_descriptor) { Resource.new(ResourceDereferencer.new(descriptor_document).dealiased_document) }
       
       describe '#available_protocols' do

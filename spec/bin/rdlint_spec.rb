@@ -33,14 +33,14 @@ describe 'rdlint' do
     end
 
     it 'reports an expected value with the simplest invocation' do
-      @descriptor = new_drds_descriptor.tap { |doc| doc['protocols']['http']['list'].except!('entry_point') }
+      @descriptor = drds_descriptor.tap { |doc| doc['protocols']['http']['list'].except!('entry_point') }
       @expected_rdlint_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
         filename: filename, section: :protocols, sub_header: :error)
       @option = ''
     end
 
     it 'displays empty output when all warnings are suppressed on a warnings only result' do
-      @descriptor = new_drds_descriptor.tap do |document|
+      @descriptor = drds_descriptor.tap do |document|
         document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @expected_rdlint_output = "In file '#{filename}':\n"
@@ -48,7 +48,7 @@ describe 'rdlint' do
     end
 
     it 'reports a version number with the version option' do
-      @descriptor = new_drds_descriptor.tap do |document|
+      @descriptor = drds_descriptor.tap do |document|
         document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @expected_rdlint_output = capture(:stdout) { Crichton::Lint.version } << expected_output(:warning,
@@ -86,7 +86,7 @@ describe 'rdlint' do
 
   context 'with the --strict option' do
     it 'reports false when errors occur' do
-      @descriptor = new_drds_descriptor.tap { |doc| doc['protocols']['http'].except!('list') }
+      @descriptor = drds_descriptor.tap { |doc| doc['protocols']['http'].except!('list') }
       expect(%x(bundle exec rdlint -s #{filename})).to eq(%Q(#{false_string.red}\n))
     end
 
@@ -96,15 +96,15 @@ describe 'rdlint' do
       end
 
       it 'reports false when one clean is clean, one dirty' do
-        descriptor = new_drds_descriptor.tap { |doc| doc['protocols']['http'].except!('list') }
+        descriptor = drds_descriptor.tap { |doc| doc['protocols']['http'].except!('list') }
         @filename1 = create_drds_file(descriptor, 'missingactions.yml')
-        descriptor = new_drds_descriptor.tap { |doc| doc['semantics']['items'].merge!({ 'sample2' => 'GET' }) }
+        descriptor = drds_descriptor.tap { |doc| doc['semantics']['items'].merge!({ 'sample2' => 'GET' }) }
         @filename2 = create_drds_file(descriptor, 'extraprops.yml')
         @output = "false\n".red
       end
 
       it 'reports true all are clean' do
-        descriptor = new_drds_descriptor.tap { |doc| doc['semantics']['items'].merge!({ 'sample2' => 'GET' }) }
+        descriptor = drds_descriptor.tap { |doc| doc['semantics']['items'].merge!({ 'sample2' => 'GET' }) }
         @filename1 = create_drds_file(descriptor, 'extraproperties1.yml')
         @filename2 = create_drds_file(descriptor, 'extraproperties2.yml')
         @output = "true\n".green

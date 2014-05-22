@@ -27,7 +27,7 @@ module Crichton
         end
 
         it 'reports a missing doc property error if a resource doc property is not specified' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds'].except!('doc')
           end
           @errors = expected_output(:error, 'descriptors.property_missing', resource: 'drds', prop: 'doc',
@@ -35,7 +35,7 @@ module Crichton
         end
 
         it 'reports a doc property error if a resource doc property is not a valid media type' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['doc'] = { 'html5' => 'Invalid key' }
           end
           @errors = expected_output(:error, 'descriptors.doc_media_type_invalid', resource: 'drds', media_type: 'html5',
@@ -43,7 +43,7 @@ module Crichton
         end
 
         it 'reports a doc property error if a resource doc property value is not specified' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['doc'] = { 'html' => nil }
           end
           @errors = expected_output(:error, 'descriptors.doc_media_type_invalid', resource: 'drds', media_type: 'html',
@@ -68,7 +68,7 @@ module Crichton
         end
 
         it 'reports a link property warning if a resource link property is missing' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds'].except!('links')
           end
           @warnings = expected_output(:warning, 'descriptors.property_missing', resource: 'drds', prop: 'link',
@@ -76,7 +76,7 @@ module Crichton
         end
 
         it 'reports an invalid link self property error if a link self property is invalid' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['links'].replace({ 'selff' => 'Invalid self' })
           end
           @errors = expected_output(:error, 'descriptors.link_invalid', resource: 'drds', link: 'selff',
@@ -84,7 +84,7 @@ module Crichton
         end
 
         it 'reports an invalid link self property error if a link self property value is empty' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['links'].replace({ 'self' => nil })
           end
           @errors = expected_output(:error, 'descriptors.link_invalid', resource: 'drds', link: 'self',
@@ -92,7 +92,7 @@ module Crichton
         end
 
         it 'reports an invalid return type error when the descriptor return type is not valid' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['unsafe']['create']['rt'] = 'dord'
           end
           @errors = expected_output(:error, 'descriptors.invalid_return_type', resource: 'create', rt: 'dord',
@@ -100,7 +100,7 @@ module Crichton
         end
 
         it 'reports a missing return type error when the descriptor return type is missing' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['unsafe']['create'].except!('rt')
             document['idempotent']['update'].except!('rt')
           end
@@ -110,7 +110,7 @@ module Crichton
         end
 
         it 'reports errors when the descriptor transitions list does not match state or protocol transitions' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['descriptors'].reject!{ |h| h['href'] == 'search' }
           end
           @errors = expected_output(:error, 'descriptors.state_transition_not_found', transition: 'search',
@@ -119,7 +119,7 @@ module Crichton
         end
 
         it 'reports errors when the descriptor transition type is associated with an invalid protocol method' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['protocols']['http']['list']['method'] = 'POST'
             document['protocols']['http']['create']['method'] = 'PUT'
           end
@@ -129,7 +129,7 @@ module Crichton
         end
 
         it 'reports errors when invalid embedded types are found' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['semantics']['total_count'].merge!({ 'embed' => 'single-optional-embed' })
             document['semantics']['items'].merge!({ 'embed' => 'multple-optional' })
           end
@@ -139,13 +139,13 @@ module Crichton
         end
 
         it 'reports no errors with a descriptor file containing valid field_types and validators' do
-          @descriptor = new_drds_descriptor
+          @descriptor = drds_descriptor
           @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
         end
 
         context 'select options attributes' do
           it 'reports errors when an option name is not one of the supported names' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['semantics']['total_count'].merge!({ 'options' => { 'listt' => [ '1', '2' ] } })
               document['semantics']['items'].merge!({ 'options' => { 'hashh' => { 'external' => { 'source' => '' } } } })
             end
@@ -155,7 +155,7 @@ module Crichton
           end
 
           it 'reports errors when several form options have no values' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['semantics']['total_count'].merge!({ 'options' => { 'id' => nil, 'list' => nil } })
               document['semantics']['items'].merge!({ 'options' => { 'hash' => nil } })
               document['semantics']['uuid'].merge!({ 'options' => { 'external' => nil } })
@@ -168,7 +168,7 @@ module Crichton
           end
 
           it 'reports errors when multiple options are specified under one descriptor' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               options = { 'options' => { 'list' => [ '1' , '2' ], 'hash' => { 'first' => '1' } } }
               document['semantics']['total_count'].merge!(options)
             end
@@ -177,7 +177,7 @@ module Crichton
           end
 
           it 'reports errors when multiple options enumerators contain the wrong type in its values' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['semantics']['total_count'].merge!({ 'options' => { 'list' => { }  } })
               document['semantics']['items'].merge!({ 'options' => { 'hash' => [ '1', '2' ] } })
             end
@@ -188,7 +188,7 @@ module Crichton
           end
 
           it 'reports warnings when options enumerators are missing a value' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['semantics']['items'].merge!({ 'options' => { 'hash' => { 'first' => nil, 'second' => '2' } } })
               options = { 'options' => { 'external' => { 'source' => 'http://example.org', 'prompt' => 'id', 'target' => nil } } }
               document['semantics']['uuid'].merge!(options)
@@ -199,7 +199,7 @@ module Crichton
           end
 
           it 'reports an error when the value_attribute_name is missing for an external hash or list' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['semantics']['uuid'].merge!({ 'options' => { 'external' => { 'source' => 'http://example.org' } } })
             end
             @errors = expected_output(:error, 'descriptors.missing_options_key', id: 'uuid',
@@ -210,7 +210,7 @@ module Crichton
           end
 
           it 'reports an error when the source attribute is not a string or has no value' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['semantics']['total_count'].merge!({'options' => { 'external' => nil} })
               document['semantics']['items'].merge!({ 'options' => { 'external' => { 'source' => { 'first' => 'first' } } } })
             end

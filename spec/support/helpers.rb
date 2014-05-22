@@ -32,10 +32,6 @@ module Support
       YAML.load_file(drds_filename)
     end
 
-    def new_drds_descriptor
-      YAML.load_file(new_drds_filename)
-    end
-
     def create_drds_file(descriptor, filename, directory = SPECS_TEMP_DIR)
       path = temporary_drds_filepath(filename, directory)
       File.open(path, 'w') { |file| file.write descriptor.to_yaml }
@@ -49,28 +45,18 @@ module Support
     def normalized_drds_descriptor
       Crichton.clear_registry
       registry = Crichton::Registry.new(automatic_load: false)
-      registry.register_single(new_drds_descriptor)
+      registry.register_single(drds_descriptor)
       resource_dereferencer = registry.resources_registry.values.first
       resource_dereferencer.dereference(registry.dereferenced_descriptors)
     end
 
-    #TODO: DRY here and above
     def register_drds_descriptor
       Crichton.clear_registry
       Crichton.initialize_registry(drds_descriptor)
     end
 
-    def register_new_drds_descriptor
-      Crichton.clear_registry
-      Crichton.initialize_registry(new_drds_descriptor)
-    end
-
     def drds_filename
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
-    end
-
-    def new_drds_filename
-      fixture_path('resource_descriptors', 'new_drds_descriptor_v1.yml')
     end
 
     def drds_non_existent_filename
@@ -133,47 +119,6 @@ module Support
       end
     end
 
-    shared_examples_for 'it serializes to ALPS' do
-      context 'when hash' do
-        describe '#to_alps_hash' do
-          context 'without options' do
-            it 'returns a hash in an ALPS profile structure' do
-              expect(descriptor.to_alps_hash).to eq(alps_profile_with_absolute_links)
-            end
-          end
-
-          context 'with top_level option false' do
-            it 'returns a hash in an ALPS descriptor structure' do
-              expect(descriptor.to_alps_hash(top_level: false)['alps']).to be_nil
-            end
-          end
-        end
-      end
-
-      context 'when JSON' do
-        describe '#to_json' do
-          context 'without options' do
-            it 'returns a JSON ALPS profile structure' do
-              expect(JSON.parse(descriptor.to_json)).to eq(alps_profile_with_absolute_links)
-            end
-          end
-
-          context 'with pretty option true' do
-            it 'returns a json alps profile pretty-formatted' do
-              MultiJson.should_receive(:dump).with(descriptor.to_alps_hash, pretty: true)
-              descriptor.to_json(pretty: true)
-            end
-          end
-        end
-      end
-
-      context 'when XML' do
-        it 'returns an XML ALPS profile structure' do
-          expect(descriptor.to_xml).to be_equivalent_to(alps_xml)
-        end
-      end
-    end
-
     def load_lint_translation_file
       I18n.load_path = [File.join(LINT_DIR, 'en.yml')]
       I18n.default_locale = 'en'
@@ -220,10 +165,6 @@ module Support
 
     def alps_json_data
       File.open(alps_fixture_path('DRDs.json'), 'rb') { |f| f.read }
-    end
-
-    def alps_xml_data
-      File.open(alps_fixture_path('DRDs.xml'), 'rb') { |f| f.read }
     end
 
     def tasks_path(*args)

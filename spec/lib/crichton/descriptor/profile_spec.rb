@@ -33,7 +33,7 @@ module Crichton
   
         context 'without nested descriptors' do
           it 'returns an empty array if there are no nested descriptors' do
-            @descriptor = new_drds_descriptor.reject { |k, _| k == 'descriptors' }
+            @descriptor = drds_descriptor.reject { |k, _| k == 'descriptors' }
             descriptor.descriptors.should be_empty
           end
         end
