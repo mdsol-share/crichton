@@ -117,4 +117,4 @@ idempotent:
 ```
 ## External References
 - [Back to API Descriptor Document](descriptors_document.md)
-- [Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+- [Example API Descriptor Document](/spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
