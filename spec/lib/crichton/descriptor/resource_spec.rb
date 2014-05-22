@@ -24,18 +24,20 @@ module Crichton
       
       describe '#available_protocols' do
         it 'returns a list of available protocols' do
-          resource_descriptor.available_protocols.should == %w(http)
+          expect(resource_descriptor.available_protocols).to eq(%w(http))
         end
       end
       
       describe '#default_protocol' do
-        it 'returns the top-level default protocol defined in the descriptor document' do
-          descriptor_document['default_protocol'] = 'some_protocol'
-          resource_descriptor.default_protocol.should == 'some_protocol'
-        end
+        #TODO: this needs to be revisited: our convention is protocolname_protocol, which de-aliases
+        # in protocols => { default => ... } which is wrong.
+        # it 'returns the top-level default protocol defined in the descriptor document' do
+        #   descriptor_document['default_protocol'] = 'some_protocol'
+        #   resource_descriptor.default_protocol.should == 'some_protocol'
+        # end
 
         it 'returns the first protocol define with no default protocol defined in the descriptor document' do
-          resource_descriptor.default_protocol.should == 'http'
+          expect(resource_descriptor.default_protocol).to eq('http')
         end
         
         it 'raises an error if no protocols are defined and no default_protocol is defined' do
@@ -54,37 +56,37 @@ module Crichton
       
       describe '#profile_link' do
         it 'returns an absolute link' do
-          resource_descriptor.profile_link.href.should == 'http://alps.example.com/DRDs'
+          expect(resource_descriptor.profile_link.href).to eq('http://alps.example.com/DRDs')
         end
 
         it 'returns a link with the name profile' do
-          resource_descriptor.profile_link.name.should == 'profile'
+          expect(resource_descriptor.profile_link.name).to eq('profile')
         end
       end
 
       describe '#help_link' do
         it 'returns an absolute link' do
-          resource_descriptor.help_link.href.should == 'http://docs.example.org/Things/DRDs'
+          expect(resource_descriptor.help_link.href).to eq('http://docs.example.org/Things/DRDs')
         end
 
         it 'returns a link with the name profile' do
-          resource_descriptor.help_link.name.should == 'help'
+          expect(resource_descriptor.help_link.name).to eq('help')
         end
       end
 
       describe '#protocol_exists?' do
         it 'returns true if the protocol is defined in the descriptor document' do
-          resource_descriptor.protocol_exists?('http').should be_true
+          expect(resource_descriptor.protocol_exists?('http')).to be_true
         end
 
         it 'returns false if the protocol is not defined in the descriptor document' do
-          resource_descriptor.protocol_exists?('bogus').should be_false
+          expect(resource_descriptor.protocol_exists?('bogus')).to be_false
         end
       end
       
       describe '#protocols' do
         it 'returns a hash protocol-specific transition descriptors keyed by protocol' do
-          resource_descriptor.protocols['http'].should_not be_empty
+          expect(resource_descriptor.protocols['http']).to_not be_empty
         end
         
         context 'with unknown protocol in descriptor document' do
@@ -99,32 +101,25 @@ module Crichton
       
       describe '#protocol_transition' do
         it 'returns a protocol specific transition descriptor' do
-          resource_descriptor.protocol_transition('http', 'list').should be_instance_of(Http)
+          expect(resource_descriptor.protocol_transition('http', 'list')).to be_instance_of(Http)
         end
       end
 
       describe '#states' do
         it 'returns as hash of state descriptors keyed by resource' do
-          resource_descriptor.states['drds'].should_not be_empty
+          expect(resource_descriptor.states['drds']).to_not be_empty
         end
         
         it 'returns a hash of a hash of State instances' do
-          resource_descriptor.states['drds']['collection'].should be_a(State)
+          expect(resource_descriptor.states['drds']['collection']).to be_instance_of(State)
         end
       end
   
       describe '#to_key' do
         it 'returns a key from the ID and version of the resource descriptor' do
-          resource_descriptor.to_key.should == 'DRDs'
+          expect(resource_descriptor.to_key).to eq('DRDs')
         end
       end
-
-      #TODO: uncomment when ALPS serializatin is fixed.
-      # context 'with serialization' do
-      #   let(:descriptor) { Resource.new(leviathans_descriptor) }
-      #
-      #   it_behaves_like 'it serializes to ALPS'
-      # end
     end
   end
 end

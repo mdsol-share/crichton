@@ -120,8 +120,8 @@ module Crichton
 
         it 'reports errors when the descriptor transition type is associated with an invalid protocol method' do
           @descriptor = drds_descriptor.tap do |document|
-            document['protocols']['http']['list']['method'] = 'POST'
-            document['protocols']['http']['create']['method'] = 'PUT'
+            document['http_protocol']['list']['method'] = 'POST'
+            document['http_protocol']['create']['method'] = 'PUT'
           end
           @errors = expected_output(:error, 'descriptors.invalid_method', resource: 'list', type: 'safe', mthd: 'POST',
             filename: filename, section: :descriptors, sub_header: :error) <<

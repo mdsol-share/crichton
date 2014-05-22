@@ -4,7 +4,7 @@ require 'crichton/descriptor/transition_decorator'
 module Crichton
   module Descriptor
     describe TransitionDecorator do
-      let(:descriptor_document) { drds_descriptor }
+      let(:descriptor_document) { normalized_drds_descriptor }
       let(:resource_descriptor) { Resource.new(descriptor_document) }
       let(:descriptor) do
         register_drds_descriptor
@@ -39,12 +39,12 @@ module Crichton
 
       describe '#name' do
         it 'returns the name of the state transition' do
-          decorator.name.should == 'self'
+          expect(decorator.name).to eq('self')
         end
 
         it 'returns the id of the descriptor if name is not specified' do
           @transition = 'search'
-          decorator.name.should == 'search'
+          expect(decorator.name).to eq('search')
         end
       end
 
@@ -52,7 +52,7 @@ module Crichton
         shared_examples_for 'a state transition without conditions' do
           it 'always returns true for transitions without conditions' do
             @skip_state_option = false
-            decorator.should be_available
+            expect(decorator).to be_available
           end
           
           it 'returns false for a transition that is not listed for the state' do
@@ -60,7 +60,7 @@ module Crichton
             @state = 'activated'
             @transition = 'activate'
 
-            decorator.should_not be_available
+            expect(decorator).to_not be_available
           end
         end
         
@@ -74,7 +74,7 @@ module Crichton
               @transition = 'deactivate'
               @conditions = :can_deactivate
 
-              decorator.should be_available
+              expect(decorator).to be_available
             end
 
             it 'returns true if multiple state conditions are satisfied' do
@@ -83,7 +83,7 @@ module Crichton
               @transition = 'activate'
               @conditions = [:can_activate, 'can_do_anything']
               
-              decorator.should be_available
+              expect(decorator).to be_available
             end
 
             it 'returns false if at least one state condition is not satisfied' do
@@ -92,7 +92,7 @@ module Crichton
               @transition = 'activate'
               @conditions = 'can_cook'
               
-              decorator.should_not be_available
+              expect(decorator).to_not be_available
             end
           end
 
@@ -103,8 +103,8 @@ module Crichton
               @descriptor = 'drd'
               @state = 'activated'
               @transition = 'deactivate'
-              
-              decorator.should_not be_available
+
+              expect(decorator).to_not be_available
             end
           end
         end
@@ -112,7 +112,7 @@ module Crichton
         context 'with target that does not implement a #state method' do
           context 'without :state specified in the options' do
             it 'always returns true' do
-              decorator.should be_available
+              expect(decorator).to be_available
             end
           end
           
@@ -152,12 +152,12 @@ module Crichton
           @descriptor = 'drd'
           @transition = 'delete'
 
-          decorator.interface_method.should == 'DELETE'
+          expect(decorator.interface_method).to eq('DELETE')
         end
 
         it 'returns nil if there is not protocol descriptor' do
           decorator.stub(:protocol_descriptor).and_return(nil)
-          decorator.interface_method.should be_nil
+          expect(decorator.interface_method).to be_nil
         end
       end
 
@@ -178,12 +178,12 @@ module Crichton
       
       describe '#protocol_descriptor' do
         it 'returns the protocol descriptor that details the implementation of the transition' do
-          decorator.protocol_descriptor.should be_a(Http)
+          expect(decorator.protocol_descriptor).to be_a(Http)
         end
         
         it 'returns nil if no protocol descriptor implements the transition for the transition protocol' do
           decorator.stub(:id).and_return('non-existent')
-          decorator.protocol_descriptor.should be_nil
+          expect(decorator.protocol_descriptor).to be_nil
         end
       end
       
@@ -194,11 +194,11 @@ module Crichton
 
         it 'returns true if the transition has semantic descriptors' do
           @transition = 'search'
-          decorator.should be_templated
+          expect(decorator).to be_templated
         end
 
         it 'returns false if the transition has no semantic descriptors' do
-          decorator.should_not be_templated
+          expect(decorator).to_not be_templated
         end
       end
 
@@ -216,7 +216,7 @@ module Crichton
         
         context 'without query parameter semantic descriptors' do
           it 'returns the url' do
-            decorator.templated_url.should == decorator.url
+            expect(decorator.templated_url).to eq(decorator.url)
           end
         end
 
@@ -237,7 +237,7 @@ module Crichton
         shared_examples_for 'a memoized url' do
           it 'memoizes the url' do
             url_object_id = decorator.url.object_id
-            decorator.url.object_id.should == url_object_id
+            expect(decorator.url.object_id).to eq(url_object_id)
           end
         end
         
@@ -283,7 +283,7 @@ module Crichton
         context 'without protocol descriptor defined' do
           it 'returns nil' do
             decorator.stub(:protocol_descriptor).and_return(nil)
-            decorator.url.should be_nil
+            expect(decorator.url).to be_nil
           end
         end
 
@@ -295,27 +295,20 @@ module Crichton
           it 'uses the override link instead of the regular URL' do
             @override_links = {'self' => @overridden_url}
             @top_level = true
-            decorator.url.should be(@overridden_url)
+            expect(decorator.url).to be(@overridden_url)
           end
 
           it 'uses regular URL if the name does not match' do
             @override_links = {'wrong_name' => @overridden_url}
             @top_level = true
-            decorator.url.should_not be(@overridden_url)
+            expect(decorator.url).to_not be(@overridden_url)
           end
 
           it 'uses the regular URL if it is not top_level' do
             @override_links = {'self' => @overridden_url}
             @top_level = false
-            decorator.url.should_not be(@overridden_url)
+            expect(decorator.url).to_not be(@overridden_url)
           end
-        end
-      end
-
-      describe '#response_headers' do
-        it 'returns empty hash if state has no response headers defined' do
-          @state = 'navigation'
-          decorator.response_headers.should be_empty
         end
       end
     end
