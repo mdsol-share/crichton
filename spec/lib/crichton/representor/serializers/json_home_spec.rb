@@ -14,6 +14,101 @@ module Crichton
       let (:json_output) do
         '{"resources":{"http://alps.example.org/DRDs#list":{"href":"http://deployment.example.org/drds"}}}'
       end
+      let (:expected_entry_points_json) do
+        result =<<-JSON
+          {
+            "resources":
+            {
+              "http://alps.example.org/DRDs#list":
+              {
+                "href":"http://deployment.example.org/drds"
+              },
+                "http://alps.example.org/EntryPoints#list":
+              {
+                "href":"http://deployment.example.org/apis"
+              },
+                "http://alps.example.org/Leviathans#show":
+              {
+                "href":"http://deployment.example.org/leviathans/{uuid}"
+              }
+            }
+          }
+        JSON
+      end
+      let (:expected_entry_point_styled_microdata_html) do
+        result =<<-HTML
+          <!DOCTYPE html>
+          <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+              <link rel="stylesheet" href="http://example.org/resources/css.css"/>
+              <style>
+          *[itemprop]::before {
+            content: attr(itemprop) ": ";
+            text-transform: capitalize;
+          }
+              </style>
+            </head>
+            <body>
+              <ul>
+                <li>
+                  <p/>
+                  <b>Rel: </b>
+                  <a rel="http://alps.example.org/DRDs#list" href="http://alps.example.org/DRDs#list">http://alps.example.org/DRDs#list</a>
+                  <b>  Url:  </b>
+                  <a rel="http://deployment.example.org/drds" href="http://deployment.example.org/drds">http://deployment.example.org/drds</a>
+                </li>
+                <li>
+                  <p/>
+                  <b>Rel: </b>
+                  <a rel="http://alps.example.org/EntryPoints#list" href="http://alps.example.org/EntryPoints#list">http://alps.example.org/EntryPoints#list</a>
+                  <b>  Url:  </b>
+                  <a rel="http://deployment.example.org/apis" href="http://deployment.example.org/apis">http://deployment.example.org/apis</a>
+                </li>
+                <li>
+                  <p/>
+                  <b>Rel: </b>
+                  <a rel="http://alps.example.org/Leviathans#show" href="http://alps.example.org/Leviathans#show">http://alps.example.org/Leviathans#show</a>
+                  <b>  Url:  </b>
+                  <a rel="http://deployment.example.org/leviathans/{uuid}" href="http://deployment.example.org/leviathans/{uuid}">http://deployment.example.org/leviathans/{uuid}</a>
+                </li>
+              </ul>
+            </body>
+          </html>
+        HTML
+      end
+      let (:expected_entry_point_xhtml) do
+        result =<<-HTML
+          <!DOCTYPE html>
+          <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+              <link rel="stylesheet" href="http://example.org/resources/css.css"/>
+              <style>
+          *[itemprop]::before {
+            content: attr(itemprop) ": ";
+            text-transform: capitalize;
+          }
+              </style>
+            </head>
+            <body>
+              <p/>
+              <b>Rel: </b>
+              <a rel="http://alps.example.org/DRDs#list" href="http://alps.example.org/DRDs#list">http://alps.example.org/DRDs#list</a>
+              <b>  Url:  </b>
+              <a rel="http://deployment.example.org/drds" href="http://deployment.example.org/drds">http://deployment.example.org/drds</a>
+              <p/>
+              <b>Rel: </b>
+              <a rel="http://alps.example.org/EntryPoints#list" href="http://alps.example.org/EntryPoints#list">http://alps.example.org/EntryPoints#list</a>
+              <b>  Url:  </b>
+              <a rel="http://deployment.example.org/apis" href="http://deployment.example.org/apis">http://deployment.example.org/apis</a>
+              <p/>
+              <b>Rel: </b>
+              <a rel="http://alps.example.org/Leviathans#show" href="http://alps.example.org/Leviathans#show">http://alps.example.org/Leviathans#show</a>
+              <b>  Url:  </b>
+              <a rel="http://deployment.example.org/leviathans/{uuid}" href="http://deployment.example.org/leviathans/{uuid}">http://deployment.example.org/leviathans/{uuid}</a>
+            </body>
+          </html>
+        HTML
+      end
 
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
@@ -29,15 +124,15 @@ module Crichton
       describe '#to_media_type' do
         it 'returns the resource represented as application/json+home' do
           serializer = @serializer.new(entry_points)
-          expect(serializer.to_media_type).to be_json_eql(entry_points_json)
+          expect(serializer.to_media_type).to be_json_eql(expected_entry_points_json)
         end
 
         it 'returns a valid html output when to_media_type is set to :html' do
-          expect(entry_points.to_media_type(:html)).to be_equivalent_to(entry_points_html)
+          expect(entry_points.to_media_type(:html)).to be_equivalent_to(expected_entry_point_styled_microdata_html)
         end
 
         it 'returns a valid html output when to_media_type is set to :xhtml' do
-          expect(entry_points.to_media_type(:xhtml)).to be_equivalent_to(entry_points_xhtml)
+          expect(entry_points.to_media_type(:xhtml)).to be_equivalent_to(expected_entry_point_xhtml)
         end
       end
 
