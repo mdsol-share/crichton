@@ -15,5 +15,7 @@ module Crichton
     HREF = 'href'
     EXT = 'ext'
     TYPE = 'type'
+
+    PROTOCOL = 'protocol'
   end
 end
