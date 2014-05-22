@@ -31,7 +31,7 @@ module Crichton
 
       def descriptors
         @descriptors[:all] ||= begin
-          doc = descriptor_document[Crichton::Descriptor::TAG].is_a?(Hash) && descriptor_document[Crichton::Descriptor::TAG] || {}
+          doc = descriptor_document[Crichton::Descriptor::TAG] || {}
           doc.keys.map do |id|
             descriptor = Detail.new(resource_descriptor, self, id)
             @self_transition = descriptor if descriptor.name == 'self' && descriptor.transition?
