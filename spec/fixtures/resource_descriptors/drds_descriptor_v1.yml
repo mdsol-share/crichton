@@ -360,132 +360,10 @@ media_types:
   - application/vnd.hale+json
   - text/html
 
-protocols:
-  http:
-    list:
-      uri: drds
-      entry_point: drds # Indicates this endpoint is a resource entry point for the protocol.
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-        - application/xhtml+xml
-      headers:
-        - Content-Type
-        - ETag
-      status_codes:
-        200:
-          description: OK
-          notes:
-            - We have processed your request and returned the data you asked for.
-      slt: &slt1
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50
-    search:
-      uri: drds
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: OK
-          notes: OK
-      slt: &slt2
-        99th_percentile: 250ms
-        std_dev: 50ms
-        requests_per_second: 25
-    create:
-      uri: drds
-      method: POST
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        201:
-          description: Created
-          notes: Created
-        403:
-          description: Permission denied
-          notes: Created
-      slt: *slt2
-    show:
-      uri: drds/{uuid}
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: OK
-          notes: OK
-      slt:
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50
-    activate:
-      uri: drds/{uuid}/activate
-      method: PUT
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: OK
-          notes: OK
-      slt: *slt1
-    deactivate:
-      uri: drds/{uuid}/deactivate
-      method: PUT
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: OK
-          notes: OK
-      slt: *slt1
-    update:
-      uri: drds/{uuid}
-      method: PUT
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: Updated
-          notes: OK
-      slt: *slt2
-    delete:
-      uri: drds/{uuid}
-      method: DELETE
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: Deleted
-          notes: OK
-        403:
-          description: Permission denied
-          notes: OK
-      slt: *slt1
-    leviathan-link:
-      uri_source: leviathan_url
-    repair-history:
-      uri_source: repair_history_url
-
 http_protocol:
   list:
     uri: drds
+    entry_point: drds
     method: GET
     headers:
       - Content-Type
@@ -511,7 +389,10 @@ http_protocol:
     uri: drds/{uuid}
     method: GET
     headers:
-    slt: *slt1
+    slt:
+      99th_percentile: 100ms
+      std_dev: 25ms
+      requests_per_second: 50
   activate:
     uri: drds/{uuid}/activate
     method: PUT
@@ -534,7 +415,6 @@ http_protocol:
     slt: *slt1
   leviathan-link:
     uri_source: leviathan_url
-    method: GET
   repair-history:
     uri_source: repair_history_url
 
