@@ -5,7 +5,7 @@ module Crichton
   module Descriptor
     describe Detail do
       let(:resource_descriptor) { mock('resource_descriptor') }
-      let(:descriptor_document) { drds_descriptor['descriptors']['drds'] }
+      let(:descriptor_document) { normalized_drds_descriptor['descriptors']['drds'] }
       let(:parent_descriptor) do
         descriptor = mock('parent_descriptor')
         descriptor.stub(:child_descriptor_document).with('drds').and_return(descriptor_document)
@@ -13,7 +13,7 @@ module Crichton
         descriptor
       end
       let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, 'drds') }
-      let(:name_semantic) { descriptor.transitions['create'].semantics['create-drd'].semantics['name'] }
+      let(:name_semantic) { descriptor.transitions['create'].semantics['name'] }
 
       describe '.new' do
         it 'returns a subclass of Profile' do
@@ -161,7 +161,7 @@ module Crichton
         end
 
         it 'returns the self link for semantic descriptors' do
-          descriptor.type_link.href.should == descriptor.links['self'].absolute_href
+          descriptor.type_link.href.should == descriptor.links['profile'].absolute_href
         end
 
         it 'returns the absolute self link' do

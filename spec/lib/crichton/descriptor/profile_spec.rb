@@ -4,7 +4,7 @@ require 'crichton/descriptor/profile'
 module Crichton
   module Descriptor
     describe Profile do
-      let(:descriptors) { drds_descriptor['descriptors'] }
+      let(:descriptors) { normalized_drds_descriptor['descriptors'] }
       let(:resource_descriptor) { mock('resource_descriptor') }
       let(:descriptor) { Profile.new(resource_descriptor, @descriptor) }
 
@@ -54,7 +54,7 @@ module Crichton
 
       describe '#links' do
         it 'returns the descriptor links' do
-          descriptor.links['self'].should_not be_nil
+          descriptor.links['profile'].should_not be_nil
         end
       end
 

@@ -18,7 +18,6 @@ module Crichton
       end
   end
 
-
   ##
   # Clears any registered resource descriptors.
   def self.clear_registry

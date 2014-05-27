@@ -414,12 +414,6 @@ module Crichton
           @state_method = 'my_state_method'
         end
 
-        it 'returns the response headers associated with the state' do
-          @resource_name = 'drds'
-          attributes = { 'my_state_method' => 'collection' }
-          simple_test_class.new(attributes).response_headers.should == { 'Cache-Control' => 'no-cache'  }
-        end
-
         it 'returns empty hash if not response headers are specified' do
           @resource_name = 'drd'
           attributes = { 'my_state_method' => 'activated' }

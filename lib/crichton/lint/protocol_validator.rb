@@ -5,7 +5,7 @@ module Crichton
     # class to lint validate the protocols section of a resource descriptor document
     class ProtocolValidator < BaseValidator
       # @private list of valid protocol attributes
-      PROTOCOL_PROPERTIES = %w(uri entry_point method content_type headers status_codes slt)
+      PROTOCOL_PROPERTIES = %w(uri entry_point method headers slt)
       section :protocols
 
       # standard lint validate method
@@ -65,24 +65,6 @@ module Crichton
         #47, 48, required properties uri and method
         %w(uri method).each do |property|
           add_error('protocols.property_missing', options.merge(property: property)) unless transition.send(property)
-        end
-
-        #51, warn if status_codes is missing or if specified, any of the sub-properties are missing
-        if transition.status_codes
-          check_status_codes_properties(transition.status_codes, options)
-        else
-          add_warning('protocols.property_missing', options.merge(property: 'status_codes'))
-        end
-
-        # #49 for content_type, we check for missing, invalid content_type, and the
-        # special url_source case (ok to be missing is url_source is specified)
-        if transition.content_types
-          # check for valid types we know of currently
-          transition.content_types.each do |type|
-            add_error('protocols.invalid_content_type', options.merge(content_type: type)) unless valid_content_type(type)
-          end
-        else
-          add_error('protocols.property_missing', options.merge(property: 'content_type'))
         end
 
         #53, slt warnings, warn if not existing, and check if it has valid child properties

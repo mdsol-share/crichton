@@ -52,6 +52,7 @@ RSpec.configure do |config|
   config.include Support::EPHelpers
 
   config.before(:each) do
+    stub_alps_requests
     Crichton::config_directory = File.join('spec', 'fixtures', 'config')
     Crichton.clear_registry
     Crichton.initialize_registry(drds_descriptor)
