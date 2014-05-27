@@ -24,7 +24,16 @@ module Crichton
       # Replaces semantics, safe, unsafe, idempotent, descriptors, parameters and resources keywords
       # with descriptors keyword.
       def self.normalize(key, value, hash)
-        KEYWORDS.include?(key) ? inject(hash, transform(key), value) : hash.merge!({ key => value })
+        KEYWORDS.include?(key) ? inject(hash, transform(key), value) : hash.merge!(post_process(key, value))
+      end
+
+      def self.post_process(tag, content)
+        if tag.include?("_#{PROTOCOL}")
+          type = tag.split('_').first
+          { PROTOCOL.pluralize => { type => content } }
+        else
+          { tag => content }
+        end
       end
 
       def self.inject(hash, func, value)

@@ -102,33 +102,23 @@ resources:
         doc: An error has occured.
         location: http://alps.io/schema.org/Error
 
-protocols:
-  http:
-    list:
-      uri: apis
-      entry_point: entry_points # Indicates this endpoint is a resource entry point for the protocol.
-      method: GET
-      content_types:
-        - application/json-home
-      headers:
-      status_codes:
-        200:
-          description: OK
-    search:
-      uri: entry_points
-      method: GET
-      content_types:
-        - application/json-home
-      headers:
-      status_codes:
-        200:
-          description: OK
-    show:
-      uri: apis/{name}
-      method: GET
-      content_types:
-        - application/json-home
-      headers:
-      status_codes:
-        200:
-          description: OK
+http_protocol:
+  list:
+    uri: apis
+    entry_point: entry_points # Indicates this endpoint is a resource entry point for the protocol.
+    method: GET
+    content_types:
+      - application/json-home
+    headers:
+  search:
+    uri: entry_points
+    method: GET
+    content_types:
+      - application/json-home
+    headers:
+  show:
+    uri: apis/{name}
+    method: GET
+    content_types:
+      - application/json-home
+    headers:

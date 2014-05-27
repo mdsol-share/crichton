@@ -33,7 +33,7 @@ describe 'rdlint' do
     end
 
     it 'reports an expected value with the simplest invocation' do
-      @descriptor = drds_descriptor.tap { |doc| doc['protocols']['http']['list'].except!('entry_point') }
+      @descriptor = drds_descriptor.tap { |doc| doc['http_protocol']['list'].except!('entry_point') }
       @expected_rdlint_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
         filename: filename, section: :protocols, sub_header: :error)
       @option = ''
@@ -41,7 +41,7 @@ describe 'rdlint' do
 
     it 'displays empty output when all warnings are suppressed on a warnings only result' do
       @descriptor = drds_descriptor.tap do |document|
-        document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
+        document['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @expected_rdlint_output = "In file '#{filename}':\n"
       @option = '-w'
@@ -49,7 +49,7 @@ describe 'rdlint' do
 
     it 'reports a version number with the version option' do
       @descriptor = drds_descriptor.tap do |document|
-        document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
+        document['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @expected_rdlint_output = capture(:stdout) { Crichton::Lint.version } << expected_output(:warning,
         'protocols.extraneous_props', protocol: 'http', action: 'leviathan-link', filename: filename,
@@ -86,7 +86,7 @@ describe 'rdlint' do
 
   context 'with the --strict option' do
     it 'reports false when errors occur' do
-      @descriptor = drds_descriptor.tap { |doc| doc['protocols']['http'].except!('list') }
+      @descriptor = drds_descriptor.tap { |doc| doc['http_protocol'].except!('list') }
       expect(%x(bundle exec rdlint -s #{filename})).to eq(%Q(#{false_string.red}\n))
     end
 
@@ -96,7 +96,7 @@ describe 'rdlint' do
       end
 
       it 'reports false when one clean is clean, one dirty' do
-        descriptor = drds_descriptor.tap { |doc| doc['protocols']['http'].except!('list') }
+        descriptor = drds_descriptor.tap { |doc| doc['http_protocol'].except!('list') }
         @filename1 = create_drds_file(descriptor, 'missingactions.yml')
         descriptor = drds_descriptor.tap { |doc| doc['semantics']['items'].merge!({ 'sample2' => 'GET' }) }
         @filename2 = create_drds_file(descriptor, 'extraprops.yml')
@@ -115,7 +115,7 @@ describe 'rdlint' do
   context 'with the --all option' do
     # stub does not work in a new shell apparently, so a forced copy to the default api_descriptor dir is made
     before(:all) do
-      descriptor = normalized_drds_descriptor.tap { |doc| doc.except!('protocols') }
+      descriptor = normalized_drds_descriptor.tap { |doc| doc.except!('http_protocol') }
       create_drds_file(descriptor, 'noprotocols.yml', 'api_descriptors')
       descriptor = normalized_drds_descriptor.tap { |doc| doc.except!('descriptors') }
       create_drds_file(descriptor,'nodescriptors.yml', 'api_descriptors')

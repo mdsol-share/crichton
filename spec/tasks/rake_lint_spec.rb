@@ -31,7 +31,7 @@ describe 'rake crichton.lint' do
 
     it 'allows users to to validate a single descriptor file' do
       @descriptor = drds_descriptor.tap do |document|
-        document['protocols']['http']['list'].except!('entry_point')
+        document['http_protocol']['list'].except!('entry_point')
       end
       @expected_rake_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
         filename: rake_filename, section: :protocols, sub_header: :error)
@@ -39,7 +39,7 @@ describe 'rake crichton.lint' do
 
     it 'reports empty output when all warnings are suppressed with a warning free result' do
       @descriptor = drds_descriptor.tap do |document|
-        document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
+        document['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @expected_rake_output = "In file '#{rake_filename}':\n"
       @option = 'no_warnings'
@@ -47,7 +47,7 @@ describe 'rake crichton.lint' do
 
     it 'reports a version number when invoked with the version option' do
       @descriptor = drds_descriptor.tap do |document|
-        document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
+        document['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @expected_rake_output = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http',
         action: 'leviathan-link', filename: rake_filename, section: :protocols, sub_header: :warning)
@@ -62,14 +62,14 @@ describe 'rake crichton.lint' do
 
     it 'reports false when errors are found' do
       @descriptor = drds_descriptor.tap do |document|
-        document['protocols']['http'].except!('list')
+        document['http_protocol'].except!('list')
       end
       @result = %Q(#{"false\n".red}\n)
     end
 
     it 'reports true for a clean descriptor file' do
       @descriptor = drds_descriptor.tap do |document|
-        document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
+        document['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @result = %Q(#{"true\n".green}\n)
     end
@@ -78,7 +78,7 @@ describe 'rake crichton.lint' do
   context 'with the --all option' do
     it 'processes all the files in the config folder' do
       Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
-      descriptor = drds_descriptor.tap { |document| document.except!('protocols') }
+      descriptor = drds_descriptor.tap { |document| document.except!('http_protocol') }
       create_drds_file(descriptor, 'noprotocols.yml')
       descriptor = normalized_drds_descriptor.tap { |document| document.except!('descriptors') }
       create_drds_file(descriptor, 'nodescriptors.yml')

@@ -53,7 +53,7 @@ describe Crichton::Lint do
       end
 
       it 'reports a missing protocols section error when the protocols section is missing' do
-        @descriptor = drds_descriptor.except('protocols')
+        @descriptor = drds_descriptor.except('http_protocol')
         @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
           missing_section: 'protocols', sub_header: :error)
       end
@@ -78,25 +78,25 @@ describe Crichton::Lint do
 
       it 'returns an expected number of errors for a descriptor file' do
         @descriptor = drds_descriptor.tap do |document|
-          document['protocols']['http']['list'].except!('uri').except!('method')
+          document['http_protocol']['list'].except!('uri').except!('method')
         end
         @option = {count: :error}
         @count = 2
       end
 
       it 'returns an expected number of errors for a descriptor file with catastrophic errors' do
-        @descriptor = drds_descriptor.except('protocols')
+        @descriptor = drds_descriptor.except('http_protocol')
         @option = {count: :error}
         @count = 1
       end
 
       it 'returns an expected number of warnings for a descriptor file' do
         @descriptor = drds_descriptor.tap do |document|
-          document['protocols']['http']['list']['status_codes'][200].replace({ 'description' => 'OK' })
-          document['protocols']['http']['create']['status_codes'][403].replace({})
+          document['http_protocol']['repair-history'].merge!({ 'method' => 'GET' })
+          document['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
         end
         @option = {count: :warning}
-        @count = 3
+        @count = 2
       end
     end
 
@@ -112,7 +112,7 @@ describe Crichton::Lint do
 
       it 'returns false when a descriptor file contains errors' do
         @descriptor = drds_descriptor.tap do |document|
-          document['protocols']['http'].except!('search')
+          document['http_protocol'].except!('search')
         end
         @retval = false
       end
@@ -165,11 +165,8 @@ describe Crichton::Lint do
         FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*.yml"))
         Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
         create_drds_file(drds_descriptor, 'clean_descriptor_file.yml')
-        descriptor = drds_descriptor.tap do |document|
-          document['protocols']['http']['list']['status_codes'][200].replace({ 'description' => 'OK' })
-          document['protocols']['http']['create']['status_codes'][403].replace({})
-        end
-        create_drds_file(descriptor, 'warnings_status_codes.yml')
+        descriptor = drds_descriptor.tap { |doc| doc['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' }) }
+        create_drds_file(descriptor, 'warnings_extra_properties.yml')
       end
 
       it 'returns true if the --strict option is set' do
@@ -177,7 +174,7 @@ describe Crichton::Lint do
       end
 
       it 'returns an accurate warning count if the --all and count option are set' do
-        expect(Crichton::Lint.validate_all({count: :warning})).to eq(3)
+        expect(Crichton::Lint.validate_all({count: :warning})).to eq(1)
       end
     end
 
