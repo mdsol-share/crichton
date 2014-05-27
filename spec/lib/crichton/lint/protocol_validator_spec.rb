@@ -18,7 +18,7 @@ module Crichton
       describe '#validate' do
         context 'when it encounters a protocol without properties' do
           it 'reports a no protocol defined error' do
-            descriptor = new_drds_descriptor.tap { |document| document['protocols']['http'].replace({}) }
+            descriptor = drds_descriptor.tap { |document| document['protocols']['http'].replace({}) }
             filename = create_drds_file(descriptor, 'drds_lint')
             errors = expected_output(:error, 'protocols.protocol_empty', protocol: 'http')
             expect(capture(:stdout) { validator.validate(filename) }).to include(errors)
@@ -35,7 +35,7 @@ module Crichton
           end
 
           it 'reports an error when multiple entry points are specified' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['create'].merge!({ 'entry_point' => 'drds' })
             end
             @errors = expected_output(:error, 'protocols.entry_point_error', error: 'Multiple', protocol: 'http',
@@ -43,7 +43,7 @@ module Crichton
           end
 
           it 'reports an error when no entry points are specified' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['list'].except!('entry_point')
             end
             @errors = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
@@ -51,7 +51,7 @@ module Crichton
           end
 
           it 'reports a warning when an external resource action has properties other than uri_source' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
             end
             @warnings = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http',
@@ -59,7 +59,7 @@ module Crichton
           end
 
           it 'reports errors when uri and method are not specified for a protocol action' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['list'].except!('uri').except!('method')
             end
             @errors = expected_output(:error, 'protocols.property_missing', property: 'uri', protocol: 'http',
@@ -69,7 +69,7 @@ module Crichton
           end
 
           it 'reports warnings when status codes are not specified properly or are missing' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['list']['status_codes'].merge!({ 99 => { 'description' => 'OK', 'notes' => 'OK' }})
               document['protocols']['http']['search'].except!('status_codes')
             end
@@ -80,7 +80,7 @@ module Crichton
           end
 
           it 'reports warning when status codes are not specified properly' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['create']['status_codes'][201].except!('notes')
             end
             @warnings = expected_output(:warning, 'protocols.missing_status_codes_property', property: 'notes', protocol: 'http',
@@ -88,7 +88,7 @@ module Crichton
           end
 
           it 'reports errors when content type is not specified properly or are missing' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['list']['content_types'] << 'application/jason'
               document['protocols']['http']['create'].except!('content_types')
             end
@@ -99,7 +99,7 @@ module Crichton
           end
 
           it 'reports warnings when slt properties are not specified properly' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['show']['slt'].except!('std_dev')
             end
             @warnings = expected_output(:warning, 'protocols.missing_slt_property', property: 'std_dev',
@@ -107,7 +107,7 @@ module Crichton
           end
 
           it 'reports warnings when slt properties are missing' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http']['create'].except!('slt')
             end
             @warnings = expected_output(:warning, 'protocols.property_missing', property: 'slt', protocol: 'http',
@@ -116,7 +116,7 @@ module Crichton
 
 
           it 'reports errors when the protocol actions list does not match state and descriptor transitions' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               document['protocols']['http'].except!('search')
             end
             @errors = expected_output(:error, 'protocols.descriptor_transition_not_found', transition: 'search',
@@ -127,7 +127,7 @@ module Crichton
 
         context 'when it encounters an invalid protocol' do
           it 'reports an exception error ' do
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               content = document['protocols']['http']
               document['protocols'].merge!({ 'ftp' => content })
             end

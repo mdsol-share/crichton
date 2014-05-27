@@ -119,7 +119,7 @@ module Crichton
       end
       
       def alps_link(profile_id, profile)
-        Nokogiri::XML(profile.to_xml).xpath('/alps/link[@rel="self"]').first.tap do |link|
+        Nokogiri::XML(profile.to_xml).xpath('/alps/link[@rel="profile"]').first.tap do |link|
           link['rel'] = File.join(alps_base_uri, profile_id) # Comply with RFC5988. So, use resolvable alps base version.
           link['href'] = request_href(link['href'])
         end

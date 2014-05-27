@@ -4,10 +4,10 @@ require 'crichton/descriptor/transition_decorator'
 module Crichton
   module Descriptor
     describe TransitionDecorator do
-      let(:descriptor_document) { new_drds_descriptor }
+      let(:descriptor_document) { drds_descriptor }
       let(:resource_descriptor) { Resource.new(descriptor_document) }
       let(:descriptor) do
-        register_new_drds_descriptor
+        register_drds_descriptor
         Crichton.descriptor_registry[@descriptor || 'drds'].transitions[@transition || 'list']
       end
       let(:options) do

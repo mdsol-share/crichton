@@ -26,7 +26,7 @@ describe Crichton::Lint do
       end
 
       it 'reports a success statement with a clean resource descriptor file' do
-        @descriptor = new_drds_descriptor
+        @descriptor = drds_descriptor
         @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
       end
 
@@ -36,7 +36,7 @@ describe Crichton::Lint do
       end
 
       it 'reports a missing states section error when the states section is missing' do
-        @descriptor = new_drds_descriptor.tap do |document|
+        @descriptor = drds_descriptor.tap do |document|
           document['resources']['drds'].except!('states')
           document['resources']['drd'].except!('states')
         end
@@ -53,7 +53,7 @@ describe Crichton::Lint do
       end
 
       it 'reports a missing protocols section error when the protocols section is missing' do
-        @descriptor = new_drds_descriptor.except('protocols')
+        @descriptor = drds_descriptor.except('protocols')
         @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
           missing_section: 'protocols', sub_header: :error)
       end
@@ -65,19 +65,19 @@ describe Crichton::Lint do
       end
 
       it 'returns no errors for a clean descriptor file' do
-        @descriptor = new_drds_descriptor
+        @descriptor = drds_descriptor
         @option = {count: :error}
         @count = 0
       end
 
       it 'returns no warnings for a clean descriptor file' do
-        @descriptor = new_drds_descriptor
+        @descriptor = drds_descriptor
         @option = {count: :warning}
         @count = 0
       end
 
       it 'returns an expected number of errors for a descriptor file' do
-        @descriptor = new_drds_descriptor.tap do |document|
+        @descriptor = drds_descriptor.tap do |document|
           document['protocols']['http']['list'].except!('uri').except!('method')
         end
         @option = {count: :error}
@@ -85,13 +85,13 @@ describe Crichton::Lint do
       end
 
       it 'returns an expected number of errors for a descriptor file with catastrophic errors' do
-        @descriptor = new_drds_descriptor.except('protocols')
+        @descriptor = drds_descriptor.except('protocols')
         @option = {count: :error}
         @count = 1
       end
 
       it 'returns an expected number of warnings for a descriptor file' do
-        @descriptor = new_drds_descriptor.tap do |document|
+        @descriptor = drds_descriptor.tap do |document|
           document['protocols']['http']['list']['status_codes'][200].replace({ 'description' => 'OK' })
           document['protocols']['http']['create']['status_codes'][403].replace({})
         end
@@ -106,19 +106,19 @@ describe Crichton::Lint do
       end
 
       it 'returns true when a clean descriptor file is validated' do
-        @descriptor = new_drds_descriptor
+        @descriptor = drds_descriptor
         @retval = true
       end
 
       it 'returns false when a descriptor file contains errors' do
-        @descriptor = new_drds_descriptor.tap do |document|
+        @descriptor = drds_descriptor.tap do |document|
           document['protocols']['http'].except!('search')
         end
         @retval = false
       end
 
       it 'returns false when a catastrophic error is found' do
-        @descriptor = new_drds_descriptor.tap do |document|
+        @descriptor = drds_descriptor.tap do |document|
           document['resources']['drds'].except!('states')
           document['resources']['drd'].except!('states')
         end
@@ -164,8 +164,8 @@ describe Crichton::Lint do
       before do
         FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*.yml"))
         Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
-        create_drds_file(new_drds_descriptor, 'clean_descriptor_file.yml')
-        descriptor = new_drds_descriptor.tap do |document|
+        create_drds_file(drds_descriptor, 'clean_descriptor_file.yml')
+        descriptor = drds_descriptor.tap do |document|
           document['protocols']['http']['list']['status_codes'][200].replace({ 'description' => 'OK' })
           document['protocols']['http']['create']['status_codes'][403].replace({})
         end

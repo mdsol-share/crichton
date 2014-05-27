@@ -132,8 +132,13 @@ module Crichton
             elsif child.name == 'doc'
               xml_node_to_hash_unpack_doc(child, result_hash)
             elsif child.name == 'descriptor'
-              result_hash['descriptors'] ||= {}
-              result_hash['descriptors'][child.attributes['id'].value] = result
+              if child.attributes['id'].present?
+                result_hash['descriptors'] ||= {}
+                result_hash['descriptors'][child.attributes['id'].value] = result
+              else
+                result_hash['descriptors'] ||= []
+                result_hash['descriptors'] << result
+              end
             elsif child.name == 'text'
               # Intentionally do nothing
             elsif result_hash[child.name]

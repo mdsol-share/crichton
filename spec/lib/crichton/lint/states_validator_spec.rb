@@ -27,7 +27,7 @@ module Crichton
         end
 
         it 'reports warnings correlating to self: and doc: issues' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['states']['collection']['transitions']['list'].merge!({ 'name' => 'selff' })
             document['resources']['drds']['states']['collection']['transitions']['create'].merge!({ 'name' => 'self' })
             document['resources']['drd']['states']['activated'].except!('doc')
@@ -38,7 +38,7 @@ module Crichton
         end
 
         it 'reports errors when next transitions are missing or empty' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['states']['collection']['transitions']['list'].except!('next')
             document['resources']['drd']['states']['activated']['transitions']['show'].except!('next')
           end
@@ -49,7 +49,7 @@ module Crichton
         end
 
         it 'reports errors when next transitions are pointing to non-existent states' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['states']['navigation']['transitions']['search']['next'] = ['navegation']
             document['resources']['drd']['states']['activated']['transitions']['show']['next'] = ['activate']
           end
@@ -61,7 +61,7 @@ module Crichton
         end
 
         it 'reports errors when states transitions does not match protocol or descriptor transitions' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['states']['collection']['transitions'].except!('create')
             document['resources']['drds']['states']['navigation']['transitions'].except!('create')
           end
@@ -71,7 +71,7 @@ module Crichton
         end
 
         it 'reports a warning when a transition-less state does not contain a location' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drd']['states']['deleted'].except!('location')
           end
           @warnings = expected_output(:warning, 'states.location_property_missing', resource: 'drd', state: 'deleted',
@@ -79,7 +79,7 @@ module Crichton
         end
 
         it 'reports an error if no state transitions define "name:self" property' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['states']['collection']['transitions']['list'].except!('name')
           end
           @errors = expected_output(:error, 'states.name_self_exception', filename: filename,
@@ -87,7 +87,7 @@ module Crichton
         end
 
         it 'reports an error if two or more state transitions define "name:self"' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['states']['collection']['transitions']['create'].merge!({ 'name' => 'self' })
           end
           @errors = expected_output(:error, 'states.name_self_exception', filename: filename,
@@ -95,7 +95,7 @@ module Crichton
         end
 
         it 'reports an error if there are duplicated "name" properties per state' do
-          @descriptor = new_drds_descriptor.tap do |document|
+          @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds']['states']['collection']['transitions']['search'].merge!({ 'name' => 'transition' })
             document['resources']['drds']['states']['collection']['transitions']['create'].merge!({ 'name' => 'transition' })
           end
@@ -111,13 +111,13 @@ module Crichton
           let(:external_url) { 'http://schema.org/Something' }
 
           it 'reports no errors when it is already downloaded to disk' do
-            @descriptor = new_drds_descriptor
+            @descriptor = drds_descriptor
             @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
           end
 
           it 'reports an error if its url points to an invalid address' do
             stub_profile_request(404)
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               external_location = [{ 'location' => external_url }]
               document['resources']['drd']['states']['activated']['transitions']['repair-history']['next'] = external_location
             end
@@ -132,7 +132,7 @@ module Crichton
 
           it 'reports a warning if its url has a valid address but is not downloaded to disk' do
             stub_profile_request(200)
-            @descriptor = new_drds_descriptor.tap do |document|
+            @descriptor = drds_descriptor.tap do |document|
               external_location = [{ 'location' => external_url }]
               document['resources']['drd']['states']['activated']['transitions']['repair-history']['next'] = external_location
             end

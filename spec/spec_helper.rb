@@ -55,6 +55,6 @@ RSpec.configure do |config|
     stub_alps_requests
     Crichton::config_directory = File.join('spec', 'fixtures', 'config')
     Crichton.clear_registry
-    Crichton.initialize_registry(new_drds_descriptor)
+    Crichton.initialize_registry(drds_descriptor)
   end
 end

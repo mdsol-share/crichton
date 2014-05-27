@@ -30,7 +30,7 @@ describe 'rake crichton.lint' do
     end
 
     it 'allows users to to validate a single descriptor file' do
-      @descriptor = new_drds_descriptor.tap do |document|
+      @descriptor = drds_descriptor.tap do |document|
         document['protocols']['http']['list'].except!('entry_point')
       end
       @expected_rake_output = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
@@ -38,7 +38,7 @@ describe 'rake crichton.lint' do
     end
 
     it 'reports empty output when all warnings are suppressed with a warning free result' do
-      @descriptor = new_drds_descriptor.tap do |document|
+      @descriptor = drds_descriptor.tap do |document|
         document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @expected_rake_output = "In file '#{rake_filename}':\n"
@@ -46,7 +46,7 @@ describe 'rake crichton.lint' do
     end
 
     it 'reports a version number when invoked with the version option' do
-      @descriptor = new_drds_descriptor.tap do |document|
+      @descriptor = drds_descriptor.tap do |document|
         document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @expected_rake_output = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http',
@@ -61,14 +61,14 @@ describe 'rake crichton.lint' do
     end
 
     it 'reports false when errors are found' do
-      @descriptor = new_drds_descriptor.tap do |document|
+      @descriptor = drds_descriptor.tap do |document|
         document['protocols']['http'].except!('list')
       end
       @result = %Q(#{"false\n".red}\n)
     end
 
     it 'reports true for a clean descriptor file' do
-      @descriptor = new_drds_descriptor.tap do |document|
+      @descriptor = drds_descriptor.tap do |document|
         document['protocols']['http']['leviathan-link'].merge!({ 'method' => 'GET' })
       end
       @result = %Q(#{"true\n".green}\n)
@@ -78,7 +78,7 @@ describe 'rake crichton.lint' do
   context 'with the --all option' do
     it 'processes all the files in the config folder' do
       Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
-      descriptor = new_drds_descriptor.tap { |document| document.except!('protocols') }
+      descriptor = drds_descriptor.tap { |document| document.except!('protocols') }
       create_drds_file(descriptor, 'noprotocols.yml')
       descriptor = normalized_drds_descriptor.tap { |document| document.except!('descriptors') }
       create_drds_file(descriptor, 'nodescriptors.yml')

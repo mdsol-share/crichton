@@ -54,7 +54,11 @@ module Crichton
       #
       # @return [Array] The descriptors.
       def alps_descriptors
-        @alps_descriptors ||= descriptors.map { |descriptor| descriptor.to_alps_hash(top_level: false) }
+        if (descriptors = descriptor_document['descriptors']).is_a?(Array)
+          descriptors.map { |h| { 'href' => h['href'] } if h['href'].present? }
+        else
+          @alps_descriptors ||= self.descriptors.map { |descriptor| descriptor.to_alps_hash(top_level: false) }
+        end
       end
 
       ##
@@ -156,10 +160,6 @@ module Crichton
         descriptor_document['name']
       end
 
-      def add_xml_datalists(builder)
-        (datalists = alps_datalists['ext']) && datalists.each { |dl| builder.tag!('ext', dl) }
-      end
-
       def add_xml_elements(builder)
         alps_elements.each do |alps_element, properties|
           case alps_element
@@ -210,7 +210,13 @@ module Crichton
       end
 
       def add_xml_descriptors(builder)
-        descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true}) }
+        if (descriptors = descriptor_document['descriptors']).is_a?(Array)
+          descriptors.each { |h| builder.tag!('descriptor', { href: "\##{h['href']}" }) if h['href'].present? }
+        else
+          self.descriptors.each do |descriptor|
+            descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true})
+          end
+        end
       end
     end
   end

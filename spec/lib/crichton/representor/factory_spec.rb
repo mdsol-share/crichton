@@ -6,7 +6,7 @@ module Crichton
     describe Factory do
       before do
         Factory.clear_factory_classes
-        register_new_drds_descriptor
+        register_drds_descriptor
       end
       let(:simple_test_class) { Class.new }
       let(:target) do

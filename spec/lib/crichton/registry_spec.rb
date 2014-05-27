@@ -28,19 +28,19 @@ module Crichton
     describe '.register_single' do
       it 'accepts a descriptor document' do
         registry = Registry.new(automatic_load: false)
-        registry.register_single(new_drds_descriptor)
+        registry.register_single(drds_descriptor)
         expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd))
       end
 
       it 'accepts a filename' do
         registry = Registry.new(automatic_load: false)
-        registry.register_single(new_drds_filename)
+        registry.register_single(drds_filename)
         expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd))
       end
 
       it 'loads all descriptors from a resource descriptor' do
         registry = Registry.new(automatic_load: false)
-        registry.register_single(new_drds_descriptor)
+        registry.register_single(drds_descriptor)
         expect(registry.raw_descriptor_registry.keys).to have(2).items
       end
     end
@@ -48,19 +48,19 @@ module Crichton
     describe '.register_multiple' do
       it 'accepts descriptor documents' do
         registry = Registry.new(automatic_load: false)
-        registry.register_multiple([new_drds_descriptor, leviathans_descriptor])
+        registry.register_multiple([drds_descriptor, leviathans_descriptor])
         expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd leviathan))
       end
 
       it 'accepts filenames' do
         registry = Registry.new(automatic_load: false)
-        registry.register_multiple([new_drds_filename, leviathans_filename])
+        registry.register_multiple([drds_filename, leviathans_filename])
         expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd leviathan))
       end
 
       it 'accepts a document and a filename' do
         registry = Registry.new(automatic_load: false)
-        registry.register_multiple([new_drds_descriptor, leviathans_filename])
+        registry.register_multiple([drds_descriptor, leviathans_filename])
         expect(registry.raw_descriptor_registry.keys).to eq(%w(drds drd leviathan))
       end
     end
@@ -73,7 +73,7 @@ module Crichton
       end
 
       it 'returns a hash of registered resource descriptors keyed by document id' do
-        resources_registry = registry.register_single(new_drds_descriptor)
+        resources_registry = registry.register_single(drds_descriptor)
 
         resources_registry.each do |key, resource_dereferencer|
           expect(registry.resources_registry[key]).to eq(resource_dereferencer)
@@ -89,7 +89,7 @@ module Crichton
       end
 
       it 'returns a hash of registered descriptor instances keyed by descriptor id' do
-        resources_registry = registry.register_single(new_drds_descriptor)
+        resources_registry = registry.register_single(drds_descriptor)
         dealiased_hash = resources_registry['DRDs'].dealiased_document
         resource_descriptor = Crichton::Descriptor::Resource.new(dealiased_hash)
 
@@ -119,11 +119,11 @@ module Crichton
       let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns a hash of registered resource descriptors' do
-        expect(registry.register_single(new_drds_descriptor)).to be_a(Hash)
+        expect(registry.register_single(drds_descriptor)).to be_a(Hash)
       end
 
       it 'returns a hash of registered resource dereferencer instances' do
-        registry.register_single(new_drds_descriptor).values.each do |v|
+        registry.register_single(drds_descriptor).values.each do |v|
           expect(v).to be_a(Crichton::Descriptor::ResourceDereferencer)
         end
       end
@@ -145,7 +145,7 @@ module Crichton
 
       context 'with a filename as an argument' do
         before do
-          @descriptor = new_drds_filename
+          @descriptor = drds_filename
         end
 
         it_behaves_like 'a resource descriptor registration'
@@ -158,7 +158,7 @@ module Crichton
 
       context 'with a hash resource descriptor as an argument' do
         before do
-          @descriptor = new_drds_descriptor
+          @descriptor = drds_descriptor
         end
 
         it_behaves_like 'a resource descriptor registration'
@@ -174,7 +174,7 @@ module Crichton
 
       it 'returns true if resource descriptors are registered' do
         stub_alps_requests
-        registry.register_single(new_drds_descriptor)
+        registry.register_single(drds_descriptor)
         expect(registry.registrations?).to be_true
       end
     end
