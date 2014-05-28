@@ -12,6 +12,7 @@ require 'crichton/discovery/entry_points'
 if defined?(Rails)
   require 'crichton/rake_lint'
   require 'core_ext/action_controller/responder'
+  require 'crichton/railtie'
 end
 
 module Crichton
