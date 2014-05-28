@@ -22,19 +22,19 @@ module Crichton
       end
 
       it 'accepts a cache path' do
-        Dir.should_receive(:exists?).with(@pathname).and_return(true)
+        expect(Dir).to receive(:exists?).with(@pathname).and_return(true)
         ExternalDocumentCache.new(@pathname)
       end
 
       it 'uses the configured cache path if none is explicitly passed into the new call' do
-        Crichton.config.stub(:external_documents_store_directory).and_return(@pathname)
-        Dir.should_receive(:exists?).with(@pathname).and_return(true)
+        allow(Crichton.config).to receive(:external_documents_store_directory).and_return(@pathname)
+        expect(Dir).to receive(:exists?).with(@pathname).and_return(true)
         ExternalDocumentCache.new(@pathname)
       end
 
       it 'creates the cache path if it does not exist' do
-        Dir.stub(:exists?).and_return(false)
-        FileUtils.should_receive(:mkdir_p).with(@pathname).and_return(true)
+        allow(Dir).to receive(:exists?).and_return(false)
+        expect(FileUtils).to receive(:mkdir_p).with(@pathname).and_return(true)
         ExternalDocumentCache.new(@pathname)
       end
     end
@@ -56,7 +56,7 @@ module Crichton
 
         it 'reads the data file and returns the data' do
           edc = ExternalDocumentCache.new(@pathname)
-          edc.get(@link).should == "Testfile #{@link}"
+          expect(edc.get(@link)).to eq("Testfile #{@link}")
         end
       end
 
@@ -70,7 +70,7 @@ module Crichton
           edc = ExternalDocumentCache.new(@pathname)
           stub = stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
           edc.get(@link)
-          stub.should have_been_requested
+          expect(stub).to have_been_requested
         end
 
         it 'tries to verify the data and returns the data from the file in case of a 304' do
@@ -78,7 +78,7 @@ module Crichton
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
-          edc.get(@link).should == "Testfile #{@link}"
+          expect(edc.get(@link)).to eq("Testfile #{@link}")
         end
 
         it 'tries to verify the data and returns the data from the file in case of a 404' do
@@ -86,7 +86,7 @@ module Crichton
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_return(status: 404, body: '', headers: {})
-          edc.get(@link).should == "Testfile #{@link}"
+          expect(edc.get(@link)).to eq("Testfile #{@link}")
         end
 
         it 'tries to verify the data and updates the metadata in the file' do
@@ -95,7 +95,7 @@ module Crichton
           edc.get(@link)
           json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
           # In the before, the time is set to a VERY early time - so if it's within 5 seconds then we're good
-          (Time.parse(json_data['time']) - Time.now).abs.should < 5
+          expect((Time.parse(json_data['time']) - Time.now).abs).to be < 5
         end
 
         it 'handles a connection refused error by returning the cached data' do
@@ -103,13 +103,13 @@ module Crichton
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_raise(Errno::ECONNREFUSED)
-          edc.get(@link).should == "Testfile #{@link}"
+          expect(edc.get(@link)).to eq("Testfile #{@link}")
         end
 
         it 'handles a connection refused error by logging a warning' do
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
-          Crichton.logger.should_receive(:warn).with("Log connection refused: #{@link}")
+          expect(Crichton.logger).to receive(:warn).with("Log connection refused: #{@link}")
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_raise(Errno::ECONNREFUSED)
           edc.get(@link)
@@ -120,13 +120,13 @@ module Crichton
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_raise(Errno::EADDRINUSE)
-          edc.get(@link).should == "Testfile #{@link}"
+          expect(edc.get(@link)).to eq("Testfile #{@link}")
         end
 
         it 'handles other errors by returning the cached data' do
           @datafilename = File.join(@pathname, "#{Digest::MD5.hexdigest(@link)}.cache")
           File.open(@datafilename, 'wb') { |f| f.write("Testfile #{@link}") }
-          Crichton.logger.should_receive(:warn).
+          expect(Crichton.logger).to receive(:warn).
               with("Address already in use - Exception from WebMock while getting #{@link}")
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_raise(Errno::EADDRINUSE)
@@ -141,8 +141,8 @@ module Crichton
           prepare_metadata_file
           stub = stub_request(:get, @link).to_return(status: 404)
           edc = ExternalDocumentCache.new(@pathname)
-          edc.get(@link).should == "Testfile #{@link}"
-          stub.should have_not_been_made
+          expect(edc.get(@link)).to eq("Testfile #{@link}")
+          expect(stub).to have_not_been_made
         end
 
         it 're-validated data that is too old' do
@@ -151,7 +151,7 @@ module Crichton
           stub = stub_request(:get, @link).to_return(status: 304)
           edc = ExternalDocumentCache.new(@pathname)
           edc.get(@link)
-          stub.should have_been_made
+          expect(stub).to have_been_made
         end
 
         it 're-validated data that young enough but has the must-revalidate header set' do
@@ -159,7 +159,7 @@ module Crichton
           prepare_metadata_file
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
-          edc.get(@link).should == "Testfile #{@link}"
+          expect(edc.get(@link)).to eq("Testfile #{@link}")
         end
 
         it 're-validated data that young enough but has the no-cache header set' do
@@ -167,7 +167,7 @@ module Crichton
           prepare_metadata_file
           edc = ExternalDocumentCache.new(@pathname)
           stub_request(:get, @link).to_return(status: 304, body: '', headers: {})
-          edc.get(@link).should == "Testfile #{@link}"
+          expect(edc.get(@link)).to eq("Testfile #{@link}")
         end
       end
 
@@ -183,7 +183,7 @@ module Crichton
             to_return(status: 304, body: '', headers: {})
           edc = ExternalDocumentCache.new(@pathname)
           edc.get(@link)
-          stub.should have_been_requested
+          expect(stub).to have_been_requested
         end
 
         it 'sends the last modified along in the request' do
@@ -195,7 +195,7 @@ module Crichton
             to_return(:status => 304, :body => '', headers: {})
           edc = ExternalDocumentCache.new(@pathname)
           edc.get(@link)
-          stub.should have_been_requested
+          expect(stub).to have_been_requested
         end
 
         context 'in case of a cache miss' do
@@ -213,7 +213,7 @@ module Crichton
             stub_request(:get, @link).to_return(status: 200, body: 'Data', headers: {'headers' => 'Headerdata'})
             edc.get(@link)
             json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
-            json_data.should include(
+            expect(json_data).to include(
               {
                 'link' => 'http://some.url:1234/somepath',
                 'status' => '200',
@@ -227,7 +227,7 @@ module Crichton
             stub_request(:get, @link).to_return(status: 200, body: 'Data', headers: {'headers' => 'Headerdata'})
             edc.get(@link)
             json_data = JSON.parse(File.open(@metafilename, 'rb') { |f| f.read })
-            json_data.should include(
+            expect(json_data).to include(
               {
                 'link' => 'http://some.url:1234/somepath',
                 'status' => '200',

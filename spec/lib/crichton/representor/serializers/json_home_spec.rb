@@ -137,7 +137,7 @@ module Crichton
       end
 
       it 'raises an exception when an EntryPoint object does not have a resources method' do
-        expect { @serializer.new(mock('bad_entry_point_object')) }.to raise_error(
+        expect { @serializer.new(double('bad_entry_point_object')) }.to raise_error(
           "Target serializing object must be an EntryPoints object containing resources")
       end
 

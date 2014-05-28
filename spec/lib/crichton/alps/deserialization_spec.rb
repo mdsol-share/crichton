@@ -129,7 +129,7 @@ module Crichton
           end
 
           it 'returns nested descriptors' do
-            expect(deserialized_hash['descriptors']['Airport']['descriptors']).to have(25).items
+            expect(deserialized_hash['descriptors']['Airport']['descriptors'].size).to eq(25)
           end
         end
 

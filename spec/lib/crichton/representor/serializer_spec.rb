@@ -37,15 +37,15 @@ module Crichton
           end
 
           it 'auto registers sublclassed serializers' do
-            Serializer.registered_serializers[:media_type].should == MediaTypeSerializer
+            expect(Serializer.registered_serializers[:media_type]).to eq(MediaTypeSerializer)
           end
 
           it 'auto registers other media types as symbols' do
-            Serializer.registered_serializers[:other_media_type].should == MediaTypeSerializer
+            expect(Serializer.registered_serializers[:other_media_type]).to eq(MediaTypeSerializer)
           end
 
           it 'auto registers content types for media types' do
-            Serializer.registered_media_types[:media_type].should == ['application/media_type']
+            expect(Serializer.registered_media_types[:media_type]).to eq(['application/media_type'])
           end
         end
 
@@ -72,11 +72,11 @@ module Crichton
           end
 
           it 'builds serializer instances associated with a media type' do
-            Serializer.build(:media_type, object).should be_instance_of(MediaTypeSerializer)
+            expect(Serializer.build(:media_type, object)).to be_instance_of(MediaTypeSerializer)
           end
 
           it 'raises an error if object is not a Crichton::Representor' do
-            expect { Serializer.build(:media_type, mock('object')) }.to raise_error(ArgumentError,
+            expect { Serializer.build(:media_type, double('object')) }.to raise_error(ArgumentError,
               /^The object .* is not a Crichton::Representor.$/)
           end
         end
@@ -91,14 +91,14 @@ module Crichton
         context 'without any registered serializers' do
           it 'returns an empty hash if no serializers are registered' do
             reset_serializers
-            Serializer.registered_serializers.should == {}
+            expect(Serializer.registered_serializers).to eq({})
           end
         end
 
         context 'with existing subclasses with well-formed names' do
           it 'returns a hash of registered serializer classes' do
             create_media_type_serializer
-            Serializer.registered_serializers[:media_type].should == MediaTypeSerializer
+            expect(Serializer.registered_serializers[:media_type]).to eq(MediaTypeSerializer)
           end
         end
       end
@@ -114,9 +114,9 @@ module Crichton
       describe '#to_media_type' do
         it 'delegates to #as_media_type as the default behavior' do
           create_media_type_serializer
-          options = mock('options') 
+          options = double('options') 
           serializer_instance = MediaTypeSerializer.new(object)
-          serializer_instance.should_receive(:as_media_type).with(options)
+          expect(serializer_instance).to receive(:as_media_type).with(options)
           serializer_instance.to_media_type(options)
         end
       end

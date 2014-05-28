@@ -12,7 +12,7 @@ describe 'rake crichton.lint' do
   end
 
   before do
-    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+    allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).and_return('<alps></alps>')
   end
 
   before do
@@ -24,9 +24,10 @@ describe 'rake crichton.lint' do
   context 'in various modes with and without options' do
     after do
       rake_invocation = @option ? "crichton:lint[#{rake_filename},#{@option}]" : "crichton:lint[#{rake_filename}]"
-      capture(:stdout) { Rake.application.invoke_task "#{rake_invocation}" }.should ==
+      expect(capture(:stdout) { Rake.application.invoke_task "#{rake_invocation}" }).to eq(
           (@option == 'version' ? capture(:stdout) { Crichton::Lint.version } : "") <<
               "Linting file:'#{rake_filename}'\n#{(@option ? "Options: #{@option}\n" : "")}#{@expected_rake_output}"
+      )
     end
 
     it 'allows users to to validate a single descriptor file' do
@@ -77,7 +78,7 @@ describe 'rake crichton.lint' do
 
   context 'with the --all option' do
     it 'processes all the files in the config folder' do
-      Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
+      allow(Crichton).to receive(:descriptor_location).and_return(SPECS_TEMP_DIR)
       descriptor = drds_descriptor.tap { |document| document.except!('http_protocol') }
       create_drds_file(descriptor, 'noprotocols.yml')
       descriptor = normalized_drds_descriptor.tap { |document| document.except!('descriptors') }
