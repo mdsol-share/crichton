@@ -137,7 +137,7 @@ idempotent:
     doc: Updates a DRD.
     rt: none
     links:
-      profile: DRDs#update
+      self: DRDs#update
       help: forms/update
     parameters:
       - href: status
@@ -189,7 +189,7 @@ unsafe:
     doc: Creates a DRD.
     rt: drd
     links:
-      profile: DRDs#create
+      self: DRDs#create
       help: Forms/create
     href: update
     parameters:
@@ -214,7 +214,7 @@ resources:
   drds:
     doc: A list of DRDs
     links:
-      profile: DRDs#drds
+      self: DRDs#drds
     descriptors:
       - href: total_count
       - href: items
@@ -257,7 +257,7 @@ resources:
   drd:
     doc: Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are built by a Leviathan as it grows.
     links:
-      profile: DRDs#drd
+      self: DRDs#drd
     descriptors:
       - href: uuid
       - href: name

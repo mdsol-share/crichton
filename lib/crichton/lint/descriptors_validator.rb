@@ -89,7 +89,7 @@ module Crichton
             #22 should have a link property
             add_warning('descriptors.property_missing', options.merge({prop: 'link'}))
           else
-            unless valid_link_property?(descriptor.link['profile'])
+            unless valid_link_property?(descriptor.link['self'])
               add_error('descriptors.link_invalid', options.merge({link: descriptor.link.keys.first}))
             end
           end
