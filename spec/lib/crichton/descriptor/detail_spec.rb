@@ -161,7 +161,7 @@ module Crichton
         end
 
         it 'returns the self link for semantic descriptors' do
-          descriptor.type_link.href.should == descriptor.links['profile'].absolute_href
+          descriptor.type_link.href.should == descriptor.links['self'].absolute_href
         end
 
         it 'returns the absolute self link' do

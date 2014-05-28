@@ -125,7 +125,7 @@ module Crichton
       end
       
       def type_link
-        @descriptors[:type_link] ||= if semantic? && (self_link = links['profile'])
+        @descriptors[:type_link] ||= if semantic? && (self_link = links['self'])
           Crichton::Descriptor::Link.new(resource_descriptor, 'type', self_link.absolute_href)
         end
       end
