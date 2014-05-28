@@ -11,7 +11,7 @@ describe Crichton::Lint do
   end
 
   before do
-    Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+    allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).and_return('<alps></alps>')
     load_lint_translation_file
   end
 
@@ -150,7 +150,7 @@ describe Crichton::Lint do
     context 'containing files with errors' do
       before do
         FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*.yml"))
-        Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
+        allow(Crichton).to receive(:descriptor_location).and_return(SPECS_TEMP_DIR)
         create_drds_file(normalized_drds_descriptor.except('descriptors'), 'nodescriptors_descriptor.yml')
         create_drds_file(normalized_drds_descriptor.except('protocols'), 'noprotocols_descriptor.yml')
       end
@@ -163,7 +163,7 @@ describe Crichton::Lint do
     context 'containing files with no errors' do
       before do
         FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*.yml"))
-        Crichton.stub(:descriptor_location).and_return(SPECS_TEMP_DIR)
+        allow(Crichton).to receive(:descriptor_location).and_return(SPECS_TEMP_DIR)
         create_drds_file(drds_descriptor, 'clean_descriptor_file.yml')
         descriptor = drds_descriptor.tap { |doc| doc['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' }) }
         create_drds_file(descriptor, 'warnings_extra_properties.yml')
@@ -188,7 +188,7 @@ describe Crichton::Lint do
 
     context 'when it does not exist' do
       it 'returns an exception if the --all option is set' do
-        Crichton.stub(:descriptor_location).and_return('/xxx/yyy')
+        allow(Crichton).to receive(:descriptor_location).and_return('/xxx/yyy')
         expect { validator.validate_all }.to raise_error
         "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
       end

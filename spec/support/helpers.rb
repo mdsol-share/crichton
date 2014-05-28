@@ -98,7 +98,7 @@ module Support
     end
 
     def stub_example_configuration
-      Crichton.stub(:config).and_return(Crichton::Configuration.new(example_environment_config))
+      allow(Crichton).to receive(:config).and_return(Crichton::Configuration.new(example_environment_config))
     end
 
     def resource_descriptor_fixtures

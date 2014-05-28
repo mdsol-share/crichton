@@ -10,23 +10,23 @@ module Crichton
       end
       let(:simple_test_class) { Class.new }
       let(:target) do
-        @target && @target.is_a?(Hash) ? @target : mock('target').tap { |target| target.stub(:name).and_return('1812') }
+        @target && @target.is_a?(Hash) ? @target : double('target').tap { |target| allow(target).to receive(:name).and_return('1812') }
       end
 
       shared_examples_for 'a memoized factory class' do
         it 'memoizes the factory class' do
           class_object_id = representor.class.object_id
-          representor.class.object_id.should == class_object_id
+          expect(representor.class.object_id).to eq(class_object_id)
         end
       end
 
       shared_examples_for 'a wrapped target' do
         it 'exposes a Representor interface' do
           if @check_semantics
-            representor.each_data_semantic.any? { |data_semantic| data_semantic.value == '1812' }.should be_true
+            expect(representor.each_data_semantic.any? { |data_semantic| data_semantic.value == '1812' }).to be_true
           else
             enumerator = representor.each_transition(conditions: 'can_do_anything')
-            enumerator.any? { |transition| transition.name == 'deactivate' }.should be_true
+            expect(enumerator.any? { |transition| transition.name == 'deactivate' }).to be_true
           end
         end
       end
@@ -102,7 +102,7 @@ module Crichton
             context 'with object target' do
               before do
                 @target = :object
-                target.stub(:my_state).and_return('activated')
+                allow(target).to receive(:my_state).and_return('activated')
               end
 
               it_behaves_like 'a representor factory method'
@@ -110,7 +110,7 @@ module Crichton
               context 'when accessing transitions with a state_method that is not defined on the target' do
                 it 'raises an error' do
                   # Following is a hack absent an #unstub method on mocks
-                  target.stub(:respond_to?).with('my_state').and_return(false)
+                  allow(target).to receive(:respond_to?).with('my_state').and_return(false)
                   expect { subject.build_state_representor(target, :drd, @options).each_transition.to_a }
                     .to raise_error(
                       Crichton::RepresentorError,

@@ -4,23 +4,23 @@ require 'crichton/descriptor/link'
 module Crichton
   module Descriptor
     describe Link do
-      let(:link) { Link.new(mock('resource_descriptor'), 'rel', 'link_url') }
+      let(:link) { Link.new(double('resource_descriptor'), 'rel', 'link_url') }
       
       describe '#attributes' do
         it 'returns the attributes of the link' do
-          link.attributes.should == {rel: 'rel', href: 'link_url'}
+          expect(link.attributes).to eq({rel: 'rel', href: 'link_url'})
         end
       end
       
       describe '#rel' do
         it 'returns the link relationship' do
-          link.rel.should == 'rel'
+          expect(link.rel).to eq('rel')
         end
       end
 
       describe '#url' do
         it 'returns the link url' do
-          link.url.should == 'link_url'
+          expect(link.url).to eq('link_url')
         end
       end
     end

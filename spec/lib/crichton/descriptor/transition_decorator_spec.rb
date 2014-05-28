@@ -32,7 +32,7 @@ module Crichton
           end
           target_class.new
         else
-          mock('target')
+          double('target')
         end
       end
       let(:decorator) { TransitionDecorator.new(target, descriptor, options) }
@@ -156,7 +156,7 @@ module Crichton
         end
 
         it 'returns nil if there is not protocol descriptor' do
-          decorator.stub(:protocol_descriptor).and_return(nil)
+          allow(decorator).to receive(:protocol_descriptor).and_return(nil)
           expect(decorator.interface_method).to be_nil
         end
       end
@@ -164,7 +164,7 @@ module Crichton
       describe '#protocol' do
         context 'without :protocol option' do
           it 'returns the default protocol for the parent resource descriptor' do
-            decorator.protocol.should == resource_descriptor.default_protocol
+            expect(decorator.protocol).to eq(resource_descriptor.default_protocol)
           end
         end
 
@@ -182,7 +182,7 @@ module Crichton
         end
         
         it 'returns nil if no protocol descriptor implements the transition for the transition protocol' do
-          decorator.stub(:id).and_return('non-existent')
+          allow(decorator).to receive(:id).and_return('non-existent')
           expect(decorator.protocol_descriptor).to be_nil
         end
       end
@@ -206,7 +206,7 @@ module Crichton
 
       def stub_config
         config = Crichton::Configuration.new({'deployment_base_uri' => deployment_base_uri})
-        Crichton.stub(:config).and_return(config)
+        allow(Crichton).to receive(:config).and_return(config)
       end
       
       describe '#templated_url' do
@@ -224,7 +224,7 @@ module Crichton
           it 'returns the url with templated query parameters' do
             Crichton.clear_config
             @transition = 'search'
-            decorator.templated_url.should =~ /{?search_term,search_name}/
+            expect(decorator.templated_url).to match(/{?search_term,search_name}/)
           end
         end
       end
@@ -246,11 +246,11 @@ module Crichton
             before do
               @descriptor = 'drd'
               @transition = 'activate'
-              target.stub(:uuid).and_return('some_uuid')
+              allow(target).to receive(:uuid).and_return('some_uuid')
             end
 
             it 'returns the uri populated from the target attributes' do
-              decorator.url.should =~ /#{deployment_base_uri}\/drds\/some_uuid\/activate/
+              expect(decorator.url).to match(/#{deployment_base_uri}\/drds\/some_uuid\/activate/)
             end
             
             it_behaves_like 'a memoized url'
@@ -258,7 +258,7 @@ module Crichton
 
           context 'without parameterized uri' do
             it 'returns the uri as a url' do
-              decorator.url.should =~ /#{deployment_base_uri}\/drds/
+              expect(decorator.url).to match(/#{deployment_base_uri}\/drds/)
             end
 
             it_behaves_like 'a memoized url'
@@ -268,12 +268,12 @@ module Crichton
             before do
               @descriptor = 'drd'
               @transition = 'leviathan-link'
-              @url = mock('url')
-              target.stub('leviathan_url').and_return(@url)
+              @url = double('url')
+              allow(target).to receive('leviathan_url').and_return(@url)
             end
             
             it 'returns the url associated with the source method' do
-              decorator.url.should == @url
+              expect(decorator.url).to eq(@url)
             end
             
             it_behaves_like 'a memoized url'
@@ -282,7 +282,7 @@ module Crichton
         
         context 'without protocol descriptor defined' do
           it 'returns nil' do
-            decorator.stub(:protocol_descriptor).and_return(nil)
+            allow(decorator).to receive(:protocol_descriptor).and_return(nil)
             expect(decorator.url).to be_nil
           end
         end

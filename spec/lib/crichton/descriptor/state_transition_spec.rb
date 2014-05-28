@@ -6,33 +6,33 @@ module Crichton
     describe StateTransition do
       let(:state_transitions) { normalized_drds_descriptor['descriptors']['drds']['states']['collection']['transitions'] }
       let(:state_transition_descriptor) { state_transitions['create'] }
-      let(:resource_descriptor) { mock('resource_descriptor') }
+      let(:resource_descriptor) { double('resource_descriptor') }
       let(:descriptor) { StateTransition.new(resource_descriptor, state_transition_descriptor) }
       
       describe '#available?' do
         context 'without :conditions option' do
           it 'always returns true' do
             state_transition_descriptor.delete('conditions')
-            descriptor.should be_available
+            expect(descriptor).to be_available
           end
         end
         
         context 'with :conditions option' do
           context 'with a string for a state transition condition' do
             it 'returns true with a matching string option' do
-              descriptor.should be_available({conditions: 'can_create'})
+              expect(descriptor).to be_available({conditions: 'can_create'})
             end
   
             it 'returns true with a matching symbol option' do
-              descriptor.should be_available({conditions: :can_create})
+              expect(descriptor).to be_available({conditions: :can_create})
             end
   
             it 'returns false without a matching string option' do
-              descriptor.should_not be_available({conditions: 'can_do_something'})
+              expect(descriptor).not_to be_available({conditions: 'can_do_something'})
             end
   
             it 'returns false without a matching symbol option' do
-              descriptor.should_not be_available({conditions: :can_do_something})
+              expect(descriptor).not_to be_available({conditions: :can_do_something})
             end
           end
           
@@ -42,19 +42,19 @@ module Crichton
             end
 
             it 'returns true with a matching hash option' do
-              descriptor.should be_available({conditions: {can_create: :object}})
+              expect(descriptor).to be_available({conditions: {can_create: :object}})
             end
 
             it 'returns false without a matching hash option' do
-              descriptor.should_not be_available({conditions: {can_create: 'other_object'}})
+              expect(descriptor).not_to be_available({conditions: {can_create: 'other_object'}})
             end
 
             it 'returns false with any string option' do
-              descriptor.should_not be_available({conditions: 'can_create'})
+              expect(descriptor).not_to be_available({conditions: 'can_create'})
             end
 
             it 'returns false with any symbol option' do
-              descriptor.should_not be_available({conditions: :can_create})
+              expect(descriptor).not_to be_available({conditions: :can_create})
             end
           end
         end
@@ -62,23 +62,23 @@ module Crichton
   
       describe '#conditions' do
         it 'returns the list of inclusion conditions for the transition' do
-          descriptor.conditions.should == %w(can_create can_do_anything)
+          expect(descriptor.conditions).to eq(%w(can_create can_do_anything))
         end
         
         it 'returns an empty hash when there are no conditions specified' do
           state_transition_descriptor.delete('conditions')
-          descriptor.conditions.should be_empty
+          expect(descriptor.conditions).to be_empty
         end
       end
   
       describe '#next' do
         it 'returns the list of next states exposed by the transition' do
-          descriptor.next.should == %w(activated error)
+          expect(descriptor.next).to eq(%w(activated error))
         end
 
         it 'returns an empty hash when there are no next states specified' do
           state_transition_descriptor.delete('next')
-          descriptor.next.should be_empty
+          expect(descriptor.next).to be_empty
         end
       end
     end

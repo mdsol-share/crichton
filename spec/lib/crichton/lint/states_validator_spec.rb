@@ -13,9 +13,9 @@ module Crichton
 
       describe '#validate' do
         before do
-          Crichton::ExternalDocumentStore.any_instance.stub(:get).with(an_instance_of(Addressable::URI)).and_return('<alps></alps>')
-          Crichton::ExternalDocumentStore.any_instance.stub(:get).with(/alps/).and_return('<alps></alps>')
-          Crichton::ExternalDocumentStore.any_instance.stub(:get).with('http://schema.org/Something').and_return(nil)
+          allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).with(an_instance_of(Addressable::URI)).and_return('<alps></alps>')
+          allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).with(/alps/).and_return('<alps></alps>')
+          allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).with('http://schema.org/Something').and_return(nil)
         end
 
         after do
@@ -148,7 +148,7 @@ module Crichton
           def stub_profile_request(status)
             stub_request(:get, external_url).with(:headers => {'Accept' => '*/*', 'User-Agent' => 'Ruby'}).
               to_return(:status => status, :body => "", :headers => {})
-            StateTransitionDecorator.any_instance.stub(:next_state_location).and_return(external_url)
+            allow_any_instance_of(StateTransitionDecorator).to receive(:next_state_location).and_return(external_url)
           end
         end
       end

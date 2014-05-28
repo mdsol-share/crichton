@@ -5,7 +5,7 @@ module Crichton
   module Descriptor
     describe Profile do
       let(:descriptors) { normalized_drds_descriptor['descriptors'] }
-      let(:resource_descriptor) { mock('resource_descriptor') }
+      let(:resource_descriptor) { double('resource_descriptor') }
       let(:descriptor) { Profile.new(resource_descriptor, @descriptor) }
 
       before do
@@ -14,7 +14,7 @@ module Crichton
 
       describe '.new' do
         it 'returns a subclass of Base' do
-          descriptor.should be_a(Base)
+          expect(descriptor).to be_a(Base)
         end
 
         it_behaves_like 'a nested descriptor'
@@ -23,18 +23,18 @@ module Crichton
       describe '#descriptors' do
         context 'with nested descriptors' do
           it 'returns a populated array' do
-            descriptor.descriptors.should_not be_empty
+            expect(descriptor.descriptors).not_to be_empty
           end
   
           it 'returns an array of descriptors' do
-            descriptor.descriptors.all? { |descriptor| descriptor.is_a?(Base) }.should be_true
+            expect(descriptor.descriptors.all? { |descriptor| descriptor.is_a?(Base) }).to be_true
           end
         end
   
         context 'without nested descriptors' do
           it 'returns an empty array if there are no nested descriptors' do
             @descriptor = drds_descriptor.reject { |k, _| k == 'descriptors' }
-            descriptor.descriptors.should be_empty
+            expect(descriptor.descriptors).to be_empty
           end
         end
       end
@@ -42,37 +42,37 @@ module Crichton
       describe '#help_link' do
         it 'returns the help link in the descriptor' do
           descriptors['drds']['links'] = {'help' => 'help_link'}
-          descriptor.help_link.href.should == 'help_link'
+          expect(descriptor.help_link.href).to eq('help_link')
         end
         
         it 'returns the resource descriptor help link if no help link in descriptor' do
-          link = mock('help_link')
-          resource_descriptor.stub(:help_link).and_return(link)
-          descriptor.help_link.should == link
+          link = double('help_link')
+          allow(resource_descriptor).to receive(:help_link).and_return(link)
+          expect(descriptor.help_link).to eq(link)
         end
       end
 
       describe '#links' do
         it 'returns the descriptor links' do
-          descriptor.links['self'].should_not be_nil
+          expect(descriptor.links['self']).not_to be_nil
         end
       end
 
       describe '#semantics' do
         context 'with nested semantic descriptors' do
           it 'returns a populated hash' do
-            descriptor.semantics.should_not be_empty
+            expect(descriptor.semantics).not_to be_empty
           end
   
           it 'returns an hash of semantic descriptors' do
-            descriptor.semantics.all? { |_, descriptor| descriptor.semantic? }.should be_true
+            expect(descriptor.semantics.all? { |_, descriptor| descriptor.semantic? }).to be_true
           end
         end 
   
         context 'without nested semantic descriptors' do
           it 'returns an empty hash if there are no nested semantic descriptors' do
             @descriptor['descriptors'].reject! { |_, descriptor| descriptor['type'] == 'semantic' }
-            descriptor.semantics.should be_empty
+            expect(descriptor.semantics).to be_empty
           end
         end
       end
@@ -80,18 +80,18 @@ module Crichton
       describe '#transitions' do
         context 'with nested transition descriptors' do
           it 'returns a populated hash' do
-            descriptor.transitions.should_not be_empty
+            expect(descriptor.transitions).not_to be_empty
           end
   
           it 'returns a hash of transition descriptors' do
-            descriptor.transitions.all? { |_, descriptor| descriptor.transition? }.should be_true
+            expect(descriptor.transitions.all? { |_, descriptor| descriptor.transition? }).to be_true
           end
         end
   
         context 'without nested transition descriptors' do
           it 'returns an empty hash if there are no nested transition descriptors' do
             @descriptor['descriptors'].reject! { |descriptor| descriptor['type'] != 'semantic' }
-            descriptor.transitions.should be_empty
+            expect(descriptor.transitions).to be_empty
           end
         end
       end
