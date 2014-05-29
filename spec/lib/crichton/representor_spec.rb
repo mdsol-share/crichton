@@ -317,6 +317,12 @@ module Crichton
 
         context 'without a state' do
           before do
+            Crichton.clear_registry
+            descriptor = drds_descriptor.tap do |document|
+              state = document['resources']['drd']['states']['activate']
+              document['resources']['drd']['states'].clear.merge!({'default' => state })
+            end
+            Crichton.initialize_registry(descriptor)
             @comparison_links = %w(repair-history activate deactivate update delete)
           end
 
@@ -395,8 +401,8 @@ module Crichton
           it 'raises an error' do
             @include_state = true
             expect { simple_test_class.new.each_transition.to_a }.to raise_error(
-               Crichton::RepresentorError,
-               /^No state method has been defined in the class ''.*/
+              Crichton::MissingStateError,
+              /^No state descriptor for transition drd -> default!.*/
             )
           end
         end

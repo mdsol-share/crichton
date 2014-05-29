@@ -34,9 +34,18 @@ class DRD
   
   represents :drd
   
+  def state
+   # Do something to determine the state of the resource.
+  end
+
   # Other methods ...
 end
 ```
+
+If the class doesn't have `state` instance method, but includes `Crichton::Representor::State` module, it is inferred 
+that resource has only one `default` state, which must be specified in `states` section of the resource descriptor file.
+See [States Section](https://github.com/mdsol/crichton/blob/develop/doc/resource_descriptors.md#states-section) for 
+more information.
 
 If the class implements a `state` accessor or method that is not the state of the resource, one can simply define a 
 different method on the class to return the resource state:

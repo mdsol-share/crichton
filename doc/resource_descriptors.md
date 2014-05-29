@@ -16,10 +16,13 @@ states associated with a resource and these categories will be associated with d
 that can be exercised on the resource in that state. Thus, when we talk about states in Crichton, we mean the 
 categorical states of the state machine, each with its own unique set of available transitions.
 
+It is possible that resource can only be in one state. In such scenario, `states` section of a _resource_ must define
+`default` as `state_name` property value.
+
 ## State properties
 * `states` - Defines the states associated with each resource specified as the keys of this property. The 
 actual state names are the keys under the resource.
-	* \[state name\] The name of the state.
+	* \[state name\] The name of the state or `default` if resource can only be in one state.
         * `doc` - Documents a particular state.
         * `location` - The location of the state. Valid values are `entry`, `exit`, or a URI to an external ALPS type that 
         is associated with the transition from an application vs. resource state standpoint. 
@@ -41,6 +44,7 @@ semantic and transition elements as child elements grouped under `descriptors` t
 
 ## Example
 
+### Resource that can be in multiple states.
 ```yaml
 resources:
   drds:
@@ -87,6 +91,29 @@ resources:
             next:
               - activated
               - error 
+```
+
+### Resource that can be only in default state. 
+```yaml
+resources:
+ drd:
+    doc: Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are built by a Leviathan as it grows.
+    links:
+      self: DRDs#drd
+    descriptors:
+      - href: uuid
+      - href: name
+    states:
+      default:
+        show:
+          name: self
+          next:
+            - default
+        update:
+            conditions:
+              - can_update
+            next:
+              - default
 ```
 
 [Back to API Descriptor Document](descriptors_document.md)
