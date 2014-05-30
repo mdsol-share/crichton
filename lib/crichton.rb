@@ -33,12 +33,6 @@ module Crichton
     @registry.register_single(descriptor_document)
   end
 
-  # Manually register a descritor document with crichton.
-  def self.register_document(descriptor_document)
-    @registry ||= Crichton::Registry.new(:automatic_load => false)
-    @registry.register_single(descriptor_document)
-  end
-
   ##
   # Returns the registered resources - version that has local resources de-referenced.
   #
