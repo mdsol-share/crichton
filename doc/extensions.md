@@ -17,7 +17,7 @@ Extensions are grouped under the top-level `extensions` element. The data descri
 ## Data Descriptor Extension Properties
 You can ssign the following properties to extensions. 
 NOTE: You can only have one of the `list`, `hash`, or `external` properties. This applies also for `href` entries that you include. In the case of `external`, the `source` element can contain a link to an external resource or method to call on a target object. If `source` is a link to an external resource, you must include `prompt` and `target` elements.
-- `options` - Provides a list of possible values for a select list or similar use. Below this key, you can use the following. All are optional, but it is best practice to include as many as apply.
+- `options` - Provides a list of possible values for a select list or similar use. Below this key, you can use the following. All are OPTIONAL, but it is best practice to include as many as apply.
 	- `id` - Can be used to reference a particular list and to include its values in another value's entry.
 	- `href` - Includes a referenced value's entry.
 	- `list` - Contains an array of values.
@@ -26,7 +26,7 @@ NOTE: You can only have one of the `list`, `hash`, or `external` properties. Thi
 	- `target` - Specifies the name of the attribute inside the element that the value will be taken from.
 	- `prompt` - Specifies the attribute of the text of the item will be taken from are used to specify the fields that are to be used to assemble the list or hash. In case of a list, the target and prompt are identical.
 	- `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the [HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
-	- `validators` - Optonal. Hash of validator objects associated with a field.
+	- `validators` - OPTIONAL. Hash of validator objects associated with a field.
 
 ## List of Supported Input Types and Validators
 The following table lists the supported input types and the validators that you can apply to them.
@@ -117,4 +117,4 @@ idempotent:
 ```
 ## External References
 - [Back to API Descriptor Document](descriptors_document.md)
-- [Example API Descriptor Document](/spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
+- [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
