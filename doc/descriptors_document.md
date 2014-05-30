@@ -8,7 +8,7 @@
  - [External References](#external-references)
 
 # Overview
-An _API Descriptor Document_ is a declarative YAML document that profiles the semantics, states, state transitions, and protocol-specific implementations of a single resource or possibly several closely related resources, which Crichton returns as hypermedia APIs. The API Descriptor Document details a Domain Application Protocol (DAP) for the referenced resources that are layered on top of the transport protocol(s) that the resource(s) support.
+Crichton supports hypermedia APIs. An _API Descriptor Document_ is a declarative YAML document that profiles the semantics, states, state transitions, and protocol-specific implementations of a single resource or possibly several closely related resources, which Crichton supports. The API Descriptor Document details a Domain Application Protocol (DAP) for the referenced resources that are layered on top of the transport protocol(s) that the resource(s) support.
 
 ## Document Descriptor Underlying Concepts
 An _API Descriptor Document_ has a number of key concepts underlying its design and properties. These concepts include the following:
@@ -62,7 +62,7 @@ formatted body.
 
 6. Define the particulars of how the transitions are implemented for different protocols.
 
-7. Define routing/scaffolding information for the resource. Optional.
+7. Define routing/scaffolding information for the resource. OPTIONAL.
 
 [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
 
