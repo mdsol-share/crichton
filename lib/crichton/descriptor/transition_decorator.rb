@@ -121,7 +121,7 @@ module Crichton
         @state_descriptor ||= if state
           resource_descriptor.states[parent_descriptor.name][state.to_s].tap do |descriptor_state|
             unless descriptor_state
-               raise(Crichton::MissingStateError,
+              raise(Crichton::MissingStateError,
                 "No state '#{state.to_s}' defined for resource '#{parent_descriptor.name}' in API " <<
                 "descriptor document with ID: #{parent_descriptor.resource_descriptor.id}")
             end
