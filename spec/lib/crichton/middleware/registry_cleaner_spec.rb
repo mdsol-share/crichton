@@ -6,12 +6,6 @@ class Rails
 end
 
 module Crichton
-  def self.spec_set_registry(value)
-    @registry = value
-  end
-end
-
-module Crichton
   module Middleware
     describe RegistryCleaner do
       include Crichton::Helpers::ConfigHelper
