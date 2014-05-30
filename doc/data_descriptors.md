@@ -7,11 +7,11 @@ or template bodies in `unsafe` and `idempotent` transitions.
 The YAML keys, which appear directly under the `semantics`/`parameters` property, are the ALPS IDs of the individual descriptors. Therefore, they must be unique within the document. You can use the `name` property to specify the semantic name that will be used in a response. Otherwise, the ID is the name of the associated attribute in the representation of the resource.
 
 * \[descriptor_key\] - A YAML key that is the unique ID of the associated ALPS profile.
-   * `doc` - Required. The description of the semantic descriptor. 
-   * `name` - Optional. The name associated with the related element in a response. `Name` overrides the ID of the descriptor as the default name. 
-   * `type` - Optional. The type of the descriptor. For data-related descriptors, only use `semantic`. When you group data descriptors under `semantics` or `parameters` tags, the underlying `type` is `semantic`. 
-   * `href` - Required. The underlying ALPS profile, which either represents another resource or a primitive profile. See [Primitive Profiles](primitive_profiles.md) for more information. 
-   * `sample` - Recommended. A sample data value for use in generating sample representations by media-type.
+   * `doc` - REQUIRED. The description of the semantic descriptor. 
+   * `name` - OPTIONAL. The name associated with the related element in a response. `Name` overrides the ID of the descriptor as the default name. 
+   * `type` - OPTIONAL. The type of the descriptor. For data-related descriptors, only use `semantic`. When you group data descriptors under `semantics` or `parameters` tags, the underlying `type` is `semantic`. 
+   * `href` - REQUIRED. The underlying ALPS profile, which either represents another resource or a primitive profile. See [Primitive Profiles](primitive_profiles.md) for more information. 
+   * `sample` - RECOMMENDED. A sample data value for use in generating sample representations by media-type.
    * `embed` - Indicates that the resource should be embedded in a response either inline or as a link.
       Valid values for `embed` include the following:
        - `single` - Default value when you do not specify another value.
@@ -29,7 +29,7 @@ The YAML keys, which appear directly under the `semantics`/`parameters` property
 You can define all data descriptors grouped under the top-level `semantics` element; however, it is not a requirement. You can define data descriptors as child descriptors of transition elements. Data descriptors under the `parameters` tag of the transition element define templated url properties. Data descriptors under the `semantics` tag of the transition element define template bodies.
 Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. See the examples below.
 
-## Examples
+## Data Descriptor Examples
 ### Data descriptors defined under top-level `semantics` element
 The following example highlights a few parts of the [Example API Descriptor Document][] `semantics` section associated
 with data descriptors.
@@ -78,6 +78,6 @@ safe:
         href: http://alps.io/schema.org/Text
 ```
 
-
-[Back to API Descriptor Document](descriptors_document.md)
-[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+## Related Topics
+- [Back to API Descriptor Document](descriptors_document.md)
+- [Example API Descriptor Document](.../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
