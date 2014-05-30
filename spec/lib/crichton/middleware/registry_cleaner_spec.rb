@@ -2,20 +2,24 @@ require 'spec_helper'
 require 'crichton/helpers'
 require 'crichton/middleware/registry_cleaner'
 
-class Rails
-end
-
 module Crichton
   module Middleware
     describe RegistryCleaner do
       include Crichton::Helpers::ConfigHelper
 
-      before(:each) do
+      before do
+        ::Rails = double('rails') unless defined?(Rails)
         @rack_app = double
         @rack_app.stub(:call)
         stub_example_configuration
         register_drds_descriptor
         stub_request(:get, /.*/)
+        @rails_env = double('rails_env')
+        allow(::Rails).to receive(:env).and_return(@rails_env)
+      end
+
+      after do
+        Object.send(:remove_const, :Rails)
       end
 
       describe '#call' do
@@ -28,7 +32,7 @@ module Crichton
 
         context 'when not in Rails development environment' do
           it 'does not try to clear the registry' do
-            Rails.stub_chain(:env, :development?).and_return(false)
+            @rails_env.stub(:development?).and_return(false)
             Crichton.instance_variable_set(:@registry, registry_value)
             registry = Crichton.instance_variable_get(:@registry)
             proxy_responder.call(env)
@@ -39,7 +43,7 @@ module Crichton
 
         context 'when in Rails development environment' do
           it 'does clear the registry' do
-            Rails.stub_chain(:env, :development?).and_return(true)
+            @rails_env.stub(:development?).and_return(true)
             Crichton.instance_variable_set(:@registry, registry_value)
             registry = Crichton.instance_variable_get(:@registry)
             proxy_responder.call(env)
