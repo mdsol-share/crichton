@@ -402,7 +402,7 @@ module Crichton
             @include_state = true
             expect { simple_test_class.new.each_transition.to_a }.to raise_error(
               Crichton::MissingStateError,
-              /^No state descriptor for transition drd -> default!.*/
+              /^No state 'default' defined for resource 'drd' in API descriptor document with ID: DRDs/
             )
           end
         end

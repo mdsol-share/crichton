@@ -16,13 +16,14 @@ states associated with a resource and these categories will be associated with d
 that can be exercised on the resource in that state. Thus, when we talk about states in Crichton, we mean the 
 categorical states of the state machine, each with its own unique set of available transitions.
 
-It is possible that resource can only be in one state. In such scenario, `states` section of a _resource_ must define
-`default` as `state_name` property value.
+If a resource has only one state, the `states` section of a _resource_ must define `default` as the `state_name`
+property value. Alternately, a custom name can be used when the associated object defines a `state` instance method or
+attribute accessor that returns the custom name.
 
 ## State properties
 * `states` - Defines the states associated with each resource specified as the keys of this property. The 
 actual state names are the keys under the resource.
-	* \[state name\] The name of the state or `default` if resource can only be in one state.
+	* \[state name\] The name of the state or `default` for resources with only one state.
         * `doc` - Documents a particular state.
         * `location` - The location of the state. Valid values are `entry`, `exit`, or a URI to an external ALPS type that 
         is associated with the transition from an application vs. resource state standpoint. 
@@ -44,7 +45,7 @@ semantic and transition elements as child elements grouped under `descriptors` t
 
 ## Example
 
-### Resource that can be in multiple states.
+### Resource with multiple states.
 ```yaml
 resources:
   drds:
@@ -93,7 +94,7 @@ resources:
               - error 
 ```
 
-### Resource that can be only in default state. 
+### Resource with one ("default") state.
 ```yaml
 resources:
  drd:
