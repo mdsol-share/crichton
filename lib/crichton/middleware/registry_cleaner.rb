@@ -7,8 +7,7 @@ module Crichton
 
       def call(env)
         Crichton.clear_registry if Rails.env.development?
-        status, headers, response = @app.call(env)
-        [status, headers, response]
+        @app.call(env)
       end
     end
   end
