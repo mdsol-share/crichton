@@ -3,6 +3,7 @@ rvm:
   - 1.9.3
   - 2.0.0
 gemfile:
-- Gemfile
+- gemfiles/rails32.gemfile
+- gemfiles/rails4.gemfile
 cache: bundler
 script: "bundle exec rspec"
