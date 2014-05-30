@@ -36,19 +36,11 @@
       <doc>
         How large it is
       </doc>
-      <ext value="{&quot;datalist&quot;:&quot;size-list&quot;}"
-           href="http://alps.io/extensions/serialized_options_list"/>
     </descriptor>
     <descriptor id="create"
                 type="unsafe"
                 rt="leviathan">
       <doc>Creates a Leviathan.</doc>
-      <descriptor id="create-leviathan"
-                  type="semantic">
-        <link rel="self"
-              href="http://alps.example.com/Leviathans#create-leviathan"/>
-        <link rel="help"
-              href="http://docs.example.org/Forms/create-leviathan"/>
         <descriptor id="form_name"
                     name="name"
                     type="semantic"
@@ -59,8 +51,6 @@
           <doc>
             How large it is
           </doc>
-          <ext value="{&quot;datalist&quot;:&quot;size-list&quot;}"
-               href="http://alps.io/extensions/serialized_options_list"/>
         </descriptor>
         <descriptor id="form-status" name="status" type="semantic" href="http://alps.io/schema.org/Text">
           <doc>
@@ -69,9 +59,6 @@
           <ext value="{&quot;hash&quot;:{&quot;new&quot;:&quot;new&quot;,&quot;old&quot;:&quot;old&quot;}}"
                href="http://alps.io/extensions/serialized_options_list"/>
         </descriptor>
-      </descriptor>
     </descriptor>
   </descriptor>
-  <ext href="http://alps.io/extensions/serialized_datalist"
-       value="{&quot;size-list&quot;:[&quot;small&quot;,&quot;medium&quot;,&quot;large&quot;]}"/>
 </alps>

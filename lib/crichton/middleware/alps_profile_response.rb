@@ -62,7 +62,7 @@ module Crichton
         template = Addressable::Template.new("#{alps_uri}{/id*}")
         extracted_id = template.extract(uri)
         # If it is more than one id, then it is not an alps path.
-        profile_id = extracted_id && extracted_id['id'].one? && extracted_id['id'].first
+        profile_id = extracted_id && extracted_id['id'] && extracted_id['id'].one? && extracted_id['id'].first
 
         {'profile_id' => profile_id} if profile_id || uri.path == alps_uri.path
       end
@@ -119,7 +119,7 @@ module Crichton
       end
       
       def alps_link(profile_id, profile)
-        Nokogiri::XML(profile.to_xml).xpath('/alps/link[@rel="self"]').first.tap do |link|
+        Nokogiri::XML(profile.to_xml).xpath('/alps/link[@rel="profile"]').first.tap do |link|
           link['rel'] = File.join(alps_base_uri, profile_id) # Comply with RFC5988. So, use resolvable alps base version.
           link['href'] = request_href(link['href'])
         end

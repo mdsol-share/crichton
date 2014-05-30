@@ -1,157 +1,124 @@
-# A resource descriptor is a declarative configuration file that defines the semantic data,  
-# states, and state transitions associated with a particular resource independent of protocol 
-# media-type. Further, it also defines protocol specific templates for links that can be 
-# and  included in the response and populated based on the associated state. By including  
-# optional routes related metadata in the configuration, routes.rb mappings can be managed  
-# DRYly in the resource descriptor file.
-#
-# The following sections facilitate a number of objectives including generating an ALPS profile 
-# of the resource, generating human readable documents including sample representations, 
-# decorating service responses, and scaffolding routes, controllers and models.
-
 id: EntryPoints
-version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with entry_points of resources.
 links:
   self: EntryPoints
   help: Things/EntryPoints
  
-# This section associates a simple state-machine DSL with the particular resource. It shows
-# the state name and lists the data and application affordances available in that state, 
-# conditions for inclusion of a transition in a response and what states are exposed by 
-# following the transitions.
+semantics:
+  total_count:
+    doc: The total count of entry points in a returned list.
+    href: http://alps.io/schema.org/Integer
+    sample: 1
+  items:
+    doc: An array of resource entry points.
+    href: http://alps.io/schema.org/Array
+  resource_name: &resource_name
+    doc: The terms to search.
+    href: http://alps.io/schema.org/Text
+    sample: widget
+  resource_relation:
+    doc: The name of the resource associated with this entry point.
+    href: http://alps.io/schema.org/Text
+    sample: /widgets/
+  resource_uri:
+    doc: The uri of the resource's entry_point
+    href: http://alps.io/schema.org/Text
+    sample: http://example.org/rel/widgets
 
-states:
-  entry_points:
-    collection:
-      doc: The entry point state for interacting with entry points.
-      location: entry
-      transitions:
-        list:
-          name: self
-          next:
-            - collection
-        search:
-          next:
-            - navigation
-    navigation:
-      doc: Represents a filtered list of entry points.
-      transitions:
-        search:
-          name: self
-          next:
-            - navigation
-        list:
-          next:
-            - collection
-  entry_point:
-    default:
-      doc: The default state of an entry point.
-      transitions:
-        show:
-          name: self
-          next:
-            - default
-    error:
-      doc: An error has occured.
-      location: http://alps.io/schema.org/Error
-      
-# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
-# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
-# to generate sample representations of the a resource in different media-types.
-#
-# Transition descriptors represent application affordances and in the context of ALPS 
-# represent type='safe,unsafe,idempotent' descriptors. 
+extensions:
+  _resource_name:
+    <<: *resource_name
+    field_type: text
 
-descriptors:
+safe:
+  list:
+    doc: Returns a list of entry points.
+    name: self
+    rt: entry_points
+  search:
+    doc: Returns a list of entry points that satisfy the search term.
+    rt: entry_points
+    descriptors:
+      - href: resource_name
+        ext: _resource_name
+  show:
+    doc: Shows a particular entry_point.
+    name: self
+    rt: entry_point
+
+resources:
   entry_points:
-    doc: 
+    doc:
       html: <p>A list of entry points.</p>
     type: semantic
     links:
       self: EntryPoints#entry_points
     descriptors:
-      # Semantics
-      total_count:
-        doc: The total count of entry points in a returned list.
-        type: semantic
-        href: http://alps.io/schema.org/Integer
-        sample: 1
-      resources:
-        doc: An array of resource entry points.
-        type: semantic
-        href: http://alps.io/schema.org/Array
-       # Transitions
-      list:
-        doc: Returns a list of entry points.
-        name: self
-        type: safe
-        rt: entry_points
-      search:
-        doc: Returns a list of entry points that satisfy the search term.
-        type: safe
-        rt: entry_points
-        descriptors:
-          resource_name:
-            doc: The terms to search.
-            type: semantic
-            href: http://alps.io/schema.org/Text
-            field_type: text
-            sample: widget
+      - href: total_count
+      - href: items
+      - href: list
+      - href: search
+    states:
+      entry_points:
+        collection:
+          doc: The entry point state for interacting with entry points.
+          location: entry
+          transitions:
+            list:
+              name: self
+              next:
+                - collection
+            search:
+              next:
+                - navigation
+        navigation:
+          doc: Represents a filtered list of entry points.
+          transitions:
+            search:
+              name: self
+              next:
+                - navigation
+            list:
+              next:
+                - collection
   entry_point:
     doc: The entry point for a resource
     type: semantic
     links:
       self: EntryPoints#entry_point
     descriptors:
-      # Semantics
-      resource_relation:
-        doc: The name of the resource associated with this entry point.
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: /widgets/
-      resource_uri:
-        doc: The uri of the resource's entry_point
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: http://example.org/rel/widgets
-      # Transitions
-      show:
-        doc: Shows a particular entry_point.
-        name: self
-        type: safe
-        rt: entry_point
+      - href: resource_relation
+      - href: resource_uri
+      - href: show
+    states:
+      default:
+        doc: The default state of an entry point.
+        transitions:
+          show:
+            name: self
+            next:
+              - default
+      error:
+        doc: An error has occured.
+        location: http://alps.io/schema.org/Error
 
-# The protocol descriptors section defines the protocol affordances associated with the
-# application affordances. This decouples protocol specific information from the 
-# semantic description of a resource and its affordances.
-protocols:
-  http:
-    list:
-      uri: apis
-      entry_point: entry_points # Indicates this endpoint is a resource entry point for the protocol.
-      method: GET
-      content_types:
-        - application/json-home
-      headers:
-      status_codes:
-        200:
-          description: OK
-    search:
-      uri: entry_points
-      method: GET
-      content_types:
-        - application/json-home
-      headers:
-      status_codes:
-        200:
-          description: OK
-    show:
-      uri: apis/{name}
-      method: GET
-      content_types:
-        - application/json-home
-      headers:
-      status_codes:
-        200:
-          description: OK
+http_protocol:
+  list:
+    uri: apis
+    entry_point: entry_points # Indicates this endpoint is a resource entry point for the protocol.
+    method: GET
+    content_types:
+      - application/json-home
+    headers:
+  search:
+    uri: entry_points
+    method: GET
+    content_types:
+      - application/json-home
+    headers:
+  show:
+    uri: apis/{name}
+    method: GET
+    content_types:
+      - application/json-home
+    headers:

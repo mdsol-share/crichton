@@ -3,6 +3,7 @@ require 'crichton/descriptor/profile'
 require 'crichton/descriptor/detail'
 require 'crichton/descriptor/state'
 require 'net/http'
+require 'crichton/descriptor/descriptor_keywords'
 
 module Crichton
   module Descriptor
@@ -54,7 +55,7 @@ module Crichton
       #
       # @return [Crichton::Descriptor::Link] The link.
       def profile_link
-        @descriptors[:profile_link] ||= if self_link = links['self']
+        @descriptors[:profile_link] ||= if self_link = links['profile']
         Crichton::Descriptor::Link.new(self, 'profile', self_link.absolute_href)
         end
       end
@@ -108,8 +109,9 @@ module Crichton
       #
       # @return [Hash] The state instances.
       def states
-        @descriptors[:state] ||= (descriptor_document['states'] || {}).inject({}) do |h, (resource, state_descriptors)|
-          h[resource] = (state_descriptors || {}).inject({}) do |states, (id, state_descriptor)|
+        @descriptors[:state] ||= (resources || {}).inject({}) do |h, resource|
+          hash = resource.descriptor_document
+          h[resource.name] = hash[Crichton::Descriptor::STATES].inject({}) do |states, (id, state_descriptor)|
             state = State.new(self, state_descriptor, id)
             states[state.name] = state
             states
@@ -119,11 +121,13 @@ module Crichton
       end
 
       ##
-      # Returns the datalists defined for the resource descriptor.
+      # Returns the resources defined for the resource descriptor.
       #
-      # @return [Hash] The datalist instances.
-      def datalists
-        @descriptors[:datalist] ||= (descriptor_document['datalists'] || {})
+      # @return [Array] List of [Crichton::Descriptor::Detail] object which represent resources.
+      def resources
+        @descriptors[:resources] ||= begin
+          descriptors.select{ |descriptor| descriptor.resource? }
+        end
       end
 
       ##
@@ -131,7 +135,7 @@ module Crichton
       #
       # @return [String] The key.
       def to_key
-        @key ||= "#{id}:#{version}"
+        @key ||= "#{id}"
       end
 
       ##
@@ -151,8 +155,7 @@ module Crichton
       def verify_descriptor(descriptor)
         err_msg = ''
         err_msg << " missing id in #{descriptor.inspect}" unless descriptor['id']
-        err_msg << " missing version for the resource #{descriptor['name']}." unless descriptor['version']
-        
+
         raise ArgumentError, 'Resource descriptor:' << err_msg unless err_msg.empty?
       end
     end

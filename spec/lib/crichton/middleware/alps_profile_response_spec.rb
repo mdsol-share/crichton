@@ -9,13 +9,73 @@ module Crichton
       include Crichton::Helpers::ConfigHelper
 
       let (:rack_app) { ->(e) { [202, e, {}] } }
-      
+      let (:resource_descriptor_hash) do
+        resource_descriptor = <<-YAML
+          id: DRDs
+          doc: Describes the semantics, states and state transitions associated with DRDs.
+          links:
+            profile: DRDs
+            help: DRDs#help
+          semantics:
+            name:
+              href: http://alps.io/schema.org/Text
+          idempotent:
+            update:
+              rt: none
+              links:
+                profile: DRDs#update
+              parameters:
+                - href: name
+        YAML
+        YAML.load(resource_descriptor)
+      end
+      let (:expected_xml_result) do
+        expected_result = <<-XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <alps>
+            <doc>Describes the semantics, states and state transitions associated with DRDs.</doc>
+            <link rel="profile" href="http://alps.example.org/DRDs"/>
+            <link rel="help" href="http://documentation.example.org/DRDs#help"/>
+            <descriptor id="name" type="semantic" href="http://alps.io/schema.org/Text">
+            </descriptor>
+            <descriptor id="update" type="idempotent" rt="none">
+              <link rel="profile" href="http://alps.example.org/DRDs#update"/>
+              <descriptor href="#name"/>
+            </descriptor>
+          </alps>
+        XML
+        Nokogiri.XML(expected_result)
+      end
+      let (:expected_json_result) do
+        expected_result = <<-HERE
+        {
+          "alps":{
+            "doc":{"value":"Describes the semantics, states and state transitions associated with DRDs."},
+            "link": [
+              {"rel":"profile","href":"http://alps.example.org/DRDs"},
+              {"rel":"help","href":"http://documentation.example.org/DRDs#help"}
+            ],
+            "descriptor":[
+              {"id":"name","type":"semantic","href":"http://alps.io/schema.org/Text"},
+              {
+                "link": [{"rel":"profile","href":"http://alps.example.org/DRDs#update"}],
+                "id":"update","type":"idempotent","rt":"none", "descriptor":[{"href":"name"}]
+              }
+            ]
+          }
+        }
+        HERE
+      end
+      let (:registry) { Crichton::Registry.new(automatic_load: false) }
+
       before do
-        Time.stub!(:new).and_return(Time.parse('Thu, 23 Jan 2014 18:00:00 GMT') )
+        Crichton.clear_registry
+        allow(Time).to receive(:new).and_return(Time.parse('Thu, 23 Jan 2014 18:00:00 GMT') )
         stub_example_configuration
         stub_configured_profiles
         stub_alps_requests
-        register_drds_descriptor
+        registry.register_single(resource_descriptor_hash)
+        allow(Crichton).to receive(:raw_profile_registry).and_return(registry.raw_profile_registry)
       end
 
       after do
@@ -41,13 +101,82 @@ module Crichton
             before do
               @uri = "#{base_uri}/DRDs"
             end      
-            
+
+            shared_examples_for 'an alps document associated with the profile' do
+              it_behaves_like 'a correct response status and response headers'
+
+              it_behaves_like 'an equivalent XML'
+            end
+
+            shared_examples_for 'a correct response status and response headers' do
+              it 'returns proper response status code' do
+                expect(@response_status_code).to eq(@expected_status_code)
+              end
+
+              it 'returns proper response headers' do
+                expect(@response_headers).to eq(@expected_headers)
+              end
+            end
+
+            shared_examples_for 'an equivalent XML' do
+              let (:xpath_function) { ->(selector, xml) { xml.xpath(selector).text.strip } }
+
+              after do
+                expect(xpath_function.(@selector, @response_xml)).to eq(xpath_function.(@selector, expected_xml_result))
+              end
+
+              it 'returns doc' do
+                @selector = '/alps/doc'
+              end
+
+              it 'returns profile link' do
+                @selector = '/alps/link[@rel="profile"]/@href'
+              end
+
+              it 'retuns help link' do
+                @selector = '/alps/link[@rel="help"]/@href'
+              end
+
+              it 'returns descriptors as xml elements' do
+                expect(@response_xml.xpath('/alps/descriptor').size).to eq(2)
+              end
+
+              %w(1 2).each do |index|
+                it 'returns descriptor name' do
+                  @selector = "/alps/descriptor#{index}/@id"
+                end
+
+                it 'returns descriptor type' do
+                  @selector = "/alps/descriptor#{index}/@type"
+                end
+
+                it 'returns descriptor href' do
+                  @selector = "/alps/descriptor#{index}/@href"
+                end
+              end
+
+              it 'returns child link element' do
+                @selector = '/alps/descriptor[2]/link[@rel="profile"]/@href'
+              end
+
+              it 'returns child descriptor element' do
+                @selector = '/alps/descriptor[2]/descriptor/@href'
+              end
+            end
+
             shared_examples_for 'a case-insensitive profile' do
               %w(text/html application/alps+xml).each do |media_type|
-                it "responds with an alps document associated with the profile id for #{media_type} requests" do
-                  @media_type = media_type
-                  @expires =  (Time.new + ten_minutes).httpdate
-                  response.should == [200, headers, [alps_xml_data]]
+                context "when #{media_type} requests" do
+                  before do
+                    @media_type = media_type
+                    @expires =  (Time.new + ten_minutes).httpdate
+                    @response_status_code, @response_headers, response_body = response
+                    @response_xml = Nokogiri.XML(response_body.first)
+                    @expected_status_code = 200
+                    @expected_headers = headers
+                  end
+
+                  it_behaves_like 'an alps document associated with the profile'
                 end
               end
 
@@ -55,79 +184,83 @@ module Crichton
                 @media_type = 'appLication/alps+Json'
                 @expires = (Time.new + ten_minutes).httpdate
                 # go get the body of the response and JSON parse it.
-                obj = JSON.parse(rack_response.body)
-                body = JSON.pretty_generate(obj)
-                body.should be_json_eql(alps_json_data)
+                expect(rack_response.body).to be_json_eql(expected_json_result)
               end
-    
+
               it 'responds with an alps document associated with the profile id for application/alps+json requests' do
                 @media_type = 'application/alps+json'
                 @expires =  (Time.new + ten_minutes).httpdate
                 # go get the body of the response and JSON parse it.
-                obj = JSON.parse(rack_response.body)
-                body = JSON.pretty_generate(obj)
-                body.should be_json_eql(alps_json_data)
+                expect(rack_response.body).to be_json_eql(expected_json_result)
               end
-    
-              it 'uses the first supported media type in the HTTP_ACCEPT header' do
-                @media_type = 'bogus/media_type,*/a,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*'
-                first_content_type_header = {'Content-Type' => 'application/xml',
-                  'expires' => (Time.new + ten_minutes).httpdate}
-                response.should == [200, first_content_type_header, [alps_xml_data]]
+
+              context 'when non standard HTTP_ACCEPT header' do
+                before do
+                  @media_type = 'bogus/media_type,*/a,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*'
+                  @expected_headers = { 'Content-Type' => 'application/xml',
+                                        'expires' => (Time.new + ten_minutes).httpdate }
+                  @response_status_code, @response_headers, response_body = response
+                  @expected_status_code = 200
+                end
+
+                it_behaves_like 'a correct response status and response headers'
               end
-    
-              it 'responds correctly with a non standard HTTP_ACCEPT header' do
-                @media_type = 'bogus/media_type, text/html,  application/xhtml+xml, application/xml;q=0.9,  image/webp, */*'
-                first_content_type_header = { 'Content-Type' => 'application/xml', 
-                  'expires' => (Time.new + ten_minutes).httpdate }
-                response.should == [200, first_content_type_header, [alps_xml_data]]
-              end
-    
+
               %w(text/html application/alps+xml application/alps+json).each do |media_type|
                 it "responds with the expected content-type for #{media_type} requests" do
                   @media_type = media_type
                   media_type = 'application/xml' if media_type == 'text/html'
-                  rack_response.headers['Content-Type'].should == media_type
+                  expect(rack_response.headers['Content-Type']).to eq(media_type)
                 end
               end
-    
+
               it 'responds with the correct expiration date when it a timeout is specified as an option' do
                 responder = AlpsProfileResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
                 @media_type = 'text/html'
                 @expires = (Time.new + 1200).httpdate
-                responder.call(env).should == [200, headers, [alps_xml_data]]
+                response = responder.call(env)
+                rack_response = Rack::MockResponse.new(*response)
+                expect(rack_response.headers['expires']).to eq(headers['expires'])
               end
-    
+
               it 'responds with the correct expiration date when a symbolized timeout in specified' do
                 responder = AlpsProfileResponse.new(rack_app, {:expiry => 20}) #minutes instead of default of 10
                 @media_type = 'text/html'
                 @expires = (Time.new + 1200).httpdate
-                responder.call(env).should == [200, headers, [alps_xml_data]]
+                response = responder.call(env)
+                rack_response = Rack::MockResponse.new(*response)
+                expect(rack_response.headers['expires']).to eq(headers['expires'])
               end
-    
+
               it 'returns a 406 status for unsupported media_types' do
                 @media_type = 'application/jrd+json'
-                rack_response.status.should == 406
+                expect(rack_response.status).to eq(406)
               end
-    
+
               it 'returns a 406 status for an empty list of acceptable media types' do
                 @media_type = ''
-                rack_response.status.should == 406
+                expect(rack_response.status).to eq(406)
               end
-  
+
               %w(DRDs DRDs/ DRDs#list).each do |path_segment|
-                it "responds to alps path segment #{path_segment}" do
-                  @media_type = 'text/html'
-                  @expires = (Time.new + ten_minutes).httpdate
-                  @uri = "#{base_uri}/#{path_segment}"
-                  response.should == [200, headers, [alps_xml_data]]
+                context "when alps path segment #{path_segment}" do
+                  before do
+                    @media_type = 'text/html'
+                    @expires = (Time.new + ten_minutes).httpdate
+                    @uri = "#{base_uri}/#{path_segment}"
+                    @expected_headers = headers
+                    @response_status_code, @response_headers, response_body = response
+                    @expected_status_code = 200
+                  end
+
+                  it_behaves_like 'a correct response status and response headers'
                 end
               end
-  
+
               it 'returns a 404 if the profile in the request is not valid' do
                 @media_type = 'text/html'
                 @uri = "#{base_uri}/BLAH"
-                response.should == [404, {'Content-Type' => 'text/html'}, ["Profile blah not found."]]
+                expect(response).to eq([404, {'Content-Type' => 'text/html'}, ["Profile blah not found."]])
               end
 
               context 'without a profile specified' do
@@ -138,13 +271,13 @@ module Crichton
                 it 'returns a list of links if the alps xml request contains no resource' do
                   @media_type = 'text/html'
                   body = Hash.from_xml(rack_response.body)
-                  body['alps']['link']['href'].should == "#{base_uri.downcase}/DRDs"
+                  expect(body['alps']['link']['href']).to eq("#{base_uri.downcase}/DRDs")
                 end
 
                 it 'returns a list of links if the alps json request contains no resource' do
                   @media_type = 'application/alps+json'
                   body = JSON.parse(rack_response.body)
-                  body['alps']['link']['href'].should == "#{base_uri.downcase}/DRDs"
+                  expect(body['alps']['link']['href']).to eq("#{base_uri.downcase}/DRDs")
                 end
               end
             end
@@ -181,7 +314,7 @@ module Crichton
           it 'invokes the parent rack app from the middleware' do
             @media_type = 'text/html'
             @uri = "#{base_uri}/DRDs/more"
-            rack_app.should_receive(:call).with(env)
+            expect(rack_app).to receive(:call).with(env)
             alps_middleware.call(env)
           end
         end

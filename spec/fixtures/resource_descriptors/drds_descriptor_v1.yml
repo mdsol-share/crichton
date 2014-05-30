@@ -1,560 +1,439 @@
-# A resource descriptor is a declarative configuration file that defines the semantic data,  
-# states, and state transitions associated with a particular resource independent of protocol 
-# media-type. Further, it also defines protocol specific templates for links that can be 
-# and  included in the response and populated based on the associated state. By including  
-# optional routes related metadata in the configuration, routes.rb mappings can be managed  
-# DRYly in the resource descriptor file.
-#
-# The following sections facilitate a number of objectives including generating an ALPS profile 
-# of the resource, generating human readable documents including sample representations, 
-# decorating service responses, and scaffolding routes, controllers and models.
-
 id: DRDs
-version: v1.0.0
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
-  self: DRDs
+  profile: DRDs
   help: Things/DRDs
- 
-# This section associates a simple state-machine DSL with the particular resource. It shows
-# the state name and lists the data and application affordances available in that state, 
-# conditions for inclusion of a transition in a response and what states are exposed by 
-# following the transitions.
 
-states:
-  drds:
-    collection:
-      doc: The entry point state for interacting with DRDs.
-      location: entry
-      response_headers:
-        Cache-Control: no-cache
-      transitions:
-        list:
-          name: self
-          next:
-            - collection
-        search:
-          next:
-            - navigation
-        create:
-          conditions:
-            - can_create 
-            - can_do_anything
-          next:
-            - activated
-            - error   
-    navigation:
-      doc: Represents a filtered list of DRDs.
-      transitions:
-        search:
-          name: self
-          next:
-            - navigation
-        create:
-          conditions:
-            - can_create 
-            - can_do_anything
-          next:
-            - activated
-            - error        
-  drd:
-    activated:
-      doc: The default state of a DRD.
-      transitions:
-        show:
-          name: self
-          next:
-            - activated
-        deactivate:
-          conditions:
-            - can_deactivate 
-            - can_update 
-            - can_do_anything
-          next:
-           - deactivated
-        delete:
-          conditions:
-            - airlock_open 
-            - can_delete 
-            - can_do_anything
-          next:
-            - deleted
-        update:
-          conditions:
-            - can_update 
-            - can_do_anything
-          next:
-            - activated
-        leviathan-link:
-          name: leviathan
-          next:
-            - location: http://alps.io/schema.org/Thing
-        repair-history:
-          conditions:
-            - can_repair
-          next:
-            - location: http://alps.io/schema.org/WarrantyPromise
-    deactivated:
-      doc: The DRD is shut down.
-      transitions:
-        show:
-          name: self
-          next:
-            - deactivated
-        activate:
-          conditions:
-            - can_activate 
-            - can_update 
-            - can_do_anything
-          next:
-           - activated
-        update:
-          conditions:
-            - can_update 
-            - can_do_anything
-          next:
-            - deactivated
-        delete:
-          conditions:
-            - airlock_open 
-            - can_delete 
-            - can_do_anything
-          next:
-            - deleted
-        leviathan-link:
-          name: leviathan
-          next:
-            - location: http://alps.io/schema.org/Thing
-    deleted:
-      doc: The DRD is now free-floating in space.
-      location: exit
-    error:
-      doc: An error has occured.
-      location: http://alps.io/schema.org/Error
-      
-# Semantic descriptors represent semantic definitions of data and thus in the context of ALPS 
-# represent type='semantic' descriptors. Elements MAY include a sample value that can be used 
-# to generate sample representations of the a resource in different media-types.
-#
-# Transition descriptors represent application affordances and in the context of ALPS 
-# represent type='safe,unsafe,idempotent' descriptors. 
+semantics:
+  total_count:
+    doc: The total count of DRDs.
+    href: http://alps.io/schema.org/Integer
+    sample: 1
+  items:
+    doc: An array of embedded DRD resources.
+    href: http://alps.io/schema.org/Array
+    embed: multiple-optional
+    sample: DRDs#drds
+  uuid:
+    doc: The UUID of the DRD.
+    href: http://alps.io/schema.org/Text
+    sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
+  name: &name
+    doc: The name of the DRD.
+    href: http://alps.io/schema.org/Text
+  status:
+    doc: How is the DRD.
+    href: http://alps.io/schema.org/Text
+    sample: renegade
+  old_status:
+    doc: How was the DRD before the last change
+    href: http://alps.io/schema.org/Text
+    sample: renegade
+  kind:
+    doc: What kind is it.
+    href: http://alps.io/schema.org/Text
+    sample: standard
+  size:
+    doc: How large it is
+    href: http://alps.io/schema.org/Text
+    sample: medium
+  leviathan_uuid:
+    doc: The UUID of the creator Leviathan.
+    href: http://alps.io/schema.org/Text
+    sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
+  built_at:
+    doc: When the DRD was constructed.
+    href: http://alps.io/schema.org/DateTime
+    sample: 2013-03-20T00:00:00+00:00
+  leviathan:
+    doc: The associated Leviathan resource.
+    href: http://alps.io/schema.org/Thing/Leviathan
+    embed: single-optional
+    sample: http://alps.io/schema.org/Thing/Leviathan
+  location:
+    doc: The area the DRD is currently in
+    href: http://alps.io/schema.org/Text
+    sample: moya
+  location_detail:
+    doc: Exactly where in the location the DRD currenlty is
+    href: http://alps.io/schema.org/Text
+    sample: outside
+  leviathan_email:
+    doc: The Leviathan respond to email.
+    href: http://alps.io/schema.org/Text
+    sample: joe@grumpycat.org
+  leviathan_uuid:
+    doc: The UUID of the creator Leviathan.
+    href: http://alps.io/schema.org/Text
+    sample: 1234-5678-9abc-def1
+  destroyed:
+    doc: This DRD has been destroyed
+    href: http://alps.io/schema.org/Boolean
+    sample: destroyed
+  leviathan_health_points:
+    doc: The health points of Leviathan.
+    href: http://alps.io/schema.org/Integer
+  term:
+    doc: The terms to search.
+    href: http://alps.io/schema.org/Text
+    sample: searchterm
 
-descriptors:
+extensions:
+  _name: &_name
+    <<: *name
+    field_type: text
+    sample: drdname
+  _create_name:
+    <<: *_name
+    validators:
+      - required
+      - maxlength: 50
+  _update_name:
+    <<: *_name
+    validators:
+      - required
+
+safe:
+  list:
+    doc: Returns a list of DRDs.
+    name: self
+    rt: drds
+  search:
+    doc: Returns a list of DRDs that satisfy the search term.
+    rt: drds
+    parameters:
+      - href: term
+        name: search_term
+        field_type: text
+      - href: name
+        name: search_name
+        ext: _name
+
+  show:
+    doc: Shows a particular DRD.
+    name: self
+    rt: drd
+  leviathan-link:
+    name: leviathan
+    doc: A reference to the Leviathan the DRD works on.
+    embed: true
+    rt: http://alps.io/schema.org/Leviathan#leviathan
+  repair-history:
+    doc: A reference to the list of historical repairs performed.
+    embed: true
+    rt: http://alps.io/schema.org/Repairs#history
+
+idempotent:
+  activate:
+    doc: Activates a DRD if it is deactivated.
+    rt: drd
+  deactivate:
+    doc: Deactivates a DRD if it is activated.
+    rt: drd
+  delete:
+    doc: Drops a DRD out an air-lock.
+    rt: none
+  update:
+    doc: Updates a DRD.
+    rt: none
+    links:
+      self: DRDs#update
+      help: forms/update
+    parameters:
+      - href: status
+        sample: renegade
+        field_type: select
+        validators:
+          - required
+        options:
+          id: drd_status_options
+          hash:
+            active: activated
+            inactive: deactivated
+            unknown: renegade
+      - href: old_status
+        field_type: select
+        validators:
+          - required
+        options:
+          href: DRDs#drd_status_options
+      - href: kind
+        field_type: select
+        options:
+          list:
+            - standard
+            - sentinel
+      - href: size
+        field_type: text
+        options:
+          list:
+            - big
+            - small
+      - href: location
+        field_type: select
+        options:
+          external:
+            source: location_options
+      - href: location_detail
+        field_type: select
+        options:
+          external:
+            source: http://crichton.example.com/drd_location_detail_list#items
+            target: location_detail_id
+            prompt: location_detail_text
+      - href: destroyed
+        field_type: boolean
+
+unsafe:
+  create:
+    doc: Creates a DRD.
+    rt: drd
+    links:
+      self: DRDs#create
+      help: Forms/create
+    href: update
+    parameters:
+      - href: name
+        ext: _create_name
+      - href: leviathan_uuid
+        field_type: text
+      - href: leviathan_health_points
+        field_type: number
+        validators:
+          - required
+          - min: 0
+          - max: 100
+        sample: 42
+      - href: leviathan_email
+        field_type: email
+        validators:
+          - required
+          - pattern: "^.+@.+$"
+
+resources:
   drds:
-    doc: 
-      html: <p>A list of DRDs.</p>
-    type: semantic
+    doc: A list of DRDs
     links:
       self: DRDs#drds
     descriptors:
-      # Semantics
-      total_count:
-        doc: The total count of DRDs.
-        type: semantic
-        href: http://alps.io/schema.org/Integer
-        sample: 1
-      items:
-        doc: An array of embedded DRD resources.
-        type: semantic
-        href: http://alps.io/schema.org/Array
-        embed: multiple-optional # Select non-ALPS values are treated as extensions in the profile.
-      # Transitions
-      list:
-        doc: Returns a list of DRDs.
-        name: self
-        type: safe
-        rt: drds
-      search:
-        doc: Returns a list of DRDs that satisfy the search term.
-        type: safe
-        rt: drds
-        descriptors:
-          search_term:
-            doc: The terms to search.
-            type: semantic
-            href: http://alps.io/schema.org/Text
-            field_type: text
-            sample: drd1
-          search_name:
-            doc: The name to search.
-            type: semantic
-            href: http://alps.io/schema.org/Text
-            field_type: text
-            sample: drd1
-      create:
-        doc: Creates a DRD.
-        type: unsafe
-        rt: drd
-        descriptors:
-          create-drd:
-            doc: drd attributes to create a drd object
-            type: semantic
-            href: update-drd # Indicates that this should dereference update-drd
-            links:
-              self: DRDs#create-drd
-              help: Forms/create-drd
-            descriptors:
-              form-name:
-                name: name
-                doc: The name of the DRD.
-                type: semantic
-                href: http://alps.io/schema.org/Text
-                field_type: text
-                validators:
-                  - required
-                  - maxlength: 50
-                sample: big_drone_drd
-              form-leviathan_uuid:
-                name: leviathan_uuid
-                doc: The UUID of the creator Leviathan.
-                type: semantic
-                href: http://alps.io/schema.org/Text
-                field_type: text
-                sample: 1234-5678-9abc-def1
-              form-leviathan_health_points:
-                name: leviathan_health_points
-                doc: The health points of Leviathan.
-                type: semantic
-                href: http://alps.io/schema.org/Integer
-                field_type: number
-                validators:
-                  - required
-                  - min: 0
-                  - max: 100
-                sample: 42j
-              form-leviathan_email:
-                name: leviathan_email
-                doc: The Leviathan respond to email.
-                type: semantic
-                href: http://alps.io/schema.org/Integer
-                field_type: email
-                validators:
-                  - required
-                  - pattern: "^.+@.+$"
-                sample: joe@grumpycat.org
+      - href: total_count
+      - href: items
+      - href: list
+      - href: search
+      - href: create
+    states:
+      collection:
+        doc: The entry point state for interacting with DRDs.
+        transitions:
+          list:
+            name: self
+            location: entry
+            next:
+              - collection
+          search:
+            next:
+              - navigation
+          create:
+            conditions:
+              - can_create
+              - can_do_anything
+            next:
+              - activated
+              - error
+      navigation:
+        doc: Represents a filtered list of DRDs.
+        transitions:
+          search:
+            name: self
+            next:
+              - navigation
+          create:
+            conditions:
+              - can_create
+              - can_do_anything
+            next:
+              - activated
+              - error
   drd:
-    doc: |
-      Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are
-      built by a Leviathan as it grows.
-    type: semantic
+    doc: Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are built by a Leviathan as it grows.
     links:
       self: DRDs#drd
     descriptors:
-      # Semantics
-      uuid:
-        doc: The UUID of the DRD.
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b           
-      name:
-        doc: The name of the DRD.
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: 1812
-      status:
-        doc: How is the DRD.
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: renegade
-      old_status:
-        doc: How was the DRD before the last change
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: renegade
-      kind:
-        doc: What kind is it.
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: standard
-      size:
-        doc: How large it is
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: medium
-      leviathan_uuid:
-        doc: The UUID of the creator Leviathan.
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
-      built_at:
-        doc: When the DRD was constructed.
-        type: semantic
-        href: http://alps.io/schema.org/DateTime
-        sample: 2013-03-20T00:00:00+00:00
-      leviathan:
-        doc: The associated Leviathan resource.
-        type: semantic
-        href: http://alps.io/schema.org/Thing/Leviathan
-        embed: single-optional
-      location:
-        doc: The area the DRD is currently in
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: moya
-      location_detail:
-        doc: Exactly where in the location the DRD currenlty is
-        type: semantic
-        href: http://alps.io/schema.org/Text
-        sample: outside
-      destroyed:
-        doc: This DRD has been destroyed
-        type: semantic
-        href: http://alps.io/schema.org/Boolean
-        sample: false
-      # Transitions
-      show:
-        doc: Shows a particular DRD.
-        name: self
-        type: safe
-        rt: drd
-      activate:
-        doc: Activates a DRD if it is deactivated.
-        type: idempotent
-        rt: drd
-      deactivate:
-        doc: Deactivates a DRD if it is activated.
-        type: idempotent
-        rt: drd
-      leviathan-link:
-        name: leviathan
-        doc: A reference to the Leviathan the DRD works on.
-        type: safe
-        embed: true
-        rt: http://alps.io/schema.org/Leviathan#leviathan
-      repair-history:
-        doc: A reference to the list of historical repairs performed.
-        type: safe
-        embed: true
-        rt: http://alps.io/schema.org/Repairs#history
-      update:
-        doc: Updates a DRD.
-        type: idempotent
-        rt: none
-        descriptors:
-          update-drd:
-            doc: attributes to update an existing drd object
-            type: semantic
-            links:
-              self: DRDs#drd/update/update-drd
-              help: Forms/update-drd
-            descriptors:
-              form-status:
-                type: semantic
-                doc: How is the DRD.
-                href: http://alps.io/schema.org/Text
-                name: status
-                field_type: select
-                validators:
-                  - required
-                sample: activated
-                options:
-                  id: drd_status_options
-                  hash:
-                    active: activated
-                    inactive: deactivated
-                    unknown: renegade
-              form-old_status:
-                type: semantic
-                doc: How is the DRD.
-                href: http://alps.io/schema.org/Text
-                name: old_status
-                field_type: select
-                validators:
-                  - required
-                sample: activated
-                field_type: select
-                options:
-                  href: DRDs#drd_status_options
-              form-kind:
-                type: semantic
-                name: kind
-                doc: What kind is it.
-                href: http://alps.io/schema.org/Text
-                sample: true
-                field_type: select
-                options:
-                  list:
-                    - standard
-                    - sentinel
-              form-size:
-                doc: How large it is
-                name: size
-                type: semantic
-                href: http://alps.io/schema.org/Text
-                sample: medium
-                field_type: text
-                options:
-                  list:
-                    - big
-                    - small
-              form-location:
-                type: semantic
-                name: location
-                doc: The area the DRD is currently in
-                href: http://alps.io/schema.org/Text
-                sample: moya
-                field_type: select
-                options:
-                  external:
-                    source: location_options
-              form-location_detail:
-                type: semantic
-                name: location_detail
-                doc: Exactly where in the location the DRD currenlty is
-                href: http://alps.io/schema.org/Text
-                sample: inside
-                field_type: select
-                options:
-                  external:
-                    source: http://crichton.example.com/drd_location_detail_list#items
-                    target: location_detail_id
-                    prompt: location_detail_text
-              form-destroyed:
-                doc: This DRD has been destroyed
-                type: semantic
-                href: http://alps.io/schema.org/Boolean
-                sample: true
-                field_type: boolean
-      delete:
-        doc: Drops a DRD out an air-lock.
-        type: idempotent    
-        rt: none
+      - href: uuid
+      - href: name
+        ext: _name
+      - href: status
+      - href: old_status
+      - href: kind
+      - href: size
+      - href: leviathan_uuid
+      - href: built_at
+      - href: leviathan
+      - href: location
+      - href: location_detail
+      - href: destroyed
+      - href: show
+      - href: activate
+      - href: deactivate
+      - href: leviathan-link
+      - href: repair-history
+      - href: update
+      - href: delete
+    states:
+      activated:
+        doc: The default state of a DRD.
+        transitions:
+          show:
+            name: self
+            next:
+              - activated
+          deactivate:
+            conditions:
+              - can_deactivate
+              - can_update
+              - can_do_anything
+            next:
+             - deactivated
+          delete:
+            conditions:
+              - airlock_open
+              - can_delete
+              - can_do_anything
+            next:
+              - deleted
+          update:
+            conditions:
+              - can_update
+              - can_do_anything
+            next:
+              - activated
+          leviathan-link:
+            name: leviathan
+            next:
+              - location: http://alps.io/schema.org/Thing
+          repair-history:
+            conditions:
+              - can_repair
+            next:
+              - location: http://alps.io/schema.org/WarrantyPromise
+      deactivated:
+        doc: The DRD is shut down.
+        transitions:
+          show:
+            name: self
+            next:
+              - deactivated
+          activate:
+            conditions:
+              - can_activate
+              - can_update
+              - can_do_anything
+            next:
+             - activated
+          update:
+            conditions:
+              - can_update
+              - can_do_anything
+            next:
+              - deactivated
+          delete:
+            conditions:
+              - airlock_open
+              - can_delete
+              - can_do_anything
+            next:
+              - deleted
+          leviathan-link:
+            name: leviathan
+            next:
+              - location: http://alps.io/schema.org/Thing
+      deleted:
+        doc: The DRD is now free-floating in space.
+        location: exit
+      error:
+        doc: An error has occured.
+        location: http://alps.io/schema.org/Error
 
-# The protocol descriptors section defines the protocol affordances associated with the 
-# application affordances. This decouples protocol specific information from the 
-# semantic description of a resource and its affordances.
-protocols:
-  http:
-    list:
-      uri: drds
-      entry_point: drds # Indicates this endpoint is a resource entry point for the protocol.
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-        - application/xhtml+xml
-      headers:
-        - Content-Type
-        - ETag
-      status_codes:
-        200:
-          description: OK
-          notes:
-            - We have processed your request and returned the data you asked for.
-      slt: &slt1
-        99th_percentile: 100ms
-        std_dev: 25ms
-        requests_per_second: 50 
-    search: 
-      uri: drds
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: OK
-      slt: &slt2
-        99th_percentile: 250ms
-        std_dev: 50ms
-        requests_per_second: 25
-    create:
-      uri: drds
-      method: POST
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        201:
-          description: Created
-        403:
-          description: Permission denied
-      slt: *slt2
-    show:
-      uri: drds/{uuid}
-      method: GET
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: OK
-      slt: *slt1
-    activate:
-      uri: drds/{uuid}/activate
-      method: PUT
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: OK
-      slt: *slt1
-    deactivate:
-      uri: drds/{uuid}/deactivate
-      method: PUT
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: OK
-      slt: *slt1
-    update:
-      uri: drds/{uuid}
-      method: PUT
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: Updated
-      slt: *slt2
-    delete:
-      uri: drds/{uuid}
-      method: DELETE
-      content_types:
-        - application/json
-        - application/hal+json
-      headers:
-      status_codes:
-        200:
-          description: Deleted
-        403:
-          description: Permission denied
-      slt: *slt1
-    leviathan-link: 
-      uri_source: leviathan_url
-      method: GET
-    repair-history:
-      uri_source: repair_history_url
+media_types:
+  - application/json
+  - application/hal+json
+  - application/vnd.hale+json
+  - text/html
 
-# This optional section defines the route mapping for the resource that can be used in 
-# lieu of defining them in a separate file like routes.rb or to scaffold a Sinatra
-# application. It has nothing to do with the resource semantics per se, but is rather
-# a convenience for DRYing out routing in a service.
+http_protocol:
+  list:
+    uri: drds
+    entry_point: drds
+    method: GET
+    headers:
+      - Content-Type
+      - ETag
+    slt: &slt1
+      99th_percentile: 100ms
+      std_dev: 25ms
+      requests_per_second: 50
+  search:
+    uri: drds
+    method: GET
+    headers:
+    slt: &slt2
+      99th_percentile: 250ms
+      std_dev: 50ms
+      requests_per_second: 25
+  create:
+    uri: drds
+    method: POST
+    headers:
+    slt: *slt2
+  show:
+    uri: drds/{uuid}
+    method: GET
+    headers:
+    slt:
+      99th_percentile: 100ms
+      std_dev: 25ms
+      requests_per_second: 50
+  activate:
+    uri: drds/{uuid}/activate
+    method: PUT
+    headers:
+    slt: *slt1
+  deactivate:
+    uri: drds/{uuid}/deactivate
+    method: PUT
+    headers:
+    slt: *slt1
+  update:
+    uri: drds/{uuid}
+    method: PUT
+    headers:
+    slt: *slt2
+  delete:
+    uri: drds/{uuid}
+    method: DELETE
+    headers:
+    slt: *slt1
+  leviathan-link:
+    uri_source: leviathan_url
+  repair-history:
+    uri_source: repair_history_url
+
 routes:
   drds:
     list: &list
       controller: drds_controller
       action: index
     search: *list
-    create: 
+    create:
       controller: drds_controller
       action: create
   drd:
-    show: 
+    show:
       controller: drds_controller
       action: show
-    update: 
+    update:
       controller: drds_controller
       action: update
-    delete: 
+    delete:
       controller: drds_controller
       action: update
