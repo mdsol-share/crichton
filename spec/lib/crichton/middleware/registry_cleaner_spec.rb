@@ -13,9 +13,6 @@ module Crichton
       before(:each) do
         @rack_app = double
         @rack_app.stub(:call)
-      end
-
-      before do
         stub_example_configuration
         register_drds_descriptor
         stub_request(:get, /.*/)
