@@ -47,7 +47,7 @@ Some examples of running rdlint from the root of a project include:
 - `bundle exec rdlint -as` - Validates all descriptor file and outputs "true" / "false". Returns on the first fail.
 
 There are several mutually exclusive options. These include the following:
-- -s takes precedence over -w, the warning option will be ignored if specified together with strict mode (e.g. -sw)
+- -s takes precedence over -w, the warning option will be ignored if specified together with strict mode (for example, -sw)
 - -a with a specified file name will ignore the file name, the "all" option takes precedence
 
 ### Running Lint from Rake
