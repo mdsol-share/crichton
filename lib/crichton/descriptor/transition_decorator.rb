@@ -86,7 +86,8 @@ module Crichton
       # TODO: merge templated_url with url method and refactor serializers
       def templated_url
         @templated_url ||=  begin
-          query = (url_params = semantics.values.select { |s| s.scope? }).any? ? "{?#{url_params.map(&:name).join(',')}}" : ''
+          url_params = templated? ? semantics.values.select { |s| s.scope? } : []
+          query = url_params.any? ? "{?#{url_params.map(&:name).join(',')}}" : ''
           url ? url << query : url
         end
       end
