@@ -7,23 +7,26 @@
         "search": {
             "href": "http://deployment.example.org/drds{?search_term,search_name}",
             "templated": true,
-            "parameters": {
+            "data": {
                 "search_term": {
-                    "type": "text:text"
+                    "type": "text:text",
+                    "scope": "href"
                 },
                 "search_name":{
-                    "type":"text:text"
+                    "type":"text:text",
+                    "scope": "href"
                 }
             }
         },
         "create": {
-            "href": "http://deployment.example.org/drds{?create-drd}",
+            "href": "http://deployment.example.org/drds{?status,old_status,kind,size,location,location_detail,destroyed,name,leviathan_uuid,leviathan_health_points,leviathan_email}",
             "templated": true,
             "method": "POST",
-            "attributes": {
+            "data": {
                 "status": {
                     "type": "text:select",
                     "required": true,
+                    "scope": "href",
                     "options": {
                         "active": "activated",
                         "inactive": "deactivated",
@@ -32,6 +35,7 @@
                 },
                 "old_status": {
                     "type": "text:select",
+                    "scope": "href",
                     "required": true,
                     "options": {
                         "active": "activated",
@@ -41,6 +45,7 @@
                 },
                 "kind": {
                     "type": "text:select",
+                    "scope": "href",
                     "options": [
                         "standard",
                         "sentinel"
@@ -48,6 +53,7 @@
                 },
                 "size": {
                     "type": "text:text",
+                    "scope": "href",
                     "options": [
                         "big",
                         "small"
@@ -55,31 +61,38 @@
                 },
                 "location": {
                     "type": "text:select",
+                    "scope": "href",
                     "location_options.options": {}
                 },
                 "location_detail": {
                     "type": "text:select",
+                    "scope": "href",
                     "location_detail_options.options": {}
                 },
-                "form-destroyed": {
-                    "type": "bool:boolean"
+                "destroyed": {
+                    "type": "bool:boolean",
+                    "scope": "href"
                 },
                 "name": {
                     "type": "text:text",
+                    "scope": "href",
                     "required": true,
                     "maxlength": 50
                 },
                 "leviathan_uuid": {
-                    "type": "text:text"
+                    "type": "text:text",
+                    "scope": "href"
                 },
                 "leviathan_health_points": {
                     "type": "number:number",
+                    "scope": "href",
                     "required": true,
                     "min": 0,
                     "max": 100
                 },
                 "leviathan_email": {
                     "type": "text:email",
+                    "scope": "href",
                     "required": true,
                     "pattern": "^.+@.+$"
                 }
@@ -138,12 +151,13 @@
                         "method": "PUT"
                     },
                     "update": {
-                        "href": "http://deployment.example.org/drds/0{?update-drd}",
+                        "href": "http://deployment.example.org/drds/0{?status,old_status,kind,size,location,location_detail,destroyed}",
                         "templated": true,
                         "method": "PUT",
-                        "attributes": {
+                        "data": {
                             "status": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "required": true,
                                 "options": {
                                     "active": "activated",
@@ -153,6 +167,7 @@
                             },
                             "old_status": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "required": true,
                                 "options": {
                                     "active": "activated",
@@ -162,6 +177,7 @@
                             },
                             "kind": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "options": [
                                     "standard",
                                     "sentinel"
@@ -169,6 +185,7 @@
                             },
                             "size": {
                                 "type": "text:text",
+                                "scope": "href",
                                 "options": [
                                     "big",
                                     "small"
@@ -176,14 +193,17 @@
                             },
                             "location": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "location_options.options": {}
                             },
                             "location_detail": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "location_detail_options.options": {}
                             },
-                            "form-destroyed": {
-                                "type": "bool:boolean"
+                            "destroyed": {
+                                "type": "bool:boolean",
+                                "scope": "href"
                             }
                         }
                     },
@@ -233,12 +253,13 @@
                         "method": "PUT"
                     },
                     "update": {
-                        "href": "http://deployment.example.org/drds/1{?update-drd}",
+                        "href": "http://deployment.example.org/drds/1{?status,old_status,kind,size,location,location_detail,destroyed}",
                         "templated": true,
                         "method": "PUT",
-                        "attributes": {
+                        "data": {
                             "status": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "required": true,
                                 "options": {
                                     "active": "activated",
@@ -248,6 +269,7 @@
                             },
                             "old_status": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "required": true,
                                 "options": {
                                     "active": "activated",
@@ -257,6 +279,7 @@
                             },
                             "kind": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "options": [
                                     "standard",
                                     "sentinel"
@@ -264,6 +287,7 @@
                             },
                             "size": {
                                 "type": "text:text",
+                                "scope": "href",
                                 "options": [
                                     "big",
                                     "small"
@@ -271,14 +295,17 @@
                             },
                             "location": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "location_options.options": {}
                             },
                             "location_detail": {
                                 "type": "text:select",
+                                "scope": "href",
                                 "location_detail_options.options": {}
                             },
-                            "form-destroyed": {
-                                "type": "bool:boolean"
+                            "destroyed": {
+                                "type": "bool:boolean",
+                                "scope": "href"
                             }
                         }
                     },
@@ -287,7 +314,8 @@
                         "method": "DELETE"
                     },
                     "leviathan": {
-                        "href": "http://example.org/leviathan/leviathan_uuid_1"
+                        "href": "http://example.org/leviathan/leviathan_uuid_1",
+                        "method": null
                     },
                     "profile": {
                         "href": "http://alps.example.org/DRDs"
