@@ -139,7 +139,7 @@ idempotent:
     links:
       self: DRDs#update
       help: forms/update
-    parameters:
+    semantics:
       - href: status
         sample: renegade
         field_type: select
@@ -192,7 +192,7 @@ unsafe:
       self: DRDs#create
       help: Forms/create
     href: update
-    parameters:
+    semantics:
       - href: name
         ext: _create_name
       - href: leviathan_uuid

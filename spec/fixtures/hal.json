@@ -5,7 +5,7 @@
             "href": "http://alps.example.org/DRDs"
         },
         "create": {
-            "href": "http://deployment.example.org/drds{?status,old_status,kind,size,location,location_detail,destroyed,name,leviathan_uuid,leviathan_health_points,leviathan_email}",
+            "href": "http://deployment.example.org/drds",
             "templated": true
         },
         "search": {
@@ -46,7 +46,7 @@
                         "href": "http://deployment.example.org/drds/0"
                     },
                     "update": {
-                        "href": "http://deployment.example.org/drds/0{?status,old_status,kind,size,location,location_detail,destroyed}",
+                        "href": "http://deployment.example.org/drds/0",
                         "templated": true
                     },
                     "self": {
@@ -82,7 +82,7 @@
                         "href": "http://deployment.example.org/drds/1"
                     },
                     "update": {
-                        "href": "http://deployment.example.org/drds/1{?status,old_status,kind,size,location,location_detail,destroyed}",
+                        "href": "http://deployment.example.org/drds/1",
                         "templated": true
                     },
                     "leviathan": {
