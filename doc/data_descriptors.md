@@ -41,7 +41,10 @@ however, it is not a requirement: data descriptors can be defined as a child des
 Data descriptors under `parameters` tag of transition element define templated url properties;
 data descriptors under `semantics` tag of transition element define template bodies.
 Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` or/and
-`semantics` and `href` property to reference already defined data descriptors elements in transitions. See examples below.
+`semantics` and `href` property to reference already defined data descriptors elements in transitions.
+It is also possible to group data descriptors under a `data` element, which is an alias for a `semantics` element.
+Thus, you can use `data` and `semantics` elements interchangeably.
+See examples below.
 
 ## Examples
 ### Data descriptors defined under top-level `semantics` element
@@ -50,6 +53,19 @@ with data descriptors.
 
 ```yaml
 semantics:
+  total_count:
+    doc: The total count of DRDs.
+    href: http://alps.io/schema.org/Integer
+    sample: 1
+  items:
+    doc: An array of embedded DRD resources.
+    href: http://alps.io/schema.org/Array
+    embed: multiple-optional
+```
+
+### Data descriptors defined under top-level `data` element
+```yaml
+data:
   total_count:
     doc: The total count of DRDs.
     href: http://alps.io/schema.org/Integer
