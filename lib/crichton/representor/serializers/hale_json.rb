@@ -100,9 +100,6 @@ module Crichton
       end
 
       def get_link_transition(transition)
-        if transition.name == 'leviathan'
-          p = 1
-        end
         link = { href: transition.url }
         link = { href: transition.templated_url, templated: true } if transition.templated?
         method = defined?(transition.interface_method) ? transition.interface_method : 'GET'
