@@ -1,0 +1,315 @@
+{
+    "total_count": 2,
+    "_links": {
+        "self": {
+            "href": "http://deployment.example.org/drds"
+        },
+        "search": {
+            "href": "http://deployment.example.org/drds{?search_term,search_name}",
+            "templated": true,
+            "parameters": {
+                "search_term": {
+                    "type": "text:text"
+                },
+                "search_name":{
+                    "type":"text:text"
+                }
+            }
+        },
+        "create": {
+            "href": "http://deployment.example.org/drds{?create-drd}",
+            "templated": true,
+            "method": "POST",
+            "attributes": {
+                "status": {
+                    "type": "text:select",
+                    "required": true,
+                    "options": {
+                        "active": "activated",
+                        "inactive": "deactivated",
+                        "unknown": "renegade"
+                    }
+                },
+                "old_status": {
+                    "type": "text:select",
+                    "required": true,
+                    "options": {
+                        "active": "activated",
+                        "inactive": "deactivated",
+                        "unknown": "renegade"
+                    }
+                },
+                "kind": {
+                    "type": "text:select",
+                    "options": [
+                        "standard",
+                        "sentinel"
+                    ]
+                },
+                "size": {
+                    "type": "text:text",
+                    "options": [
+                        "big",
+                        "small"
+                    ]
+                },
+                "location": {
+                    "type": "text:select",
+                    "location_options.options": {}
+                },
+                "location_detail": {
+                    "type": "text:select",
+                    "location_detail_options.options": {}
+                },
+                "form-destroyed": {
+                    "type": "bool:boolean"
+                },
+                "name": {
+                    "type": "text:text",
+                    "required": true,
+                    "maxlength": 50
+                },
+                "leviathan_uuid": {
+                    "type": "text:text"
+                },
+                "leviathan_health_points": {
+                    "type": "number:number",
+                    "required": true,
+                    "min": 0,
+                    "max": 100
+                },
+                "leviathan_email": {
+                    "type": "text:email",
+                    "required": true,
+                    "pattern": "^.+@.+$"
+                }
+            }
+        },
+        "profile": {
+            "href": "http://alps.example.org/DRDs"
+        },
+        "type": {
+            "href": "http://alps.example.org/DRDs#drds"
+        },
+        "help": {
+            "href": "http://documentation.example.org/Things/DRDs"
+        },
+        "items": [
+            {
+                "href": "http://deployment.example.org/drds/0",
+                "type": "http://alps.example.org/DRDs#drd"
+            },
+            {
+                "href": "http://deployment.example.org/drds/1",
+                "type": "http://alps.example.org/DRDs#drd"
+            }
+        ]
+    },
+    "_meta": {
+        "location_options": {
+            "_source": "http://crichton.example.com/drd_location_list#items",
+            "_target": "location_detail_id"
+        },
+        "location_detail_options": {
+            "_source": "http://crichton.example.com/drd_location_detail_list#items",
+            "_target": "location_detail_id"
+        }
+    },
+    "_embedded": {
+        "items": [
+            {
+                "uuid": 0,
+                "name": "name_0",
+                "status": "status_0",
+                "old_status": "old_status_0",
+                "kind": "kind_0",
+                "size": "size_0",
+                "leviathan_uuid": "leviathan_uuid_0",
+                "built_at": "built_at_0",
+                "location": "location_0",
+                "location_detail": "location_detail_0",
+                "destroyed": null,
+                "_links": {
+                    "self": {
+                        "href": "http://deployment.example.org/drds/0"
+                    },
+                    "deactivate": {
+                        "href": "http://deployment.example.org/drds/0/deactivate",
+                        "method": "PUT"
+                    },
+                    "update": {
+                        "href": "http://deployment.example.org/drds/0{?update-drd}",
+                        "templated": true,
+                        "method": "PUT",
+                        "attributes": {
+                            "status": {
+                                "type": "text:select",
+                                "required": true,
+                                "options": {
+                                    "active": "activated",
+                                    "inactive": "deactivated",
+                                    "unknown": "renegade"
+                                }
+                            },
+                            "old_status": {
+                                "type": "text:select",
+                                "required": true,
+                                "options": {
+                                    "active": "activated",
+                                    "inactive": "deactivated",
+                                    "unknown": "renegade"
+                                }
+                            },
+                            "kind": {
+                                "type": "text:select",
+                                "options": [
+                                    "standard",
+                                    "sentinel"
+                                ]
+                            },
+                            "size": {
+                                "type": "text:text",
+                                "options": [
+                                    "big",
+                                    "small"
+                                ]
+                            },
+                            "location": {
+                                "type": "text:select",
+                                "location_options.options": {}
+                            },
+                            "location_detail": {
+                                "type": "text:select",
+                                "location_detail_options.options": {}
+                            },
+                            "form-destroyed": {
+                                "type": "bool:boolean"
+                            }
+                        }
+                    },
+                    "delete": {
+                        "href": "http://deployment.example.org/drds/0",
+                        "method": "DELETE"
+                    },
+                    "profile": {
+                        "href": "http://alps.example.org/DRDs"
+                    },
+                    "type": {
+                        "href": "http://alps.example.org/DRDs#drd"
+                    },
+                    "help": {
+                        "href": "http://documentation.example.org/Things/DRDs"
+                    }
+                },
+                "_meta": {
+                    "location_options": {
+                        "_source": "location_options",
+                        "_target": "."
+                    },
+                    "location_detail_options": {
+                        "_source": "http://crichton.example.com/drd_location_detail_list#items",
+                        "_target": "location_detail_id"
+                    }
+                }
+            },
+            {
+                "uuid": 1,
+                "name": "name_1",
+                "status": "status_1",
+                "old_status": "old_status_1",
+                "kind": "kind_1",
+                "size": "size_1",
+                "leviathan_uuid": "leviathan_uuid_1",
+                "built_at": "built_at_1",
+                "location": "location_1",
+                "location_detail": "location_detail_1",
+                "destroyed": null,
+                "_links": {
+                    "self": {
+                        "href": "http://deployment.example.org/drds/1"
+                    },
+                    "deactivate": {
+                        "href": "http://deployment.example.org/drds/1/deactivate",
+                        "method": "PUT"
+                    },
+                    "update": {
+                        "href": "http://deployment.example.org/drds/1{?update-drd}",
+                        "templated": true,
+                        "method": "PUT",
+                        "attributes": {
+                            "status": {
+                                "type": "text:select",
+                                "required": true,
+                                "options": {
+                                    "active": "activated",
+                                    "inactive": "deactivated",
+                                    "unknown": "renegade"
+                                }
+                            },
+                            "old_status": {
+                                "type": "text:select",
+                                "required": true,
+                                "options": {
+                                    "active": "activated",
+                                    "inactive": "deactivated",
+                                    "unknown": "renegade"
+                                }
+                            },
+                            "kind": {
+                                "type": "text:select",
+                                "options": [
+                                    "standard",
+                                    "sentinel"
+                                ]
+                            },
+                            "size": {
+                                "type": "text:text",
+                                "options": [
+                                    "big",
+                                    "small"
+                                ]
+                            },
+                            "location": {
+                                "type": "text:select",
+                                "location_options.options": {}
+                            },
+                            "location_detail": {
+                                "type": "text:select",
+                                "location_detail_options.options": {}
+                            },
+                            "form-destroyed": {
+                                "type": "bool:boolean"
+                            }
+                        }
+                    },
+                    "delete": {
+                        "href": "http://deployment.example.org/drds/1",
+                        "method": "DELETE"
+                    },
+                    "leviathan": {
+                        "href": "http://example.org/leviathan/leviathan_uuid_1"
+                    },
+                    "profile": {
+                        "href": "http://alps.example.org/DRDs"
+                    },
+                    "type": {
+                        "href": "http://alps.example.org/DRDs#drd"
+                    },
+                    "help": {
+                        "href": "http://documentation.example.org/Things/DRDs"
+                    }
+                },
+                "_meta": {
+                    "location_options": {
+                        "_source": "location_options",
+                        "_target": "."
+                    },
+                    "location_detail_options": {
+                        "_source": "http://crichton.example.com/drd_location_detail_list#items",
+                        "_target": "location_detail_id"
+                    }
+                }
+            }
+        ]
+    }
+}

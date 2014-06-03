@@ -67,6 +67,10 @@ module Support
       @drds_hal_json ||= File.open(fixture_path('hal.json'))
     end
 
+    def drds_hale_json
+      @drds_hal_json ||= File.open(fixture_path('naive_hale.json'))
+    end
+
     def drds_microdata_html
       @drds_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_microdata.html')))
     end
