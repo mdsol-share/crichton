@@ -42,8 +42,8 @@ Data descriptors under `parameters` tag of transition element define templated u
 data descriptors under `semantics` tag of transition element define template bodies.
 Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` or/and
 `semantics` and `href` property to reference already defined data descriptors elements in transitions.
-It is also possible to group data descriptors under top-level `data` element. `data` element is alias to `semantics` element.
-It means that you can use `data` and `semantics` elements interchangeably.
+It is also possible to group data descriptors under top-level `data` element, which is an alias to the `semantics` element.
+Thus, you can use `data` and `semantics` elements interchangeably.
 See examples below.
 
 ## Examples
