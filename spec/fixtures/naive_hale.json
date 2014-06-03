@@ -7,20 +7,22 @@
         "search": {
             "href": "http://deployment.example.org/drds{?search_term,search_name}",
             "templated": true,
-            "parameters": {
+            "data": {
                 "search_term": {
-                    "type": "text:text"
+                    "type": "text:text",
+                    "scope": "href"
                 },
                 "search_name":{
-                    "type":"text:text"
+                    "type":"text:text",
+                    "scope": "href"
                 }
             }
         },
         "create": {
-            "href": "http://deployment.example.org/drds{?create-drd}",
+            "href": "http://deployment.example.org/drds",
             "templated": true,
             "method": "POST",
-            "attributes": {
+            "data": {
                 "status": {
                     "type": "text:select",
                     "required": true,
@@ -61,7 +63,7 @@
                     "type": "text:select",
                     "location_detail_options.options": {}
                 },
-                "form-destroyed": {
+                "destroyed": {
                     "type": "bool:boolean"
                 },
                 "name": {
@@ -138,10 +140,10 @@
                         "method": "PUT"
                     },
                     "update": {
-                        "href": "http://deployment.example.org/drds/0{?update-drd}",
+                        "href": "http://deployment.example.org/drds/0",
                         "templated": true,
                         "method": "PUT",
-                        "attributes": {
+                        "data": {
                             "status": {
                                 "type": "text:select",
                                 "required": true,
@@ -182,7 +184,7 @@
                                 "type": "text:select",
                                 "location_detail_options.options": {}
                             },
-                            "form-destroyed": {
+                            "destroyed": {
                                 "type": "bool:boolean"
                             }
                         }
@@ -233,10 +235,10 @@
                         "method": "PUT"
                     },
                     "update": {
-                        "href": "http://deployment.example.org/drds/1{?update-drd}",
+                        "href": "http://deployment.example.org/drds/1",
                         "templated": true,
                         "method": "PUT",
-                        "attributes": {
+                        "data": {
                             "status": {
                                 "type": "text:select",
                                 "required": true,
@@ -277,7 +279,7 @@
                                 "type": "text:select",
                                 "location_detail_options.options": {}
                             },
-                            "form-destroyed": {
+                            "destroyed": {
                                 "type": "bool:boolean"
                             }
                         }
@@ -287,7 +289,8 @@
                         "method": "DELETE"
                     },
                     "leviathan": {
-                        "href": "http://example.org/leviathan/leviathan_uuid_1"
+                        "href": "http://example.org/leviathan/leviathan_uuid_1",
+                        "method": null
                     },
                     "profile": {
                         "href": "http://alps.example.org/DRDs"

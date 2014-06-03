@@ -79,14 +79,15 @@ module Crichton
       def templated?
         semantics.any?
       end
-      
+
       ##
       # The fully-qualified url for the transition, including a templated query, if any, per 
       # {http://tools.ietf.org/html/rfc6570 RFC 6570}.
       # TODO: merge templated_url with url method and refactor serializers
       def templated_url
         @templated_url ||=  begin
-          query = semantics.any? ? "{?#{semantics.values.select{ |sd| sd.scope? }.map(&:name).join(',')}}" : ''
+          url_params = templated? ? semantics.values.select(&:scope?) : []
+          query = url_params.any? ? "{?#{url_params.map(&:name).join(',')}}" : ''
           url ? url << query : url
         end
       end
