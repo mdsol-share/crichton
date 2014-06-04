@@ -1,4 +1,4 @@
-#@ title Resource Descriptors
+#Resource Descriptors
 ## Contents
 - [Overview](#overview)
  - [Descriptors Section](#descriptors-section)
@@ -18,7 +18,7 @@ The `states` section of a _resource_ defines the metadata for a resource's state
 
 NOTE: The `states` section also includes properties to graphically generate the state machine of the resource(s) that are described.
 
-Technically, for any resource there are an infinite number of possible states when one considers that if you change a value of any property it produces a different resource 'state'. However, categorically, there will be a limited set of states associated with a resource. These categories will be associated with different sets of possible transitions that can be exercised on the resource in that state. Thus, when we talk about states in Crichton, we mean the categorical states of the state machine, each state having its own set of available transitions.
+Technically, for any resource there are an infinite number of possible states when one considers that if you change a value of any property it produces a different resource 'state'. However, categorically, there will be a limited set of states associated with a resource. These categories will be associated with different sets of possible transitions that can be exercised on the resource in that state. Thus, when we talk about states in Crichton, we mean the categorical states of the state machine, each state having its own set of available transitions or different permission rules for a given set of transitions.
 
 ### State Properties
 States can have the following properties.
