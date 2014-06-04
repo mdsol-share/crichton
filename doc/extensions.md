@@ -1,31 +1,35 @@
-# @title Data Descriptors extensions
+# @title Data Descriptor Extensions
+
+## Contents
+- [Overview](#overview)
+ - [Data Descriptor Extension Properties](#data-descriptor-extension-properties)
+ - [List of Supported Input Types and Validators](#list-of-supported-input-types-and-validators)
+ - [Code Examples](#code-examples)
+ 	- [Defining data descriptor extensions](#defining-data-descriptor-extensions)
+ 	- [Using data descriptor extensions and extending data descriptors as part of referenced descriptor](#using-data-descriptor-extensions-and-extending-data-descriptors-as-part-of-referenced-descriptor)
+ - [External References](#external-references)
+
 # Overview
-Extensions can be used to extend data descriptor elements with specific information: field type, 
-options for select field types and validators. Extensions are grouped under top-level `extensions` element.
-Data descriptor extensions section is OPTIONAL and can be omitted. Extensions still can be defined as part 
-of referenced data descriptor element. See example below.
+You can use extensions to augment data descriptor elements with specific information such as field types and their options, as well as validators.
 
-### Properties
- * `options` - Provides a list of possible values for a select list or similar use. Below this key, the following
-can be used: (all are optional - but skipping all is pointless)
-    * `id` - Can be used to reference a particular list and include its values in another values entry.
-    * `href` - Include a referenced values entry.
-    * `list` - Contains an array of values.
-    * `hash` - Contains a hash of key-value pairs.
-    * `external` - Retrieves values from an external source.
-    * `target` - specifies the name of the attribute inside the element that the value will be taken from
-    * `prompt` - specifies the attribute the text of the item will be taken from are used to specify the fields
-    that are to be used to assemble the list or hash. In case of a list, the target and prompt are identical.
+Extensions are grouped under the top-level `extensions` element. The data descriptor extensions section is OPTIONAL, so you can omit it in the API Descriptor Document. However, you can still define extensions as part of referenced data descriptor elements. See the [Code Examples](#code-examples) below.
 
-    Only one of `list`, `hash` or `external` may be present, this applies also for included href entries.
-In the case of `external`, the `source` element may contain a link to external resource or method to call on
-a target object. If `source` is a link to external resource, `prompt` and `target` elements must be present.
+## Data Descriptor Extension Properties
+You can ssign the following properties to extensions. 
+NOTE: You can only have one of the `list`, `hash`, or `external` properties. This applies also for `href` entries that you include. In the case of `external`, the `source` element can contain a link to an external resource or method to call on a target object. If `source` is a link to an external resource, you must include `prompt` and `target` elements.
+- `options` - Provides a list of possible values for a select list or similar use. Below this key, you can use the following. All are OPTIONAL, but it is best practice to include as many as apply.
+	- `id` - Can be used to reference a particular list and to include its values in another value's entry.
+	- `href` - Includes a referenced value's entry.
+	- `list` - Contains an array of values.
+	- `hash` - Contains a hash of key-value pairs.
+	- `external` - Retrieves values from an external source.
+	- `target` - Specifies the name of the attribute inside the element that the value will be taken from.
+	- `prompt` - Specifies the attribute of the text of the item will be taken from are used to specify the fields that are to be used to assemble the list or hash. In case of a list, the target and prompt are identical.
+	- `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the [HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
+	- `validators` - OPTIONAL. Hash of validator objects associated with a field.
 
-* `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
-[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
-* `validators` - Hash of validator objects associated with a field: OPTIONAL.
-
-The following table defines list of supported input types and validators which can be applied to it:
+## List of Supported Input Types and Validators
+The following table lists the supported input types and the validators that you can apply to them.
 
 | Input types / attributes | required | pattern | maxlength | min/max |
 |:----------------:|:----------:|:---------:|:-----------:|:---------:|
@@ -45,8 +49,10 @@ The following table defines list of supported input types and validators which c
 | boolean(*)     | x        |         |           |         |
 | select         | x        |         |           |         |
 
-(*) `boolean` is a generic input type used instead of `checkbox`.
- HTML5 `checkbox` type doesn't make sense in media-types other than HTML and therefore replaced with generic `boolean` type.
+(*) `boolean` is a generic input type to use instead of `checkbox`. The HTML5 `checkbox` type doesn't make sense in media-types other than HTML. Therefore, you can replace it with a generic `boolean` type.
+
+## Code Examples
+The following two examples show the YAML for extensions:
 
 ### Defining data descriptor extensions
 ```yaml
@@ -109,6 +115,6 @@ idempotent:
       - href: name
         ext: _update_name
 ```
-
-[Back to API Descriptor Document](descriptors_document.md)
-[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+## External References
+- [Back to API Descriptor Document](descriptors_document.md)
+- [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
