@@ -12,40 +12,18 @@ Crichton supports hypermedia APIs. An _API Descriptor Document_ is a declarative
 
 ## Document Descriptor Underlying Concepts
 An _API Descriptor Document_ has a number of key concepts underlying its design and properties. These concepts include the following:
-- A major concept behind the design of an API Descriptor Document is the [ALPS specification](http://alps.io/spec/index.html). This specification defines a protocol and media-type independent resource semantic profile that is machine-readable.
+- One of the foundations of the structure and elements an API Descriptor Document is built on is the [ALPS specification](http://alps.io/spec/index.html). This specification defines a protocol and media-type independent resource semantic profile that is machine-readable.
 - In principle, an _API Descriptor Document_ does not define a schema or actions. Instead it defines the semantics or "vocabulary" that is associated with the referenced resource's data and state transitions. Therefore, it can define terms or it can reference external semantic documents, depending on requirements. Further, it establishes the semantics of the affordances, the links and forms, that are associated with a resource's state transitions. Again, it may define these or reference an external semantic document.
-- The Descriptor Document assumes that it can reference an external, human-readable semantic documentation of any properties or affordances such as the links and forms that the Descriptor Document exposes. You can use an _API Descriptor Document_ to generate some of human-readable information; however, the Document presupposes external repositories for the URIs that it references.
+- The Descriptor Document assumes that it can reference an external, human-readable semantic documentation of any properties or affordances such as the links and forms that the Descriptor Document exposes. You can use an _API Descriptor Document_ to generate some of human-readable information; however, the Document presupposes external repositories for any URIs that it references.
 - The Descriptor Document separates the definition of protocol and media-type information from the semantic definition of the resource's semantic data and transitions as a RESTful design tool.
 - The Descriptor Document facilitates API design in a contract-first fashion. By first focusing on the semantic definitions of a resource and its states, you can design an API and generate a human-readable contract directly from the _API Descriptor Document_.
+
+For more information, see [Design Goals](design_goals).md).
 
 The Crichton library parses _Resource Descriptors_ to generate service responses and to generate ALPS profiles. These profiles can further be included in responses that ALPS-aware Hypermedia agents can consume for different media-types.
 
 This document uses key words that follow [RFC2119](http://tools.ietf.org/html/rfc2119) standards. These key words include: "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and 
 "OPTIONAL".
-
-## Purposes of an API Descriptor Document
-An _API Descriptor Document_ serves multiple purposes. These purposes include defining the following items:
-
-- Protocol and media-type independent semantics of resources.
- - Delineates semantic data (properties and optionally embedded resources), semantic links, and transition controls 
-  (links and forms).
- - Facilitates generating machine-to-machine readable ALPS profiles in XML and JSON.
- - Facilitates generating service responses for [supported Hypermedia-aware media-types](doc/media_type.md).
-- States and associated state transitions to facilitate generating responses that include complete state 
-information.
- - References semantic definitions of transitions.
- - Supports business logic limiting the available transitions in a response.
- - Supports diagramming state machines and registering resources and their relationships as a state machine graph.
-- Protocol-specific idioms associated with a resource.
- - These can include idioms such as HTTP methods, headers, and status codes. 
- - Facilitates generating form controls that are protocol-dependent.
-- Documentation-related descriptions and references for generating human-readable documentation.
- - Includes sample data values for generating sample representations in supported media-types.
- - Includes protocol-specific documentation.
-- Routing metadata to generate routes and scaffold models and controllers.
-- Testing metadata to facilitate testing service or external resource dependencies:
- - Factory generation of mock resources for testing.
- - Services self-testing resources.
 
 ## API Descriptor Document Properties and Examples
 _API Descriptor Documents_ are built by specifying a set of metadata and properties. Though the document sections can be maintained in any order, the following steps reflect a workflow associated with the progressive design of a Hypermedia API. 
@@ -93,4 +71,4 @@ Click the following links to view documents that detail the properties of each s
 - [Protocol Descriptors](protocol_descriptors.md)
 - [Routes Descriptors](routes_descriptors.md)
 - [ALPS specification](http://alps.io/spec/index.html)
-- [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
+- [Example API Descriptor Document][]
