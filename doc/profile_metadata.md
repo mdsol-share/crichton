@@ -1,4 +1,4 @@
-# @title Profile Metadata
+# Profile Metadata
 # Overview
 The top-level of an _API Descriptor Document_ contains metadata about the resource profile itself.
 
@@ -12,7 +12,7 @@ Profile medtadata properties include the following:
   - `help` - Used in accordance with [RFC 5988 - Web Linking](http://tools.ietf.org/html/rfc5988).
 
     Note: When you include `profile` and/or `help` links as relative links, they are generated in ALPS profiles as
-fully qualified URIs using `the alps_base_uri` and/or `documentation_base_uri` configuration variables. See the 
+fully qualified URIs using the `alps_base_uri` and/or `documentation_base_uri` configuration variables. See the 
 [Crichton Configuration](crichton_configuration.md) for more information. Any other link that you include must specify a fully qualified URI.
 
 ## Code Example
