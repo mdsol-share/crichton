@@ -113,18 +113,18 @@ module Crichton
       end
       
       def get_form_transition(transition)
-          form_elements = {}
-          semantics = defined?(transition.semantics) ? transition.semantics : {}
-          semantics.values.each do |semantic|
-            elements = if semantic.semantics.any?
-              semantic.semantics.values.map { |fsemantic| get_control(transition.name, fsemantic) }.reduce(&:deep_merge)
-            else
-              get_control(transition.name, semantic)
-            end
-            form_elements.deep_merge!(elements)
+        form_elements = {}
+        semantics = defined?(transition.semantics) ? transition.semantics : {}
+        semantics.values.each do |semantic|
+          elements = if semantic.semantics.any?
+            semantic.semantics.values.map { |fsemantic| get_control(transition.name, fsemantic) }.reduce(&:deep_merge)
+          else
+            get_control(transition.name, semantic)
           end
-          link = get_link_transition(transition)
-          link.deep_merge(form_elements)
+          form_elements.deep_merge!(elements)
+        end
+        link = get_link_transition(transition)
+        link.deep_merge(form_elements)
       end
       
       def get_semantic_data(options)
