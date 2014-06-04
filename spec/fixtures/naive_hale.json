@@ -289,8 +289,7 @@
                         "method": "DELETE"
                     },
                     "leviathan": {
-                        "href": "http://example.org/leviathan/leviathan_uuid_1",
-                        "method": null
+                        "href": "http://example.org/leviathan/leviathan_uuid_1"
                     },
                     "profile": {
                         "href": "http://alps.example.org/DRDs"

@@ -20,9 +20,16 @@ module Crichton
         end
       end
   
-      describe '#method' do
+      describe '#interface_method' do
+        context 'when uri_source is requested' do
+          it 'returns GET as uniform interface method' do
+            @protocol_transition = 'leviathan-link'
+            expect(descriptor.interface_method).to eq('GET')
+          end
+        end
+
         it 'returns the uniform interface method' do
-          expect(descriptor.method).to eq(http_descriptor['method'])
+          expect(descriptor.interface_method).to eq(http_descriptor['method'])
         end
       end
   

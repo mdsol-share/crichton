@@ -43,7 +43,7 @@ module Crichton
       ##
       # Returns the uniform interface method associated with the protocol descriptor.
       def interface_method
-        protocol_descriptor && protocol_descriptor.method
+        protocol_descriptor && protocol_descriptor.interface_method
       end
       
       ##

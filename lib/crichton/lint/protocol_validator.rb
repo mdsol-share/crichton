@@ -63,9 +63,9 @@ module Crichton
       # Assorted checks on various properties of a protocol transition
       def protocol_transition_prop_check(transition, options)
         #47, 48, required properties uri and method
-        %w(uri method).each do |property|
-          add_error('protocols.property_missing', options.merge(property: property)) unless transition.send(property)
-        end
+        add_error('protocols.property_missing', options.merge(property: 'uri')) unless transition.uri
+
+        add_error('protocols.property_missing', options.merge(property: 'method')) unless transition.interface_method
 
         #53, slt warnings, warn if not existing, and check if it has valid child properties
         if transition.slt
