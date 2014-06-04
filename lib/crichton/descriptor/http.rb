@@ -44,7 +44,7 @@ module Crichton
         end
       end 
 
-      def method
+      def interface_method
         uri_source ? 'GET' : descriptor_document['method']
       end
 
