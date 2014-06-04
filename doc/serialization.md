@@ -1,5 +1,5 @@
-# @title Serialization
-# Overview
+# Serialization
+## Overview
 To use the serialization functionality, you need to call the serializer. If you are working in Rails, the serializer is automatically registered with the Rails MIME-type mechanism.
 You can also call the serializer manually by calling `object.to_media_type(:xhtml, {})`. 
 In this call the first argument is the media type. Currently, `:xhtml` and `:html` are registered, but other media types are expected). The second argument is the options hash.
