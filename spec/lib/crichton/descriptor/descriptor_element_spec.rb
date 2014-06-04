@@ -6,9 +6,9 @@ module Crichton
     describe DescriptorElement do
       let(:registry) do
         registry = double('Registry')
-        registry.stub('raw_descriptors').and_return(raw_descriptors)
-        registry.stub('options_registry').and_return(options)
-        registry.stub('external_profile_dereference').and_return(external_dereference)
+        allow(registry).to receive('raw_descriptors').and_return(raw_descriptors)
+        allow(registry).to receive('options_registry').and_return(options)
+        allow(registry).to receive('external_profile_dereference').and_return(external_dereference)
         registry
       end
 

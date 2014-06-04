@@ -20,13 +20,15 @@ NOTE: The `states` section also includes properties to graphically generate the 
 
 Technically, for any resource there are an infinite number of possible states when one considers that if you change a value of any property it produces a different resource 'state'. However, categorically, there will be a limited set of states associated with a resource. These categories will be associated with different sets of possible transitions that can be exercised on the resource in that state. Thus, when we talk about states in Crichton, we mean the categorical states of the state machine, each state having its own set of available transitions or different permission rules for a given set of transitions.
 
+If a resource has only one state, the `states` section of a _resource_ must define `default` as the `state_name` property value. Alternately, a custom name can be used when the associated object defines a `state` instance method or attribute accessor that returns the custom name.
+
 ### State Properties
 States can have the following properties.
 - `states` - Defines the states associated with each resource. Specified as the keys of this property. The 
 actual state names are the keys under the resource.
 	- \[state name\] The name of the state.
 	- `doc` - Documents a particular state in human-readable form.
-	- `transitions` - The transtions that are available for the specified state. These transitions can represent link- or form-based transitions.
+	- `transitions` - The transitions that are available for the specified state. These transitions can represent link- or form-based transitions.
 		- `name` - Overrides the name to be set on the affordance in a response. Otherwise, Crichton uses the ID - which is the YAML key - for the transition. You must define 'name:self' for at least one transition for the particular state.
 		- `location` - The location of the state. Valid values include: `entry`, `exit`, or a URI to an external ALPS type that is associated with the transition. Location here is from an application standpoint versus the resource state standpoint. 
 		- `conditions` - An array of conditions that are applied as a Boolean __OR__. This must exist for the transition to be included. When you pass an option that includes a list of satisfied conditions when generating responses, Crichton can determine which state's transitions to provide in a response. These condition strings are defined in your own application's authorization logic and are passed to Crichton. The conditions in the [Code Example](#code-example) are examples only.
@@ -35,6 +37,7 @@ actual state names are the keys under the resource.
 ## Code Example
 The following example shows the Descriptors and State sections.
 
+### Resource with multiple states
 ```yaml
 resources:
   drds:
@@ -81,6 +84,29 @@ resources:
             next:
               - activated
               - error 
+```
+
+### Resource with one ("default") state
+```yaml
+resources:
+ drd:
+    doc: Diagnostic Repair Drones or DRDs are small robots that move around Leviathans. They are built by a Leviathan as it grows.
+    links:
+      self: DRDs#drd
+    descriptors:
+      - href: uuid
+      - href: name
+    states:
+      default:
+        show:
+          name: self
+          next:
+            - default
+        update:
+            conditions:
+              - can_update
+            next:
+              - default
 ```
 
 ## Related Topics

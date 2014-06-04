@@ -273,7 +273,11 @@ module Crichton
           end
         end
       end
-      
+
+      def state
+        :default
+      end
+
       def crichton_state
         @crichton_state ||= begin
           state_method = self.class.send(:crichton_state_method, self)

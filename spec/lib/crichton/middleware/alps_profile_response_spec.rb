@@ -70,12 +70,12 @@ module Crichton
 
       before do
         Crichton.clear_registry
-        Time.stub!(:new).and_return(Time.parse('Thu, 23 Jan 2014 18:00:00 GMT') )
+        allow(Time).to receive(:new).and_return(Time.parse('Thu, 23 Jan 2014 18:00:00 GMT') )
         stub_example_configuration
         stub_configured_profiles
         stub_alps_requests
         registry.register_single(resource_descriptor_hash)
-        Crichton.stub(:raw_profile_registry).and_return(registry.raw_profile_registry)
+        allow(Crichton).to receive(:raw_profile_registry).and_return(registry.raw_profile_registry)
       end
 
       after do
@@ -138,7 +138,7 @@ module Crichton
               end
 
               it 'returns descriptors as xml elements' do
-                expect(@response_xml.xpath('/alps/descriptor')).to have(2).items
+                expect(@response_xml.xpath('/alps/descriptor').size).to eq(2)
               end
 
               %w(1 2).each do |index|
@@ -314,7 +314,7 @@ module Crichton
           it 'invokes the parent rack app from the middleware' do
             @media_type = 'text/html'
             @uri = "#{base_uri}/DRDs/more"
-            rack_app.should_receive(:call).with(env)
+            expect(rack_app).to receive(:call).with(env)
             alps_middleware.call(env)
           end
         end

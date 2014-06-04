@@ -12,7 +12,7 @@ module Crichton
         let(:descriptor) { Resource.new(drds_descriptor) }
   
         it 'returns a subclass of Profile' do
-          descriptor.should be_a(Profile)
+          expect(descriptor).to be_a(Profile)
         end
         
         it_behaves_like 'a nested descriptor'
@@ -50,7 +50,7 @@ module Crichton
       describe '#inspect' do
         it 'includes the @key ivar' do
           resource_descriptor.to_key
-          resource_descriptor.inspect.should =~ /.*@key=.*/
+          expect(resource_descriptor.inspect).to match(/.*@key=.*/)
         end
       end
       

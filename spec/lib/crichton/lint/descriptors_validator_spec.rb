@@ -14,7 +14,7 @@ module Crichton
       end
 
       before do
-        Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+        allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).and_return('<alps></alps>')
       end
 
       describe '#validate' do
@@ -54,7 +54,7 @@ module Crichton
           @descriptor = normalized_drds_descriptor.tap do |document|
             document['descriptors']['drds'].except!('type')
           end
-          Crichton::Descriptor::Dealiaser.stub(:dealias).and_return(@descriptor)
+          allow(Crichton::Descriptor::Dealiaser).to receive(:dealias).and_return(@descriptor)
           @errors = expected_output(:error, 'descriptors.property_missing', resource: 'drds', prop: 'type',
             filename: filename, section: :descriptors, sub_header: :error)
         end

@@ -26,8 +26,9 @@ The YAML keys, which appear directly under the `semantics`/`parameters` property
       If you do not specify a value for `embed`, the default value is `single`. The values `multiple` and `multiple-link` indicate the item should be embedded as an array. The values that contain `optional` indicate that the client can request the way the item is to be embedded. They default to `:link` for if they end with `-link`, to `:embed` otherwise. The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the values - allows setting the mode of embedding.
 
 ## Defining data descriptors
+
 You can define all data descriptors grouped under the top-level `semantics` element; however, it is not a requirement. You can define data descriptors as child descriptors of transition elements. Data descriptors under the `parameters` tag of the transition element define templated url properties. Data descriptors under the `semantics` tag of the transition element define template bodies.
-Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. See the examples below.
+Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. Thus, you can use `data` and `semantics` elements interchangeably. See the examples below.
 
 ## Data Descriptor Examples
 ### Data descriptors defined under top-level `semantics` element
@@ -36,6 +37,19 @@ with data descriptors.
 
 ```yaml
 semantics:
+  total_count:
+    doc: The total count of DRDs.
+    href: http://alps.io/schema.org/Integer
+    sample: 1
+  items:
+    doc: An array of embedded DRD resources.
+    href: http://alps.io/schema.org/Array
+    embed: multiple-optional
+```
+
+### Data descriptors defined under top-level `data` element
+```yaml
+data:
   total_count:
     doc: The total count of DRDs.
     href: http://alps.io/schema.org/Integer

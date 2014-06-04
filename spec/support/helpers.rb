@@ -67,6 +67,10 @@ module Support
       @drds_hal_json ||= File.open(fixture_path('hal.json'))
     end
 
+    def drds_hale_json
+      @drds_hal_json ||= File.open(fixture_path('naive_hale.json'))
+    end
+
     def drds_microdata_html
       @drds_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_microdata.html')))
     end
@@ -98,7 +102,7 @@ module Support
     end
 
     def stub_example_configuration
-      Crichton.stub(:config).and_return(Crichton::Configuration.new(example_environment_config))
+      allow(Crichton).to receive(:config).and_return(Crichton::Configuration.new(example_environment_config))
     end
 
     def resource_descriptor_fixtures

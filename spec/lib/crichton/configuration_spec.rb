@@ -7,14 +7,14 @@ module Crichton
 
     describe 'crichton_proxy_base_uri' do
       it "returns the crichton_proxy  base URI" do
-        configuration.crichton_proxy_base_uri.should == 'http://example.org/crichton'
+        expect(configuration.crichton_proxy_base_uri).to eq('http://example.org/crichton')
       end
     end
 
     %w(alps deployment discovery documentation).each do |attribute|
       describe "\##{attribute}_base_uri" do
         it "returns the #{attribute} base URI" do
-          configuration.send("#{attribute}_base_uri").should == "http://#{attribute}.example.org"
+          expect(configuration.send("#{attribute}_base_uri")).to eq("http://#{attribute}.example.org")
         end
       end
     end
@@ -22,11 +22,11 @@ module Crichton
     %w(js css).each do |attribute|
       describe "\##{attribute}_uri" do
         it "returns the #{attribute}_uri as Array" do
-          configuration.send("#{attribute}_uri").should be_a(Array)
+          expect(configuration.send("#{attribute}_uri")).to be_a(Array)
         end
 
         it "returns the #{attribute}_uri array with the expected content" do
-          configuration.send("#{attribute}_uri").should =~ ["http://example.org/resources/#{attribute}.#{attribute}"]
+          expect(configuration.send("#{attribute}_uri")).to match_array(["http://example.org/resources/#{attribute}.#{attribute}"])
         end
       end
     end

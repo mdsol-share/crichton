@@ -7,7 +7,7 @@ module Crichton
     # Manages dealiasing human-friendly tags in resource descriptor documents
     # to their base ALPS-related tags underlying the resource descriptor functionality.
     class Dealiaser
-      KEYWORDS = TYPES + [TAG, PARAMETERS, RESOURCES]
+      KEYWORDS = TYPES + [DATA, TAG, PARAMETERS, RESOURCES]
 
       ##
       # Recursively dealiases human-friendly tags.

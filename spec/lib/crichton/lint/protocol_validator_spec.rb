@@ -12,7 +12,7 @@ module Crichton
       end
 
       before do
-        Crichton::ExternalDocumentStore.any_instance.stub(:get).and_return('<alps></alps>')
+        allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).and_return('<alps></alps>')
       end
 
       describe '#validate' do

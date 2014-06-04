@@ -7,6 +7,7 @@ module Crichton
     EXTENSIONS = 'extensions'
     RESOURCES = 'resources'
     SEMANTIC = 'semantic'
+    DATA = 'data'
     TYPES = %w(safe unsafe idempotent semantics)
 
     ID = 'id'

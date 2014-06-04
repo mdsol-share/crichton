@@ -6,17 +6,17 @@ module Crichton
     describe '.initialize' do
       context 'with a directory of resource descriptors specified' do
         before do
-          Crichton.stub(:descriptor_location).and_return(resource_descriptor_fixtures)
+          allow(Crichton).to receive(:descriptor_location).and_return(resource_descriptor_fixtures)
         end
 
         it 'loads resource descriptors from a resource descriptor directory if configured' do
-          expect(Registry.new.descriptor_registry).to have(3).items
+          expect(Registry.new.descriptor_registry.size).to eq(3)
         end
       end
 
       context 'without a directory of resource descriptors specified' do
         before do
-          Crichton.stub(:descriptor_filenames).and_return([drds_non_existent_filename])
+          allow(Crichton).to receive(:descriptor_filenames).and_return([drds_non_existent_filename])
         end
 
         it 'raises an error' do
@@ -41,7 +41,7 @@ module Crichton
       it 'loads all descriptors from a resource descriptor' do
         registry = Registry.new(automatic_load: false)
         registry.register_single(drds_descriptor)
-        expect(registry.raw_descriptor_registry.keys).to have(2).items
+        expect(registry.raw_descriptor_registry.keys.size).to eq(2)
       end
     end
 
@@ -69,7 +69,7 @@ module Crichton
       let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
-        registry.resources_registry.should be_empty
+        expect(registry.resources_registry).to be_empty
       end
 
       it 'returns a hash of registered resource descriptors keyed by document id' do
@@ -85,7 +85,7 @@ module Crichton
       let(:registry) { Registry.new(automatic_load: false) }
 
       it 'returns an empty hash hash if no resource descriptors are registered' do
-        registry.raw_descriptor_registry.should be_empty
+        expect(registry.raw_descriptor_registry).to be_empty
       end
 
       it 'returns a hash of registered descriptor instances keyed by descriptor id' do
@@ -129,7 +129,7 @@ module Crichton
       end
 
       it 'raises an error when the resource descriptor is not a string or hash' do
-        resource_descriptor = mock('invalid_descriptor')
+        resource_descriptor = double('invalid_descriptor')
         expect { registry.register_single(resource_descriptor) }.to raise_error(ArgumentError)
       end
 
@@ -138,7 +138,7 @@ module Crichton
           resources_registry = registry.register_single(@descriptor)
 
           resources_registry.each do |id, resource|
-            registry.resources_registry[id].should == resource
+            expect(registry.resources_registry[id]).to eq(resource)
           end
         end
       end
@@ -189,7 +189,7 @@ module Crichton
       end
 
       it 'returns empty hash when deserialized hash does not have descriptors' do
-        registry.stub('get_external_deserialized_profile').and_return({ 'doc' => 'Some doc' })
+        allow(registry).to receive('get_external_deserialized_profile').and_return({ 'doc' => 'Some doc' })
         expect(registry.external_profile_dereference(uri)).to be_empty
       end
 

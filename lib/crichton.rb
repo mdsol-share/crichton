@@ -1,4 +1,3 @@
-
 module Crichton
   ##
   # Logger
@@ -237,4 +236,5 @@ if defined?(Rails)
   require 'crichton/rake_lint'
   require 'core_ext/action_controller/responder'
   require 'crichton/rails/generators/resource_description_generator'
+  require 'crichton/railtie'
 end
