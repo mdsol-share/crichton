@@ -94,7 +94,7 @@ In the Crichton project, use the file `spec/lib/resource_descriptors/drds_descri
 The file uses a path to a resource descriptor file that is specific to the Crichton project, but you can update the
 following line for your project:
 
-    #   let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }
+    let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }
 
 The RSpec specification for Crichton employs four simple tests:
 
