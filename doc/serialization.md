@@ -9,7 +9,7 @@ In this call the first argument is the media type. Currently, `:xhtml` and `:htm
 The options hash can contain the following values:
 
 - `conditions: [:condition]`
-  Conditions are defined in the States section of the descriptor document. See the [Resource Descriptors][resource_descriptors.md] document for more information about conditions.
+  Conditions are defined in the States section of the descriptor document. See the [Resource Descriptors](resource_descriptors.md) document for more information about conditions.
 - `semantics: :styled_microdata`
   The semantics option indicates the semantic mark-up type to apply to the resource. Valid options include: `:microdata` and `:styled_microdata`. 
   If you not include semantics, Crichton defaults to `:microdata`.
