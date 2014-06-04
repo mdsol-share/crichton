@@ -11,9 +11,6 @@ module Crichton
       # @!macro array_reader
       descriptor_reader :headers
 
-      # @!macro string_reader
-      descriptor_reader :method
-
       # @!macro hash_reader
       descriptor_reader :slt
 
@@ -46,7 +43,11 @@ module Crichton
               "Please ensure that your descriptor either has an uri attribute."
         end
       end 
-      
+
+      def method
+        uri_source ? 'GET' : descriptor_document['method']
+      end
+
     private
       def generate_populated_url(target)
         template = Addressable::Template.new(File.join(config.deployment_base_uri, uri))
