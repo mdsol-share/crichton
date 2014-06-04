@@ -119,17 +119,15 @@ module Crichton
       end
 
       def get_form_elements(transition)
-        form_elements = {}
         semantics = defined?(transition.semantics) ? transition.semantics : {}
-        semantics.values.each do |semantic|
+        semantics.values.each_with_object({}) do |semantic, h|
           elements = if semantic.semantics.any?
             semantic.semantics.values.map { |fsemantic| get_control(transition.name, fsemantic) }.reduce(&:deep_merge)
           else
             get_control(transition.name, semantic)
           end
-          form_elements.deep_merge!(elements)
+          h.deep_merge!(elements)
         end
-        form_elements
       end
 
       def get_semantic_data(options)
