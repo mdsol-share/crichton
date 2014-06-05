@@ -1,4 +1,6 @@
 require 'crichton/representor/serializers/xhtml'
+require 'crichton/representor/serializers/hale_json'
+require 'crichton/representor/serializers/hal_json'
 
 module Crichton
   module Representor
