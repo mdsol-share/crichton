@@ -14,14 +14,14 @@ module Crichton
     describe '#resource_home_response_expiry' do
       context 'when configured' do
         it 'returns the resource home response expiry' do
-          expect(configuration.resource_home_response_expiry).to eq({'expiry' => 40})
+          expect(configuration.resource_home_response_expiry).to eq({ 'expiry' => 40 })
         end
       end
 
       context 'when not configured' do
         it 'returns default resource home response expiry' do
           @config = example_environment_config.except('resource_home_response_expiry')
-          expect(configuration.resource_home_response_expiry).to eq({'expiry' => 20})
+          expect(configuration.resource_home_response_expiry).to eq({ 'expiry' => 20 })
         end
       end
     end
