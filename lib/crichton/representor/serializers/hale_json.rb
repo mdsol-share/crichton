@@ -8,7 +8,9 @@ module Crichton
     # Manages the serialization of a Crichton::Representor to an application/vnd.hale+json media-type.
     class HaleJsonSerializer < Serializer
       media_types hale_json: %w(application/vnd.hale+json)
-      
+
+      DATA = 'data'
+
       #maps descriptor datatypes to simple datatypes
       SEMANTIC_TYPES = {
         select: "text", #No way in Crichton to distinguish [Int] and [String]
@@ -51,6 +53,10 @@ module Crichton
         as_media_type(options).to_json
       end
 
+      def response_headers
+        super.merge(@object.response_headers)
+      end
+
       private
 
       def deep_merge(x, y)
@@ -62,8 +68,8 @@ module Crichton
       end
       
       
-      def hale_links(transition_name, transition_semantic, attrib_or_params, data)
-        { _links: { transition_name => { attrib_or_params => { transition_semantic.name => data } } } }
+      def hale_links(transition_name, transition_semantic, data)
+        { _links: { transition_name => { DATA => { transition_semantic.name => data } } } }
       end
       
       def hale_meta_options(transition_semantic)
@@ -76,14 +82,15 @@ module Crichton
         options = transition_semantic.options
         hale_opts = { "#{transition_semantic.name}_options.options" => {} } if options.external?
         hale_opts = { :options => options.each { |k, v| {k => v} } } if options.enumerable?
-        ->(name, ap) { hale_links(name, transition_semantic, ap, hale_opts || {} ) }
+        ->(name) { hale_links(name, transition_semantic, hale_opts || {} ) }
       end
 
-      def get_control(transition_name, transition_semantic, attrib_or_params)
+      def get_control(transition_name, transition_semantic)
         type_data = semantic_map(transition_semantic.field_type)
-        validators = type_data.merge(handle_validator(transition_semantic.validators))
-        halelet = hale_links(transition_name, transition_semantic, attrib_or_params, validators)
-        halelet_opt = get_options(transition_semantic).(transition_name, attrib_or_params)
+        scope_url = type_data.merge({ 'scope' => 'href' }) if transition_semantic.scope?
+        validators = (scope_url || type_data).merge(handle_validator(transition_semantic.validators))
+        halelet = hale_links(transition_name, transition_semantic, validators)
+        halelet_opt = get_options(transition_semantic).(transition_name)
         hale_meta = transition_semantic.options.external? ? hale_meta_options(transition_semantic) : {}
         halelet.deep_merge(halelet_opt).deep_merge(hale_meta)
       end
@@ -106,20 +113,23 @@ module Crichton
       end
       
       def get_form_transition(transition)
-          form_elements = {}
-          semantics = defined?(transition.semantics) ? transition.semantics : {}
-          semantics.values.each do |semantic|
-            elements = if semantic.semantics.any?
-              semantic.semantics.values.map { |fsemantic| get_control(transition.name, fsemantic, "attributes") }.reduce(&:deep_merge) 
-            else
-              get_control(transition.name, semantic, "parameters")
-            end
-            form_elements.deep_merge!(elements)
-          end
-          link = get_link_transition(transition)
-          link.deep_merge(form_elements)
+        form_elements = get_form_elements(transition)
+        link = get_link_transition(transition)
+        link.deep_merge(form_elements)
       end
-      
+
+      def get_form_elements(transition)
+        semantics = defined?(transition.semantics) ? transition.semantics : {}
+        semantics.values.each_with_object({}) do |semantic, h|
+          elements = if semantic.semantics.any?
+            semantic.semantics.values.map { |fsemantic| get_control(transition.name, fsemantic) }.reduce(&:deep_merge)
+          else
+            get_control(transition.name, semantic)
+          end
+          h.deep_merge!(elements)
+        end
+      end
+
       def get_semantic_data(options)
         semantic_data = @object.each_data_semantic(options)
         each_pair = ->(descriptor) { { descriptor.name => descriptor.value } }

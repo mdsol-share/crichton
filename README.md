@@ -1,5 +1,7 @@
 # Crichton
 
+[![Build Status](https://travis-ci.org/mdsol/crichton.svg)](https://travis-ci.org/mdsol/crichton)
+
 Crichton is a library to simplify generating and consuming Hypermedia API responses. It has the knowledge of Hypermedia 
 from the Ancients.
 
@@ -32,9 +34,20 @@ class DRD
   
   represents :drd
   
+  def state
+   # Do something to determine the state of the resource.
+  end
+
   # Other methods ...
 end
 ```
+
+If the class does not implement a `state` instance method, but includes `Crichton::Representor` or
+`Crichton::Representor::State` module, it is inferred that resource has only one `default` state, which must be
+specified in `states` section of the resource descriptor file. If class includes `Crichton::Representor` module,
+Crichton will return all transitions regardless of permissions. If resource has only one state, but conditions are
+required, class must include `Crichton::Representor::State` module.
+See [States Section](./doc/resource_descriptors.md#states-section) for more information.
 
 If the class implements a `state` accessor or method that is not the state of the resource, one can simply define a 
 different method on the class to return the resource state:

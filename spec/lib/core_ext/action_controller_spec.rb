@@ -39,7 +39,7 @@ describe 'ActionController' do
     model.class_eval do
       include Crichton::Representor
     end
-    @controller.stub(:model).and_return(model)
+    allow(@controller).to receive(:model).and_return(model)
   end
 
   after (:all) do
@@ -54,14 +54,14 @@ describe 'ActionController' do
     context 'when it is not a crichton representor model' do
       it 'attempts to render html template and fails' do
         @controller.request.accept = 'text/html'
-        @controller.stub(:model).and_return(model)
+        allow(@controller).to receive(:model).and_return(model)
         expect { @controller.show }.to raise_error { ActionView::MissingTemplate }
       end
     end
 
     context 'when it is a crichton representor model' do
       it 'calls to_media_type' do
-        model.should_receive(:to_media_type).with(:sample_type, anything).and_return(anything)
+        expect(model).to receive(:to_media_type).with(:sample_type, anything).and_return(anything)
         @controller.show
       end
     end
@@ -76,15 +76,15 @@ describe 'ActionController' do
     context 'when it is not a crichton representor model' do
       it 'returns 302 status code' do
         @controller.request.accept = 'text/html'
-        @controller.stub(:model).and_return(model)
+        allow(@controller).to receive(:model).and_return(model)
         @controller.create
-        @controller.response.status.should equal(302)
+        expect(@controller.response.status).to equal(302)
       end
     end
 
     context 'when it is a crichton representor model' do
       it 'calls to_media_type' do
-        model.should_receive(:to_media_type).with(:sample_type, anything).and_return(anything)
+        expect(model).to receive(:to_media_type).with(:sample_type, anything).and_return(anything)
         @controller.create
       end
     end
@@ -99,16 +99,16 @@ describe 'ActionController' do
     context 'when it is not a crichton representor model' do
       it 'returns 302 status code' do
         @controller.request.accept = 'text/html'
-        @controller.stub(:model).and_return(model)
+        allow(@controller).to receive(:model).and_return(model)
         @controller.update
-        @controller.response.status.should equal(302)
+        expect(@controller.response.status).to equal(302)
       end
     end
 
     context 'when it is a crichton representor model' do
       it 'calls head method with 204 status code' do
         @controller.update
-        @controller.response.status.should equal(204)
+        expect(@controller.response.status).to equal(204)
       end
     end
   end
@@ -121,7 +121,7 @@ describe 'ActionController' do
 
     it 'returns 204 status code' do
       @controller.destroy
-      @controller.response.status.should equal(204)
+      expect(@controller.response.status).to equal(204)
     end
   end
 end

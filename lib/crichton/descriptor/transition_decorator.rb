@@ -43,7 +43,7 @@ module Crichton
       ##
       # Returns the uniform interface method associated with the protocol descriptor.
       def interface_method
-        protocol_descriptor && protocol_descriptor.method
+        protocol_descriptor && protocol_descriptor.interface_method
       end
       
       ##
@@ -79,14 +79,15 @@ module Crichton
       def templated?
         semantics.any?
       end
-      
+
       ##
       # The fully-qualified url for the transition, including a templated query, if any, per 
       # {http://tools.ietf.org/html/rfc6570 RFC 6570}.
       # TODO: merge templated_url with url method and refactor serializers
       def templated_url
         @templated_url ||=  begin
-          query = semantics.any? ? "{?#{semantics.values.map(&:name).join(',')}}" : ''
+          url_params = templated? ? semantics.values.select(&:scope?) : []
+          query = url_params.any? ? "{?#{url_params.map(&:name).join(',')}}" : ''
           url ? url << query : url
         end
       end
@@ -121,8 +122,9 @@ module Crichton
         @state_descriptor ||= if state
           resource_descriptor.states[parent_descriptor.name][state.to_s].tap do |descriptor_state|
             unless descriptor_state
-               raise(Crichton::MissingStateError,
-                 "No state descriptor for transition #{parent_descriptor.name} -> #{state.to_s}!")
+              raise(Crichton::MissingStateError,
+                "No state '#{state.to_s}' defined for resource '#{parent_descriptor.name}' in API " <<
+                "descriptor document with ID: #{parent_descriptor.resource_descriptor.id}")
             end
           end
         end

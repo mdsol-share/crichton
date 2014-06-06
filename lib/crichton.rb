@@ -1,19 +1,3 @@
-require 'active_support/all'
-require 'crichton/configuration'
-require 'crichton/registry'
-require 'crichton/descriptor'
-require 'crichton/errors'
-require 'crichton/dice_bag/template'
-require 'crichton/representor'
-require 'crichton/alps/deserialization'
-require 'crichton/discovery/entry_point'
-require 'crichton/discovery/entry_points'
-
-if defined?(Rails)
-  require 'crichton/rake_lint'
-  require 'core_ext/action_controller/responder'
-end
-
 module Crichton
   ##
   # Logger
@@ -25,14 +9,13 @@ module Crichton
     # This is probably not to be the final outcome - but for now this defaults to Rails.logger or STDOUT.
     # TODO: Add Sinatra support. I couldn't find any reliable enough way - it seems that there is no standard way
     # of accessing the logger like there is for Rails.
-    @logger ||= if Object.const_defined?(:Rails)
+    @logger ||= if Object.const_defined?(:Rails) && Rails.logger.present?
         Rails.logger
       #Add other environments as needed here!
       else
         ::Logger.new(STDOUT)
       end
   end
-
 
   ##
   # Clears any registered resource descriptors.
@@ -237,3 +220,21 @@ end
 #   @!attribute [r] $1
 #   Returns the $1 of the underlying descriptor document.
 #   @return [Object] The descriptor $1.
+
+require 'active_support/all'
+require 'crichton/configuration'
+require 'crichton/registry'
+require 'crichton/descriptor'
+require 'crichton/errors'
+require 'crichton/dice_bag/template'
+require 'crichton/representor'
+require 'crichton/alps/deserialization'
+require 'crichton/discovery/entry_point'
+require 'crichton/discovery/entry_points'
+
+if defined?(Rails)
+  require 'crichton/rake_lint'
+  require 'core_ext/action_controller/responder'
+  require 'crichton/rails/generators/resource_description_generator'
+  require 'crichton/railtie'
+end

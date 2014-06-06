@@ -26,26 +26,26 @@ module Crichton
         context 'when a crichton proxy path' do
           it 'returns a 406 status for unsupported media_types' do
             @media_type = 'text/html'
-            rack_response.status.should == 406
+            expect(rack_response.status).to eq(406)
           end
 
           it 'returns a 406 status for an empty list of acceptable media types' do
             @media_type = ''
-            rack_response.status.should == 406
+            expect(rack_response.status).to eq(406)
           end
 
           it 'responds to application/json request' do
             @media_type = 'application/json'
             response = Rack::MockResponse.new(200, { 'Content-Type' => @media_type }, '')
             proxy_responder.stub_chain(:connection, :get).and_return(response)
-            rack_response.status.should == 200
+            expect(rack_response.status).to eq(200)
           end
 
           it 'accepts media-types with different cases' do
             @media_type = 'Application/Json'
             response = Rack::MockResponse.new(200, {'Content-Type' => @media_type}, '')
             proxy_responder.stub_chain(:connection, :get).and_return(response)
-            rack_response.status.should == 200
+            expect(rack_response.status).to eq(200)
           end
         end
 
@@ -53,7 +53,7 @@ module Crichton
           it 'invokes the parent rack app from the middleware' do
             @media_type = 'text/html'
             env['PATH_INFO'] = '/'
-            rack_app.should_receive(:call).with(env)
+            expect(rack_app).to receive(:call).with(env)
             proxy_responder.call(env)
           end
         end

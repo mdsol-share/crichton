@@ -23,13 +23,13 @@ module Crichton
       end
 
       it 'self-registers as a serializer for the hale+json media-type' do
-        Serializer.registered_serializers[:hale_json].should == @serializer
+        expect(Serializer.registered_serializers[:hale_json]).to eq(@serializer)
       end
 
       describe '#as_media_type' do
         it 'returns the resource represented as application/vnd.hale+json' do
           serializer = @serializer.new(drds)
-          serializer.to_media_type(conditions: 'can_do_anything').should be_json_eql(drds_hale_json)
+          expect(serializer.to_media_type(conditions: 'can_do_anything')).to be_json_eql(drds_hale_json)
         end
       end
     end

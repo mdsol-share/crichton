@@ -1,106 +1,112 @@
-## Crichton Lint
+# Crichton Lint Validation Tool
 
-Crichton Lint is a means to determine if a resource descriptor file is well structured and meets the 
-requirements of Crichton.
+- [Overview](#overview)
+ - [Invoking Crichton Lint](#invoking-crichton-lint)
+    - [Using the Crichton Lint Ruby gem executable](#using-the-crichton-lint-ruby-gem-executable)
+    - [Running Lint from Rake](#running-lint-from-rake)
+ - [Using Lint with native Ruby](#using-lint-with-native-ruby)
+    - [Pure Ruby strict mode](#pure-ruby-strict-mode)
+    - [Warning Count and Error Count mode](#warning-count-and-error-count-mode)
+ - [Generating RSpec files for Crichton Lint](#generating-rspec-files-for-crichton-lint)
+ - [External References](#external-references)
 
-Since a resource descriptor document is a .yml file, it first must meet the requirements of a
-well-formed YAML file. This website is one of many to help check to see if the file is well
-formed: [yaml parser](http://yaml-online-parser.appspot.com/)
+#Overview
+Crichton Lint lets you determine whether a resource descriptor file is well-structured and whether it meets Crichton requirements. Lint validates the logic of a resource descriptor file, and it outputs errors and provides warnings and hints that help you generate an optimal document.
 
-Crichton lint works to validate the logic of a single resource descriptor file, outputting errors, warning
-and hints to help generate an optimal document.
+Since a resource descriptor document is a YAML file, it must first meet the requirements of well-formed YAML. This website is one of many to help check to see whether the file is well-formed YAML: [YAML parser](http://yaml-online-parser.appspot.com/). See the [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml) for more information.
 
-Lint can be used to help you build a clean resource descriptor file, and once a clean file is created, lint can
-be invoked using rspec to make sure that any changes to the file, or new requirements to Crichton, do not inadvertently
-result in an error. It is highly recommended to generate an Rspec file with Crichton lint for continuous integration
-purposes.
+Once you have a clean resource descriptor file, invoke Lint using RSpec to make sure that any changes to the file or any new requirements to Crichton do not inadvertently produce an error. It is a best practice to generate an RSpec file with Crichton Lint for continuous integration purposes.
 
-Lint can be invoked in 2 ways, once crichton is added to your project as a gem:
+## Invoking Crichton Lint
+Lint can be invoked in two ways. These include using the Lint Ruby gem, rdlint, and running Lint from Rake.
 
-### A lint gem ruby executable  (rdlint)
+### Using the Crichton Lint Ruby gem executable
 
-`bundle exec rdlint <options> <resource descriptor file>`
+Add the Crichton Lint Ruby gem executable, rdlint, to your project:
 
-rdlint can validate a single descriptor file or, with a --all option, will validate all the descriptor files
-found in the current project (the location of descriptor files defaults to an api_descriptors directory).
+    bundle exec rdlint <options> <resource descriptor file>
 
-The options to rdlint are:
+rdlint can validate a descriptor file or, using an --all option, can validate all the descriptor files in the current project. (The location of descriptor files defaults to an api_descriptors directory.)
 
-* -v or --version: Display the version number of the crichton library
-* -w or --no_warnings: Suppress all warnings and display errors messages only, if any
-* -s or --strict: Strict mode, returns true for all validations passing, false if any descriptor file fails lint
-* -a or --all: Lint all (*.yml, *.yaml) files found in the resource descriptor directory (defaults to api_descriptors)
-* -h or --help: Displays the standard usage dialog
+Options for rdlint include:
 
-Some examples run from the root of a project
+- -v or --version - Display the version number of the crichton library.
+- -w or --no_warnings - Suppress all warnings and display errors messages only, if any.
+- -s or --strict - Returns true when all validations pass, false when any descriptor file fails Lint.
+- -a or --all - Validates all `*.yml` and `*.yaml` files found in the resource descriptor directory. Defaults to the api_descriptors directory.
+- -h or --help - Displays the standard usage dialog.
 
-* `bundle exec rdlint api_descriptors/file.yml`  Lint validates a single file
-* `bundle exec rdlint -a (or --all) ` Lint validate all files in the resource descriptor directory
-* `bundle exec rdlint -w api_descriptors/file.yml` Lint single file and suppress warning messages
-* `bundle exec rdlint -aw` Lint all descriptor files and suppress warning messages
-* `bundle exec rdlint -v api_descriptors/file.yml` Display a version message and lint a single file
-* `bundle exec rdlint -s api_descriptors/file.yml` Lint a single file and outputs "true" or "false" (pass / fail).
-* `bundle exec rdlint -as` Lint all descriptor file and outputs "true" / "false". Returns on the first fail.
+Some examples of running rdlint from the root of a project include:
 
-Mutual exclusive options:
-* -s takes precedence over -w, the warning option will be ignored if specified together with strict mode (e.g. -sw)
-* -a with a specified file name will ignore the file name, the "all" option takes precedence
+- `bundle exec rdlint api_descriptors/file.yml` - Validates a single file.
+- `bundle exec rdlint -a (or --all) ` - Validates all files in the resource descriptor directory.
+- `bundle exec rdlint -w api_descriptors/file.yml` - Validates a single file and suppresses warning messages.
+- `bundle exec rdlint -aw` - Validates all descriptor files and suppresses warning messages.
+- `bundle exec rdlint -v api_descriptors/file.yml` - Displays a version message and lint a single file.
+- `bundle exec rdlint -s api_descriptors/file.yml` - Validates a single file and outputs "true" or "false" (pass / fail).
+- `bundle exec rdlint -as` - Validates all descriptor file and outputs "true" / "false". Returns on the first fail.
 
-### Running from rake
+There are several mutually exclusive options. These include the following:
+- -s takes precedence over -w, the warning option will be ignored if specified together with strict mode (for example, -sw)
+- -a with a specified file name will ignore the file name, the "all" option takes precedence
 
-Projects bundled with the crichton gem can also use lint to validate resource descriptor files using rake.
+### Running Lint from Rake
 
-Rake accepts up to two parameters with the following invocation possibilities:
+Projects bundled with the Crichton Lint gem can also use Lint to validate resource descriptor files using Rake. Rake accepts up to two parameters with the following invocation possibilities:
 
-1. "path_to_filename"
-2. "all"
-3. "path_to_filename", with options "strict"/"no_warnings"/"version"
-4. "all", with options "strict"/"no_warnings"/"version"
+- "path_to_filename"
+- "all"
+- "path_to_filename", with options "strict"/"no_warnings"/"version"
+- "all", with options "strict"/"no_warnings"/"version"
 
-For example:
+Examples include:
 
-* `bundle exec rake crichton:lint[<path_to_a_file>]`
-* `bundle exec rake crichton:lint[<path_to_a_file>,no_warnings]`
-* `bundle exec rake crichton:lint[<path_to_a_file>,strict]`
-* `bundle exec rake crichton:lint[<path_to_a_file>,version]`
-* `bundle exec rake crichton:lint[all]`
-* `bundle exec rake crichton:lint[all,no_warnings]`
-* `bundle exec rake crichton:lint[all,no_warnings]`
-* `bundle exec rake crichton:lint[all,version]`
+- `bundle exec rake crichton:lint[<path_to_a_file>]`
+- `bundle exec rake crichton:lint[<path_to_a_file>,no_warnings]`
+- `bundle exec rake crichton:lint[<path_to_a_file>,strict]`
+- `bundle exec rake crichton:lint[<path_to_a_file>,version]`
+- `bundle exec rake crichton:lint[all]`
+- `bundle exec rake crichton:lint[all,no_warnings]`
+- `bundle exec rake crichton:lint[all,no_warnings]`
+- `bundle exec rake crichton:lint[all,version]`
 
-For those unfamiliar with rake, arguments to rake require brackets. In zsh, you must escape
-the brackets with `\[...\]`. No spaces between the two parameters.
+For those unfamiliar with Rake, arguments to Rake require brackets. In zsh, you must escape the brackets with `\[...\]`. There are no spaces between the two parameters.
 
-### Pure strict mode
-For native ruby access to lint validation, you can do the following (provided that proper requires have been setup to
-the crichton/lib/lint folder). This will return a pure ruby true / false return value.
+## Using Lint with native Ruby
+You can use native Ruby to access the Crichton Lint gem.
 
-`Lint.validate(<filename>, {strict: true})  # => true or false`
+### Pure Ruby strict mode
+For native Ruby access to Lint validation, you can do the following (provided that proper requires have been set up to the crichton/lib/lint folder). This will return a pure Ruby true/false return value.
+
+    Lint.validate(<filename>, {strict: true})  # => true or false
 
 ### Warning Count and Error Count mode
 
-Available in native ruby access to lint validation are two addition options, 'count: error' 'and count: warning', which
-can be invoked as an optional hash, similar to the strict mode above:
+Available in native Ruby access to lint validation are two addition options: 'count: error' 'and count: warning'. Invoke these as an optional hash, similar to the strict mode above. For example you can invoke the following:
 
-`Lint.validate(<filename>, {count: :error})  # => # of errors found`
-`Lint.validate(<filename>, {count: :warning})  # => # of warnings found`
+    Lint.validate(<filename>, {count: :error})  # => # of errors found
+    Lint.validate(<filename>, {count: :warning})  # => # of warnings found
 
-## Generating Rspec files for Crichton Lint
+## Generating RSpec files for Crichton Lint
 
-In the Crichton project, the file spec/lib/resource_descriptors/drds_descriptor.rb can be used as a template to
-create an rspec test for your project.
+In the Crichton project, use the file `spec/lib/resource_descriptors/drds_descriptor.rb` as a template to create an RSpec test for your project.
 
-The file uses a path to a resource descriptor file specific to the Crichton project, but you can update the
+The file uses a path to a resource descriptor file that is specific to the Crichton project, but you can update the
 following line for your project:
 
-  `#   let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }`
+    let(:filename) { File.join(Crichton.descriptor_location, <my descriptor file>) }
 
-The rspec spec for Crichton employs 4 simple tests:
+The RSpec specification for Crichton employs four simple tests:
 
-1. Makes sure that the resource descriptor file specified is correct.
-2. Tests for an error count
-3. Tests for a warning count
-4. Does a pass/fail test (returning true or false) using the --strict option
+- Makes sure that the resource descriptor file specified is correct.
+- Tests for an error count.
+- Tests for a warning count.
+- Does a pass/fail test, returning true or false, with the `--strict` option.
 
 
+## External References
+Click the following links to view documents related to Lint:
 
+* [Data Descriptors](data_descriptors.md)
+* [Descriptors Document](descriptors_document.md)
+* [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
