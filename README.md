@@ -4,151 +4,144 @@
 
 Crichton is a library to simplify implementing Hypermedia APIs. It has the knowledge of Hypermedia from the Ancients.
 
-Checkout the [Documentation][] for more info and/or try the [Demo Service](https://github.com/fosrias/crichton-demo-service).
+Checkout the [documentation][] for more info and/or try the [demo service][].
 
 ## Overview
 Crichton is opinionated that Hypermedia APIs and their associated resources should be designed and implemented as 
 state-machines. As such, the library leverages a state-machine centric, declarative [_API descriptor document_][] 
 which it uses to dynamically decorate data as Hypermedia representations for different media-types.
 
-Assuming one has designed a resource as a state-machine and drafted an [_API descriptor document_][] as a canonical
+Assuming one has designed a resource as a state-machine and drafted an _API descriptor document_ as a canonical
 definition of that resource, Crichton can be implemented in a service to return representations for
 [supported media-types][].
 
+## Getting Started
+* [Configure][] Crichton
+* Analyze the states and associated transitions for your resource
+* Design an [_API descriptor document_][] and [Lint][] it.
+* Implement [Models](#models) and [Controllers](#controllers)
+
 ## Models
-Any class can be represented as a resource by simply including the Crichton::Representor module and specifying the 
-resource that represents it:
+Any class can be represented as a resource by simply including the `Crichton::Representor` module and specifying the 
+corresponding resource that represents it defined in an _API descriptor document_.
 
 ```ruby
 class DRD
   include Crichton::Representor
-  
-  represent_as :drd
+  represents :drd
   
   # Other methods ...
 end
 ```
-
-Note: This basic implementation is useful for a resource that has only one state and has no context related conditions 
+This basic implementation is useful for a resource that has only one state and has no context related conditions 
 (e.g. user role or permission constraints) limiting the presence of transitions (links and forms) in the representation. 
 Thus, in the previous example, all available transitions will be returned in the response.
 
-The more general case will be one of the following:
-* a resource has multiple states (and possibly varying context related conditions on the transitions)
+A more general use case will likely be one of the following:
 * a single state with context related conditions on the transitions
+* a resource with multiple states (and possibly varying context related conditions on the transitions)
 
-There are a couple of options for defining the state on the class:
+There are a couple of options for defining the implementing state-machine functionality in Crichton:
 
-If the class has a `state` instance method (e.g., the class is state machine):
-```ruby
-class DRD
-  include Crichton::Representor::State 
-  
-  represents :drd
-  
-  def state
-   # Do something to determine the state of the resource.
-  end
-
-  # Other methods ...
-end
-```
-Note: If the class implements a library with a `state` method (e.g. state_machine Gem), there is no need to define a
-state method. If a class does not implement a `state` instance method, but includes `Crichton::Representor` or
-`Crichton::Representor::State` module, Crichton assumes that resource has only one `default` state. 
-See [Resource State Descriptors](./doc/resource_descriptors.md#states-section) for more information.
-
-If the class implements a `state` accessor or method that is not the state of the resource, one can simply define a 
-different method on the class to return the resource state, if necessary:
-
-```ruby
-class Address
-  include Crichton::Representor::State 
-  
-  represents :address
-  state_method :my_state_method
-  
-  attr_accessor :street, :city, :state, :zip
-  
-  def my_state_method
-   # Do something to determine the state of the resource.
-  end
-  
-  # Other methods ...
-end
-```
-
-### Collection Resource Misnomer
-Crichton's opinion is there is no such thing as a "Collection Resource". There are just resources that include data and
-transitions. Some resources may actually contain lists of other resources or be exist as a series of resources, but 
-they are just a resource like any other. Thus, what some, using certain "conventions" or ORMs might consider a 
-"Collection Resource", e.g. an `application/json` (non-hypermedia aware media-type) response such as:
-
-```json
-[ 
-  {id: 1},
-  {id: 2}
-]
-```
-
-is not supported since this type of JSON response does not allow setting any attributes or metadata for a resource.
-Rather, such a resource would be returned in a Hypermedia API, for example using `application/hal+json`, as:
-
-```json
-{
-  "_links": {
-    "self": { "href": "..." },
-    "items": [ { "href": "..." }, { "href": "..." } ]
-  },
-  _embedded: {
-    "items": [
-      { 
-        "_links": {
-          "self": { "href": "..." }
-        },
-        "id": 1
-      },
-      { 
-        "_links": {
-          "self": { "href": "..." }
-        },
-        "id": 2
-      }
-    ]
-  }
-}
-```
-
-### Resources that embed other resources
-Crichton understands and recursively builds representations of embedded representor instances. There are a number of 
-approaches:
-* wrapping a Hash object with a representor interface using the 
-[`build_representor`](http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_representor-instance_method)
-or the 
-[`build_state_representor`](http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_state_representor-instance_method)
-factory methods.
-   ```ruby
-   class DRDsController 
-     
-
-* creating a model for the resource
+* A class has a `state` instance method:
     ```ruby
-    class DRDs
-      include Crichton::Representor
-        
-      represent_as :drds
-        
-      def items
-        @items ||= DRD.all
+    class DRD
+      include Crichton::Representor::State 
+      represents :drd
+      
+      def state
+       # Do something to determine the state of the resource.
       end
-        
-      def total_count
-        items.count
-      end
+    
+      # Other methods ...
     end
     ```
+* A class incorporates a gem with a `state` method (e.g. state_machine Gem):
+    ```ruby
+    require 'state_machine'
     
-* using a Service Object to wrap an ORM collection object as discussed in the next section.
+    class DRD
+      include Crichton::Representor::State 
+      represents :drd
+      
+      state_machine # ...
+
+      # Other methods ...
+    end
+    ```
+* The class implements a `state` accessor or method that is not the state of the resource:
+
+    ```ruby
+    class Address
+      include Crichton::Representor::State 
+      represents :address
+      state_method :my_state_method # Overrides the default state method name
+      
+      attr_accessor :street, :city, :state, :zip
+      
+      def my_state_method
+       # Do something to determine the state of the resource.
+      end
+      
+      # Other methods ...
+    end
+```
+If a class does not implement a `state` instance method, but includes `Crichton::Representor` 
+or `Crichton::Representor::State` module, Crichton assumes that resource has only one `default` state. 
+See [Resource State Descriptors](./doc/resource_descriptors.md#states-section) for more information.
+
+## Controllers
+The simplicity of Crichton is that it implements a single interface `to_media_type` on an object which accepts a 
+number of options that support dynamic decoration of the object as hypermedia. See [\#to_media_type] method for 
+examples of supported options.
+
+### Rails
+Crichton automatically registers mime types and responders for [supported media-types] and hooks into the rendering
+framework of Rails.
+```ruby
+class DRDsController < ApplicationController
+  respond_to(:hale, :hal, :html, :xhtml)
+  
+  def show
+    drd = Drd.find(params[:id])
+    respond_with(drd, conditions: context_based_conditions)
+  end
+  
+  private
+  def context_based_conditions
+    # Returns condition strings in API Descriptor to dynamically filter available 
+    # transitions based on the context of request.
+  end
+end
+```
+  
+#### Known Rails Issues
+* Crichton does not currently ActiveModel::Naming and thus representor instances will not set location headers unless
+ActiveModel::Naming is manually implemented in the related class(es).
+* Using a default format in routes.rb will prevent proper content-negotiation using headers. This appears to be a 
+Rails issue. E.g. `defaults: { format: :json }` would prevent content negotiation with an Accept header 
+`application/hal+json'.
+
+### Other Frameworks
+Crichton can be used to generate raw responses that can be returned in other application frameworks using the 
+[\#to_media_type] method on objects that implement `Crichton::Representor` or `Crichton::Representor::State`.
+
+```ruby
+# some_controller.rb
+require 'crichton'
+
+class SomeController
+  def media_type_symbol
+    # Convert Accept type to Crichton symbol associated with media-type
+  end
+    
+  def show
+    drd = DRD.find(params[:id])
+    options = # set any context related options
+    drd.to_media_type(media_type_symbol, options)
+  end
+end
+```
 
 ## Service Objects
 Service Objects are a useful concept to keep models separated from logic and access controller methods in generating a
@@ -159,6 +152,7 @@ context to pass into a response.
 ```ruby
 class ServiceObject
   include Crichton::Representor::State
+  represents :drds
   
   attr_reader :target, :controller
 
@@ -185,79 +179,148 @@ class ServiceObject
     original_to_media_type(options.merge(state: state).merge(other_options)
   end
   
+  def state
+    # Some logic to determine the state since target will be an array in this example.
+  end
+  
   private
   def other_options
     # Some logic to get a list of conditions or other options
   end  
-  
-  def state
-    # Some logic to determine the state
-  end
 end
 ```
-
 And then, in a controller:
 ```ruby
-class ResourcesController
+class DRDsController
   respond_to(:hale_json, :hal_json, :html)
   
   def index
-    resources = ServiceObject.new(DRD.all, self)
-    respond_with(resources)
+    drds = ServiceObject.new(DRD.all, self)
+    respond_with(drds)
   end
-end
-
-## Rails
-Crichton automatically registers mime types and responders for [supported media-types].
-
-### Known Issues
-* Crichton does not currently ActiveModel::Naming and thus representor instances will not set location headers unless
-ActiveModel::Naming is manually implemented in the related class(es).
-* Using a default format in routes.rb will prevent proper content-negotiation using headers. This appears to be a 
-Rails issue. E.g. `defaults: { format: :json }` would prevent content negotiation with an Accept header 
-`application/hal+json'.
-
-## Other Frameworks
-Crichton can be used to generate raw responses that can be returned in other application frameworks using the 
-[#to_media_type][] interface on objects that implement `Crichton::Representor` or `Crichton::Representor::State`.
-
-```ruby
-# some_controller.rb
-require 'crichton'
-
-def media_type_symbol
-  # Convert Accept type to Crichton symbol associated with media-type
-end
-
-def show
-  drd = DRD.find(params[:id])
-  options = #...
-  drd.to_media_type(media_type_symbol, options)
 end
 ```
 
-## Crichton Lint
+## Collections
+Crichton's opinion is there is no such thing as a "Collection Resource". There are just resources that include data and
+transitions. Some resources may actually contain lists of other resources or exist as a series of resources, but 
+they are just a resource like any other. 
 
-Developing a Hypermedia aware resource, whose behavior is structured within a resource descriptor
-document, may appear daunting at first and the development of a well structured and logically correct
-resource descriptor document may take several iterations.
+Thus, what some, using certain "conventions" or ORMs might consider a  "Collection Resource", e.g. an 
+`application/json` (non-hypermedia aware media-type) array response are not supported, such as:
 
-To help with the development, a lint feature is part of Crichton in order to help catch major and
-minor errors in the design of the resource descriptor document.
+```json
+[ 
+  { "id": 1 },
+  { "id": 2 }
+]
+```
 
-Single or multiple descriptor files can be validated via lint through the rdlint gem executable or rake. For example:
+This type of JSON response does not allow setting any attributes or metadata for a resource. Rather, such a resource 
+would be returned in a Hypermedia API, for example using `application/hal+json`, as:
 
-`bundle exec rdlint -a (or --all) ` Lint validate all files in the resource descriptor directory
+```json
+{
+  "_links": {
+    "self": { "href": "..." },
+    "items": [ { "href": "..." }, { "href": "..." } ]
+  },
+  "_embedded": {
+    "items": [
+      { 
+        "_links": {
+          "self": { "href": "..." }
+        },
+        "id": 1
+      },
+      { 
+        "_links": {
+          "self": { "href": "..." }
+        },
+        "id": 2
+      }
+    ]
+  },
+  "total_count": 2
+}
+```
+or, as `application/json`:
+```json
+{
+  "total_count": 2,
+  "items": [ 
+    { "id": 1 },
+    { "id": 2 }
+  ]
+}
+```
 
-`bundle exec rake crichton:lint[all]` Use rake to validate all files in the resource descriptor directory
+Crichton understands and recursively builds representations of embedded resources as long as each of the associated
+objects implements `Crichton::Representor` or `Crichton::Representor::State`. 
 
-To understand all of the details of linting descriptors files, please view the [Lint documentation](doc/lint.md).
+### Examples
+* Creating a model
+    ```ruby
+    class DRDs
+      include Crichton::Representor
+        
+      represents :drds
+      
+      attr_reader :items
+      
+      def self.all
+        new(DRD.all)
+      end
+      
+      def initialize(items)
+        @items = items
+      end
+        
+      def total_count
+        items.count
+      end
+    end
+    
+    class DRDsController
+      respond_to(:hale, :hal, :html, :xhtml)
+      
+      def index
+        drds = DRDs.all
+        respond_with(drds)
+      end
+    end
+    ```     
+    
+* Using [Service Objects](#service-objects) to wrap an ORM collection, as in a prior example.
 
-### Logging
-If you use Rails, then the `Rails.logger` should be configured automatically. If no logger is configured, the current 
-behavior is to log to STDOUT. You can override it by calling `Crichton.logger = Logger.new("some logging sink")`
-early on. This only works before the first use of the logger - for performance reasons the logger
-object is cached.
+* Wrapping a Hash object with a representor interface using the 
+[\#build_representor](http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_representor-instance_method)
+or the 
+[\#build_state_representor](http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_state_representor-instance_method)
+factory methods.
+   ```ruby
+   class DRDsController 
+     include Crichton::Representor::Factory
+     
+     def index
+       drds = DRD.all
+       drds_hash = {
+         total_count: drds.count,
+         items: drds
+       }
+       respond_with(build_state_representor(drds_hash, :drds, { state: :collection })
+     end
+   end
+   ```
+   
+## Surfing your API in a browser
+Crichton supports the media-type `text/html` out of the box so that an API can be surfed in a browser to 
+allow fast prototyping of APIs.
+
+### Rails
+If a template is defined for a request in Rails, the template is rendered. However, if no template exists and a 
+controller is configured to respond to HTML, Crichton will render an HTML version of the resource based on the 
+[_API descriptor document_] for the resource.
   
 ## Supported Media-types
 The following are currently supported media-types ([mime symbol]: [media-type])
@@ -265,6 +328,12 @@ The following are currently supported media-types ([mime symbol]: [media-type])
 * [xthml: application/xhtml+xml](http://www.ietf.org/rfc/rfc3236)
 * [hal_json: application/hal+json](http://tools.ietf.org/html/draft-kelly-json-hal-06)
 * [hale_json: application/vnd.hale+json](https://github.com/mdsol/hale)
+
+## Logging
+If you use Rails, then the `Rails.logger` will be configured automatically. If no logger is configured, the current 
+behavior is to log to STDOUT. You can override it by calling `Crichton.logger = Logger.new("some logging sink")`
+early on. This only works before the first use of the logger - for performance reasons the logger
+object is memoized.
 
 ## Contributing
 See [CONTRIBUTING][] for details.
@@ -276,13 +345,16 @@ helped crystallize ideas underlying Crichton. And, of course, thanks to all the 
 ## Copyright
 Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 
-[Documentation]: http://rubydoc.info/github/mdsol/crichton
-[supported media-types](#[supported media-types](supported-media-types))
+[documentation]: http://rubydoc.info/github/mdsol/crichton
+[demo service]: https://github.com/fosrias/crichton-demo-service
+[Configure]: doc/crichton_configuration.md
 [_API descriptor document_]: doc/descriptors_document.md
-[#to_media_type]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
+[Lint]: doc/lint.md
+[\#to_media_type]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
+[supported media-types]: #supported-media-types
 [CONTRIBUTING]: CONTRIBUTING.md
 [Documentation]: http://rubydoc.info/github/mdsol/crichton
 [LICENSE]: LICENSE.md
 [Mike Amundsen]: https://twitter.com/mamund
 [Jon Moore]: https://twitter.com/jon_moore
-[contributors]: graphs/contributors
+[contributors]: https://github.com/mdsol/crichton/graphs/contributors

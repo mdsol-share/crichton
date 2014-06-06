@@ -9,8 +9,8 @@
 
 # Overview
 Resources are defined by grouping individual descriptors under the `resources` tag in an API descriptor document. They
- also define the [states](#states-section) associated with the resource. The [Descriptors](#descriptors-section) 
- section also contains semantics and transition descriptors that are available for a resource. 
+also define the [states](#states-section) associated with the resource. The [Descriptors](#descriptors-section) 
+section also contains semantics and transition descriptors that are available for a resource. 
 
 ## Descriptors Section
 The `descriptors` section MAY contain a list of referenced data descriptor and transition elements. You can also define 
@@ -130,6 +130,23 @@ resources:
             next:
               - default
 ```
+
+
+## Crichton Lint
+Developing a Hypermedia aware resource, whose behavior is structured within a API Descriptor document
+document, may appear daunting at first and the development of a well structured and logically correct
+resource descriptor document may take several iterations.
+
+To help with the development, a lint feature is part of Crichton in order to help catch major and
+minor errors in the design of the resource descriptor document.
+
+Single or multiple descriptor files can be validated via lint through the rdlint gem executable or rake. For example:
+
+`bundle exec rdlint -a (or --all) ` Lint validate all files in the resource descriptor directory
+
+`bundle exec rake crichton:lint[all]` Use rake to validate all files in the resource descriptor directory
+
+To understand all of the details of linting descriptors files, please view the [Lint](doc/lint.md) documentation.
 
 ## Related Topics
 - [Back to API Descriptor Document](descriptors_document.md)
