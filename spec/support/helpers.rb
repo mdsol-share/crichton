@@ -90,6 +90,8 @@ module Support
       config['crichton_proxy_base_uri'] = 'http://example.org/crichton'
       config['css_uri'] = 'http://example.org/resources/css.css'
       config['js_uri'] = 'http://example.org/resources/js.js'
+      config['resource_home_response_expiry'] = 40
+      config['alps_profile_response_expiry'] = 40
       config
     end
 
