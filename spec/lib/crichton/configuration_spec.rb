@@ -29,14 +29,14 @@ module Crichton
     describe '#alps_profile_response_expiry' do
       context 'when configured' do
         it 'returns the alps profile response expiry' do
-          expect(configuration.alps_profile_response_expiry).to eq({'expiry' => 40})
+          expect(configuration.alps_profile_response_expiry).to eq({ 'expiry' => 40 })
         end
       end
 
       context 'when not configured' do
         it 'returns default alps profile response expiry' do
           @config = example_environment_config.except('alps_profile_response_expiry')
-          expect(configuration.alps_profile_response_expiry).to eq({'expiry' => 20})
+          expect(configuration.alps_profile_response_expiry).to eq({ 'expiry' => 20 })
         end
       end
     end
