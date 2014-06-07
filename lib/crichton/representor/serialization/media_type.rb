@@ -40,6 +40,22 @@ module Crichton
           end
         end
 
+        def respond_to?(method, include_private = false)
+          if method =~ /^to_(\w*)$/
+            Crichton::Representor::Serializer.registered_serializers.keys.include?($1.to_sym)
+          else
+            super
+          end
+        end
+
+        def method_missing(method, *args, &block)
+          if method =~ /^to_(\w*)$/
+            to_media_type($1.to_sym, *args, &block)
+          else
+            super
+          end
+        end
+
         private
         def built_serializer(media_type, object, options)
           raise ArgumentError, 'The media_type argument cannot be blank.' if media_type.blank?

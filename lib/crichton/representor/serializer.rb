@@ -93,6 +93,8 @@ module Crichton
               ActionController::Renderers.add media_type do |obj, options|
                 type = media_type
                 if obj.is_a?(Crichton::Representor)
+                  options.merge!({ top_level: true, override_links: { 'self' => request.url } })
+                  options.merge!(semantics: :styled_microdata) if media_type == :html
                   obj.to_media_type(type, options) do |serializer|
                     serializer.response_headers.each { |k, v| response.headers[k] = v }
                   end
