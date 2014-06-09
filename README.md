@@ -21,7 +21,7 @@ definition of that resource, Crichton can be implemented in a service to return 
 * Design an [_API descriptor document_][] and [Lint][] it
 * Implement [Models](#models) and [Controllers](#controllers)
 
-## Models
+## Models<a name="models"></a>
 Any class can be represented as a resource by simply including the `Crichton::Representor` module and specifying the 
 corresponding resource that represents it defined in an _API descriptor document_.
 
@@ -95,7 +95,7 @@ If a class does not implement a `state` instance method, but includes `Crichton:
 or `Crichton::Representor::State` module, Crichton assumes that resource has only one `default` state. 
 See [Resource State Descriptors](./doc/resource_descriptors.md#states-section) for more information.
 
-## Controllers
+## Controllers<a name="controllers"></a>
 The simplicity of Crichton is that it implements a single interface `to_media_type` on an object which accepts a 
 number of options that support dynamic decoration of the object as hypermedia. See [\#to_media_type] method for 
 examples of supported options.
@@ -130,7 +130,7 @@ Rails issue. E.g. `defaults: { format: :json }` would prevent content negotiatio
 
 ### Other Frameworks
 Crichton can be used to generate raw responses that can be returned in other application frameworks using the 
-[\#to_media_type] method on objects that implement `Crichton::Representor` or `Crichton::Representor::State`.
+[\#to_media_type][] method on objects that implement `Crichton::Representor` or `Crichton::Representor::State`.
 
 ```ruby
 # some_controller.rb
@@ -149,7 +149,7 @@ class SomeController
 end
 ```
 
-## Service Objects
+## Service Objects<a name="service-objects"></a>
 Service Objects are a useful concept to keep models separated from logic and access controller methods in generating a
 response. For example, a resource descriptor may define a `uri_source` on some protocol implementation of a transition
 that it expects on an object. Alternately, one may want to apply some logic to determine conditions from the request
@@ -302,11 +302,8 @@ objects implements `Crichton::Representor` or `Crichton::Representor::State`.
     end
     ```     
 
-* Wrapping a Hash object with a representor interface using the 
-[\#build_representor](http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_representor-instance_method)
-or the 
-[\#build_state_representor](http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_state_representor-instance_method)
-factory methods.
+* Wrapping a Hash object with a representor interface using the [\#build_representor][] or the 
+[\#build_state_representor][] factory methods.
 
    ```ruby
    class DRDsController 
@@ -332,8 +329,8 @@ If a template is defined for a request in Rails, the template is rendered. Howev
 controller is configured to respond to HTML, Crichton will render an HTML version of the resource based on the 
 [_API descriptor document_] for the resource.
   
-## Supported Media-types
-The following are currently supported media-types ([mime symbol]: [media-type])
+## Supported Media-types<a name="supported-media-types"></a>
+The following are currently supported media-types:
 
 * [html - text/html](http://www.ietf.org/rfc/rfc2854)
 * [xthml - application/xhtml+xml](http://www.ietf.org/rfc/rfc3236)
@@ -353,7 +350,7 @@ Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 [documentation]: http://rubydoc.info/github/mdsol/crichton
 [demo service]: https://github.com/fosrias/crichton-demo-service
 [Getting Started]: doc/getting_started.md
-[_API descriptor document_]: doc/api_descriptor_documents
+[_API descriptor document_]: doc/api_descriptor_documents.md
 [Lint]: doc/lint.md
 [\#to_media_type]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
 [supported media-types]: #supported-media-types
@@ -363,3 +360,6 @@ Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 [Mike Amundsen]: https://twitter.com/mamund
 [Jon Moore]: https://twitter.com/jon_moore
 [contributors]: https://github.com/mdsol/crichton/graphs/contributors
+
+[\#build_representor]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_representor-instance_method
+[\#build_state_representor]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_state_representor-instance_method
