@@ -38,6 +38,7 @@ This basic implementation is useful for a resource that has only one state and h
 Thus, in the previous example, all available transitions will be returned in the response.
 
 A more general use case will likely be one of the following:
+
 * a single state with context related conditions on the transitions
 * a resource with multiple states (and possibly varying context related conditions on the transitions)
 
@@ -93,7 +94,7 @@ There are a couple of options for defining the implementing state-machine functi
 
 If a class does not implement a `state` instance method, but includes `Crichton::Representor` 
 or `Crichton::Representor::State` module, Crichton assumes that resource has only one `default` state. 
-See [Resource State Descriptors](./doc/resource_descriptors.md#states-section) for more information.
+See [Resource States](./doc/resource_descriptors.md#states) for more information.
 
 ## Controllers<a name="controllers"></a>
 The simplicity of Crichton is that it implements a single interface `to_media_type` on an object which accepts a 
