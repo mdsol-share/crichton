@@ -2,6 +2,9 @@ require 'crichton/descriptor/descriptor_keywords'
 
 module Crichton
   module Descriptor
+
+    #TODO Investigate if we should constrain this to parameters defined in the profile or
+    # IANA registered links in the future.
     class AdditionalTransition
       TEMPLATED = 'templated'
 
@@ -26,10 +29,7 @@ module Crichton
       end
 
       def templated?
-        @templated ||= begin
-          templated = link.is_a?(Hash) ? link[TEMPLATED] : false
-          [true, false].include?(templated) ? templated : false
-        end
+        @templated ||= (link.is_a?(Hash) ? link[TEMPLATED] : false) === true
       end
 
       def to_a
