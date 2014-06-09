@@ -19,7 +19,7 @@
 # Overview
 Data and Transition Descriptors are the building blocks of [Resource Descriptors](doc/resource_descriptor.md).
 
-## Data Descriptors
+## Data Descriptors<a name="data-descriptors"></a>
 Data descriptors define the semantics, or vocabulary, of the data-related attributes of a resource and/or the semantics 
 of the data associated with 'forms' in transitions that either template queries for a `safe` transition or template 
 bodies in `unsafe` and `idempotent` transitions.
