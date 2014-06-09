@@ -49,11 +49,7 @@ module Crichton
         end
 
         def method_missing(method, *args, &block)
-          if method =~ /^to_(\w*)$/
-            to_media_type($1.to_sym, *args, &block)
-          else
-            super
-          end
+          (method =~ /^to_(\w*)$/) ? to_media_type($1.to_sym, *args, &block) : super
         end
 
         private
