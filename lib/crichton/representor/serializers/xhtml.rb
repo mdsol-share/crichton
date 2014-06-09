@@ -165,8 +165,10 @@ module Crichton
         end
 
         def add_link_transition(transition)
-          if transition.templated_url
+          if transition.templated?
             @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url})
+          elsif transition.url
+            @markup_builder.a(transition.name, {rel: transition.name, href: transition.url})
           end
         end
 
