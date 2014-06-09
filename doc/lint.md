@@ -121,5 +121,5 @@ The RSpec specification for Crichton employs four simple tests:
 ## Related Topics
 Click the following links to view documents related to Lint:
 
-* [API Descriptor Documents](api_descriptor_documents)
+* [API Descriptor Documents](api_descriptor_documents.md)
 * [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
