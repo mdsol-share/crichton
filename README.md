@@ -116,8 +116,8 @@ end
 ```
   
 #### Known Rails Issues
-* Crichton does not currently ActiveModel::Naming and thus representor instances will not set location headers unless
-ActiveModel::Naming is manually implemented in the related class(es).
+* Crichton does not currently support ActiveModel::Naming and thus representor instances will not set location headers 
+unless ActiveModel::Naming is manually implemented in the related class(es).
 * Using a default format in routes.rb will prevent proper content-negotiation using headers. This appears to be a 
 Rails issue. E.g. `defaults: { format: :json }` would prevent content negotiation with an Accept header 
 `application/hal+json'.
