@@ -1,5 +1,6 @@
 require 'active_support/concern'
 require 'crichton/representor/serialization/media_type'
+require 'crichton/descriptor/additional_transition'
 
 module Crichton
   ##
@@ -165,14 +166,11 @@ module Crichton
     end
 
   private
-    AdditionalTransition = Struct.new :name, :url
-    private_constant :AdditionalTransition
-
     def each_additional_link_transition_enumerator(options)
       if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
         options[:additional_links].map do |relation, url|
           # We don't use url because we want to clear out the data from the options
-          transition = AdditionalTransition.new(relation, options[:additional_links].delete(relation))
+          transition = Crichton::Descriptor::AdditionalTransition.new(relation, options[:additional_links].delete(relation))
           yield transition if block_given?
           transition
         end
