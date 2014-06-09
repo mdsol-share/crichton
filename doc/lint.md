@@ -8,7 +8,7 @@
     - [Pure Ruby strict mode](#pure-ruby-strict-mode)
     - [Warning Count and Error Count mode](#warning-count-and-error-count-mode)
  - [Generating RSpec files for Crichton Lint](#generating-rspec-files-for-crichton-lint)
- - [External References](#external-references)
+ - [Related Topics](#related-topics)
 
 #Overview
 Crichton Lint lets you determine whether a resource descriptor file is well-structured and whether it meets Crichton 
@@ -118,10 +118,8 @@ The RSpec specification for Crichton employs four simple tests:
 - Tests for a warning count.
 - Does a pass/fail test, returning true or false, with the `--strict` option.
 
-
-## External References
+## Related Topics
 Click the following links to view documents related to Lint:
 
-* [Data Descriptors](data_descriptors.md)
-* [Descriptors Document](api_descriptor_documents)
+* [API Descriptor Documents](api_descriptor_documents)
 * [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)

@@ -93,7 +93,7 @@ routes:
 - [Back to API Descriptor Document](api_descriptor_documents.md)
 - [Example API Descriptor Document][]
 
-[_API Descriptor Documents_]:api_descriptor_documents.md
+[_API Descriptor Documents_]: api_descriptor_documents.md
 [Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
 [Data and Transition Descriptors]: data_and_transition_descriptors.md
 [Resource Descriptor]: resource_descriptors.md
