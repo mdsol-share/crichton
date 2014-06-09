@@ -37,7 +37,7 @@ module Crichton
         describe '#respond_to?' do
           it 'returns true if media type is registered' do
             Crichton::Representor::Serializer.stub(:registered_serializers).and_return({ hale_json: @serializer })
-            expect(simple_test_instance.respond_to?(:to_hale_json)).to be_true
+            expect(simple_test_instance).to respond_to(:to_hale_json)
           end
         end
       end
