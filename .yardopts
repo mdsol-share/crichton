@@ -2,4 +2,16 @@
 --verbose 
 --no-private 
 --output-dir ./yardoc
-'lib/**/*.rb' - '*.md'
+'lib/**/*.rb'
+-
+doc/getting_started.md
+doc/api_descriptor_documents.md
+doc/data_and_transition_descriptors.md
+doc/resource_descriptors.md
+doc/protocol_and_routes_descriptors.md
+doc/lint.md
+doc/roadmap.md
+ 
+CONTRIBUTING.md
+CHANGELOG.md
+LICENSE.md

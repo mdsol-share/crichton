@@ -15,10 +15,10 @@ Assuming one has designed a resource as a state-machine and drafted an _API desc
 definition of that resource, Crichton can be implemented in a service to return representations for
 [supported media-types][].
 
-## Getting Started
-* [Configure][] Crichton
-* Analyze the states and associated transitions for your resource
-* Design an [_API descriptor document_][] and [Lint][] it.
+## Usage
+* Checkout [Getting Started][]
+* Analyze resource attributes, states and associated transitions
+* Design an [_API descriptor document_][] and [Lint][] it
 * Implement [Models](#models) and [Controllers](#controllers)
 
 ## Models
@@ -44,6 +44,7 @@ A more general use case will likely be one of the following:
 There are a couple of options for defining the implementing state-machine functionality in Crichton:
 
 * A class has a `state` instance method:
+
     ```ruby
     class DRD
       include Crichton::Representor::State 
@@ -56,7 +57,9 @@ There are a couple of options for defining the implementing state-machine functi
       # Other methods ...
     end
     ```
+    
 * A class incorporates a gem with a `state` method (e.g. state_machine Gem):
+
     ```ruby
     require 'state_machine'
     
@@ -69,6 +72,7 @@ There are a couple of options for defining the implementing state-machine functi
       # Other methods ...
     end
     ```
+    
 * The class implements a `state` accessor or method that is not the state of the resource:
 
     ```ruby
@@ -86,6 +90,7 @@ There are a couple of options for defining the implementing state-machine functi
       # Other methods ...
     end
 ```
+
 If a class does not implement a `state` instance method, but includes `Crichton::Representor` 
 or `Crichton::Representor::State` module, Crichton assumes that resource has only one `default` state. 
 See [Resource State Descriptors](./doc/resource_descriptors.md#states-section) for more information.
@@ -98,6 +103,7 @@ examples of supported options.
 ### Rails
 Crichton automatically registers mime types and responders for [supported media-types] and hooks into the rendering
 framework of Rails.
+
 ```ruby
 class DRDsController < ApplicationController
   respond_to(:hale, :hal, :html, :xhtml)
@@ -176,7 +182,7 @@ class ServiceObject
   
   alias :original_to_media_type :to_media_type
   def to_media_type(options = {})
-    original_to_media_type(options.merge(state: state).merge(other_options)
+    original_to_media_type(options.merge(state: state).merge(other_options))
   end
   
   def state
@@ -189,7 +195,9 @@ class ServiceObject
   end  
 end
 ```
+
 And then, in a controller:
+
 ```ruby
 class DRDsController
   respond_to(:hale_json, :hal_json, :html)
@@ -259,7 +267,10 @@ Crichton understands and recursively builds representations of embedded resource
 objects implements `Crichton::Representor` or `Crichton::Representor::State`. 
 
 ### Examples
+    
+* Using [Service Objects](#service-objects) to wrap an ORM collection, as in the prior example.
 * Creating a model
+
     ```ruby
     class DRDs
       include Crichton::Representor
@@ -290,14 +301,13 @@ objects implements `Crichton::Representor` or `Crichton::Representor::State`.
       end
     end
     ```     
-    
-* Using [Service Objects](#service-objects) to wrap an ORM collection, as in a prior example.
 
 * Wrapping a Hash object with a representor interface using the 
 [\#build_representor](http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_representor-instance_method)
 or the 
 [\#build_state_representor](http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_state_representor-instance_method)
 factory methods.
+
    ```ruby
    class DRDsController 
      include Crichton::Representor::Factory
@@ -308,7 +318,7 @@ factory methods.
          total_count: drds.count,
          items: drds
        }
-       respond_with(build_state_representor(drds_hash, :drds, { state: :collection })
+       respond_with(build_state_representor(drds_hash, :drds, { state: :collection }))
      end
    end
    ```
@@ -324,16 +334,11 @@ controller is configured to respond to HTML, Crichton will render an HTML versio
   
 ## Supported Media-types
 The following are currently supported media-types ([mime symbol]: [media-type])
-* [html: text/html](http://www.ietf.org/rfc/rfc2854)
-* [xthml: application/xhtml+xml](http://www.ietf.org/rfc/rfc3236)
-* [hal_json: application/hal+json](http://tools.ietf.org/html/draft-kelly-json-hal-06)
-* [hale_json: application/vnd.hale+json](https://github.com/mdsol/hale)
 
-## Logging
-If you use Rails, then the `Rails.logger` will be configured automatically. If no logger is configured, the current 
-behavior is to log to STDOUT. You can override it by calling `Crichton.logger = Logger.new("some logging sink")`
-early on. This only works before the first use of the logger - for performance reasons the logger
-object is memoized.
+* [html - text/html](http://www.ietf.org/rfc/rfc2854)
+* [xthml - application/xhtml+xml](http://www.ietf.org/rfc/rfc3236)
+* [hal_json - application/hal+json](http://tools.ietf.org/html/draft-kelly-json-hal-06)
+* [hale_json - application/vnd.hale+json](https://github.com/mdsol/hale)
 
 ## Contributing
 See [CONTRIBUTING][] for details.
@@ -347,8 +352,8 @@ Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 
 [documentation]: http://rubydoc.info/github/mdsol/crichton
 [demo service]: https://github.com/fosrias/crichton-demo-service
-[Configure]: doc/crichton_configuration.md
-[_API descriptor document_]: doc/descriptors_document.md
+[Getting Started]: doc/getting_started.md
+[_API descriptor document_]: doc/api_descriptor_documents
 [Lint]: doc/lint.md
 [\#to_media_type]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
 [supported media-types]: #supported-media-types

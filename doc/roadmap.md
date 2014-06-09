@@ -1,6 +1,16 @@
-# Crichton Design Goals for API Descriptor Document
+# @title Roadmap
 
-An [API Descriptor Document](descriptors_document.md) serves several purposes. These purposes include defining the following items:
+## Roadmap
+1. Integrate Representors Gem
+2. Applying conditions to embedded resources
+3. Applying conditions to resource descriptors by state to auto-configure their presence in a response
+4. Hook into Rails routes functionality
+5. Scaffold applications
+6. Scaffold tests
+
+## Crichton Design Goals for API Descriptor Document
+An [API Descriptor Document](api_descriptor_documents) serves several purposes, including defining the 
+following items:
 
 - Protocol and media-type independent semantics of resources.
  - Delineates semantic data (properties and optionally embedded resources), semantic links, and transition controls 
@@ -23,3 +33,4 @@ information.
  - Factory generation of mock resources for testing.
  - Services self-testing resources.
  
+Future evolution of the library and refinements of descriptor document elements should support this functionality.
