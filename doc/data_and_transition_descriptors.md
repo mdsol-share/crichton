@@ -244,7 +244,7 @@ call on a target object. If `source` is a link to an external resource, you must
 The following table lists the supported input types and the validators that you can apply to them.
 
 | Input types / attributes | required | pattern | maxlength | min/max |
-|:----------------:|:----------:|:---------:|:-----------:|:---------:|
+|:------------------------:|:--------:|:-------:|:---------:|:-------:|
 | text           | x        | x       | x         |         |
 | search         | x        | x       |           |         |
 | email          | x        | x       |           |         |
