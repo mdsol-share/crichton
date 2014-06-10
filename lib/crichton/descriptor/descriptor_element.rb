@@ -16,7 +16,7 @@ module Crichton
       #
       # @param [String] document_id The Id of resource descriptor document.
       # @param [String] element_id The Id of descriptor (or its name).
-      # @param [Hash] The section of the descriptor document representing this instance.
+      # @param [Hash] descriptor_document The section of the descriptor document representing this instance.
       def initialize(document_id, element_id, descriptor_document)
         @descriptor_document = descriptor_document && descriptor_document.dup || {}
         @descriptor_id = element_id || @descriptor_document[ID]
