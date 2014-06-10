@@ -29,11 +29,12 @@ The following defines the configuration properties:
 * `discovery_base_uri` - The base URI for a discovery service that Crichton will publish entry points to.
 * `documentation_base_uri` - The base URI for any hosted external documentation referenced as relative paths in an
 [_API Descriptor Document_][].
-* `crichton_proxy_base_uri` - 
 * `alps_profile_response_expiry` - Configures the expiry of ALPS middleware that serves ALPS profiles directly from
 the service.
 * `resource_home_response_expiry` - Configures the expiry of resource entry point middleware that serves a catalogue of
  resource entry points served directly from the service. 
+* `crichton_proxy_base_uri` - URI to use to capture and proxy AJAX requests to related resources when surfing an 
+API in browser. Allows an application to proxy the request for authentication/authorization.
 * `css_uri` - The fully-qualified URI for a CSS file to use when surfing an API in a browser. 
 * `js_uri` -  The fully-qualified URI for a Javascript file to load when surfing an API in a browser.
   
