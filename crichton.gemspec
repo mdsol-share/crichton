@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name          = 'crichton'
   s.version       = Crichton::VERSION::STRING
   s.date          = Time.now.strftime('%Y-%m-%d')
-  s.summary       = 'It has the knowledge of Hypermedia from the Ancients!'
+  s.summary       = 'It has the knowledge of Hypermedia from the Ancients.'
   s.homepage      = 'http://github.com//crichton'
   s.email         = ''
   s.authors       = ['Mark W. Foster']
@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.executables   = ['rdlint']
 
   s.description   = <<-DESC
-    Crichton is a library to simplify generating and consuming Hypermedia API responses.
+    Crichton is a library to simplify implementing Hypermedia APIs.
   DESC
 
   s.add_dependency('rake')

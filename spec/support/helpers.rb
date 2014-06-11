@@ -43,7 +43,7 @@ module Support
     end
 
     def normalized_drds_descriptor
-      Crichton.clear_registry
+      Crichton.reset
       registry = Crichton::Registry.new(automatic_load: false)
       registry.register_single(drds_descriptor)
       resource_dereferencer = registry.resources_registry.values.first
@@ -51,7 +51,7 @@ module Support
     end
 
     def register_drds_descriptor
-      Crichton.clear_registry
+      Crichton.reset
       Crichton.initialize_registry(drds_descriptor)
     end
 
@@ -92,6 +92,8 @@ module Support
       config['js_uri'] = 'http://example.org/resources/js.js'
       config['resource_home_response_expiry'] = 40
       config['alps_profile_response_expiry'] = 40
+      config['use_alps_middleware'] = true
+      config['use_discovery_middleware'] = true
       config
     end
 

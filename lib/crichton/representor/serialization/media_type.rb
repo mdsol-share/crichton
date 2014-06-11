@@ -13,6 +13,8 @@ module Crichton
         #
         # @param [Symbol, String] media_type The registered media-type associated with the desired serializer.
         # @param [Hash] options Conditional options to configure to the serialization.
+        #
+        # @see #to_media_type for a list of possible options and example usage.
         def as_media_type(media_type, options = {})
           built_serializer(media_type, self, options).as_media_type(options)
         end
@@ -27,12 +29,18 @@ module Crichton
         # convert the representation into the base media-type. For example, for a HAL JSON serializer, #as_media_type
         # would return a hash, but #to_media_type would return a JSON string.
         #
-        # media_type (for now) can be :xhtml or :html
-        #
         # For documentation of the options hash, see {file:doc/serialization.md Serialization}
         #
         # @param [Symbol, String] media_type The registered media-type associated with the desired serializer.
         # @param [Hash] options Conditional options to configure to the serialization.
+        # @option options [String, Symbol, Array] :conditions The state conditions.
+        # @option options [String, Symbol, Array] :except The semantic data descriptor names to filter out.
+        # @option options [String, Symbol, Array] :only The semantic data descriptor names to limit.
+        # @option options [String, Symbol, Array] :include The embedded semantic descriptor names to include.
+        # @option options [String, Symbol, Array] :exclude The embedded semantic descriptor names to exclude.
+        # @option options [String, Symbol, Array] :additional_links Allows dynamically adding new links.
+        # @option options [String, Symbol, Array] :override_links Allow overriding the URL set in links.
+        # @option options [String, Symbol, Array] :state The state of the resource.
         def to_media_type(media_type, options = {})
           serializer = built_serializer(media_type, self, options)
           serializer.to_media_type(options).tap do

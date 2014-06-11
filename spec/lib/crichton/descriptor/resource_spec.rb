@@ -4,10 +4,6 @@ require 'crichton/descriptor/resource'
 module Crichton
   module Descriptor
     describe Resource do
-      before do
-        Crichton.clear_registry
-      end
-  
       describe '.new' do
         let(:descriptor) { Resource.new(drds_descriptor) }
   

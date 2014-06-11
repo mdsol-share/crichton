@@ -12,7 +12,6 @@ module Crichton
       end
 
       before(:all) do
-        Crichton.clear_registry
         @resource_descriptor = <<-YAML
           id: DRDs
           doc: Describes the semantics, states and state transitions associated with DRDs.

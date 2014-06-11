@@ -10,26 +10,26 @@ module Crichton
       let (:drds) do
         drd_klass.tap { |klass| klass.apply_methods }.all
       end
-
-      before do
-        # Can't apply methods without a stubbed configuration and registered descriptors
-        stub_example_configuration
-        Crichton.initialize_registry(drds_descriptor)
-        @serializer = HaleJsonSerializer
-      end
-      
-      after do
-        Crichton.clear_registry
-      end
+      let(:serializer) { HaleJsonSerializer }
 
       it 'self-registers as a serializer for the hale+json media-type' do
-        expect(Serializer.registered_serializers[:hale_json]).to eq(@serializer)
+        expect(Serializer.registered_serializers[:hale_json]).to eq(serializer)
       end
 
       describe '#as_media_type' do
+        after do
+          stub_example_configuration
+          Crichton.initialize_registry(@document || drds_descriptor)
+          expect(serializer.new(drds).to_media_type(conditions: 'can_do_anything')).to be_json_eql(@hale)
+        end
+
         it 'returns the resource represented as application/vnd.hale+json' do
-          serializer = @serializer.new(drds)
-          expect(serializer.to_media_type(conditions: 'can_do_anything')).to be_json_eql(drds_hale_json)
+          @hale = drds_hale_json
+        end
+
+        it 'returns resource representation without semantic data when no semantic descriptor is specified' do
+          @hale = JSON.load(drds_hale_json).except('total_count').to_json
+          @document = drds_descriptor.tap { |doc| doc['resources']['drds']['descriptors'].delete({ 'href' => 'total_count' }) }
         end
       end
     end
