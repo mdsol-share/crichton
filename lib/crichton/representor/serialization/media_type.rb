@@ -29,7 +29,7 @@ module Crichton
         # convert the representation into the base media-type. For example, for a HAL JSON serializer, #as_media_type
         # would return a hash, but #to_media_type would return a JSON string.
         #
-        # For documentation of the options hash, see {file:doc/serialization.md Serialization}
+        # For documentation of options, see {file:doc/getting_started.md Getting Started}
         #
         # @param [Symbol, String] media_type The registered media-type associated with the desired serializer.
         # @param [Hash] options Conditional options to configure to the serialization.
