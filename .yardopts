@@ -5,6 +5,7 @@
 'lib/**/*.rb'
 -
 doc/getting_started.md
+doc/design_state_machine_resources.md
 doc/api_descriptor_documents.md
 doc/data_and_transition_descriptors.md
 doc/resource_descriptors.md
