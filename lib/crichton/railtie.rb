@@ -9,10 +9,10 @@ module Crichton
 
     initializer "crichton.insert_middleware" do |app|
       app.config.middleware.use "Crichton::Middleware::RegistryCleaner" if Rails.env.development?
-      if config.include_discovery_middleware?
+      if config.use_discovery_middleware?
         app.config.middleware.use "Crichton::Middleware::ResourceHomeResponse", config.resource_home_response_expiry
       end
-      if config.include_alps_middleware?
+      if config.use_alps_middleware?
         app.config.middleware.use "Crichton::Middleware::AlpsProfileResponse", config.alps_profile_response_expiry
       end
     end

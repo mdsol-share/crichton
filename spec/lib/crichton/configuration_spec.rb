@@ -11,42 +11,42 @@ module Crichton
       end
     end
 
-    describe '#include_discovery_middleware' do
+    describe '#use_discovery_middleware?' do
       context 'when configured' do
         it 'returns true when configured value is true' do
-          expect(configuration.include_discovery_middleware?).to be_true
+          expect(configuration.use_discovery_middleware?).to be_true
         end
 
         it 'returns false when configured value is false' do
-          @config = example_environment_config.merge({ 'include_discovery_middleware' => false })
-          expect(configuration.include_discovery_middleware?).to be_false
+          @config = example_environment_config.merge({ 'use_discovery_middleware' => false })
+          expect(configuration.use_discovery_middleware?).to be_false
         end
       end
 
       context 'when not configured' do
         it 'returns false' do
-          @config = example_environment_config.except('include_discovery_middleware')
-          expect(configuration.include_discovery_middleware?).to be_false
+          @config = example_environment_config.except('use_discovery_middleware')
+          expect(configuration.use_discovery_middleware?).to be_false
         end
       end
     end
 
-    describe '#include_alps_middleware' do
+    describe '#use_alps_middleware?' do
       context 'when configured' do
         it 'returns true when configured value is true' do
-          expect(configuration.include_alps_middleware?).to be_true
+          expect(configuration.use_alps_middleware?).to be_true
         end
 
         it 'returns false when configured value is false' do
-          @config = example_environment_config.merge({ 'include_alps_middleware' => false })
-          expect(configuration.include_alps_middleware?).to be_false
+          @config = example_environment_config.merge({ 'use_alps_middleware' => false })
+          expect(configuration.use_alps_middleware?).to be_false
         end
       end
 
       context 'when not configured' do
         it 'returns false' do
-          @config = example_environment_config.except('include_alps_middleware')
-          expect(configuration.include_alps_middleware?).to be_false
+          @config = example_environment_config.except('use_alps_middleware')
+          expect(configuration.use_alps_middleware?).to be_false
         end
       end
     end

@@ -4,9 +4,9 @@ common: &common
   discovery_base_uri: <%= configured.discovery_base_uri || 'http://localhost:7000' %>
   documentation_base_uri: <%= configured.documentation_base_uri || 'http://example.org' %>
   crichton_proxy_base_uri: <%= configured.crichton_proxy_base_uri || 'http://localhost:3000/crichton' %>
-  include_alps_middleware: <%= configured.include_alps_middleware || true %>
+  use_alps_middleware: <%= configured.use_alps_middleware || true %>
   alps_profile_response_expiry: <%= configured.alps_profile_response_expiry || 20 %>
-  include_discovery_middleware: <%= configured.include_discovery_middleware || true %>
+  use_discovery_middleware: <%= configured.use_discovery_middleware || true %>
   resource_home_response_expiry: <%= configured.resource_home_response_expiry || 20 %>
   css_uri: <%= configured.css_uri %>
   js_uri: <%= configured.js_uri %>
