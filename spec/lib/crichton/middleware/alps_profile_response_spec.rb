@@ -69,7 +69,6 @@ module Crichton
       let (:registry) { Crichton::Registry.new(automatic_load: false) }
 
       before do
-        Crichton.clear_registry
         allow(Time).to receive(:new).and_return(Time.parse('Thu, 23 Jan 2014 18:00:00 GMT') )
         stub_example_configuration
         stub_configured_profiles

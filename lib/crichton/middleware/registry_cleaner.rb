@@ -6,7 +6,7 @@ module Crichton
       end
 
       def call(env)
-        Crichton.clear_registry if Rails.env.development?
+        Crichton.reset if Rails.env.development?
         @app.call(env)
       end
     end

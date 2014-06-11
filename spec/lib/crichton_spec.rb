@@ -4,7 +4,7 @@ require 'dice_bag/tasks'
 
 describe Crichton do
   before do
-    Crichton.clear_registry
+    Crichton.reset
     Crichton.clear_config
   end
 
@@ -13,7 +13,7 @@ describe Crichton do
   after do
     Crichton.clear_config
     Crichton.config_directory = File.join('spec', 'fixtures', 'config')
-    Crichton.clear_registry
+    Crichton.reset
   end
 
   describe '.descriptor_registry' do 
@@ -64,7 +64,7 @@ describe Crichton do
     end
   end
 
-  describe '.clear_registry' do
+  describe '.reset' do
     it 'clears any registered resource descriptors' do
       stub_alps_requests
       allow(Crichton).to receive(:descriptor_location).and_return(resource_descriptor_fixtures)
@@ -74,7 +74,7 @@ describe Crichton do
       # Initializes registry
       Crichton.descriptor_registry
       # Clears registry
-      Crichton.clear_registry
+      Crichton.reset
       # Don't move this up - the first time around it should use the normal mechanism
       expect(Crichton::Registry).to receive(:new).and_return(registry_obj)
       # Initialize the registry - this being called indicates that the registry was empty.

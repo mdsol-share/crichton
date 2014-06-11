@@ -21,7 +21,6 @@ module Crichton
           stub_example_configuration
           Crichton.initialize_registry(@document || drds_descriptor)
           expect(serializer.new(drds).to_media_type(conditions: 'can_do_anything')).to be_json_eql(@hale)
-          Crichton.clear_registry
         end
 
         it 'returns the resource represented as application/vnd.hale+json' do

@@ -317,7 +317,6 @@ module Crichton
 
         context 'without a state' do
           before do
-            Crichton.clear_registry
             descriptor = drds_descriptor.tap do |document|
               state = document['resources']['drd']['states']['activate']
               document['resources']['drd']['states'].clear.merge!({'default' => state })
