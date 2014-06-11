@@ -56,5 +56,8 @@ RSpec.configure do |config|
     Crichton::config_directory = File.join('spec', 'fixtures', 'config')
     Crichton.clear_registry
     Crichton.initialize_registry(drds_descriptor)
+    #TODO: Look at changing module level memoization
+    # Clears previously memoized factory classes
+    Crichton::Representor::Factory.clear_factory_classes
   end
 end
