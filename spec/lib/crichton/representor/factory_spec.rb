@@ -4,10 +4,6 @@ require 'crichton/representor/factory'
 module Crichton
   module Representor
     describe Factory do
-      before do
-        Factory.clear_factory_classes
-        register_drds_descriptor
-      end
       let(:simple_test_class) { Class.new }
       let(:target) do
         @target && @target.is_a?(Hash) ? @target : double('target').tap { |target| allow(target).to receive(:name).and_return('1812') }
