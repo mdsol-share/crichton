@@ -17,9 +17,10 @@ definition of that resource, Crichton can be implemented in a service to return 
 
 ## Usage
 * Checkout [Getting Started][]
-* Analyze resource attributes, states and associated transitions
+* [Design State-machine Resources][]
 * Design an [_API descriptor document_][] and [Lint][] it
-* Implement [Models](#models) and [Controllers](#controllers)
+* [Know your options][]
+* Implement [Models](#models) and [Controllers](#controllers) (and maybe some [Service Objects](#service-objects))
 
 ## Models<a name="models"></a>
 Any class can be represented as a resource by simply including the `Crichton::Representor` module and specifying the 
@@ -351,7 +352,9 @@ Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 [documentation]: http://rubydoc.info/github/mdsol/crichton
 [demo service]: https://github.com/fosrias/crichton-demo-service
 [Getting Started]: doc/getting_started.md
+[Design State-machine Resources]: doc/design_state_machine_resources.md
 [_API descriptor document_]: doc/api_descriptor_documents.md
+[Know your options]: doc/know_your_options.md
 [Lint]: doc/lint.md
 [\#to_media_type]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
 [supported media-types]: #supported-media-types
