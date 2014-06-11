@@ -22,6 +22,7 @@ module Crichton
   # Clears previously memoized factory classes.
   #TODO: Look at changing module level memoization
   def self.reset
+    require 'crichton/representor/factory'
     @registry = nil
     Crichton::Representor::Factory.clear_factory_classes
   end
