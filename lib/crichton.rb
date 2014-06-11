@@ -19,8 +19,11 @@ module Crichton
 
   ##
   # Clears any registered resource descriptors.
-  def self.clear_registry
+  # Clears previously memoized factory classes.
+  #TODO: Look at changing module level memoization
+  def self.reset
     @registry = nil
+    Crichton::Representor::Factory.clear_factory_classes
   end
 
   ##
@@ -90,6 +93,7 @@ module Crichton
 
   ##
   # Clears the config and config_directory so that they reset themselves.
+  #TODO: merge into reset method above: requires specs refactoring.
   def self.clear_config
     @config = nil
     @root = nil
