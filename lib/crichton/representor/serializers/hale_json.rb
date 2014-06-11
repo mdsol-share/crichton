@@ -137,7 +137,7 @@ module Crichton
       end
 
       def get_data(semantic_element, transformation)
-        Hash[semantic_element.map(&transformation).inject({}, &:deep_merge)]
+        Hash[semantic_element.map(&transformation).reduce({}, &:deep_merge)]
       end
 
       def add_embedded(base_object, options)
