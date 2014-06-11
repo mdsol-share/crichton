@@ -1,21 +1,5 @@
 # @title Data and Transition Descriptors
 
-## Contents
-- [Overview](#overview)
- - [Data Descriptors](#data-descriptors)
-  - [Data Descriptor Properties](#data-descriptor-extension-properties)
-  - [Defining Data Descriptors](#defining-data-descriptors)
- - [Transition Descriptors](#transition-descriptors)
-  - [Properties](#data-descriptor-extension-properties)
-  - [dependencies](#defining-data-descriptors)
- - [Data Descriptor Extensions](#data-descriptor-extensions)
-  - [Properties](#data-descriptor-extension-properties)
-  - [List of Supported Input Types and Validators](#list-of-supported-input-types-and-validators)
-  - [Code Examples](#code-examples)
- 	 - [Defining data descriptor extensions](#defining-data-descriptor-extensions)
- 	 - [Using data descriptor extensions and extending data descriptors as part of referenced descriptor](#using-data-descriptor-extensions-and-extending-data-descriptors-as-part-of-referenced-descriptor)
- - [External References](#external-references)
-
 # Overview
 Data and Transition Descriptors are the building blocks of [Resource Descriptors](doc/resource_descriptor.md).
 

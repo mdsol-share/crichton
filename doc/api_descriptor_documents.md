@@ -1,15 +1,4 @@
 # @title API Descriptor Documents
-## Contents
-- [Overview](#overview)
-    - [Underlying Concepts](#underlying-concepts)
-    - [Properties and Examples](#properties-and-examples)
-    - [Properties/ALPS Correlation](#properties-alps-correlation)
-    - [Profile Metadata](#profile-metadata)
-        - [Properties](#properties)
-        - [Code Example](#code-example)
-    - [Descriptor Elements](#descriptor-elements)
-    - [Crichton Lint](#crichton-lint)
-    - [Related Topics](#related-topics)
 
 # Overview
 Crichton supports hypermedia APIs. An _API Descriptor Document_ is a declarative YAML document that profiles the 

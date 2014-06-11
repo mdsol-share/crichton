@@ -1,16 +1,6 @@
 # @title Lint Validation Tool
 
-- [Overview](#overview)
- - [Invoking Crichton Lint](#invoking-crichton-lint)
-    - [Using the Crichton Lint Ruby gem executable](#using-the-crichton-lint-ruby-gem-executable)
-    - [Running Lint from Rake](#running-lint-from-rake)
- - [Using Lint with native Ruby](#using-lint-with-native-ruby)
-    - [Pure Ruby strict mode](#pure-ruby-strict-mode)
-    - [Warning Count and Error Count mode](#warning-count-and-error-count-mode)
- - [Generating RSpec files for Crichton Lint](#generating-rspec-files-for-crichton-lint)
- - [Related Topics](#related-topics)
-
-#Overview
+# Overview
 Crichton Lint lets you determine whether a resource descriptor file is well-structured and whether it meets Crichton 
 requirements. Lint validates the logic of a resource descriptor file, and it outputs errors and provides warnings and 
 hints that help you generate an optimal document.

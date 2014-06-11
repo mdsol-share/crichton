@@ -1,11 +1,4 @@
 # @title Resource Descriptors
-## Contents
-- [Overview](#overview)
-   - [Descriptors](#descriptors)
-   - [States](#states)
-       - [Properties](#state-properties)
-   - [Code Example](#code-example)
-   - [Related Topics](#related-topics)
 
 # Overview
 _Resources_ are defined by grouping individual descriptors under the `resources` tag in an API descriptor document,
