@@ -38,8 +38,16 @@ module Crichton
       @config['external_documents_store_directory'] || 'api_descriptors/external_documents_store'
     end
 
+    def include_discovery_middleware
+      @include_discovery_middleware ||= (@config['include_discovery_middleware'] === true)
+    end
+
     def resource_home_response_expiry
       @resource_home_response_expiry ||= { 'expiry' => (@config['resource_home_response_expiry'] || 20) }
+    end
+
+    def include_alps_middleware
+      @include_alps_middleware ||= (@config['include_alps_middleware'] === true)
     end
 
     def alps_profile_response_expiry

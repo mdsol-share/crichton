@@ -92,6 +92,8 @@ module Support
       config['js_uri'] = 'http://example.org/resources/js.js'
       config['resource_home_response_expiry'] = 40
       config['alps_profile_response_expiry'] = 40
+      config['include_alps_middleware'] = true
+      config['include_discovery_middleware'] = true
       config
     end
 

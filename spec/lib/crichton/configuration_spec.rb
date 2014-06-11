@@ -11,6 +11,46 @@ module Crichton
       end
     end
 
+    describe '#include_discovery_middleware' do
+      context 'when configured' do
+        it 'returns true when configured value is true' do
+          expect(configuration.include_discovery_middleware).to be_true
+        end
+
+        it 'returns false when configured value is false' do
+          @config = example_environment_config.merge({ 'include_discovery_middleware' => false })
+          expect(configuration.include_discovery_middleware).to be_false
+        end
+      end
+
+      context 'when not configured' do
+        it 'returns false' do
+          @config = example_environment_config.except('include_discovery_middleware')
+          expect(configuration.include_discovery_middleware).to be_false
+        end
+      end
+    end
+
+    describe '#include_alps_middleware' do
+      context 'when configured' do
+        it 'returns true when configured value is true' do
+          expect(configuration.include_alps_middleware).to be_true
+        end
+
+        it 'returns false when configured value is false' do
+          @config = example_environment_config.merge({ 'include_alps_middleware' => false })
+          expect(configuration.include_alps_middleware).to be_false
+        end
+      end
+
+      context 'when not configured' do
+        it 'returns false' do
+          @config = example_environment_config.except('include_alps_middleware')
+          expect(configuration.include_alps_middleware).to be_false
+        end
+      end
+    end
+
     describe '#resource_home_response_expiry' do
       context 'when configured' do
         it 'returns the resource home response expiry' do
