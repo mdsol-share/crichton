@@ -4,11 +4,11 @@ module Crichton
   module Helpers
     module ConfigHelper
       def config
-        @config = Crichton.config
+        Crichton.config
       end
 
       def logger
-        @logger = Crichton.logger
+        Crichton.logger
       end
     end
   end
