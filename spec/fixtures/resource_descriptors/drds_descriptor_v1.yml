@@ -1,7 +1,7 @@
 id: DRDs
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
-  profile: DRDs
+  self: DRDs
   help: Things/DRDs
 
 semantics:

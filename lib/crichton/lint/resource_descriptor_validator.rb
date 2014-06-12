@@ -14,6 +14,8 @@ module Crichton
 
         check_for_top_level_properties
 
+        check_for_top_level_properties_values
+
         #6 save off resource names, major foobar if no secondary resources are found
         add_error('catastrophic.no_secondary_descriptors') if secondary_descriptors.empty?
       end
@@ -34,8 +36,15 @@ module Crichton
       def check_for_top_level_properties
         add_error('catastrophic.missing_main_id') unless resource_descriptor.id
         add_error('profile.missing_doc') unless resource_descriptor.doc
-        add_error('profile.missing_self') unless resource_descriptor.links['profile'].href
-        add_error('profile.missing_help') unless resource_descriptor.links['help'].href
+        add_error('profile.missing_self') unless resource_descriptor.links['self'].present?
+        add_error('profile.missing_help') unless resource_descriptor.links['help'].present?
+      end
+
+      def check_for_top_level_properties_values
+        %w(self help).each do |property|
+          link = resource_descriptor.links[property]
+          add_error("profile.missing_#{property}_value") unless link.present? && !link.href.empty?
+        end
       end
     end
   end

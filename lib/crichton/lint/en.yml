@@ -13,6 +13,8 @@ en:
     missing_doc: "Tops level doc property is missing"
     missing_self: "Top level links:self property is missing"
     missing_help: "Top level links:help property is missing"
+    missing_self_value: "Top level self property is missing value"
+    missing_help_value: "Top level help property is missing value"
   states:
     empty_missing_next: "Empty next property defined for resource '%{resource}' in state '%{state}', transition '%{transition}'"
     no_resource_states: "No state defined for resource '%{resource}'"

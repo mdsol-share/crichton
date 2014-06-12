@@ -55,8 +55,8 @@ module Crichton
       #
       # @return [Crichton::Descriptor::Link] The link.
       def profile_link
-        @descriptors[:profile_link] ||= if self_link = links['profile']
-        Crichton::Descriptor::Link.new(self, 'profile', self_link.absolute_href)
+        @descriptors[:profile_link] ||= if self_link = links['self']
+          Crichton::Descriptor::Link.new(self, 'profile', self_link.absolute_href)
         end
       end
 
