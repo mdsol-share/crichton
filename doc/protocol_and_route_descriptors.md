@@ -1,18 +1,24 @@
-# @title Protocol and Routes Descriptors
+# @title Protocol and Route Descriptors
 
 ## Overview
+[_API Descriptor Documents_] include metadata associated with protocol specific implementations and an OPTIONAL routes
+section that in the future will be used to scaffold applications.
 
 ## Protocol Descriptors
 Protocol descriptors define the protocol-specific implementation of the transitions defined semantically for the 
-resource(s) in the _API Descriptor Document_. Currently, only the `http` protocol is implemented. You must define protocol descriptors using the "[protocol name]_protocol_" naming convention. For example, 'http_protocol', 'tcp_protocol', and so on.
+resource(s) in the _API Descriptor Document_. Currently, only the `http` protocol is implemented. You must define 
+protocol descriptors using the "[protocol name]_protocol_" naming convention. For example, 'http_protocol', 
+'tcp_protocol', and so on.
 
 ### Properties
 The following bullets highlight the properties of supported protocol descriptors.
 
 #### HTTP Properties
 HTTP protocol properties include the following:
+
 - \[transition\] - The implemented transition relative to a specific transition descriptor.
-   - `uri` - Required. The URI of an endpoint. If templated, the object being represented must contain an attribute with the templated parameter(s).
+   - `uri` - Required. The URI of an endpoint. If templated, the object being represented must contain an attribute 
+   with the templated parameter(s).
    - `method` - Required. The uniform interface method; for example, GET, POST, or DELETE.
    - `headers` - Optional. An array of headers to be set on responses.
    - `slt` - Optional. The Service Level Target (SLT) for the endpoint.
@@ -21,13 +27,15 @@ HTTP protocol properties include the following:
       - `requests_per_second` - Required if there is an SLT. The load the SLT is valid at.
 
 ### Dependencies
-Route descriptors are directly related to [Transition Descriptors](transition_descriptors.md) in a 
-_Resource Descriptor_. Thus a protocol descriptor must:
+Protocol descriptors are directly related to [Transition Descriptors][] in a [Resource Descriptor][]. Thus a protocol 
+descriptor must:
+
 - Correspond to a supported protocol.
-- Correspond to transition descriptors associated with a resource profile in the _Resource Descriptor_.
+- Correspond to transition descriptors associated with a resource profile in the [Resource Descriptor].
 
 ### Code Example
-The following example highlights a few parts of the [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml) `descriptors` section. Some material is removed for simplicity. 
+The following example highlights a few parts of the [Example API Descriptor Document][] `descriptors` section. Some 
+material is removed for simplicity. 
 
 ```yaml
 http_protocol:
@@ -49,6 +57,7 @@ an application that is associated with _Resource Desciptors_ transitions. Route 
 
 ### Properties
 Route descriptor properties include the following:
+
 - `routes` - Optional. Indicates the routes descriptor section. 
  - \[alps_id\] - A YAML key that is the unique ID of the associated ALPS profile.
    - \[transition\] - The transition that is implemented and is related to a specific transition descriptor.
@@ -56,8 +65,8 @@ Route descriptor properties include the following:
       - `action` - Optional. The name of the associated method in the controller.
 
 ### Dependencies
-Route Descriptors are directly related to [Data Descriptors](data_descriptors.md) and
-[Transition Descriptors](transition_descriptors.md) in a _Resource Descriptor_. Thus, a route descriptor must:
+Route Descriptors are directly related to [Data and Transition Descriptors][] and in a [Resource Descriptor][]. 
+Thus, a route descriptor must:
 
 - Have a related Semantic Data Descriptor whose ID - the YAML key - is the same as the YAML keys immediately
 following the `routes` key.
@@ -65,8 +74,8 @@ following the `routes` key.
 following the `Data Descriptor` keys.
 
 ### Code Example
-The following example highlights a few parts of the [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml) `routes` section. In-line comments
-are expounded in the structure and some material is removed for simplicity (indicated by # ...). 
+The following example highlights a few parts of the [Example API Descriptor Document][] `routes` section. In-line 
+comments are expounded in the structure and some material is removed for simplicity (indicated by # ...). 
 
 ```yaml
 routes:
@@ -81,5 +90,11 @@ routes:
 ```
 
 ## Related Topics
-- [Back to API Descriptor Document](api_descriptor_documents)
-- [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
+- [Back to API Descriptor Document](api_descriptor_documents.md)
+- [Example API Descriptor Document][]
+
+[_API Descriptor Documents_]: api_descriptor_documents.md
+[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Data and Transition Descriptors]: data_and_transition_descriptors.md
+[Resource Descriptor]: resource_descriptors.md
+[Transition Descriptors]: data_and_transition_descriptors.md#transition-descriptors

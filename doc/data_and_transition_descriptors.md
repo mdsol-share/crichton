@@ -1,25 +1,9 @@
 # @title Data and Transition Descriptors
 
-## Contents
-- [Overview](#overview)
- - [Data Descriptors](#data-descriptors)
-  - [Data Descriptor Properties](#data-descriptor-extension-properties)
-  - [Defining Data Descriptors](#defining-data-descriptors)
- - [Transition Descriptors](#transition-descriptors)
-  - [Properties](#data-descriptor-extension-properties)
-  - [dependencies](#defining-data-descriptors)
- - [Data Descriptor Extensions](#data-descriptor-extensions)
-  - [Properties](#data-descriptor-extension-properties)
-  - [List of Supported Input Types and Validators](#list-of-supported-input-types-and-validators)
-  - [Code Examples](#code-examples)
- 	 - [Defining data descriptor extensions](#defining-data-descriptor-extensions)
- 	 - [Using data descriptor extensions and extending data descriptors as part of referenced descriptor](#using-data-descriptor-extensions-and-extending-data-descriptors-as-part-of-referenced-descriptor)
- - [External References](#external-references)
-
 # Overview
 Data and Transition Descriptors are the building blocks of [Resource Descriptors](doc/resource_descriptor.md).
 
-## Data Descriptors
+## Data Descriptors<a name="data-descriptors"></a>
 Data descriptors define the semantics, or vocabulary, of the data-related attributes of a resource and/or the semantics 
 of the data associated with 'forms' in transitions that either template queries for a `safe` transition or template 
 bodies in `unsafe` and `idempotent` transitions.
@@ -36,8 +20,7 @@ of the resource.
    descriptor as the default name. 
    * `type` - OPTIONAL. The type of the descriptor. For data-related descriptors, only use `semantic`. When you group 
    data descriptors under `semantics` or `parameters` tags, the underlying `type` is `semantic`. 
-   * `href` - REQUIRED. The underlying ALPS profile, which either represents another resource or a primitive profile. 
-   See [Primitive Profiles](primitive_profiles.md) for more information. 
+   * `href` - REQUIRED. The underlying ALPS profile, which either represents another resource or a [ALPS][] profile. 
    * `sample` - RECOMMENDED. A sample data value for use in generating sample representations by media-type.
    * `embed` - Indicates that the resource should be embedded in a response either inline or as a link.
       Valid values for `embed` include the following:
@@ -60,13 +43,15 @@ of the resource.
 
 You can define all data descriptors grouped under the top-level `semantics` element; however, it is not a requirement. 
 You can define data descriptors as child descriptors of transition elements. Data descriptors under the `parameters` 
-tag of the transition element define templated url properties. Data descriptors under the `semantics` tag of the 
+tag of a transition element define templated url properties. Data descriptors under the `semantics` tag of a 
 transition element define template bodies.
+
 Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` 
 and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. Thus, 
 you can use `data` and `semantics` elements interchangeably. See the examples below.
 
-### Data Descriptor Examples
+### Examples
+
 #### Data descriptors defined under top-level `semantics` element
 The following example highlights a few parts of the [Example API Descriptor Document][] `semantics` section associated
 with data descriptors.
@@ -144,9 +129,9 @@ corresponding top-level element.
     - `rt` - Required. The return type; enter as an absolute or relative URI to an ALPS profile.
 
 ### Dependencies
-Transition descriptors relate directly to elements in the [Protocol Descriptors](protocol_descriptors.md) and to the 
-states section of [Resource Descriptors](resource_descriptors.md#states). These sections indicate implementation details 
-of the transtions. Thus, dependencies for a transition descriptor include the following:
+Transition descriptors relate directly to elements in the [Protocol Descriptors][] and to the states section of 
+[Resource Descriptors](resource_descriptors.md#states). These sections indicate implementation details 
+of the transitions. Thus, dependencies for a transition descriptor include the following:
 
 - Must have a related Protocol Descriptor whose ID - the YAML key - is the same as some transition.
 - Must use a `name` property to override the associated name of the affordance as implemented in a specific media-type.
@@ -156,7 +141,7 @@ media-type if the ID of the descriptor is not the required semantic of the descr
 
 ### Code Example
 The following example highlights a few parts of the 
-[Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml) sections associated with 
+[Example API Descriptor Document][] sections associated with 
 transition descriptors and any related data descriptors. In-line comments are expounded in the structure and some 
 material is removed for simplicity, indicated by # ... . 
 
@@ -215,13 +200,12 @@ You can use extensions to augment data descriptor elements with specific informa
 options, as well as validators.
 
 Extensions are grouped under the top-level `extensions` element. The data descriptor extensions section is OPTIONAL, 
-so you can omit it in the API Descriptor Document. However, you can still define extensions as part of referenced data descriptor elements. See the [Code Examples](#code-examples) below.
+so you can omit it in the API Descriptor Document. However, you can still define extensions as part of referenced data 
+descriptor elements. See the [Code Examples](#code-examples) below.
 
 ### Properties
-You can ssign the following properties to extensions. 
-NOTE: You can only have one of the `list`, `hash`, or `external` properties. This applies also for `href` entries that 
-you include. In the case of `external`, the `source` element can contain a link to an external resource or method to 
-call on a target object. If `source` is a link to an external resource, you must include `prompt` and `target` elements.
+You can assign the following properties to extensions:
+
 - `options` - Provides a list of possible values for a select list or similar use. Below this key, you can use the 
 following. All are OPTIONAL, but it is best practice to include as many as apply.
 	- `id` - Can be used to reference a particular list and to include its values in another value's entry.
@@ -236,11 +220,15 @@ following. All are OPTIONAL, but it is best practice to include as many as apply
 	[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
 	- `validators` - OPTIONAL. Hash of validator objects associated with a field.
 
+NOTE: You can only have one of the `list`, `hash`, or `external` properties. This applies also for `href` entries that 
+you include. In the case of `external`, the `source` element can contain a link to an external resource or method to 
+call on a target object. If `source` is a link to an external resource, you must include `prompt` and `target` elements.
+
 ### List of Supported Input Types and Validators
 The following table lists the supported input types and the validators that you can apply to them.
 
 | Input types / attributes | required | pattern | maxlength | min/max |
-|:----------------:|:----------:|:---------:|:-----------:|:---------:|
+|:------------------------:|:--------:|:-------:|:---------:|:-------:|
 | text           | x        | x       | x         |         |
 | search         | x        | x       |           |         |
 | email          | x        | x       |           |         |
@@ -323,7 +311,12 @@ idempotent:
     parameters:
       - href: name
         ext: _update_name
+```
 
 ## Related Topics
-- [Back to API Descriptor Document](api_descriptor_documents.md)
-- [Example API Descriptor Document](.../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
+- [Back to API Descriptor Documents](api_descriptor_documents.md)
+- [Example API Descriptor Document][]
+
+[Protocol Descriptors]: protocol_and_route_descriptors.md#protocol-descriptors
+[ALPS]: http://alps.io/spec/index.html
+[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml

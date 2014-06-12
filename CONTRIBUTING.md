@@ -34,7 +34,7 @@ As such, the following are some guidelines to think about as you code:
 ## Pull Requests
 * Make your feature addition or bug fix that conforms to the [style guide](https://github.com/mdsol/ruby-style-guide).
 * Add pertinent [YARD](http://yardoc.org/guides/index.html) documentation and check that it is correctly formatted by 
-running `$ rake doc:yard` locally.
+running `$ bundle exec rake doc:yard` locally.
 * Add specs for it. This is important so future versions don't break it unintentionally.
 * Send a pull request.
 * For a proposed version bump, update the CHANGELOG.
