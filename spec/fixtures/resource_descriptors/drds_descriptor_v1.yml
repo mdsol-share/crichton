@@ -222,6 +222,8 @@ resources:
     states:
       collection:
         doc: The entry point state for interacting with DRDs.
+        response_headers:
+          Cache-Control: no-cache
         transitions:
           list:
             name: self

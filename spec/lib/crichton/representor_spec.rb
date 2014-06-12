@@ -432,14 +432,26 @@ module Crichton
       end
 
       describe '#response_headers' do
+        let(:attributes) { { @state_method => @state } }
         before do
           @state_method = 'my_state_method'
+          @state = 'collection'
         end
 
         it 'returns empty hash if not response headers are specified' do
           @resource_name = 'drd'
-          attributes = { 'my_state_method' => 'activated' }
+          @state = 'activated'
           expect(simple_test_class.new(attributes).response_headers).to be_empty
+        end
+
+        it 'returns non empty response headers hash if specified' do
+          @resource_name = 'drds'
+          expect(simple_test_class.new(attributes).response_headers).to have(1).item
+        end
+
+        it 'returns response headers hash if specified' do
+          @resource_name = 'drds'
+          expect(simple_test_class.new(attributes).response_headers).to eq({ 'Cache-Control' => 'no-cache' })
         end
       end
 
