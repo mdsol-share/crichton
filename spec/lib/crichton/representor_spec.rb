@@ -53,7 +53,7 @@ module Crichton
 
       describe '.link_transition_descriptors' do
         it 'returns the filtered list of link transition descriptors mapped by name' do
-          expect(simple_test_class.link_transition_descriptors.first.name).to eq('self')
+          expect(simple_test_class.link_transition_descriptors.first.name).to eq('list')
         end
       end
 
@@ -268,7 +268,7 @@ module Crichton
         shared_examples_for 'a filtered list of transitions' do
           context 'with :only option' do
             before do
-              @options = {only: [:self, :leviathan]}
+              @options = {only: [:show, :leviathan]}
             end
 
             it 'returns only the specified transition descriptors' do
@@ -284,7 +284,7 @@ module Crichton
 
           context 'with :exclude option' do
             before do
-              @options = {exclude: [:self, :leviathan]}
+              @options = {exclude: [:show, :leviathan]}
             end
 
             it 'excludes all the transition descriptors that were specified' do
@@ -300,7 +300,7 @@ module Crichton
 
           context 'with :except option' do
             before do
-              @options = {except: [:self, :leviathan]}
+              @options = {except: [:show, :leviathan]}
             end
 
             it 'excludes all the transition descriptors that were specified' do
@@ -411,6 +411,23 @@ module Crichton
         it 'returns the metadata links associated with the represented resource' do
           @resource_name = 'drds'
           expect(simple_test_class.new.metadata_links.map(&:rel)).to eq(%w(profile type help))
+        end
+      end
+
+      describe '#self_transition' do
+        let(:subject) { simple_test_class.new.self_transition(options) }
+        before do
+          @resource_name = 'drds'
+          @state = 'collection'
+          @conditions = :can_do_anything
+        end
+
+        it 'returns decorated transition descriptor' do
+          expect(subject).to be_a(Crichton::Descriptor::TransitionDecorator)
+        end
+
+        it 'returns the name of the self transition' do
+          expect(subject.name).to eq('self')
         end
       end
 

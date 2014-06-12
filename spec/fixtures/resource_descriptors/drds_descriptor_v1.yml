@@ -96,7 +96,6 @@ extensions:
 safe:
   list:
     doc: Returns a list of DRDs.
-    name: self
     rt: drds
   search:
     doc: Returns a list of DRDs that satisfy the search term.
@@ -111,7 +110,6 @@ safe:
 
   show:
     doc: Shows a particular DRD.
-    name: self
     rt: drd
   leviathan-link:
     name: leviathan

@@ -1,4 +1,5 @@
 require 'active_support/concern'
+require 'crichton/descriptor/descriptor_keywords'
 require 'crichton/representor/serialization/media_type'
 require 'crichton/descriptor/additional_transition'
 
@@ -149,8 +150,12 @@ module Crichton
     # Find and return the self transition
     #
     # @return [Hash] The data.
-    def self_transition
-      @_self_transition ||= Crichton.descriptor_registry[self.class.resource_name].self_transition.decorate(self, {})
+    def self_transition(options = {})
+      @_self_transition ||= begin
+        each_enumerator(:link, :transition, options) do |transition|
+          return transition if transition.name == 'self'
+        end
+      end
     end
 
     def response_headers
