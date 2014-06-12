@@ -429,6 +429,10 @@ module Crichton
         it 'returns the name of the self transition' do
           expect(subject.name).to eq('self')
         end
+
+        it 'returns the id of the self transition' do
+          expect(subject.id).to eq('list')
+        end
       end
 
       describe '#response_headers' do
