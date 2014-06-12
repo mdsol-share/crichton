@@ -29,10 +29,13 @@ The following defines the configuration properties:
 * `discovery_base_uri` - The base URI for a discovery service that Crichton will publish entry points to.
 * `documentation_base_uri` - The base URI for any hosted external documentation referenced as relative paths in an
 [_API Descriptor Document_][].
+* `use_alps_middleware` - Rails only. Whether or not to autoload middleware to support rendering local ALPS profiles.
 * `alps_profile_response_expiry` - Configures the expiry of ALPS middleware that serves ALPS profiles directly from
 the service.
-* `resource_home_response_expiry` - Configures the expiry of resource entry point middleware that serves a catalogue of
- resource entry points served directly from the service. 
+* `use_discovery_middleware` - Rails only. Whether or not to autoload middleware to support rendering local resource
+catalogue of entry points.
+* `resource_home_response_expiry` - Configures the expiry of resource entry point middleware that 
+serves a catalogue of resource entry points served directly from the service. 
 * `crichton_proxy_base_uri` - URI to use to capture and proxy AJAX requests to related resources when surfing an 
 API in browser. Allows an application to proxy the request for authentication/authorization.
 * `css_uri` - The fully-qualified URI for a CSS file to use when surfing an API in a browser. 
@@ -101,7 +104,7 @@ $ curl -v --header "Accept: application/alps+xml" http://example.com/alps/DRDs
 
 The following are acceptable media types and the content type set in the response header
 
-* html - application/xml 
+* html (text/html, for surfing ALPS Profiles in a browser) - application/xml 
 * alps_xml - application/alps+xml
 * alps_json - application/alps+json
 
