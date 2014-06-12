@@ -180,7 +180,7 @@ module Crichton
           it 'raises an error when a corresponding descriptor is not found' do
             @name = 'name2'
             expect{ dereferenced_hash }.to raise_error(Crichton::DescriptorNotFoundError,
-              /Check if a 'name2' descriptor exists in 'DRDs' API document, or if a descriptor key, name, or href is misspelled*/)
+              /Check if a 'name2' descriptor exists in 'DRDs' API document, or if a descriptor key, name, or href is misspelled.*/)
           end
         end
 

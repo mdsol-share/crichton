@@ -107,7 +107,7 @@ module Crichton
         else
           doc_id, name = key.split('#')
           raise(Crichton::DescriptorNotFoundError,
-            "Check if a '#{name}' descriptor exists in '#{doc_id}' API document, or if a descriptor key, name, or href is misspelled")
+            "Check if a '#{name}' descriptor exists in '#{doc_id}' API document, or if a descriptor key, name, or href is misspelled.")
         end
       end
 
