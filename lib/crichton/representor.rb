@@ -1,5 +1,4 @@
 require 'active_support/concern'
-require 'crichton/descriptor/descriptor_keywords'
 require 'crichton/representor/serialization/media_type'
 require 'crichton/descriptor/additional_transition'
 
