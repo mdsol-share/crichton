@@ -426,11 +426,11 @@ module Crichton
           expect(subject).to be_a(Crichton::Descriptor::TransitionDecorator)
         end
 
-        it 'returns the name of the self transition' do
+        it 'returns the transition with the name self' do
           expect(subject.name).to eq('self')
         end
 
-        it 'returns the id of the self transition' do
+        it 'returns the transition with id of the specified self transition' do
           expect(subject.id).to eq('list')
         end
       end

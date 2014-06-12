@@ -41,10 +41,8 @@ module Crichton
       end
 
       def check_for_top_level_properties_values
-        %w(self help).each do |property|
-          link = resource_descriptor.links[property]
-          add_error("profile.missing_#{property}_value") unless link.present? && !link.href.empty?
-        end
+        link = resource_descriptor.links['self']
+        add_error("profile.missing_self_value") unless link.present? && !link.href.empty?
       end
     end
   end
