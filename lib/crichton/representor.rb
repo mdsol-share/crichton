@@ -150,10 +150,8 @@ module Crichton
     #
     # @return [Hash] The data.
     def self_transition(options = {})
-      @_self_transition ||= begin
-        each_enumerator(:link, :transition, options) do |transition|
-          return transition if transition.name == 'self'
-        end
+      @_self_transition ||= each_enumerator(:link, :transition, options) do |transition|
+        return transition if transition.name == 'self'
       end
     end
 
