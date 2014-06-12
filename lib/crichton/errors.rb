@@ -12,4 +12,5 @@ module Crichton
 
   class TargetMethodResponseError < StandardError; end
 
+  class DescriptorNotFoundError < StandardError; end
 end

@@ -102,8 +102,13 @@ module Crichton
       end
 
       def raw_registry_lookup(key, registry, dereferenced_hash, &block)
-        descriptor_element = registry.raw_descriptors[key]
-        descriptor_element ? descriptor_element.dereference(registry, dereferenced_hash, &block) : {}
+        if descriptor_element = registry.raw_descriptors[key]
+          descriptor_element.dereference(registry, dereferenced_hash, &block)
+        else
+          doc_id, name = key.split('#')
+          raise(Crichton::DescriptorNotFoundError,
+            "Check if a '#{name}' descriptor exists in '#{doc_id}' API document, or if a descriptor key, name, or href is misspelled.")
+        end
       end
 
       def resolve_href(registry, dereferenced_hash)

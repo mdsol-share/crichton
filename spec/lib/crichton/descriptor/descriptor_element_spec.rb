@@ -22,7 +22,7 @@ module Crichton
             }),
             'DRDs#create' => DescriptorElement.new('DRDs', 'create', {
                 'type' => 'unsafe', 'href' => @update,
-                'descriptors' => [{ 'href' => 'name', 'ext' => '_create_name' }]
+                'descriptors' => [{ 'href' => (@name || 'name'), 'ext' => '_create_name' }]
             }),
             'DRDs#_create_name' => DescriptorElement.new('DRDs', '_create_name', {
                 'doc' => 'Create name', 'field_type' => 'text',
@@ -176,6 +176,12 @@ module Crichton
           end
 
           it_behaves_like 'dereferencing href'
+
+          it 'raises an error when a corresponding descriptor is not found' do
+            @name = 'name2'
+            expect{ dereferenced_hash }.to raise_error(Crichton::DescriptorNotFoundError,
+              /Check if a 'name2' descriptor exists in 'DRDs' API document, or if a descriptor key, name, or href is misspelled.*/)
+          end
         end
 
         context 'when dereferencing external href' do
