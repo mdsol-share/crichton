@@ -430,16 +430,6 @@ module Crichton
         it 'returns the transition with id of the specified self transition' do
           expect(subject.id).to eq('list')
         end
-
-        it 'raises an error when no self transition defined for the resource' do
-          Crichton.reset
-          document = drds_descriptor.tap do |doc|
-            doc['resources']['drds']['states']['collection']['transitions']['list'].except!('name')
-          end
-          Crichton.initialize_registry(document)
-          expect { subject }.to raise_error(Crichton::SelfTransitionNotFoundError,
-            /^Transition 'self' has not been found in 'states' section for 'drds' resource./)
-        end
       end
 
       describe '#response_headers' do
@@ -462,6 +452,12 @@ module Crichton
 
         it 'returns response headers hash if specified' do
           expect(simple_test_class.new(attributes).response_headers).to eq({ 'Cache-Control' => 'no-cache' })
+        end
+
+        it 'returns empty hash if self transition is nil' do
+          subject = simple_test_class.new(attributes)
+          subject.stub(:self_transition).and_return(nil)
+          expect(subject.response_headers).to be_empty
         end
       end
 
