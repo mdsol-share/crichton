@@ -13,6 +13,4 @@ module Crichton
   class TargetMethodResponseError < StandardError; end
 
   class DescriptorNotFoundError < StandardError; end
-
-  class SelfTransitionNotFoundError < StandardError; end
 end
