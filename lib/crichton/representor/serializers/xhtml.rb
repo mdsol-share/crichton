@@ -346,11 +346,12 @@ module Crichton
           @markup_builder.li { super }
         end
 
+        #TODO: look into removing as_link method.
         def add_embedded_object(object, options, semantic)
           @markup_builder.li do
             case semantic.embed_type(options)
             when :link
-              object.as_link(@media_type, options)
+              object.as_link(@media_type, options) if object.self_transition
             when :embed
               object.as_media_type(@media_type, options)
             end

@@ -53,7 +53,7 @@ module Crichton
 
       describe '.link_transition_descriptors' do
         it 'returns the filtered list of link transition descriptors mapped by name' do
-          expect(simple_test_class.link_transition_descriptors.first.name).to eq('self')
+          expect(simple_test_class.link_transition_descriptors.first.name).to eq('list')
         end
       end
 
@@ -102,10 +102,6 @@ module Crichton
     end
 
     context 'with_registered resource descriptor' do
-      before do
-        Crichton.initialize_registry(drds_descriptor)
-      end
-
       describe '#each_data_semantic' do
         let(:data_semantics) do
           simple_test_class.new(@attributes).each_data_semantic(@options).inject({}) do |h, descriptor| 
@@ -268,7 +264,7 @@ module Crichton
         shared_examples_for 'a filtered list of transitions' do
           context 'with :only option' do
             before do
-              @options = {only: [:self, :leviathan]}
+              @options = {only: [:show, :leviathan]}
             end
 
             it 'returns only the specified transition descriptors' do
@@ -284,7 +280,7 @@ module Crichton
 
           context 'with :exclude option' do
             before do
-              @options = {exclude: [:self, :leviathan]}
+              @options = {exclude: [:show, :leviathan]}
             end
 
             it 'excludes all the transition descriptors that were specified' do
@@ -300,7 +296,7 @@ module Crichton
 
           context 'with :except option' do
             before do
-              @options = {except: [:self, :leviathan]}
+              @options = {except: [:show, :leviathan]}
             end
 
             it 'excludes all the transition descriptors that were specified' do
@@ -414,15 +410,54 @@ module Crichton
         end
       end
 
+      describe '#self_transition' do
+        let(:subject) { simple_test_class.new.self_transition(options) }
+
+        before do
+          @resource_name = 'drds'
+          @state = 'collection'
+          @conditions = :can_do_anything
+        end
+
+        it 'returns decorated transition descriptor' do
+          expect(subject).to be_a(Crichton::Descriptor::TransitionDecorator)
+        end
+
+        it 'returns the transition with the name self' do
+          expect(subject.name).to eq('self')
+        end
+
+        it 'returns the transition with id of the specified self transition' do
+          expect(subject.id).to eq('list')
+        end
+      end
+
       describe '#response_headers' do
+        let(:attributes) { { @state_method => @state } }
         before do
           @state_method = 'my_state_method'
+          @state = 'collection'
+          @resource_name = 'drds'
         end
 
         it 'returns empty hash if not response headers are specified' do
           @resource_name = 'drd'
-          attributes = { 'my_state_method' => 'activated' }
+          @state = 'activated'
           expect(simple_test_class.new(attributes).response_headers).to be_empty
+        end
+
+        it 'returns non empty response headers hash if specified' do
+          expect(simple_test_class.new(attributes).response_headers).to have(1).item
+        end
+
+        it 'returns response headers hash if specified' do
+          expect(simple_test_class.new(attributes).response_headers).to eq({ 'Cache-Control' => 'no-cache' })
+        end
+
+        it 'returns empty hash if self transition is nil' do
+          subject = simple_test_class.new(attributes)
+          subject.stub(:self_transition).and_return(nil)
+          expect(subject.response_headers).to be_empty
         end
       end
 

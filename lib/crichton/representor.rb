@@ -149,12 +149,14 @@ module Crichton
     # Find and return the self transition
     #
     # @return [Hash] The data.
-    def self_transition
-      @_self_transition ||= Crichton.descriptor_registry[self.class.resource_name].self_transition.decorate(self, {})
+    def self_transition(options = {})
+      @self_transition ||= each_enumerator(:link, :transition, options) do |transition|
+        return transition if transition.name == 'self'
+      end
     end
 
     def response_headers
-      @response_headers ||= self_transition.response_headers
+      @response_headers ||= self_transition ? self_transition.response_headers : {}
     end
 
     ##
