@@ -23,20 +23,10 @@ module Crichton
       # The nested descriptors.
       #
       # @return [Array] The descriptor instances.
-
-      def self_transition
-        descriptors unless @self_transition
-        @self_transition
-      end
-
       def descriptors
         @descriptors[:all] ||= begin
           doc = descriptor_document[Crichton::Descriptor::TAG] || {}
-          doc.keys.map do |id|
-            descriptor = Detail.new(resource_descriptor, self, id)
-            @self_transition = descriptor if descriptor.name == 'self' && descriptor.transition?
-            descriptor
-          end.freeze
+          doc.keys.map { |id| Detail.new(resource_descriptor, self, id) }
         end
       end
 
