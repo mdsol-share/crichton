@@ -150,15 +150,13 @@ module Crichton
     #
     # @return [Hash] The data.
     def self_transition(options = {})
-      @_self_transition ||= each_enumerator(:link, :transition, options) do |transition|
+      @self_transition ||= each_enumerator(:link, :transition, options) do |transition|
         return transition if transition.name == 'self'
-        raise(Crichton::SelfTransitionNotFoundError,
-          "Transition 'self' has not been found in 'states' section for '#{self.class.resource_name}' resource.")
       end
     end
 
     def response_headers
-      @response_headers ||= self_transition.response_headers
+      @response_headers ||= self_transition ? self_transition.response_headers : {}
     end
 
     ##
