@@ -102,10 +102,6 @@ module Crichton
     end
 
     context 'with_registered resource descriptor' do
-      before do
-        Crichton.initialize_registry(drds_descriptor)
-      end
-
       describe '#each_data_semantic' do
         let(:data_semantics) do
           simple_test_class.new(@attributes).each_data_semantic(@options).inject({}) do |h, descriptor| 
@@ -416,6 +412,7 @@ module Crichton
 
       describe '#self_transition' do
         let(:subject) { simple_test_class.new.self_transition(options) }
+
         before do
           @resource_name = 'drds'
           @state = 'collection'
@@ -433,6 +430,16 @@ module Crichton
         it 'returns the transition with id of the specified self transition' do
           expect(subject.id).to eq('list')
         end
+
+        it 'raises an error when no self transition defined for the resource' do
+          Crichton.reset
+          document = drds_descriptor.tap do |doc|
+            doc['resources']['drds']['states']['collection']['transitions']['list'].except!('name')
+          end
+          Crichton.initialize_registry(document)
+          expect { subject }.to raise_error(Crichton::SelfTransitionNotFoundError,
+            /^Transition 'self' has not been found in 'states' section for 'drds' resource./)
+        end
       end
 
       describe '#response_headers' do
@@ -440,6 +447,7 @@ module Crichton
         before do
           @state_method = 'my_state_method'
           @state = 'collection'
+          @resource_name = 'drds'
         end
 
         it 'returns empty hash if not response headers are specified' do
@@ -449,12 +457,10 @@ module Crichton
         end
 
         it 'returns non empty response headers hash if specified' do
-          @resource_name = 'drds'
           expect(simple_test_class.new(attributes).response_headers).to have(1).item
         end
 
         it 'returns response headers hash if specified' do
-          @resource_name = 'drds'
           expect(simple_test_class.new(attributes).response_headers).to eq({ 'Cache-Control' => 'no-cache' })
         end
       end

@@ -37,7 +37,6 @@ module Crichton
         add_error('catastrophic.missing_main_id') unless resource_descriptor.id
         add_error('profile.missing_doc') unless resource_descriptor.doc
         add_error('profile.missing_self') unless resource_descriptor.links['self'].present?
-        add_error('profile.missing_help') unless resource_descriptor.links['help'].present?
       end
 
       def check_for_top_level_properties_values
