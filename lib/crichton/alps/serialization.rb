@@ -1,5 +1,4 @@
 require 'json'
-require 'multi_json'
 require 'addressable/uri'
 require 'crichton/helpers'
 
