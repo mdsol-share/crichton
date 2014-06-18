@@ -1,7 +1,7 @@
 id: DRDs
 doc: Describes the semantics, states and state transitions associated with DRDs.
 links:
-  profile: DRDs
+  self: DRDs
   help: Things/DRDs
 
 semantics:
@@ -96,7 +96,6 @@ extensions:
 safe:
   list:
     doc: Returns a list of DRDs.
-    name: self
     rt: drds
   search:
     doc: Returns a list of DRDs that satisfy the search term.
@@ -111,7 +110,6 @@ safe:
 
   show:
     doc: Shows a particular DRD.
-    name: self
     rt: drd
   leviathan-link:
     name: leviathan
@@ -224,6 +222,8 @@ resources:
     states:
       collection:
         doc: The entry point state for interacting with DRDs.
+        response_headers:
+          Cache-Control: no-cache
         transitions:
           list:
             name: self

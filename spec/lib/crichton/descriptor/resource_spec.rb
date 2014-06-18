@@ -61,12 +61,21 @@ module Crichton
       end
 
       describe '#help_link' do
+        before do
+          stub_example_configuration
+        end
+
         it 'returns an absolute link' do
-          expect(resource_descriptor.help_link.href).to eq('http://docs.example.org/Things/DRDs')
+          expect(resource_descriptor.help_link.href).to eq('http://documentation.example.org/Things/DRDs')
         end
 
         it 'returns a link with the name profile' do
           expect(resource_descriptor.help_link.name).to eq('help')
+        end
+
+        it 'returns configured documentation based uri' do
+          resource_descriptor.descriptor_document['links']['help'] = nil
+          expect(resource_descriptor.help_link.href).to eq('http://documentation.example.org/')
         end
       end
 

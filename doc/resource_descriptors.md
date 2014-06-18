@@ -1,39 +1,48 @@
 # @title Resource Descriptors
-## Contents
-- [Overview](#overview)
- - [Descriptors Section](#descriptors-section)
- - [States Section](#states-section)
-	- [State Properties](#state-properties)
- - [Code Examples](#code-examples)
- - [External References](#external-references)
 
 # Overview
-Resources are defined by grouping individual descriptors under the `resources` tag in an API descriptor document. They
-also define the [states](#states-section) associated with the resource. The [Descriptors](#descriptors-section) 
-section also contains semantics and transition descriptors that are available for a resource. 
+_Resources_ are defined by grouping individual descriptors under the `resources` tag in an API descriptor document,
+including defining the states of the resource. 
 
-## Descriptors Section
-The `descriptors` section MAY contain a list of referenced data descriptor and transition elements. You can also define 
-semantic and transition elements as child elements grouped under the `descriptors` tag.
+```yaml
+resources:
+  drds:
+    doc: A list of DRDs
+    links:
+      profile: drds
+      help: docs/drds
+    descriptors:
+      # The descriptors comprising the resource
+    states:
+      # The states of the resource
+```
 
-## States Section
+## Descriptors <a name="descriptors"></a>
+The `descriptors` section of a resource MAY contain a list of referenced [data and transition descriptor][] elements. 
+You MAY also define `semantic` and `transition` elements as child elements grouped under the `descriptors` tag vs. at 
+the top-level of an [_API Descriptor Document_][]. However, it is a best practice to define the individual descriptors 
+at the top-level so that related ALPS profiles generated for the resources reflect individual descriptors at the 
+top-level as well.
+
+## States<a name="states"></a>
 The `states` section of a _resource_ defines the metadata for a resource's states. Crichton uses descriptors to 
-determine which transitions are available for responses. These responses are a function of the resource state and any 
+determine which transitions are rendered in responses. These responses are a function of the _resource_ state and any 
 conditions that must be satisfied for inclusion in the response. 
 
-Technically, for any resource there are an infinite number of possible states when one considers that if you change a 
+Technically, for any _resource_ there are an infinite number of possible states when one considers that if you change a 
 value of any property it produces a different resource 'state'. However, categorically, there will be a limited set of 
-states associated with a resource. These categories will be associated with different sets of possible transitions that 
-can be exercised on the resource in that state. Thus, when we talk about states in Crichton, we mean the categorical 
-states of the state machine, each state having its own set of available transitions or different permission rules for a 
-given set of transitions.
+states associated with a _resource_. These categories will be associated with different sets of possible transitions 
+that can be exercised on the _resource_ in that state. Thus, when we talk about states in Crichton, we mean the 
+categorical states of the state machine, each state having its own set of available transitions or different permission 
+rules for a given set of transitions.
 
-If a resource has only one state, the `states` section of a _resource_ must define `default` as the `state_name` 
+If a _resource_ has only one state, the `states` section of a _resource_ must define `default` as the `state_name` 
 property value. Alternately, a custom name can be used when the associated object defines a `state` 
-instance method or attribute accessor that returns the custom name.
+instance method or attribute accessor.
 
-### State Properties
-States can have the following properties.
+### Properties<a name="state-properties"></a>
+States can have the following properties:
+
 - `states` - Defines the states associated with each resource. Specified as the keys of this property. The 
 actual state names are the keys under the resource.
 	- \[state name\] The name of the state.
@@ -50,14 +59,15 @@ actual state names are the keys under the resource.
 		to be included. When you pass an option that includes a list of satisfied conditions when generating responses, 
 		Crichton can determine which state's transitions to provide in a response. These condition strings are defined 
 		in your own application's authorization logic and are passed to Crichton. The conditions in the 
-		[Code Example](#code-example) are examples only.
+		[Code Example](#code-example) are for reference only. These are basically magic strings that can be passed as 
+		`conditions` options when a response is rendered. For more information, see [Know Your Options][].		 
 		- `next` - An array of next states in the state machine that are possible when the client follows the 
 		transition. Typically, this is only one state, unless an error state is a possibility. If you have a transition 
 		that is associated with an external hash resource, use a hash with the `location` key and a value that is an 
 		ALPS-type that specifies the profile of the external resource.
 
-## Code Example
-The following example shows the Descriptors and State sections.
+## Code Example<a name="code-example"></a>
+The following example shows the `descriptors` and `states` definitions of a _resource_.
 
 ### Resource with multiple states
 ```yaml
@@ -87,7 +97,7 @@ resources:
               - navigation
           create:
             conditions:
-              - can_create 
+              - can_create # Conditions are determined in the context of a request and passed to render the response
               - can_do_anything
             next:
               - activated
@@ -131,7 +141,11 @@ resources:
               - default
 ```
 
-## Related Topics
-- [Back to API Descriptor Document](api_descriptor_documents)
+## Related Topics<a name="related-topics"></a>
+- [Back to API Descriptor Documents](api_descriptor_documents.md)
 - [Example API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
 - [Data and Transition Descriptors](data_and_transition_descriptors.md)
+
+[_API Descriptor Document_]: api_descriptor_documents.md
+[data and transition descriptor]: data_and_transition_descriptors.md
+[Know Your Options]: getting_started.md#know-your-options

@@ -8,7 +8,7 @@
 5. Scaffold applications
 6. Scaffold tests
 
-## Crichton Design Goals for API Descriptor Document
+## Design Goals<a name"design-goals"></a>
 An [API Descriptor Document](api_descriptor_documents) serves several purposes, including defining the 
 following items:
 

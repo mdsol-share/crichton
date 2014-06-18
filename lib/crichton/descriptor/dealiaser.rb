@@ -11,7 +11,7 @@ module Crichton
 
       ##
       # Recursively dealiases human-friendly tags.
-      # @param [Hash] resource_descriptor Resource descriptor document hash.
+      # @param [Hash] hash Resource descriptor document hash.
       # @return [Hash] The de-aliased descriptor document.
       def self.dealias(hash)
         hash.each_with_object({}) do |(tag, content), h|

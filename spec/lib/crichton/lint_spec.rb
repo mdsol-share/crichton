@@ -57,6 +57,12 @@ describe Crichton::Lint do
         @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
           missing_section: 'protocols', sub_header: :error)
       end
+
+      it 'reports a missing top-level self property' do
+        @descriptor = drds_descriptor.tap { |doc| doc['links'].except!('self') }
+        @errors = expected_output(:error, 'profile.missing_self', section: :catastrophic, filename: filename, sub_header: :error) <<
+            expected_output(:error, 'profile.missing_self_value')
+      end
     end
 
     context 'with the count: :error or count: :warning option' do
