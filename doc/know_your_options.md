@@ -299,6 +299,6 @@ options = { state: 'published', conditions: :is_author }
 }
 ```
 
-[_API descriptor document_]: doc/api_descriptor_documents.md
+[_API descriptor document_]: api_descriptor_documents.md
 [Service Object]: ../README.md#service-objects
 [Data and Transition Descriptors]: data_and_transition_descriptors.md#data-descriptor-properties
