@@ -80,7 +80,7 @@ describe 'rdlint' do
     it 'reports a load error' do
       @expected_rdlint_output = build_colorized_lint_output(:error, 'catastrophic.cant_load_file',
         exception_message: 'Filename /xxx/yyy is not valid.') << "\n"
-      expect(%x(bundle exec rdlint /xxx/yyy)).to eq(@expected_rdlint_output)
+      expect(%x(bundle exec rdlint /xxx/yyy)).to include(@expected_rdlint_output)
     end
   end
 

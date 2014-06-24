@@ -28,6 +28,7 @@ module Crichton
         resource_descriptor = Crichton::Descriptor::Resource.new(hash)
       rescue StandardError => e
         puts I18n.t('catastrophic.cant_load_file', exception_message: e.message).red
+        puts e.backtrace.join("\n").red
         return
       end
 
