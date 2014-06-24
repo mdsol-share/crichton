@@ -15,9 +15,42 @@ Assuming one has designed a resource as a state-machine and drafted an _API desc
 definition of that resource, Crichton can be implemented in a service to return representations for
 [supported media-types][].
 
+## Resource Design
+Crichton's opinion (along with others) is that a well-defined Hypermedia API exposes a state-machine interface
+that maximizes "shared understanding" of the elements in the underlying resources. Assuming one has done this design, 
+there are a number of artifacts that one can develop to simplify implementing hypermedia. The following outlines the 
+process and artifacts of an (overly simplified) eBook API example that illustrates underlying concepts used to create an
+[_API Descriptor Document_][] for the related resources.
+
+### Analyze Resource Semantics
+Assuming one has analysed a business problem and isolated a resource or simple set of related resources including 
+determining desired properties and actions necessary to accomplish the associated work, the next step is groom the 
+resource(s). This analysis is part of "Contract First" development and lays the groundwork for Hypermedia Contracts and 
+State-machine analysis and definition.
+
+Resource definition is about the best names and related meaning (semantics, or vocabulary) of the data properties and 
+link relations of a resource  vs. a schema per se. Ideally, groomed resources and associated profiles that result from 
+this analysis would represent the generally understandable, reusable and optimum interface for the work associated with 
+the resource, such that it could be published in public profile registries with that confidence.
+
+The [Sample eBooks Hypermedia Contract][] summarizes a proposed format.
+
+### Determine Resource State-machines
+Hypermedia APIs implement the Hypermedia constraint of the REST architecture style known as "hypermedia as the engine 
+of application state", or HATEOAS. Implicit in this statement is the fact that Hypermedia APIs expose state-machine 
+resources, that is data and available state transitions at runtime.
+
+The [Sample eBooks State-machine Analysis][] gives an overview of this process and the artifacts it generates.
+
+### Putting it all together
+Given a solid semantic understanding of a resource, or closely related set of resources, one can use a Hypermedia
+Contract and the related State-machine Analysis, an [_API Descriptor Document_][] can be drafted. 
+
+The [Sample eBooks API Descriptor Document][] aggregates the information for use in decorating data as resources in
+Crichton.
+
 ## Usage
 * Checkout [Getting Started][]
-* [Design State-machine Resources][]
 * Design an [_API descriptor document_][] and [Lint][] it
 * [Know your options][]
 * Implement [Models](#models) and [Controllers](#controllers) (and maybe some [Service Objects](#service-objects))
@@ -351,6 +384,9 @@ Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 
 [documentation]: http://rubydoc.info/github/mdsol/crichton
 [demo service]: https://github.com/fosrias/crichton-demo-service
+[Sample eBooks Hypermedia Contract]: sample_ebooks_hypermedia_contract.md
+[Sample eBooks State-machine Analysis]: sample_ebooks_state_machine_analysis.md
+[Sample eBooks API Descriptor Document]: sample_ebooks_api_descriptor_document.md
 [Getting Started]: doc/getting_started.md
 [Design State-machine Resources]: doc/design_state_machine_resources.md
 [_API descriptor document_]: doc/api_descriptor_documents.md

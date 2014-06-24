@@ -1,35 +1,5 @@
 # @title Getting Started
 
-## Resource Design
-Crichton's opinion (along with many others) is that a well-defined Hypermedia API exposes a state-machine interface
-that maximizes "shared understanding" of the elements in the underlying resources. Assuming one has done this design, 
-there are a number of artifacts that one can develop to simplify implementing hypermedia. The following outlines the 
-process and artifacts of an (overly simplified) eBook API example that illustrates underlying concepts used to create an
-[_API Descriptor Document_][] for the related resources.
-
-### Analyze Resource Semantics
-Assuming one has analysed a business problem and isolated a resource or simple set of related resources including 
-determining desired properties and actions necessary to accomplish the associated work, the next step is groom the 
-resource(s). This analysis is part of "Contract First" development and lays the groundwork for Hypermedia Contracts and 
-State-machine analysis and definition.
-
-Resource definition is about the best names and related meaning (semantics, or vocabulary) of the data properties and 
-link relations of a resource  vs. a schema per se. Ideally, groomed resources and associated profiles that result from 
-this analysis would represent the generally understandable, reusable and optimum interface for the work associated with 
-the resource, such that it could be published in public profile registries with that confidence.
-
-The [Sample eBooks Hypermedia Contract][] summarizes a proposed format for this analysis.
-
-### Determine Resource State-machines
-Hypermedia APIs implement the Hypermedia constraint of the REST architecture style known as "hypermedia as the engine 
-of application state", or HATEOAS. Implicit in this statement is the fact that Hypermedia APIs expose state-machine 
-resources, that is data and available state transitions at runtime.
-
-[Example eBooks State-machine Analysis][]
-
-### Putting it all together
-Given 
-
 ## Configuration
 Crichton includes a default [Dice Bag][] template that supports [12-Factor App][] configuration of applications 
 implementing Crichton. To configure configure your application:
@@ -173,6 +143,3 @@ behavior is to log to STDOUT. You can override it by calling:
 [sample template]: ../lib/crichton/dice_bag/crichton.yml.dice
 [12-Factor App]: http://12factor.net
 [_API Descriptor Document_]: api_descriptor_documents.md
-[Sample eBooks Hypermedia Contract]: sample_ebooks_hypermedia_contract.md
-[Sample eBooks State-machine Analysis]: sample_ebooks_state_machine_analysis.md
-[Sample eBooks API Descriptor Document]: sample_ebooks_api_descriptor_document.md

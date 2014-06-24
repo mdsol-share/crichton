@@ -5,15 +5,15 @@
 'lib/**/*.rb'
 -
 doc/getting_started.md
-doc/sample_ebooks_hypermedia_contract.md
-doc/sample_ebooks_state_machine_analysis.md
-doc/sample_ebooks_api_descriptor.md
 doc/api_descriptor_documents.md
 doc/data_and_transition_descriptors.md
 doc/resource_descriptors.md
 doc/protocol_and_route_descriptors.md
 doc/know_your_options.md
 doc/lint.md
+doc/sample_ebooks_hypermedia_contract.md
+doc/sample_ebooks_state_machine_analysis.md
+doc/sample_ebooks_api_descriptor.md
 doc/roadmap.md
  
 CONTRIBUTING.md
