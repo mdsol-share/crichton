@@ -51,8 +51,8 @@ To support this, Crichton contains two rake tasks, one to vendor external profil
 exist between vendored profiles and external profiles. These methods are, respectively:
 
 ````
-$ rake store_all_external_documents
-$ rake check_all_external_documents
+$ rake alps:store_all_external_documents
+$ rake alps:check_all_external_documents
 ````
 
 ## Middleware

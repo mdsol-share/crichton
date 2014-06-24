@@ -1,12 +1,14 @@
 # @title Roadmap
 
 ## Roadmap
-1. Integrate Representors Gem
+1. Integrate Representors gem
 2. Applying conditions to embedded resources
 3. Applying conditions to resource descriptors by state to auto-configure their presence in a response
 4. Hook into Rails routes functionality
 5. Scaffold applications
 6. Scaffold tests
+7. Generate Hypermedia human-readable contracts for resources
+8. Generate state-machine diagrams
 
 ## Design Goals<a name"design-goals"></a>
 An [API Descriptor Document](api_descriptor_documents) serves several purposes, including defining the 
