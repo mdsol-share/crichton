@@ -1,4 +1,6 @@
 # @title Sample eBooks API Descriptor
+
+```yaml
 #
 # An API descriptor document is a declarative configuration file that defines the semantic data,  
 # states, and state transitions associated with a particular resource (or set of closely 
@@ -276,3 +278,4 @@ http_protocol:
   author:
     uri_source: author_url
     method: GET
+```
