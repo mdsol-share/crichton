@@ -384,9 +384,9 @@ Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
 
 [documentation]: http://rubydoc.info/github/mdsol/crichton
 [demo service]: https://github.com/fosrias/crichton-demo-service
-[Sample eBooks Hypermedia Contract]: sample_ebooks_hypermedia_contract.md
-[Sample eBooks State-machine Analysis]: sample_ebooks_state_machine_analysis.md
-[Sample eBooks API Descriptor Document]: sample_ebooks_api_descriptor_document.md
+[Sample eBooks Hypermedia Contract]: doc/sample_ebooks_hypermedia_contract.md
+[Sample eBooks State-machine Analysis]: doc/sample_ebooks_state_machine_analysis.md
+[Sample eBooks API Descriptor Document]: doc/sample_ebooks_api_descriptor_document.md
 [Getting Started]: doc/getting_started.md
 [Design State-machine Resources]: doc/design_state_machine_resources.md
 [_API descriptor document_]: doc/api_descriptor_documents.md
