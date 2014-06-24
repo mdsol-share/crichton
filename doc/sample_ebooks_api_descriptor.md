@@ -40,7 +40,11 @@ data:
     sample: I am going to show you a better way to do distributed computing ...
   status:
     doc: Whether the eBook is a rough draft, draft or published
-    href: 
+    href: http://alps.io/schema.org/Text
+  author:
+    doc: The author of the eBook
+    href: Authors#author # References descriptor in another local API Descriptor Document with the ID `Authors`
+    embed: optional
   
 # Safe descriptors define the ALPS profile `afe` state transitions
 safe:
@@ -57,8 +61,9 @@ safe:
   show: 
     doc: View an eBook
     rt: ebook
-  author: 
+  book_author: # Document Unique ID
     doc: Link to the author of the eBook
+    name: author # The name of the transition that overrides the ID default
     rt: http://alps.io/schema.org/CreativeWork#author # Indicates a different profile defines this resource.
  
 # Idempotent descriptors define the ALPS profile `idempotent` state transitions
@@ -276,6 +281,6 @@ http_protocol:
     method: DELETE
     slt: *slt1
   author:
-    uri_source: author_url
+    uri_source: author_url # Property on the object that returns the url for the author link
     method: GET
 ```
