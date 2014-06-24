@@ -288,6 +288,7 @@ would be returned in a Hypermedia API, for example using `application/hal+json`,
 }
 ```
 or, as `application/json`:
+
 ```json
 {
   "total_count": 2,
