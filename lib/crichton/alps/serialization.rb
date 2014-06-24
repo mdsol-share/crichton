@@ -1,5 +1,4 @@
 require 'json'
-require 'multi_json'
 require 'addressable/uri'
 require 'crichton/helpers'
 
@@ -33,20 +32,6 @@ module Crichton
       # ALPS specification elements that can be serialized.
       ALPS_ELEMENTS = [DOC_ELEMENT, EXT_ELEMENT, OPTIONS_ELEMENT, LINK_ELEMENT]
 
-      SERIALIZED_DATALIST_LIST_URL = 'http://alps.io/extensions/serialized_datalist'
-      ##
-      # Add datalists to the ALPS document - as ext elements
-      def alps_datalists
-        result_hash = {}
-        if @descriptor_document['datalists']
-          @descriptor_document['datalists'].each do |dl_name, dl|
-            result_hash['ext'] = [] unless result_hash.include?('ext')
-            result_hash['ext'] << {'href' => SERIALIZED_DATALIST_LIST_URL, 'value' => {dl_name => dl}.to_json}
-          end
-        end
-        result_hash
-      end
-
       ##
       # The ALPS attributes for the descriptor.
       #
@@ -68,7 +53,11 @@ module Crichton
       #
       # @return [Array] The descriptors.
       def alps_descriptors
-        @alps_descriptors ||= descriptors.map { |descriptor| descriptor.to_alps_hash(top_level: false) }
+        if (descriptors = descriptor_document['descriptors']).is_a?(Array)
+          descriptors.map { |h| { 'href' => h['href'] } if h['href'].present? }
+        else
+          @alps_descriptors ||= self.descriptors.map { |descriptor| descriptor.to_alps_hash(top_level: false) }
+        end
       end
 
       ##
@@ -120,7 +109,6 @@ module Crichton
         hash = {}
         hash.merge!(alps_elements.dup)
         hash.merge!(alps_attributes.dup)
-        hash.merge!(alps_datalists.dup)
         hash['descriptor'] = alps_descriptors unless alps_descriptors.empty?
         if options[:top_level] != false
           hash.delete('id')
@@ -162,7 +150,6 @@ module Crichton
         builder.tag!(*args) do
           add_xml_elements(builder)
           add_xml_descriptors(builder)
-          add_xml_datalists(builder) unless options[:top_level] == false # This is intentional! it's false, not true
         end
       end
       
@@ -170,10 +157,6 @@ module Crichton
       # Access specified name vs. id overloaded name.
       def alps_name
         descriptor_document['name']
-      end
-
-      def add_xml_datalists(builder)
-        (datalists = alps_datalists['ext']) && datalists.each { |dl| builder.tag!('ext', dl) }
       end
 
       def add_xml_elements(builder)
@@ -226,7 +209,13 @@ module Crichton
       end
 
       def add_xml_descriptors(builder)
-        descriptors.each { |descriptor| descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true}) }
+        if (descriptors = descriptor_document['descriptors']).is_a?(Array)
+          descriptors.each { |h| builder.tag!('descriptor', { href: "\##{h['href']}" }) if h['href'].present? }
+        else
+          self.descriptors.each do |descriptor|
+            descriptor.to_xml({top_level: false, builder: builder, skip_instruct: true})
+          end
+        end
       end
     end
   end

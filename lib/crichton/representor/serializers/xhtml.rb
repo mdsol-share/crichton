@@ -37,6 +37,10 @@ module Crichton
         @markup_builder.tag!(:a, @object.uuid, href: self_transition.url)
       end
 
+      def response_headers
+        super.merge(@object.response_headers)
+      end
+
     private
       def configure_markup_builder(options)
         require 'builder' unless defined?(::Builder)
@@ -161,8 +165,10 @@ module Crichton
         end
 
         def add_link_transition(transition)
-          if transition.templated_url
+          if transition.templated?
             @markup_builder.a(transition.name, {rel: transition.name, href: transition.templated_url})
+          elsif transition.url
+            @markup_builder.a(transition.name, {rel: transition.name, href: transition.url})
           end
         end
 
@@ -294,8 +300,10 @@ module Crichton
         def add_body(options)
           @markup_builder.body do
             @markup_builder.tag!(:div) { |html| html << custom_parameters } if config.js_uri.any? && config.css_uri.any?
-            add_embedded_element(options)
-            add_datalists(options)
+            @markup_builder.div({ class: 'main-content' }) do
+              add_embedded_element(options)
+              add_datalists(options)
+            end
           end
         end
 
@@ -338,11 +346,12 @@ module Crichton
           @markup_builder.li { super }
         end
 
+        #TODO: look into removing as_link method.
         def add_embedded_object(object, options, semantic)
           @markup_builder.li do
             case semantic.embed_type(options)
             when :link
-              object.as_link(@media_type, options)
+              object.as_link(@media_type, options) if object.self_transition
             when :embed
               object.as_media_type(@media_type, options)
             end

@@ -93,7 +93,9 @@ module Crichton
               ActionController::Renderers.add media_type do |obj, options|
                 type = media_type
                 if obj.is_a?(Crichton::Representor)
-                  obj.to_media_type(type, options)
+                  obj.to_media_type(type, options) do |serializer|
+                    serializer.response_headers.each { |k, v| response.headers[k] = v }
+                  end
                 else
                   raise(ArgumentError,
                     "The object #{obj.inspect} is not a Crichton::Representor. " <<
@@ -106,10 +108,10 @@ module Crichton
 
         def register_mime_types(media_type, content_types)
           if Mime::Type.lookup_by_extension(media_type)
-            puts "Un-registering already defined mime type #{media_type.to_s.upcase}"
+            Crichton::logger.info "Un-registering already defined mime type #{media_type.to_s.upcase}"
             Mime::Type.unregister(Mime::Type.lookup_by_extension(media_type).to_sym)
           end
-          puts "Registering mime type #{media_type.to_s.upcase} with following content_types #{content_types}"
+          Crichton::logger.info "Registering mime type #{media_type.to_s.upcase} with following content_types #{content_types}"
           Mime::Type.register(content_types.shift, media_type, content_types)
         end
       end
@@ -127,6 +129,10 @@ module Crichton
 
       def used_datalists
         @used_datalists ||= []
+      end
+
+      def response_headers
+        @response_headers ||= {}
       end
 
       ##

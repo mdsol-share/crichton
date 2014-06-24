@@ -4,76 +4,114 @@ require 'crichton/alps/serialization'
 module Crichton
   module ALPS 
     describe Serialization do
-      class SimpleAlpsTestClass
-        include Serialization
-
-        (ALPS_ATTRIBUTES | ALPS_ELEMENTS).each do |property|
-          next if property == 'link' || property == 'options'
-          define_method(property) do
-            descriptor_document[property]
-          end
-        end
-
-        def options
-          descriptor_document['options']
-        end
-
-        def links
-          @links ||= (descriptor_document['links'] || {}).inject({}) do |h, (rel, href)|
-            h.tap { |hash| hash[rel] = Crichton::Descriptor::Link.new(self, rel, href) }
-          end
-        end
-        alias :link :links
-
-        define_method('descriptors') do
-          (descriptor_document['descriptors'] || {}).inject([]) do |a, (id, descriptor)|
-            a << SimpleAlpsTestClass.new(descriptor, id)
-          end
-        end
-        
-        def initialize(descriptor_document, id)
-          @descriptor_document = descriptor_document && descriptor_document.dup || {}
-          @descriptor_document['id'] = id
-        end
-        
-        attr_reader :descriptor_document
+      let(:hash) { YAML.load(@resource_descriptor) }
+      let(:registry) { Crichton::Registry.new(automatic_load: false) }
+      let(:subject) do
+        registry.register_single(hash)
+        registry.raw_profile_registry['DRDs']
       end
-    
-      let(:descriptor) { SimpleAlpsTestClass.new(leviathans_descriptor, 'Leviathans') }
+
+      before(:all) do
+        @resource_descriptor = <<-YAML
+          id: DRDs
+          doc: Describes the semantics, states and state transitions associated with DRDs.
+          links:
+            profile: DRDs
+            help: DRDs#help
+          semantics:
+            name:
+              href: http://alps.io/schema.org/Text
+          idempotent:
+            update:
+              rt: none
+              links:
+                profile: DRDs#update
+              parameters:
+                - href: name
+        YAML
+      end
 
       describe '#alps_attributes' do
         it 'returns a hash of alps descriptor attributes' do
-          descriptor.alps_attributes.should == {'id' => 'Leviathans'}
+          expect(subject.alps_attributes).to eq({'id' => 'DRDs'})
         end
       end
 
       describe '#alps_descriptors' do
         it 'returns an array of alps descriptor hashes' do
-          descriptor.alps_descriptors.map { |descriptor| descriptor['id'] }.should == %w(leviathan)
+          expect(subject.alps_descriptors.map { |descriptor| descriptor['id'] }).to eq(%w(name update))
         end
       end
 
       describe '#alps_elements' do
         it 'returns a hash of alps descriptor elements' do
-          descriptor.alps_elements.should == {
-              'doc' => {'value' => 'Describes Leviathans.'},
-              'ext' => [
-                {'href' => 'http://alps.example.com/Leviathans#alt', 'value' => 'Alternate.'}
-              ],
+          expect(subject.alps_elements).to  eq({
+              'doc' => {'value' => 'Describes the semantics, states and state transitions associated with DRDs.'},
               'link' => [
-                  {'rel' => 'self', 'href' => 'http://alps.example.com/Leviathans'},
-                  {'rel' => 'help', 'href' => 'http://docs.example.org/Things/Leviathans'}
+                  {'rel' => 'profile', 'href' => 'http://alps.example.com/DRDs'},
+                  {'rel' => 'help', 'href' => 'http://docs.example.org/DRDs#help'}
               ]
-          }
+          })
         end
       end
 
-      it_behaves_like 'it serializes to ALPS'
+      describe '#to_xml' do
+        context 'when resource descriptor is in human friendly form' do
+          it 'returns an XML ALPS profile structure' do
+            expected_result = <<-XML
+              <?xml version="1.0" encoding="UTF-8"?>
+              <alps>
+                <doc>Describes the semantics, states and state transitions associated with DRDs.</doc>
+                <link rel="profile" href="http://alps.example.com/DRDs" />
+                <link rel="help" href="http://docs.example.org/DRDs#help" />
+                <descriptor id="name" type="semantic" href="http://alps.io/schema.org/Text">
+                </descriptor>
+                <descriptor id="update" type="idempotent" rt="none">
+                  <link rel="profile" href="http://alps.example.com/DRDs#update"/>
+                  <descriptor href="#name"/>
+                </descriptor>
+              </alps>
+            XML
+            expect(subject.to_xml).to be_equivalent_to(expected_result)
+          end
+        end
+      end
 
+      describe '#to_alps_hash' do
+        context 'without options' do
+          it 'returns a hash in an ALPS profile structure' do
+            expected_result =
+            {
+              'alps' => {
+                'doc' => { 'value' => 'Describes the semantics, states and state transitions associated with DRDs.' },
+                'link' => [
+                  { 'rel' => 'profile', 'href' => 'http://alps.example.com/DRDs' },
+                  { 'rel' => 'help', 'href' => 'http://docs.example.org/DRDs#help' }
+                ],
+                'descriptor' => [
+                  { 'id' => 'name', 'type' => 'semantic', 'href' => 'http://alps.io/schema.org/Text' },
+                  {
+                    'link' => [{ 'rel' => 'profile', 'href' => 'http://alps.example.com/DRDs#update' }],
+                    'id' => 'update', 'type' => 'idempotent', 'rt' => 'none',
+                    'descriptor' => [{ 'href' => 'name' }]
+                  }
+                ]
+              }
+            }
+            expect(subject.to_alps_hash).to eq(expected_result)
+          end
+        end
+
+        context 'with top_level option false' do
+          it 'returns a hash in an ALPS descriptor structure' do
+            expect(subject.to_alps_hash(top_level: false)['alps']).to be_nil
+          end
+        end
+      end
 
       describe 'absolute_link' do
         it 'returns the original link if it is already absolute' do
-          descriptor.send(:absolute_link, 'http://original.link.com', 'something').should == 'http://original.link.com'
+          expect(subject.send(:absolute_link, 'http://original.link.com', 'something')).to eq('http://original.link.com')
         end
       end
     end

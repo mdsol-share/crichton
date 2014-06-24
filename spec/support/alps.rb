@@ -99,8 +99,10 @@ module Support
             'value' => 'Describes Leviathans.'
           },
           'ext' => [
-            {'href' => 'http://alps.io/extensions/serialized_datalist',
-             'value' => "{\"size-list\":[\"small\",\"medium\",\"large\"]}"}
+            {
+              'href' => 'http://alps.example.com/Leviathans#alt',
+              'value' => 'Alternate.'
+            }
           ],
           'link' => [
             {
@@ -114,7 +116,6 @@ module Support
           ],
           'descriptor' => [
             {
-              'id' => 'leviathan',
               'doc' => {
                 'format' => 'html',
                 'value' => '<p>Leviathans are bio-mechanoid ships that move freely among the stars.</p>'
@@ -125,49 +126,44 @@ module Support
                   'value' => 'A note.'
                 }
               ],
+              'id' => 'leviathan',
               'type' => 'semantic',
               'descriptor' => [
                 {
-                  'id' => 'uuid',
                   'doc' => {
                     'value' => 'The UUID of the Leviathan.'
                   },
+                  'id' => 'uuid',
                   'type' => 'semantic',
                   'href' => 'http://alps.io/schema.org/Text'
                 },
                 {
-                  'id' => 'name',
                   'doc' => {
                     'value' => 'The name of the Leviathan.'
                 },
+                  'id' => 'name',
                   'type' => 'semantic',
                   'href' => 'http://alps.io/schema.org/Text'
                 },
                 {
-                  'id' => 'status',
                   'doc' => {
                     'value' => 'How is the Leviathan.'
                   },
-                  'type' => 'semantic',
-                  'href' => 'http://alps.io/schema.org/Text',
                   'ext' => [
-                    {
-                      "value" => "{\"id\":\"leviathan_status_options\",\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
-                      'href' => 'http://alps.io/extensions/serialized_options_list'}
+                      {
+                          "value" => "{\"id\":\"leviathan_status_options\",\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
+                          'href' => 'http://alps.io/extensions/serialized_options_list'}
                   ],
+                  'id' => 'status',
+                  'type' => 'semantic',
+                  'href' => 'http://alps.io/schema.org/Text'
                 },
                 {
-                 'id' => 'size',
                   'doc' => {
                     'value' => 'How large it is'
                   },
+                  'id' => 'size',
                  'type' => 'semantic',
-                 'ext' => [
-                   {
-                     "value" => "{\"datalist\":\"size-list\"}", 
-                     'href' => 'http://alps.io/extensions/serialized_options_list'
-                   }
-                  ],
                  'href' => 'http://alps.io/schema.org/Text'},
                 {
                   'id' => 'create',
@@ -177,43 +173,26 @@ module Support
                   'type' => 'unsafe',
                   'rt' => 'leviathan',
                   'descriptor' => [
-                    {
-                      'id' => 'create-leviathan',
-                      'link' => [
-                        {
-                          'rel' => 'self',
-                          'href' => 'http://alps.example.com/Leviathans#create-leviathan'
-                        },
-                        {
-                          'rel' => 'help',
-                          'href' => 'http://docs.example.org/Forms/create-leviathan'
-                        }
-                      ],
-                      'type' => 'semantic',
-                      'descriptor' => [
-                        {
+                      {
                           'id' => 'form_name',
                           'doc' => {
-                            'value' => 'The name of the Leviathan.'
+                              'value' => 'The name of the Leviathan.'
                           },
                           'name' => 'name',
                           'type' => 'semantic',
                           'href' => 'http://alps.io/schema.org/Text'
-                        },
-                        {"doc" => {"value" => "How large it is"},
-                         "ext" => [{"value" => "{\"datalist\":\"size-list\"}", "href" => "http://alps.io/extensions/serialized_options_list"}],
-                         "id" => "form-size",
-                         "name" => "size",
-                         "type" => "semantic",
-                         "href" => "http://alps.io/schema.org/Text"},
-                        {"doc" => {"value" => "How is the Leviathan."},
-                         "ext" => [{"value" => "{\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
-                                    "href" => "http://alps.io/extensions/serialized_options_list"}],
-                         "id" => "form-status",
-                         "name" => "status",
-                         "type" => "semantic", "href" => "http://alps.io/schema.org/Text"}
-                      ]
-                    }
+                      },
+                      {"doc" => {"value" => "How large it is"},
+                       "id" => "form-size",
+                       "name" => "size",
+                       "type" => "semantic",
+                       "href" => "http://alps.io/schema.org/Text"},
+                      {"doc" => {"value" => "How is the Leviathan."},
+                       "ext" => [{"value" => "{\"hash\":{\"new\":\"new\",\"old\":\"old\"}}",
+                                  "href" => "http://alps.io/extensions/serialized_options_list"}],
+                       "id" => "form-status",
+                       "name" => "status",
+                       "type" => "semantic", "href" => "http://alps.io/schema.org/Text"}
                   ]
                 }
               ]
@@ -245,7 +224,7 @@ module Support
   end
 
   module ALPSSchema
-    AlpsInteger = <<-'HERE'
+    AlpsInteger = <<-HERE
     <alps>
      <descriptor id="Integer" type="semantic" href="http://alps.io/schema.org/Number">
       <doc format="html">
@@ -255,9 +234,9 @@ module Support
     </alps>
     HERE
 
-    AlpsArray = <<-'HERE'
+    AlpsArray = <<-HERE
     <alps>
-     <descriptor id="Array" type="semantic" href="http://alps.io/schema.org/Array">
+     <descriptor id="Array" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
        Data type: Array.
       </doc>
@@ -265,7 +244,7 @@ module Support
     </alps>
     HERE
 
-    AlpsText = <<-'HERE'
+    AlpsText = <<-HERE
     <alps>
      <descriptor id="Text" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -275,7 +254,7 @@ module Support
     </alps>
     HERE
 
-    AlpsDateTime = <<-'HERE'
+    AlpsDateTime = <<-HERE
     <alps>
      <descriptor id="DateTime" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
@@ -285,9 +264,9 @@ module Support
     </alps>
     HERE
 
-    AlpsBoolean = <<-'HERE'
+    AlpsBoolean = <<-HERE
     <alps>
-     <descriptor id="Boolean" type="semantic" href="http://alps.io/schema.org/Boolean">
+     <descriptor id="Boolean" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
        A combination of Boolean.
       </doc>
@@ -295,9 +274,9 @@ module Support
     </alps>
     HERE
 
-    AlpsLeviathan = <<-'HERE'
+    AlpsLeviathan = <<-HERE
     <alps>
-     <descriptor id="Leviathan" type="semantic" href="http://alps.io/schema.org/Thing/Leviathan">
+     <descriptor id="Leviathan" type="semantic" href="http://alps.io/schema.org/DataType">
       <doc format="html">
        Data type: Leviathan.
       </doc>
@@ -305,13 +284,57 @@ module Support
     </alps>
     HERE
 
+    AlpsDataType = <<-HERE
+    <alps>
+     <descriptor id="DataType" type="semantic">
+      <doc format="html">
+       The basic data types such as Integers, Strings, etc.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsNumber = <<-HERE
+    <alps>
+     <descriptor id="Number" type="semantic" href="http://alps.io/schema.org/DataType">
+      <doc format="html">
+       Data type: Number.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsThing = <<-HERE
+    <alps>
+     <descriptor id="Thing" type="semantic" href="http://alps.io/schema.org/DataType">
+      <doc format="html">
+       Data type: Thing.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
+    AlpsWarrantyPromise = <<-HERE
+    <alps>
+     <descriptor id="WarrantyPromise" type="semantic" href="http://alps.io/schema.org/DataType">
+      <doc format="html">
+       Data type: WarrantyPromise.
+      </doc>
+     </descriptor>
+    </alps>
+    HERE
+
     StubUrls = {
+      'http://alps.io/schema.org/Number' => AlpsNumber,
+      'http://alps.io/schema.org/DataType' => AlpsDataType,
       'http://alps.io/schema.org/Integer' => AlpsInteger,
       'http://alps.io/schema.org/Text' => AlpsText,
       'http://alps.io/schema.org/Array' => AlpsArray,
       'http://alps.io/schema.org/DateTime' => AlpsDateTime,
       'http://alps.io/schema.org/Boolean' => AlpsBoolean,
-      'http://alps.io/schema.org/Thing/Leviathan' => AlpsLeviathan
+      'http://alps.io/schema.org/Thing/Leviathan' => AlpsLeviathan,
+      'http://alps.io/schema.org/Thing' => AlpsThing,
+      'http://alps.io/schema.org/WarrantyPromise' => AlpsWarrantyPromise
     }
   end
 

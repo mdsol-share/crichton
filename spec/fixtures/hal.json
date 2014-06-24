@@ -5,11 +5,11 @@
             "href": "http://alps.example.org/DRDs"
         },
         "create": {
-            "href": "http://deployment.example.org/drds{?create-drd}",
+            "href": "http://deployment.example.org/drds",
             "templated": true
         },
         "search": {
-            "href": "http://deployment.example.org/drds{?search_term}",
+            "href": "http://deployment.example.org/drds{?search_term,search_name}",
             "templated": true
         },
         "help": {
@@ -46,7 +46,7 @@
                         "href": "http://deployment.example.org/drds/0"
                     },
                     "update": {
-                        "href": "http://deployment.example.org/drds/0{?update-drd}",
+                        "href": "http://deployment.example.org/drds/0",
                         "templated": true
                     },
                     "self": {
@@ -82,7 +82,7 @@
                         "href": "http://deployment.example.org/drds/1"
                     },
                     "update": {
-                        "href": "http://deployment.example.org/drds/1{?update-drd}",
+                        "href": "http://deployment.example.org/drds/1",
                         "templated": true
                     },
                     "leviathan": {

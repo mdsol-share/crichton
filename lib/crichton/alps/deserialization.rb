@@ -107,11 +107,6 @@ module Crichton
             if ne.include?('value')
               result_hash['options'] = JSON.parse(ne['value'])
             end
-          elsif ne.include?('href') && ne['href'] == Crichton::ALPS::Serialization::SERIALIZED_DATALIST_LIST_URL
-            if ne.include?('value')
-              result_hash['datalists'] = [] unless result_hash.include?('datalists')
-              result_hash['datalists'] << JSON.parse(ne['value'])
-            end
           else
             # This case should handle unknown ext elements somewhat sanely - but ideally it should never be used.
             result_hash['ext'] = [] unless result_hash.include?('ext')
@@ -137,8 +132,13 @@ module Crichton
             elsif child.name == 'doc'
               xml_node_to_hash_unpack_doc(child, result_hash)
             elsif child.name == 'descriptor'
-              result_hash['descriptors'] ||= {}
-              result_hash['descriptors'][child.attributes['id'].value] = result
+              if child.attributes['id'].present?
+                result_hash['descriptors'] ||= {}
+                result_hash['descriptors'][child.attributes['id'].value] = result
+              else
+                result_hash['descriptors'] ||= []
+                result_hash['descriptors'] << result
+              end
             elsif child.name == 'text'
               # Intentionally do nothing
             elsif result_hash[child.name]
@@ -188,10 +188,6 @@ module Crichton
           if child.has_attribute?('value')
             result_hash['options'] = JSON.parse(child.attribute('value').value)
           end
-        elsif child.has_attribute?('href') &&
-          child.attribute('href').value == Crichton::ALPS::Serialization::SERIALIZED_DATALIST_LIST_URL
-          result_hash['datalists'] = [] unless result_hash.include?('datalists')
-          result_hash['datalists'] << JSON.parse(child.attribute('value').value)
         else
           result_hash['ext'] = [] unless result_hash.include?('ext')
           result_hash['ext'] << child.attributes

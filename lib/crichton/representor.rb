@@ -1,5 +1,6 @@
 require 'active_support/concern'
 require 'crichton/representor/serialization/media_type'
+require 'crichton/descriptor/additional_transition'
 
 module Crichton
   ##
@@ -148,8 +149,14 @@ module Crichton
     # Find and return the self transition
     #
     # @return [Hash] The data.
-    def self_transition
-      @_self_transition ||= Crichton.descriptor_registry[self.class.resource_name].self_transition.decorate(self, {})
+    def self_transition(options = {})
+      @self_transition ||= each_enumerator(:link, :transition, options) do |transition|
+        return transition if transition.name == 'self'
+      end
+    end
+
+    def response_headers
+      @response_headers ||= self_transition ? self_transition.response_headers : {}
     end
 
     ##
@@ -161,14 +168,11 @@ module Crichton
     end
 
   private
-    AdditionalTransition = Struct.new :name, :url
-    private_constant :AdditionalTransition
-
     def each_additional_link_transition_enumerator(options)
       if options.is_a?(Hash) && options[:top_level] && options[:additional_links]
         options[:additional_links].map do |relation, url|
           # We don't use url because we want to clear out the data from the options
-          transition = AdditionalTransition.new(relation, options[:additional_links].delete(relation))
+          transition = Crichton::Descriptor::AdditionalTransition.new(relation, options[:additional_links].delete(relation))
           yield transition if block_given?
           transition
         end
@@ -269,7 +273,11 @@ module Crichton
           end
         end
       end
-      
+
+      def state
+        :default
+      end
+
       def crichton_state
         @crichton_state ||= begin
           state_method = self.class.send(:crichton_state_method, self)

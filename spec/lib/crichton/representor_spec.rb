@@ -30,7 +30,7 @@ module Crichton
     end
     
     it 'acts as a media-type serializer' do
-      simple_test_class.new.should be_a(Representor::Serialization::MediaType)
+      expect(simple_test_class.new).to be_a(Representor::Serialization::MediaType)
     end
     
     context 'with associated class-level descriptors' do
@@ -41,26 +41,26 @@ module Crichton
       
       describe '.data_semantic_descriptors' do
         it 'returns the filtered list of semantic data descriptors' do
-          simple_test_class.data_semantic_descriptors.map(&:name).should == %w(total_count)
+          expect(simple_test_class.data_semantic_descriptors.map(&:name)).to eq(%w(total_count))
         end
       end
 
       describe '.embedded_semantic_descriptors' do
         it 'returns the filtered list of semantic embedded descriptors' do
-          simple_test_class.embedded_semantic_descriptors.map(&:name).should == %w(items)
+          expect(simple_test_class.embedded_semantic_descriptors.map(&:name)).to eq(%w(items))
         end
       end
 
       describe '.link_transition_descriptors' do
         it 'returns the filtered list of link transition descriptors mapped by name' do
-          simple_test_class.link_transition_descriptors.first.name.should == 'self'
+          expect(simple_test_class.link_transition_descriptors.first.name).to eq('list')
         end
       end
 
       describe '.embedded_transition_descriptors' do
         it 'returns the filtered list of embedded transition descriptors' do
           @resource_name = 'drd'
-          simple_test_class.embedded_transition_descriptors.first.name.should == 'leviathan'
+          expect(simple_test_class.embedded_transition_descriptors.first.name).to eq('leviathan')
         end
       end
     end
@@ -68,24 +68,24 @@ module Crichton
     describe '.represents' do
       it 'sets the resource name of the represented resource' do
         simple_test_class.represents :some_resource
-        simple_test_class.resource_name.should == 'some_resource'
+        expect(simple_test_class.resource_name).to eq('some_resource')
       end
     end
     
     describe '.resource_descriptor' do
       it 'raises an error if no resource name has been defined for the class' do
-        Crichton.stub(:descriptor_registry).and_return({})
-        Crichton.stub(:config_directory).and_return(resource_descriptor_fixtures)
+        allow(Crichton).to receive(:descriptor_registry).and_return({})
+        allow(Crichton).to receive(:config_directory).and_return(resource_descriptor_fixtures)
         expect { simple_test_class.resource_descriptor }.to raise_error(Crichton::RepresentorError,
           /^No resource name has been defined.*/)
       end
       
       it 'returns the resource descriptor registered with the resource name' do
-        resource_descriptor = mock('resource_descriptor')
+        resource_descriptor = double('resource_descriptor')
         @resource_name = 'resource'
-        Crichton.stub(:descriptor_registry).and_return(@resource_name => resource_descriptor)
+        allow(Crichton).to receive(:descriptor_registry).and_return(@resource_name => resource_descriptor)
         
-        simple_test_class.resource_descriptor.should == resource_descriptor
+        expect(simple_test_class.resource_descriptor).to eq(resource_descriptor)
       end
     end
     
@@ -97,15 +97,11 @@ module Crichton
       
       it 'returns the resource name set on the base class' do
         @resource_name = :resource
-        simple_test_class.resource_name.should == 'resource'
+        expect(simple_test_class.resource_name).to eq('resource')
       end
     end
 
     context 'with_registered resource descriptor' do
-      before do
-        Crichton.initialize_registry(drds_descriptor)
-      end
-
       describe '#each_data_semantic' do
         let(:data_semantics) do
           simple_test_class.new(@attributes).each_data_semantic(@options).inject({}) do |h, descriptor| 
@@ -119,7 +115,7 @@ module Crichton
         end
         
         it 'returns an enumerator' do
-          simple_test_class.new.each_data_semantic.should be_a(Enumerable)
+          expect(simple_test_class.new.each_data_semantic).to be_a(Enumerable)
         end
 
         it 'yields decorated semantic descriptors' do
@@ -134,11 +130,11 @@ module Crichton
         end
         
         it 'returns only semantic descriptors whose source exists' do
-          @attributes.each { |k, v| data_semantics[k].value.should == v }
+          @attributes.each { |k, v| expect(data_semantics[k].value).to eq(v) }
         end
         
         it 'excludes semantic descriptors that do not exist on the representor instance' do
-          data_semantics['status'].should be_nil
+          expect(data_semantics['status']).to be_nil
         end
         
         context 'with :only option' do
@@ -147,11 +143,11 @@ module Crichton
           end
           
           it 'returns the specified semantic descriptors' do
-            data_semantics['uuid'].should_not be_nil
+            expect(data_semantics['uuid']).not_to be_nil
           end
 
           it 'excludes all other semantic descriptors' do
-            data_semantics['name'].should be_nil
+            expect(data_semantics['name']).to be_nil
           end
         end
 
@@ -161,11 +157,11 @@ module Crichton
           end
           
           it 'excludes all specified semantic descriptors' do
-            data_semantics['uuid'].should be_nil
+            expect(data_semantics['uuid']).to be_nil
           end
 
           it 'returns all other semantic descriptors' do
-            data_semantics['name'].should_not be_nil
+            expect(data_semantics['name']).not_to be_nil
           end
         end
       end
@@ -179,12 +175,12 @@ module Crichton
 
         before do
           @resource_name = 'drds'
-          @item = mock('item')
+          @item = double('item')
           @attributes = {'items' => [@item]}
         end
 
         it 'returns an enumerator' do
-          simple_test_class.new.each_data_semantic.should be_a(Enumerable)
+          expect(simple_test_class.new.each_data_semantic).to be_a(Enumerable)
         end
 
         it 'yields decorated semantic descriptors' do
@@ -199,20 +195,20 @@ module Crichton
         end
         
         it 'returns only semantic descriptors whose source exists' do
-          embedded_semantics['items'].value.should == [@item]
+          expect(embedded_semantics['items'].value).to eq([@item])
         end
 
         context 'with :include option' do
           it 'returns only the specified semantic descriptors' do
             @options = {include: :items}
-            embedded_semantics['items'].should_not be_nil
+            expect(embedded_semantics['items']).not_to be_nil
           end
         end
 
         context 'with :except option' do
           it 'returns all the semantic descriptors that were not excluded' do
             @options = {exclude: :items}
-            embedded_semantics['items'].should be_nil
+            expect(embedded_semantics['items']).to be_nil
           end
         end
       end
@@ -239,7 +235,7 @@ module Crichton
         end
 
         it 'returns an enumerator' do
-          simple_test_class.new.each_transition.should be_a(Enumerable)
+          expect(simple_test_class.new.each_transition).to be_a(Enumerable)
         end
 
         it 'yields decorated transition descriptors' do
@@ -253,9 +249,9 @@ module Crichton
           @additional_links = {'first' => 'first_link', 'second' => 'second_link'}
           results = []
           simple_test_class.new.each_transition(options) do |item|
-            results << item.to_a if item.is_a?(Struct)
+            results << item.to_a if item.is_a?(Crichton::Descriptor::AdditionalTransition)
           end
-          results.should == [['first', 'first_link'], ['second', 'second_link']]
+          expect(results).to eq([['first', 'first_link'], ['second', 'second_link']])
         end
 
         it 'raises an error if options are passed that are not a hash' do
@@ -268,60 +264,65 @@ module Crichton
         shared_examples_for 'a filtered list of transitions' do
           context 'with :only option' do
             before do
-              @options = {only: [:self, :leviathan]}
+              @options = {only: [:show, :leviathan]}
             end
 
             it 'returns only the specified transition descriptors' do
               [transitions['leviathan-link'], transitions['show']].all? do |item|
-                item.should_not be_nil
+                expect(item).not_to be_nil
               end
             end
 
             it 'excludes all unspecified transition descriptors' do
-              @comparison_links.each { |link| transitions[link].should be_nil }
+              @comparison_links.each { |link| expect(transitions[link]).to be_nil }
             end
           end
 
           context 'with :exclude option' do
             before do
-              @options = {exclude: [:self, :leviathan]}
+              @options = {exclude: [:show, :leviathan]}
             end
 
             it 'excludes all the transition descriptors that were specified' do
               [transitions['leviathan-link'], transitions['show']].all? do |item|
-                item.should be_nil
+                expect(item).to be_nil
               end
             end
 
             it 'returns all other unspecified the transition descriptors' do
-              @comparison_links.each { |link| transitions[link].should_not be_nil }
+              @comparison_links.each { |link| expect(transitions[link]).not_to be_nil }
             end
           end
 
           context 'with :except option' do
             before do
-              @options = {except: [:self, :leviathan]}
+              @options = {except: [:show, :leviathan]}
             end
 
             it 'excludes all the transition descriptors that were specified' do
               [transitions['leviathan-link'], transitions['show']].all? do |item|
-                item.should be_nil
+                expect(item).to be_nil
               end
             end
 
             it 'returns all other unspecified the transition descriptors' do
-              @comparison_links.each { |link| transitions[link].should_not be_nil }
+              @comparison_links.each { |link| expect(transitions[link]).not_to be_nil }
             end
           end
         end
 
         context 'without a state' do
           before do
+            descriptor = drds_descriptor.tap do |document|
+              state = document['resources']['drd']['states']['activate']
+              document['resources']['drd']['states'].clear.merge!({'default' => state })
+            end
+            Crichton.initialize_registry(descriptor)
             @comparison_links = %w(repair-history activate deactivate update delete)
           end
 
           it 'returns all link transitions' do
-            %w(leviathan-link repair-history).each { |id| transitions[id].should_not be_nil }
+            %w(leviathan-link repair-history).each { |id| expect(transitions[id]).not_to be_nil }
           end
 
           it_behaves_like 'a filtered list of transitions'
@@ -335,25 +336,25 @@ module Crichton
 
             it 'only includes transitions available for the state that do not have conditions' do
               [transitions['leviathan-link'], transitions['show']].all? do |item|
-                item.should_not be_nil
+                expect(item).not_to be_nil
               end
             end
 
             it 'excludes transitions available for the state that have conditions' do
               [transitions['repair-history'], transitions['delete']].all? do |item|
-                item.should be_nil
+                expect(item).to be_nil
               end
             end
           end
 
           context 'with :conditions option' do
             it 'only includes transition descriptors available for the state with satisfied conditions' do
-              %w(leviathan-link repair-history).each { |id| transitions[id].should_not be_nil }
+              %w(leviathan-link repair-history).each { |id| expect(transitions[id]).not_to be_nil }
             end
 
             it 'excludes all transition descriptors available for the state with unsatisfied conditions' do
               @conditions = :cannot_repair
-              transitions['repair-history'].should be_nil
+              expect(transitions['repair-history']).to be_nil
             end
           end
         end
@@ -383,7 +384,7 @@ module Crichton
           it_behaves_like 'a transition enumerator'
 
           it 'raises an error if the state is not a string or a symbol' do
-            attributes = {'my_state_method' => mock('invalid_state')}
+            attributes = {'my_state_method' => double('invalid_state')}
             expect { simple_test_class.new(attributes).each_transition.to_a }.to raise_error(
               Crichton::RepresentorError,
               /^The state method 'my_state_method' must return a string or a symbol.*/
@@ -395,8 +396,8 @@ module Crichton
           it 'raises an error' do
             @include_state = true
             expect { simple_test_class.new.each_transition.to_a }.to raise_error(
-               Crichton::RepresentorError,
-               /^No state method has been defined in the class ''.*/
+              Crichton::MissingStateError,
+              /^No state 'default' defined for resource 'drd' in API descriptor document with ID: DRDs/
             )
           end
         end
@@ -405,10 +406,61 @@ module Crichton
       describe '#metadata_links' do
         it 'returns the metadata links associated with the represented resource' do
           @resource_name = 'drds'
-          simple_test_class.new.metadata_links.map(&:rel).should == %w(profile type help)
+          expect(simple_test_class.new.metadata_links.map(&:rel)).to eq(%w(profile type help))
         end
       end
-      
+
+      describe '#self_transition' do
+        let(:subject) { simple_test_class.new.self_transition(options) }
+
+        before do
+          @resource_name = 'drds'
+          @state = 'collection'
+          @conditions = :can_do_anything
+        end
+
+        it 'returns decorated transition descriptor' do
+          expect(subject).to be_a(Crichton::Descriptor::TransitionDecorator)
+        end
+
+        it 'returns the transition with the name self' do
+          expect(subject.name).to eq('self')
+        end
+
+        it 'returns the transition with id of the specified self transition' do
+          expect(subject.id).to eq('list')
+        end
+      end
+
+      describe '#response_headers' do
+        let(:attributes) { { @state_method => @state } }
+        before do
+          @state_method = 'my_state_method'
+          @state = 'collection'
+          @resource_name = 'drds'
+        end
+
+        it 'returns empty hash if not response headers are specified' do
+          @resource_name = 'drd'
+          @state = 'activated'
+          expect(simple_test_class.new(attributes).response_headers).to be_empty
+        end
+
+        it 'returns non empty response headers hash if specified' do
+          expect(simple_test_class.new(attributes).response_headers).to have(1).item
+        end
+
+        it 'returns response headers hash if specified' do
+          expect(simple_test_class.new(attributes).response_headers).to eq({ 'Cache-Control' => 'no-cache' })
+        end
+
+        it 'returns empty hash if self transition is nil' do
+          subject = simple_test_class.new(attributes)
+          subject.stub(:self_transition).and_return(nil)
+          expect(subject.response_headers).to be_empty
+        end
+      end
+
       describe '#method_missing' do
         it 'continues to raise an error when an unknown method is called' do
           expect { simple_test_class.new.bogus }.to raise_error(NoMethodError, /undefined method `bogus'.*/)
@@ -421,15 +473,15 @@ module Crichton
         let(:builder) { Crichton::Representor::XHTMLSerializer::BaseSemanticBuilder.new('xhtml', {}, 'markup', nil) }
         it 'allows access to the Crichton logger' do
           logger = double('logger')
-          Crichton.should_receive(:logger).once.and_return(logger)
-          builder.logger.should == logger
+          expect(Crichton).to receive(:logger).once.and_return(logger)
+          expect(builder.logger).to eq(logger)
         end
 
         it 'memoizes the logger' do
           doubled_logger = double("logger")
-          Crichton.stub(:logger).and_return(doubled_logger)
+          allow(Crichton).to receive(:logger).and_return(doubled_logger)
           memoized_logger = builder.logger
-          builder.logger.object_id.should == memoized_logger.object_id
+          expect(builder.logger.object_id).to eq(memoized_logger.object_id)
         end
       end
     end

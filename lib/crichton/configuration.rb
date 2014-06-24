@@ -38,6 +38,22 @@ module Crichton
       @config['external_documents_store_directory'] || 'api_descriptors/external_documents_store'
     end
 
+    def use_discovery_middleware?
+      @use_discovery_middleware ||= (@config['use_discovery_middleware'] === true)
+    end
+
+    def resource_home_response_expiry
+      @resource_home_response_expiry ||= { 'expiry' => (@config['resource_home_response_expiry'] || 20) }
+    end
+
+    def use_alps_middleware?
+      @use_alps_middleware ||= (@config['use_alps_middleware'] === true)
+    end
+
+    def alps_profile_response_expiry
+      @alps_profile_response_expiry ||= { 'expiry' => (@config['alps_profile_response_expiry'] || 20) }
+    end
+
     ##
     # @!attribute [r] css_uri
     # The URI where CSS is hosted.

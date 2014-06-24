@@ -30,7 +30,7 @@ module Crichton
 
       # begins a walk-down through the graph of descriptors
       def check_descriptor_graph
-        check_descriptor_level(@resource_descriptor.descriptors, {}, TOP_LEVEL)
+        check_descriptor_level(@resource_descriptor.resources, {}, TOP_LEVEL)
       end
 
       # recursive method to dispatch to a variety of checks
@@ -81,7 +81,7 @@ module Crichton
           add_error('descriptors.property_missing', options.merge({prop: 'type'}))
         end
 
-        if level == TOP_LEVEL
+        if resource_descriptor.resources.map(&:name).include?(descriptor.name)
           add_error('catastrophic.no_descriptors', options) if descriptor.descriptors.empty?
 
           #23 should have a valid link property
@@ -163,29 +163,30 @@ module Crichton
       #60, the descriptor hash of subresources must equal the state hash
       def compare_with_state_resources
         # TODO: change descriptor array into a hash with name as keys, or convert state names to an array of names
-        compare_with_other_hash(resource_descriptor.descriptor_document['descriptors'], resource_descriptor.states,
+        compare_with_other_hash(resource_descriptor.resources.map(&:name), resource_descriptor.states.keys,
           'descriptors.descriptor_resource_not_found')
-        compare_with_other_hash(resource_descriptor.states, resource_descriptor.descriptor_document['descriptors'],
+        compare_with_other_hash(resource_descriptor.states.keys, resource_descriptor.resources.map(&:name),
           'descriptors.state_resource_not_found')
       end
 
       def compare_with_other_hash(base_resources, others_resources, error)
-        base_resources.keys.each do |resource_name|
+        base_resources.each do |resource_name|
           add_error(error, resource: resource_name) unless others_resources.include?(resource_name)
         end
       end
 
       # starter method to walk the chain to look for duplicate ids
       def check_id_uniqueness
-        review_descriptor_ids(@resource_descriptor.descriptors, '', {})
+        review_descriptor_ids(@resource_descriptor.descriptors, resource_descriptor.id, {})
       end
 
       # recursive method to perform id checks
       def review_descriptor_ids(descriptors, parent_id, id_hash)
         descriptors.each do |descriptor|
           add_error('descriptors.non_unique_descriptor', id: descriptor.id, parent: parent_id) if id_hash[descriptor.id]
-          id_hash[descriptor.id] = descriptor.id unless id_hash[descriptor.id]
-          review_descriptor_ids(descriptor.descriptors, descriptor.id, id_hash) if descriptor.descriptors
+          key = "#{parent_id}/#{descriptor.id}"
+          id_hash[key] = descriptor.id unless id_hash[key]
+          review_descriptor_ids(descriptor.descriptors, key, id_hash) if descriptor.descriptors
         end
       end
 
