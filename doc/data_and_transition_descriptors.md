@@ -8,7 +8,7 @@ Data descriptors define the semantics, or vocabulary, of the data-related attrib
 of the data associated with 'forms' in transitions that either template queries for a `safe` transition or template 
 bodies in `unsafe` and `idempotent` transitions.
 
-### Data Descriptor Properties
+### Data Descriptor Properties<a name="data-descriptor-properties"></a>
 The YAML keys, which appear directly under the `semantics`/`parameters` property, are the ALPS IDs of the individual 
 descriptors. Therefore, they must be unique within the document. You can use the `name` property to specify the semantic 
 name that will be used in a response. Otherwise, the ID is the name of the associated attribute in the representation 

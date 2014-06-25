@@ -29,6 +29,10 @@ data:
     doc: An embedded list of individual eBook items
     href: ebook # relative URL references a descriptor in this document. See `resources` ebook below.
     embed: multiple # Indicates multiple ebook resource entities should be embedded as this property
+  authors:
+    doc: An embedded list of eBook authors
+    href: Author#authors  # References descriptor in another local API Descriptor Document with the ID `Authors`
+    embed: multiple # Indicates multiple ebook resource entities should be embedded as this property
   name:
     doc: The title of an eBook
     href: http://alps.io/schema.org/Text
@@ -102,6 +106,7 @@ resources:
     descriptors: # References data and transition descriptors that comprise the resource
       - href: total_count
       - href: items
+      - href: authors
       - href: list
       - href: search
       - href: create
@@ -144,6 +149,7 @@ resources:
       - href: text
       - href: status
       - href: author
+      - href: book_author
       - href: show
       - href: edit
       - href: copy
@@ -155,8 +161,6 @@ resources:
         transitions:
           show:
            name: self # Indicates in this state, this transition is the IANA self link relation for the resource
-           conditions:
-             - is_author # Only the author can see or do anything in this state.
            next:
              - rough_draft
           edit: &edit
@@ -184,9 +188,6 @@ resources:
         transitions:
           show:
             name: self
-            conditions:
-              - is_author
-              - can_read # Indicates anyone with can_read permissions can view this resource
             next:
               - draft
           edit: &draft_edit
