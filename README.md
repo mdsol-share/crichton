@@ -9,10 +9,10 @@ Checkout the [documentation][] for more info and/or try the [demo service][].
 ## Overview
 Crichton is opinionated that Hypermedia APIs and their associated resources should be designed and implemented as 
 state-machines. As such, the library leverages a state-machine centric, declarative 
-{file:doc/api_descriptor_documents.md _API descriptor document_} which it uses to dynamically decorate data as 
+{file:doc/api_descriptor_documents.md API descriptor document} which it uses to dynamically decorate data as 
 Hypermedia representations for different media-types.
 
-Assuming one has designed a resource as a state-machine and drafted an _API descriptor document_ as a canonical
+Assuming one has designed a resource as a state-machine and drafted an API descriptor document as a canonical
 definition of that resource, Crichton can be implemented in a service to return representations for
 [supported media-types][].
 
@@ -21,7 +21,7 @@ Crichton's opinion (along with others) is that a well-defined Hypermedia API exp
 that maximizes "shared understanding" of the elements in the underlying resources. Assuming one has done this design, 
 there are a number of artifacts that one can develop to simplify implementing hypermedia. The following outlines the 
 process and artifacts of an (overly simplified) eBook API example that illustrates underlying concepts used to create an
-{file:doc/api_descriptor_documents.md _API descriptor document_} for the related resources.
+{file:doc/api_descriptor_documents.md API descriptor document} for the related resources.
 
 ### Analyze Resource Semantics
 Assuming one has analysed a business problem and isolated a resource or simple set of related resources including 
@@ -46,7 +46,7 @@ process and the artifacts it generates.
 
 ### Putting it all together
 Given a solid semantic understanding of a resource, or closely related set of resources, one can use a Hypermedia
-Contract and the related State-machine Analysis, an {file:doc/api_descriptor_documents.md _API descriptor document_} 
+Contract and the related State-machine Analysis, an {file:doc/api_descriptor_documents.md API descriptor document} 
 can be drafted. 
 
 The {file:doc/sample_ebooks_api_descriptor.md Sample eBooks API Descriptor Document} aggregates the information for use 
@@ -54,13 +54,13 @@ in decorating data as resources in Crichton.
 
 ## Usage
 * Checkout {file:doc/getting_started.md Getting Started}
-* Design an {file:doc/api_descriptor_documents.md _API descriptor document_} and {file:doc/lint.md Lint} it
+* Design an {file:doc/api_descriptor_documents.md API descriptor document} and {file:doc/lint.md Lint} it
 * {file:doc/know_your_options.md Know your options}
 * Implement [Models](#models) and [Controllers](#controllers) (and maybe some [Service Objects](#service-objects))
 
 ## Models<a name="models"></a>
 Any class can be represented as a resource by simply including the `Crichton::Representor` module and specifying the 
-corresponding resource that represents it defined in an _API descriptor document_.
+corresponding resource that represents it defined in an API descriptor document.
 
 ```ruby
 class DRD
@@ -366,7 +366,7 @@ allow fast prototyping of APIs.
 ### Rails
 If a template is defined for a request in Rails, the template is rendered. However, if no template exists and a 
 controller is configured to respond to HTML, Crichton will render an HTML version of the resource based on the 
-[_API descriptor document_] for the resource.
+API descriptor document for the resource.
   
 ## Supported Media-types<a name="supported-media-types"></a>
 The following are currently supported media-types:
