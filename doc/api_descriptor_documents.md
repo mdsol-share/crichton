@@ -135,7 +135,8 @@ To understand all of the details of linting descriptors files, please view the [
 
 ## Related Topics<a name="related-topics"></a>
 - [ALPS][] specification
-- [Example API Descriptor Document][]
+- [Example eBooks API Descriptor Document][]
+- [Example DRDs API Descriptor Document][]
 
 [ALPS]: http://alps.io/spec/index.html
 [_Resource Descriptors_]: resource_descriptors.md
