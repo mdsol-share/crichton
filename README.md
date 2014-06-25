@@ -1,3 +1,6 @@
+# @private This README is used to generate YARD documentation with working links. Therefore, use the 
+# @private [documentation][] link below vs. this file to get access to documents with \{file:doc ...\} links below.
+
 # Crichton
 
 [![Build Status](https://travis-ci.org/mdsol/crichton.svg)](https://travis-ci.org/mdsol/crichton)
