@@ -56,7 +56,8 @@ formatted body.
 
 7. Define routing/scaffolding information for the resource. OPTIONAL.
 
-[Example API Descriptor Document][]
+* [Example eBooks API Descriptor Document][]
+* [Example DRDs API Descriptor Document][]
 
 ## Properties/ALPS Correlation<a name="properties-alps-correlation"></a>
 A number of the properties in a _API Descriptor Document_ correspond directly to their related meanings in the 
@@ -134,8 +135,10 @@ To understand all of the details of linting descriptors files, please view the [
 
 ## Related Topics<a name="related-topics"></a>
 - [ALPS][] specification
-- [Example API Descriptor Document][]
+- [Example eBooks API Descriptor Document][]
+- [Example DRDs API Descriptor Document][]
 
 [ALPS]: http://alps.io/spec/index.html
 [_Resource Descriptors_]: resource_descriptors.md
-[Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Example eBooks API Descriptor Document]: sample_ebooks_api_descriptor.md
+[Example DRDs API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
