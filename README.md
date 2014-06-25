@@ -8,8 +8,9 @@ Checkout the [documentation][] for more info and/or try the [demo service][].
 
 ## Overview
 Crichton is opinionated that Hypermedia APIs and their associated resources should be designed and implemented as 
-state-machines. As such, the library leverages a state-machine centric, declarative [_API descriptor document_][] 
-which it uses to dynamically decorate data as Hypermedia representations for different media-types.
+state-machines. As such, the library leverages a state-machine centric, declarative 
+{file:doc/api_descriptor_documents.md _API descriptor document_} which it uses to dynamically decorate data as 
+Hypermedia representations for different media-types.
 
 Assuming one has designed a resource as a state-machine and drafted an _API descriptor document_ as a canonical
 definition of that resource, Crichton can be implemented in a service to return representations for
@@ -20,7 +21,7 @@ Crichton's opinion (along with others) is that a well-defined Hypermedia API exp
 that maximizes "shared understanding" of the elements in the underlying resources. Assuming one has done this design, 
 there are a number of artifacts that one can develop to simplify implementing hypermedia. The following outlines the 
 process and artifacts of an (overly simplified) eBook API example that illustrates underlying concepts used to create an
-[_API Descriptor Document_][] for the related resources.
+{file:doc/api_descriptor_documents.md _API descriptor document_} for the related resources.
 
 ### Analyze Resource Semantics
 Assuming one has analysed a business problem and isolated a resource or simple set of related resources including 
@@ -33,26 +34,28 @@ link relations of a resource  vs. a schema per se. Ideally, groomed resources an
 this analysis would represent the generally understandable, reusable and optimum interface for the work associated with 
 the resource, such that it could be published in public profile registries with that confidence.
 
-The [Sample eBooks Hypermedia Contract][] summarizes a proposed format.
+The {file:doc/sample_ebooks_hypermedia_contract.md Sample eBooks Hypermedia Contract} summarizes a proposed format.
 
 ### Determine Resource State-machines
 Hypermedia APIs implement the Hypermedia constraint of the REST architecture style known as "hypermedia as the engine 
 of application state", or HATEOAS. Implicit in this statement is the fact that Hypermedia APIs expose state-machine 
 resources, that is data and available state transitions at runtime.
 
-The [Sample eBooks State-machine Analysis][] gives an overview of this process and the artifacts it generates.
+The {file:doc/sample_ebooks_state_machine_analysis.md Sample eBooks State-machine Analysis} gives an overview of this 
+process and the artifacts it generates.
 
 ### Putting it all together
 Given a solid semantic understanding of a resource, or closely related set of resources, one can use a Hypermedia
-Contract and the related State-machine Analysis, an [_API Descriptor Document_][] can be drafted. 
+Contract and the related State-machine Analysis, an {file:doc/api_descriptor_documents.md _API descriptor document_} 
+can be drafted. 
 
-The [Sample eBooks API Descriptor Document][] aggregates the information for use in decorating data as resources in
-Crichton.
+The {file:doc/sample_ebooks_api_descriptor.md Sample eBooks API Descriptor Document} aggregates the information for use 
+in decorating data as resources in Crichton.
 
 ## Usage
-* Checkout [Getting Started][]
-* Design an [_API descriptor document_][] and [Lint][] it
-* [Know your options][]
+* Checkout {file:doc/getting_started.md Getting Started}
+* Design an {file:doc/api_descriptor_documents.md _API descriptor document_} and {file:doc/lint.md Lint} it
+* {file:doc/know_your_options.md Know your options}
 * Implement [Models](#models) and [Controllers](#controllers) (and maybe some [Service Objects](#service-objects))
 
 ## Models<a name="models"></a>
@@ -374,30 +377,20 @@ The following are currently supported media-types:
 * [hale_json - application/vnd.hale+json](https://github.com/mdsol/hale)
 
 ## Contributing
-See [CONTRIBUTING][] for details.
+See {file:CONTRIBUTING.md} for details.
 
 ## Acknowledgements
 Thanks to [Mike Amundsen][] and [Jon Moore][] for patient explanations and the whole Hypermedia community that 
 helped crystallize ideas underlying Crichton. And, of course, thanks to all the [contributors][].
 
 ## Copyright
-Copyright (c) 2013 Medidata Solutions Worldwide. See [LICENSE][] for details.
+Copyright (c) 2013 Medidata Solutions Worldwide. See {file:LICENSE.md} for details.
 
 [documentation]: http://rubydoc.info/github/mdsol/crichton
 [demo service]: https://github.com/fosrias/crichton-demo-service
-[Sample eBooks Hypermedia Contract]: doc/sample_ebooks_hypermedia_contract.md
-[Sample eBooks State-machine Analysis]: doc/sample_ebooks_state_machine_analysis.md
-[Sample eBooks API Descriptor Document]: doc/sample_ebooks_api_descriptor_document.md
-[Getting Started]: doc/getting_started.md
-[Design State-machine Resources]: doc/design_state_machine_resources.md
-[_API descriptor document_]: doc/api_descriptor_documents.md
-[Know your options]: doc/know_your_options.md
-[Lint]: doc/lint.md
 [\#to_media_type]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
 [supported media-types]: #supported-media-types
-[CONTRIBUTING]: CONTRIBUTING.md
 [Documentation]: http://rubydoc.info/github/mdsol/crichton
-[LICENSE]: LICENSE.md
 [Mike Amundsen]: https://twitter.com/mamund
 [Jon Moore]: https://twitter.com/jon_moore
 [contributors]: https://github.com/mdsol/crichton/graphs/contributors
