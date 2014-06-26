@@ -36,6 +36,9 @@ module Crichton
       def url
         Addressable::URI.parse(File.join(Crichton.config.deployment_base_uri, resource_uri)).to_s
       end
+      alias_method :href, :url
+
+      alias_method :name, :resource_relation
 
       ##
       #
@@ -44,6 +47,10 @@ module Crichton
       # @return [String] fully qualified url of the resource's relation name
       def rel
         Addressable::URI.parse(File.join(Crichton.config.alps_base_uri,"#{resource_id}#{trans_id}")).to_s
+      end
+
+      def link_relation
+        Addressable::URI.parse(File.join(Crichton.config.alps_base_uri,"#{@resource_id}##{@resource_relation}")).to_s
       end
       ##
       #
