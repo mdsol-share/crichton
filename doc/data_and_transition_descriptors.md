@@ -156,7 +156,7 @@ safe:
     rt: drds
     parameters:
       - href: name
-        ext: _name
+        ext: input_field
       - href: term
         field_type: text
 
@@ -178,7 +178,7 @@ unsafe:
     href: update
     parameters:
       - href: name
-        ext: _create_name
+        ext: validated_input_field
       - href: leviathan_uuid
         field_type: text
       - href: leviathan_health_points
@@ -254,7 +254,7 @@ The following two examples show the YAML for extensions:
 #### Defining data descriptor extensions
 ```yaml
 semantics:
-  name: &name
+  name:
     doc: The name of the DRD.
     href: http://alps.io/schema.org/Text
   term:
@@ -262,26 +262,18 @@ semantics:
     href: http://alps.io/schema.org/Text
 
 extensions:
-  # creates an extension descriptor based on semantic descriptor: name
-  _name: &_name
-    <<: *name
+  # creates an extension descriptor input_field
+  input_field: &_input_field
     field_type: text
     sample: drdname
-  # creates an extension descriptor based on extension descriptor: _name
+  # creates an extension descriptor based on extension descriptor: input_field
   # to be used as extension descriptor in create transition
   # see example below
-  _create_name:
-    <<: *_name
+  validated_input_field:
+    <<: *_input_field
     validators:
       - required
       - maxlength: 50
-  # creates an extension descriptor based on extension descriptor: _name
-  # to be used as extension descriptor in update transition
-  # see example below
-  _update_name:
-    <<: *_name
-    validators:
-      - required
 ```
 
 #### Using data descriptor extensions and extending data descriptors as part of referenced descriptor
@@ -292,7 +284,7 @@ safe:
     rt: drds
     parameters:
       - href: name
-        ext: _name
+        ext: input_field
       - href: term
       	field_type: text
 	    validators:
@@ -303,14 +295,14 @@ unsafe:
     rt: drd
     parameters:
       - href: name
-        ext: _create_name
+        ext: validated_input_field
 idempotent:
   update:
     doc: Returns a list of DRDs that satisfy the search term.
     rt: drds
     parameters:
       - href: name
-        ext: _update_name
+        ext: validated_input_field
 ```
 
 ## Related Topics
