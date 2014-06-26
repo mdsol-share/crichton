@@ -34,7 +34,7 @@ describe Crichton::Discovery::EntryPoint do
   end
 
   it "returns the correct href" do
-    expect(instance.url).
+    expect(instance.href).
       to eq "#{Crichton.config.deployment_base_uri}/#{resource_uri}"
   end
 
