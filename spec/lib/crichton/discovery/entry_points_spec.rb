@@ -16,6 +16,10 @@ describe Crichton::Discovery::EntryPoints do
 
   let(:instance) {described_class.new([entry_point])}
 
+  it "is a kind of Crichton::Representor" do
+    expect(instance).to be_kind_of Crichton::Representor
+  end
+
   describe "application/vnd.hale+json" do
 
     let(:expected_hale_json) do

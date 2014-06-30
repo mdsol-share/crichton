@@ -4,7 +4,7 @@ module Crichton
   module Discovery
 
     class EntryPoints
-
+      include Crichton::Representor
       ##
       #
       # Saves a collection of EntryPoint objects eventually used in serialization
