@@ -10,7 +10,7 @@ module Crichton
     #
     # Setup as rack middleware in config/application.rb, with an option timeout set
     # @example
-    #   config.middleware.use Crichton::Middleware::ResourceHomeResponse, {'expiry' => 20}
+    #   config.middleware.use Crichton::Middleware::Resource HomeResponse, {'expiry' => 20}
     #
     # can be accessed using curl, with any of the supported media types below
     # @example
@@ -18,7 +18,7 @@ module Crichton
     #
     class ResourceHomeResponse < MiddlewareBase
 
-      SUPPORTED_MEDIA_TYPES=%w(text/html application/xhtml+xml application/xml application/json-home application/json */*)
+      SUPPORTED_MEDIA_TYPES = %w(application/vnd.hale+json application/vnd.hal+json application/json */*)
 
       ##
       #
@@ -60,12 +60,8 @@ module Crichton
       # @param [String] media_type textual content_type found in http header
       def response_media_type_sym(media_type)
         case media_type
-        when 'text/html'
-          :html
-        when 'application/xhtml+xml', 'application/xml'
-          :xhtml
-        when 'application/json-home', 'application/json', '*/*'
-          :json_home
+        when 'application/vnd.hale+json', 'application/vnd.hal+json', 'application/json', '*/*'
+          :hale_json
         end
       end
 

@@ -1,5 +1,4 @@
 require 'crichton/representor/serializer'
-require 'crichton/representor/serializers/json_home_html'
 require 'addressable/uri'
 require "json"
 

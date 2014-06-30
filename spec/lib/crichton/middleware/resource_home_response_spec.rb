@@ -4,9 +4,7 @@ require 'crichton/middleware/resource_home_response'
 module Crichton
   module Middleware
     describe ResourceHomeResponse do
-      let (:root_json_body) do
-        {:resources => {"http://alps.example.org/DRDs#list" => {:href => "http://deployment.example.org/drds"}}}.to_json
-      end
+
       let (:rack_app) { double('rack_app') }
 
       before do
@@ -15,105 +13,92 @@ module Crichton
         stub_configured_profiles
         stub_alps_requests
         register_drds_descriptor
+        Timecop.freeze(Time.now)
       end
 
       after do
         clear_configured_profiles
+        Timecop.return
       end
 
       describe '#call' do
-        let(:env) { {'PATH_INFO' => '/', 'HTTP_ACCEPT' => @media_type} }
-        let(:headers) { {'Content-Type' => @media_type.downcase, 'expires' => @expires} }
-        let(:home_responder) { ResourceHomeResponse.new(rack_app) }
-        let(:response) { home_responder.call(env) }
-        let(:rack_response) { Rack::MockResponse.new(*response) }
-        let(:ten_minutes) { 600 }
+
+        def get_response(accept_media_types)
+          env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => accept_media_types}
+          ResourceHomeResponse.new(rack_app).call(env)
+        end
+
+        def get_rack_response(accept_media_types)
+          Rack::MockResponse.new(*get_response(accept_media_types))
+        end
 
         context 'when the root' do
-          it 'respond to text/html' do
-            @media_type = 'text/html'
-            @expires = (Time.new + ten_minutes).httpdate
-            expect(response).to eq([200, headers, [root_html_body]])
-          end
-
-          it 'accepts media-types of different cases' do
-            @media_type = 'teXt/Html'
-            @expires = (Time.new + ten_minutes).httpdate
-            expect(response).to eq([200, headers, [root_html_body]])
-          end
 
           it 'uses the first supported media type in the HTTP_ACCEPT header' do
-            @media_type = 'bogus/media_type,*/a,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*'
-            first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
-            expect(response).to eq([200, first_content_type_header, [root_html_body]])
+            headers = {'Content-Type' => 'application/vnd.hale+json', 'expires' => (Time.now + 10.minutes).httpdate}
+            response = get_rack_response('bogus/media_type,*/a,text/html,application/vnd.hale+json,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*')
+            expect(response.status).to eq 200
+            headers["Content-Length"] = response.body.length.to_s
+            expect(response.headers).to eq headers
+            expect(response.body).to_not be_empty
           end
 
           it 'responds correctly with a non standard HTTP_ACCEPT header' do
-            @media_type = 'bogus/media_type, text/html,  application/xhtml+xml, application/xml;q=0.9,  image/webp, */*'
-            first_content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
-            expect(response).to eq([200, first_content_type_header, [root_html_body]])
-          end
-
-          %w(application/xhtml+xml application/xml application/json-home application/json).each do |media_type|
-            it "responds with the expected content-type for #{media_type} requests" do
-              @media_type = media_type
-              expect(rack_response.headers['Content-Type']).to eq(media_type)
-            end
-          end
-
-          %w(application/xhtml+xml application/xml).each do |media_type|
-            it "responds with xml output for #{media_type} content type requests" do
-              @media_type = media_type
-              @expires = (Time.new + ten_minutes).httpdate
-              expect(response).to eq([200, headers, [root_xml_body]])
-            end
-          end
-
-          %w(application/json-home application/json */*).each do |media_type|
-            it "responds with json-home output for #{media_type} content type requests" do
-              @media_type = media_type
-              @expires = (Time.new + ten_minutes).httpdate
-              expect(response).to eq([200, headers, [root_json_body]])
-            end
-          end
-
-          it 'responds with the correct expiration date when it a timeout is specified as an option' do
-            responder = ResourceHomeResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
-            @media_type = 'text/html'
-            @expires = (Time.new + 1200).httpdate
-            expect(responder.call(env)).to eq([200, headers, [root_html_body]])
-          end
-
-
-          it 'responds with the correct expiration date when a symbolized timeout in specified' do
-            responder = ResourceHomeResponse.new(rack_app, {:expiry => 20}) #minutes instead of default of 10
-            @media_type = 'text/html'
-            @expires = (Time.new + 1200).httpdate
-            expect(responder.call(env)).to eq([200, headers, [root_html_body]])
+            headers = {'Content-Type' => 'application/vnd.hale+json', 'expires' => (Time.now + 10.minutes).httpdate}
+            response = get_rack_response('bogus/media_type, text/html,  application/xhtml+xml, application/vnd.hale+json,  application/xml;q=0.9,  image/webp, */*')
+            expect(response.status).to eq 200
+            headers["Content-Length"] = response.body.length.to_s
+            expect(response.headers).to eq headers
+            expect(response.body).to_not be_empty
           end
 
           it 'returns a 406 status for unsupported media_types' do
-            @media_type = 'application/jrd+json'
-            content_type_header = {'Content-Type' => 'text/html', 'expires' => (Time.new + ten_minutes).httpdate}
-            expect(rack_response.status).to eq(406)
+            response = get_rack_response('application/jrd+json')
+            expect(response.status).to eq(406)
           end
 
           it 'returns a 406 status for an empty list of acceptable media types' do
-            @media_type = ''
-            expect(rack_response.status).to eq(406)
+            response = get_rack_response('')
+            expect(response.status).to eq(406)
+          end
+
+          describe "application/vnd.hale+json support" do
+            let(:media_type) {'application/vnd.hale+json'}
+
+            it "responds with the expected content-type" do
+              response = get_rack_response(media_type)
+              expect(response.headers['Content-Type']).to eq(media_type)
+            end
+
+
+            describe "setting expiry" do
+              let(:twenty_minutes_httpdate){ (Time.now + 20.minutes).httpdate }
+
+              it 'responds with the correct expiration date when using a string to specify the option' do
+                responder = ResourceHomeResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
+                env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
+                response = Rack::MockResponse.new(*responder.call(env))
+                expect(response.headers["expires"]).to eq twenty_minutes_httpdate
+              end
+
+              it 'responds with the correct expiration date when using a symbol to specify the option' do
+                responder = ResourceHomeResponse.new(rack_app, {:expiry => 20}) #minutes instead of default of 10
+                env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
+                response = Rack::MockResponse.new(*responder.call(env))
+                expect(response.headers["expires"]).to eq twenty_minutes_httpdate
+              end
+            end
           end
         end
 
         context 'when not the root' do
           it 'invokes the parent rack app from the middleware' do
-            @media_type = 'text/html'
-            env = {'PATH_INFO' => '/drds', 'HTTP_ACCEPT' => @media_type}
+            env = {'PATH_INFO' => '/drds', 'HTTP_ACCEPT' => 'application/vnd.hale+json'}
             expect(rack_app).to receive(:call).with(env)
-            home_responder.call(env)
+            ResourceHomeResponse.new(rack_app).call(env)
           end
         end
       end
     end
   end
 end
-
