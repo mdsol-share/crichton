@@ -70,7 +70,6 @@ module Crichton
               expect(response.headers['Content-Type']).to eq(media_type)
             end
 
-
             describe "setting expiry" do
               let(:twenty_minutes_httpdate){ (Time.now + 20.minutes).httpdate }
 

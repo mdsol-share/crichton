@@ -1,23 +1,17 @@
-require 'crichton/representor/serializer'
 require 'crichton/representor/serializers/hal_json'
-require "json"
 
 module Crichton
   module Discovery
 
     class EntryPoints
-      include Crichton::Representor
-      represents :entry_points
-
-      attr_reader :resources
 
       ##
       #
       # Saves a collection of EntryPoint objects eventually used in serialization
       #
       # @param [Set] resources A Set collection of EntryPoint objects
-      def initialize(resources)
-        @resources = resources
+      def initialize(entry_point_objects)
+        @entry_point_objects = entry_point_objects
       end
 
       ##
@@ -30,7 +24,7 @@ module Crichton
       def as_media_type(media_type, options)
         case media_type
         when :hale_json
-          HaleJsonEntryPointsSerializer.new(@resources).to_json
+          HaleJsonEntryPointsSerializer.new(@entry_point_objects).to_json
         else
           super
         end
@@ -54,8 +48,14 @@ module Crichton
     end
 
     class HaleJsonEntryPointsSerializer
+
       LINK_OBJECT_NAME = :name
 
+      # Requires objects that have three methods: href, :link_relation, and :name.
+      # href method should return the URL where resources can be found
+      # name should return the type of the resource to be found at the URL
+      # link_relation should return a URI in lieu of an IANA link relation type
+      # (the URI should indicate more information about the type of resource)
       def initialize(entry_point_objects)
         @entry_point_objects = entry_point_objects
       end
