@@ -10,7 +10,7 @@ module Crichton
     #
     # Setup as rack middleware in config/application.rb, with an option timeout set
     # @example
-    #   config.middleware.use Crichton::Middleware::Resource HomeResponse, {'expiry' => 20}
+    #   config.middleware.use Crichton::Middleware::ResourceHomeResponse, {'expiry' => 20}
     #
     # can be accessed using curl, with any of the supported media types below
     # @example

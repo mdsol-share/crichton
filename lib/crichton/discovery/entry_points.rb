@@ -34,7 +34,7 @@ module Crichton
       #
       # Serialization method for root based requests
       #
-      # @param media_type [Symbol] :hale_
+      # @param media_type [Symbol] :hale_json
       # @param options [Hash] Hash of options to output styled or non-styled microdata
       # @option options [:symbol] :semantics Either :microdata (un-styled) or :styled_microdata
       def to_media_type(media_type, options = {})
