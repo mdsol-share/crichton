@@ -15,13 +15,13 @@ require 'equivalent-xml'
 require 'webmock/rspec'
 require 'simplecov'
 require 'json_spec'
-require 'timecop'
 
 SimpleCov.start
 Debugger.start
 Bundler.setup
 
 require 'crichton'
+require 'timecop'
 
 # Delete the tmp specs directory and all its contents.
 require 'fileutils'
