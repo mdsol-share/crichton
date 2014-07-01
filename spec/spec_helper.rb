@@ -15,6 +15,7 @@ require 'equivalent-xml'
 require 'webmock/rspec'
 require 'simplecov'
 require 'json_spec'
+require 'timecop'
 
 SimpleCov.start
 Debugger.start
