@@ -21,7 +21,6 @@ Debugger.start
 Bundler.setup
 
 require 'crichton'
-require 'timecop'
 
 # Delete the tmp specs directory and all its contents.
 require 'fileutils'

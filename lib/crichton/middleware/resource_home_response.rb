@@ -1,4 +1,5 @@
 require 'crichton/middleware/middleware_base'
+require 'timecop'
 
 module Crichton
   module Middleware
