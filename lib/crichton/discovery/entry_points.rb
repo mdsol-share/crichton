@@ -23,7 +23,7 @@ module Crichton
       # @option options [:symbol] :semantics Either :microdata (un-styled) or :styled_microdata
       def as_media_type(media_type, options)
         case media_type
-        when :hale_json
+        when :hale_json,:hal_json, :json
           HaleJsonEntryPointsSerializer.new(@entry_point_objects).to_json
         when :html
           XHTMLEntryPointsSerializer.new(@entry_point_objects).to_markup
@@ -41,7 +41,7 @@ module Crichton
       # @option options [:symbol] :semantics Either :microdata (un-styled) or :styled_microdata
       def to_media_type(media_type, options = {})
         case media_type
-        when :hale_json, :html
+        when :hale_json,:hal_json, :json, :html
           as_media_type(media_type, options)
         else
           super

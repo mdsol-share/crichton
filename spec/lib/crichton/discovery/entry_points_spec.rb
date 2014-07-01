@@ -8,10 +8,7 @@ describe Crichton::Discovery::EntryPoints do
   let(:resource_id) {"Foo"}
 
   let(:entry_point) do
-    double('EntryPoint',
-           name: resource_relation,
-           link_relation: sprintf('%s/%s#%s', Crichton.config.alps_base_uri, resource_id, resource_relation),
-           href: "#{Crichton.config.deployment_base_uri}/#{resource_uri}")
+    Crichton::Discovery::EntryPoint.new(resource_uri, resource_relation, resource_id)
   end
 
   let(:instance) {described_class.new([entry_point])}
@@ -20,10 +17,12 @@ describe Crichton::Discovery::EntryPoints do
     expect(instance).to be_kind_of Crichton::Representor
   end
 
-  describe "application/vnd.hale+json" do
+  shared_examples_for "a jsony-producer" do |media_type_s, media_type_sym|
 
-    let(:expected_hale_json) do
-      <<JSON
+    describe media_type_s do
+
+      let(:expected_hale_json) do
+        <<JSON
     {"_links":
        {
         "#{entry_point.link_relation}":
@@ -34,22 +33,27 @@ describe Crichton::Discovery::EntryPoints do
        }
     }
 JSON
-    end
-
-    describe "as_media_type" do
-      it "produces hale_json" do
-        result = instance.as_media_type(:hale_json, {})
-        expect(result).to be_json_eql(expected_hale_json)
       end
-    end
 
-    describe "to_media_type" do
-      it "produces hale_json" do
-        result = instance.to_media_type(:hale_json)
-        expect(result).to be_json_eql(expected_hale_json)
+      describe "#as_media_type" do
+        it "produces :#{media_type_sym} format" do
+          result = instance.as_media_type(media_type_sym, {})
+          expect(result).to be_json_eql(expected_hale_json)
+        end
+      end
+
+      describe "#to_media_type" do
+        it "produces :#{media_type_sym} format" do
+          result = instance.to_media_type(media_type_sym)
+          expect(result).to be_json_eql(expected_hale_json)
+        end
       end
     end
   end
+
+  it_behaves_like 'a jsony-producer', 'application/json', :json
+  it_behaves_like 'a jsony-producer', 'application/vnd.hale+json', :hale_json
+  it_behaves_like 'a jsony-producer', 'application/vnd.hal+json', :hal_json
 
   describe "text/html and application/xhtml" do
 
