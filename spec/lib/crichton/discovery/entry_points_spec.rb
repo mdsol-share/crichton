@@ -50,4 +50,36 @@ JSON
       end
     end
   end
+
+  describe "text/html and application/xhtml" do
+
+    let(:expected_markup) do
+      <<MARKUP.gsub /^\s+/, ""
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head/>
+ <body>
+   <div itemscope="itemscope">
+     <a rel="#{entry_point.link_relation}" href="#{entry_point.href}">#{entry_point.name}</a>
+   </div>
+  </body>
+</html>
+MARKUP
+    end
+
+    describe "as_media_type" do
+      it "produces html" do
+        #NOTE rails use the :html sym for both :html, and :xhtml
+        result = instance.as_media_type(:html, {})
+        expect(result).to eq expected_markup
+      end
+    end
+
+    describe "to_media_type" do
+      it "produces html" do
+        result = instance.to_media_type(:html)
+        expect(result).to eq expected_markup
+      end
+    end
+  end
 end
