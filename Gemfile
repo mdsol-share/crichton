@@ -9,6 +9,7 @@ gem 'yard',          '~> 0.8.7'
 gem 'redcarpet',     '~> 3.0.0'
 gem 'rake',          '~> 0.9'
 gem 'awesome_print', '~> 1.1.0'
+gem 'timecop',        '~> 0.7.1'
 
 group :development, :test do
   gem 'pry'
@@ -22,7 +23,6 @@ group :test do
   gem 'rspec',          '~> 2.14.0'
   gem 'simplecov',      '~> 0.7.1'
   gem 'json_spec',      '~> 1.1.1'
-  gem 'timecop',        '~> 0.7.1'
   #TODO: replace when fix for v1.0.0 will be released
   gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git', ref: '7711d4d'
 end
