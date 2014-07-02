@@ -148,7 +148,7 @@ module Crichton
             document['semantics']['total_count']['href'] = 'http://alps.io/schema.org/Integer#fragment'
           end
           @errors = expected_output(:error, 'descriptors.href_not_supported_value', id: 'total_count',
-            filename: filename, section: :descriptors, vl: 'http://alps.io/schema.org/Integer#fragment', sub_header: :error)
+            filename: filename, section: :descriptors, uri: 'http://alps.io/schema.org/Integer#fragment', sub_header: :error)
         end
 
         context 'select options attributes' do
