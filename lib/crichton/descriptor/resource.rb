@@ -93,7 +93,7 @@ module Crichton
         end
       end
 
-      Route = Struct.new :controller, :action
+      Route = Struct.new(:controller, :action)
       private_constant :Route
       ##
       # Returns the routes descriptors specified in the resource descriptor document.
