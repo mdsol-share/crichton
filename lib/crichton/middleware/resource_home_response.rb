@@ -18,7 +18,7 @@ module Crichton
     #
     class ResourceHomeResponse < MiddlewareBase
 
-      SUPPORTED_MEDIA_TYPES=%w(text/html application/xhtml+xml application/xml application/json-home application/json */*)
+      SUPPORTED_MEDIA_TYPES = %w(application/vnd.hale+json application/vnd.hal+json application/json text/html application/xhtml+xml */*)
 
       ##
       #
@@ -60,12 +60,10 @@ module Crichton
       # @param [String] media_type textual content_type found in http header
       def response_media_type_sym(media_type)
         case media_type
-        when 'text/html'
+        when 'application/vnd.hale+json', 'application/vnd.hal+json', 'application/json', '*/*'
+          :hale_json
+        when 'text/html', 'application/xhtml+xml'
           :html
-        when 'application/xhtml+xml', 'application/xml'
-          :xhtml
-        when 'application/json-home', 'application/json', '*/*'
-          :json_home
         end
       end
 
@@ -76,7 +74,7 @@ module Crichton
       # @param [String] return_content_type Content type to set in the response to the request
       # @param [Symbol] media_type :html or :xhtml to generate document response
       def home_response(return_content_type, media_type)
-        [200, {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.new+@expiry).httpdate}"},
+        [200, {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.now + @expiry).httpdate}"},
           [Crichton::Discovery::EntryPoints.new(Crichton.entry_points).to_media_type(media_type)]]
       end
     end

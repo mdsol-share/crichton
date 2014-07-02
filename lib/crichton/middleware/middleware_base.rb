@@ -5,7 +5,7 @@ module Crichton
       #
       # get the first supported media type from the HTTP_ACCEPT list of media types in the request header
       def supported_media_type(supported_media_types, env)
-        accepted_media_types(env).detect { |media_type| supported_media_types.include?(media_type) }
+        (accepted_media_types(env) & supported_media_types).shift
       end
 
       # generate an array of acceptable media types from the HTTP_ACCEPT header

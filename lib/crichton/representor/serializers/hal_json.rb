@@ -8,6 +8,9 @@ module Crichton
     class HalJsonSerializer < Serializer
       media_types hal_json: %w(application/hal+json)
 
+      RESERVED_HREF = :href
+      RESERVED_LINKS = :_links
+
       ##
       # Returns a ruby object representing a HAL serialization.
       #
@@ -36,17 +39,17 @@ module Crichton
         metadata_links = @object.metadata_links(options)
         link_transitions = @object.each_transition(options)
         all_links = [metadata_links, link_transitions]
-        { _links: all_links.reduce({}) { |hash, link_block| hash.merge(get_data(link_block, relations)) } }
+        { RESERVED_LINKS => all_links.reduce({}) { |hash, link_block| hash.merge(get_data(link_block, relations)) } }
       end
 
       def relations
         lambda do |transition|
           link = if transition.templated?
-                   {href: transition.templated_url, templated: true}
+                   {RESERVED_HREF => transition.templated_url, templated: true}
                  else
-                   {href: transition.url}
+                   {RESERVED_HREF => transition.url}
                  end
-          link[:href] ? [transition.name, link] : nil
+          link[RESERVED_HREF] ? [transition.name, link] : nil
         end
       end
 
@@ -70,7 +73,7 @@ module Crichton
 
       def add_embedded_links(base_object, embedded)
         embedded_links = embedded.inject({}) { |hash, (k,v)| hash.merge({k => get_self_links(v)}) }
-        base_object[:_links] = base_object[:_links].merge( embedded_links )
+        base_object[RESERVED_LINKS] = base_object[RESERVED_LINKS].merge( embedded_links )
       end
 
       def get_embedded(options)
@@ -80,7 +83,7 @@ module Crichton
       end
 
       def get_self_links(hal_obj)
-        hal_obj.map { |item| { href: item[:_links]['self'][:href], type: item[:_links]['type'][:href] } }
+        hal_obj.map { |item| { RESERVED_HREF => item[RESERVED_LINKS]['self'][RESERVED_HREF], type: item[RESERVED_LINKS]['type'][RESERVED_HREF] } }
       end
 
       #Todo: Move to a helpers.rb file

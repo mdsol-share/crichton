@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'crichton/representor'
 require 'crichton/representor/factory'
 require 'crichton/representor/serializers/hal_json'
-require 'json_spec'
 
 module Crichton
   module Representor
@@ -27,6 +26,17 @@ module Crichton
           serializer = @serializer.new(drds)
           expect(serializer.to_media_type(conditions: 'can_do_anything')).to be_json_eql(drds_hal_json)
         end
+      end
+    end
+
+    describe "class" do
+
+      it "returns the correct reserved key for a href" do
+        expect(Crichton::Representor::HalJsonSerializer::RESERVED_HREF).to eq :href
+      end
+
+      it "retursn the correct reserved key for links" do
+        expect(Crichton::Representor::HalJsonSerializer::RESERVED_LINKS).to eq :_links
       end
     end
   end
