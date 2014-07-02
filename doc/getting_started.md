@@ -2,7 +2,7 @@
 
 ## Configuration
 Crichton includes a default [Dice Bag][] template that supports [12-Factor App][] configuration of applications 
-implementing Crichton. To configure configure your application:
+implementing Crichton. To configure your application:
 
 * Generate the `crichton.yml.dice` template in the `path_to_app\config` (default) folder of your application
 
@@ -75,7 +75,7 @@ The following are acceptable media types for content negotiating the entry point
 * html - text/html
 * xhtml - application/xhtml+xml
 * xml - application/xml
-* json - home - application/json-home
+* json-home - application/json-home
 * json - application/json
 * any - \*/\*
 
