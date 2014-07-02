@@ -36,7 +36,7 @@ module Crichton
 
           it 'uses the first supported media type in the HTTP_ACCEPT header' do
             headers = {'Content-Type' => 'application/vnd.hale+json', 'expires' => (Time.now + 10.minutes).httpdate}
-            response = get_rack_response('bogus/media_type,*/a,text/html,application/vnd.hale+json,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*')
+            response = get_rack_response('bogus/media_type,*/a,application/vnd.hale+json,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*')
             expect(response.status).to eq 200
             headers["Content-Length"] = response.body.length.to_s
             expect(response.headers).to eq headers
@@ -45,7 +45,7 @@ module Crichton
 
           it 'responds correctly with a non standard HTTP_ACCEPT header' do
             headers = {'Content-Type' => 'application/vnd.hale+json', 'expires' => (Time.now + 10.minutes).httpdate}
-            response = get_rack_response('bogus/media_type, text/html,  application/xhtml+xml, application/vnd.hale+json,  application/xml;q=0.9,  image/webp, */*')
+            response = get_rack_response('bogus/media_type, application/vnd.hale+json,  text/html,  application/xhtml+xml, application/xml;q=0.9,  image/webp, */*')
             expect(response.status).to eq 200
             headers["Content-Length"] = response.body.length.to_s
             expect(response.headers).to eq headers
@@ -62,30 +62,64 @@ module Crichton
             expect(response.status).to eq(406)
           end
 
-          describe "application/vnd.hale+json support" do
+          shared_examples_for "it returns the correct content_type header" do |media_type_s|
+            it "responds with the expected content-type" do
+              response = get_rack_response(media_type_s)
+              expect(response.headers['Content-Type']).to eq(media_type_s)
+            end
+          end
+
+          shared_examples_for "a jsony producer" do |media_type_s|
+
+            it_behaves_like "it returns the correct content_type header", media_type_s
+
+            describe "#{media_type_s} response" do
+              it "produces parsable json" do
+                expect do
+                  parse_json(get_rack_response(media_type_s).body)
+                end.to_not raise_error
+              end
+            end
+          end
+
+          it_behaves_like "a jsony producer", "application/vnd.hale+json"
+          it_behaves_like "a jsony producer", "application/vnd.hal+json"
+          it_behaves_like "a jsony producer", "application/json"
+
+          shared_examples_for "a xmly producer" do |media_type_s|
+            describe "#{media_type_s} support" do
+
+              it_behaves_like "it returns the correct content_type header", media_type_s
+
+              it "produces parsable XML" do
+                expect do
+                  REXML::Document.new(get_rack_response(media_type_s).body)
+                end.to_not raise_error
+              end
+            end
+          end
+
+          it_behaves_like "a xmly producer", "text/html"
+          it_behaves_like "a xmly producer", "application/xhtml+xml"
+
+          describe "setting expiry" do
+
             let(:media_type) {'application/vnd.hale+json'}
 
-            it "responds with the expected content-type" do
-              response = get_rack_response(media_type)
-              expect(response.headers['Content-Type']).to eq(media_type)
+            let(:twenty_minutes_httpdate){ (Time.now + 20.minutes).httpdate }
+
+            it 'responds with the correct expiration date when using a string to specify the option' do
+              responder = ResourceHomeResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
+              env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
+              response = Rack::MockResponse.new(*responder.call(env))
+              expect(response.headers["expires"]).to eq twenty_minutes_httpdate
             end
 
-            describe "setting expiry" do
-              let(:twenty_minutes_httpdate){ (Time.now + 20.minutes).httpdate }
-
-              it 'responds with the correct expiration date when using a string to specify the option' do
-                responder = ResourceHomeResponse.new(rack_app, {'expiry' => 20}) #minutes instead of default of 10
-                env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
-                response = Rack::MockResponse.new(*responder.call(env))
-                expect(response.headers["expires"]).to eq twenty_minutes_httpdate
-              end
-
-              it 'responds with the correct expiration date when using a symbol to specify the option' do
-                responder = ResourceHomeResponse.new(rack_app, {:expiry => 20}) #minutes instead of default of 10
-                env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
-                response = Rack::MockResponse.new(*responder.call(env))
-                expect(response.headers["expires"]).to eq twenty_minutes_httpdate
-              end
+            it 'responds with the correct expiration date when using a symbol to specify the option' do
+              responder = ResourceHomeResponse.new(rack_app, {:expiry => 20}) #minutes instead of default of 10
+              env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
+              response = Rack::MockResponse.new(*responder.call(env))
+              expect(response.headers["expires"]).to eq twenty_minutes_httpdate
             end
           end
         end
