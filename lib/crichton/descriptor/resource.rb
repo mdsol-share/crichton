@@ -4,6 +4,7 @@ require 'crichton/descriptor/detail'
 require 'crichton/descriptor/state'
 require 'net/http'
 require 'crichton/descriptor/descriptor_keywords'
+require 'crichton/discovery/entry_point'
 
 module Crichton
   module Descriptor

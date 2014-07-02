@@ -25,8 +25,8 @@ module Crichton
         case media_type
         when :hale_json,:hal_json, :json
           HaleJsonEntryPointsSerializer.new(@entry_point_objects).to_json
-        when :html
-          XHTMLEntryPointsSerializer.new(@entry_point_objects).to_markup
+        when :html, :xhtml
+          HTMLEntryPointsSerializer.new(@entry_point_objects, media_type).to_markup
         else
           super
         end
@@ -41,7 +41,7 @@ module Crichton
       # @option options [:symbol] :semantics Either :microdata (un-styled) or :styled_microdata
       def to_media_type(media_type, options = {})
         case media_type
-        when :hale_json, :hal_json, :json, :html
+        when :hale_json, :hal_json, :json, :html, :xhtml
           as_media_type(media_type, options)
         else
           super
@@ -49,26 +49,57 @@ module Crichton
       end
     end
 
-    class XHTMLEntryPointsSerializer
-      def initialize(entry_point_objects)
+    class HTMLEntryPointsSerializer
+      def initialize(entry_point_objects, media_type)
         @entry_point_objects = entry_point_objects
+        @media_type = media_type
       end
 
       def to_markup
-        html_erb =<<MARKUP
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head/>
- <body>
-   <div itemscope="itemscope">
-     <% @entry_point_objects.each do | entry_point | %>
-       <a rel="<%= entry_point.link_relation %>" href="<%= entry_point.href %>"><%= entry_point.name %></a>
-     <% end %>
-   </div>
-  </body>
-</html>
-MARKUP
-        ERB.new(html_erb).result(binding).gsub /^\s+/, ""
+        ERB.new(erb_template(@media_type)).result(binding).gsub /^\s+/, ""
+      end
+      
+      private
+      def erb_template(media_type)
+        if media_type == :html
+          <<-MARKUP
+            <!DOCTYPE html>
+            <html>
+              <head/>
+              <body>
+                <div itemscope="entry_point">
+                  <ul>
+                    <% @entry_point_objects.each do | entry_point | %>
+                      <li>
+                        <b>Resource: </b>
+                        <span><%= entry_point.name %></span>
+                        <b>  rel: </b>
+                        <a rel="<%= entry_point.link_relation %>" href="<%= entry_point.link_relation %>"><%= entry_point.link_relation %></a>
+                        <b>  url:  </b>
+                        <a rel="<%= entry_point.link_relation %>" href="<%= entry_point.href %>"><%= entry_point.href %></a>
+                      </li>
+                    <% end %>
+                </ul>
+               </div>
+              </body>
+            </html>
+          MARKUP
+        else
+          <<-MARKUP
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE html>
+            <html xmlns="http://www.w3.org/1999/xhtml">
+              <head/>
+              <body>
+                <div itemscope="entry_point">
+                  <% @entry_point_objects.each do | entry_point | %>
+                    <a rel="<%= entry_point.link_relation %>" href="<%= entry_point.href %>"><%= entry_point.name %></a>
+                  <% end %>
+                </div>
+              </body>
+            </html>
+          MARKUP
+        end
       end
     end
 

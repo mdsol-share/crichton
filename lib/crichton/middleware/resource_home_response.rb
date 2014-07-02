@@ -1,4 +1,5 @@
 require 'crichton/middleware/middleware_base'
+require 'crichton/discovery/entry_points'
 
 module Crichton
   module Middleware
@@ -17,8 +18,7 @@ module Crichton
     #   curl --header 'Accepts: application/xhtml+xml' localhost:3000/
     #
     class ResourceHomeResponse < MiddlewareBase
-
-      SUPPORTED_MEDIA_TYPES = %w(application/vnd.hale+json application/vnd.hal+json application/json text/html application/xhtml+xml */*)
+      SUPPORTED_MEDIA_TYPES = %w(application/vnd.hale+json application/hal+json application/json text/html application/xhtml+xml application/xml */*)
 
       ##
       #
@@ -60,10 +60,12 @@ module Crichton
       # @param [String] media_type textual content_type found in http header
       def response_media_type_sym(media_type)
         case media_type
-        when 'application/vnd.hale+json', 'application/vnd.hal+json', 'application/json', '*/*'
+        when 'application/vnd.hale+json', 'application/hal+json', 'application/json', '*/*'
           :hale_json
-        when 'text/html', 'application/xhtml+xml'
+        when 'text/html'
           :html
+        when 'application/xhtml+xml', 'application/xml'
+          :xhtml
         end
       end
 
