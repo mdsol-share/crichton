@@ -1,3 +1,9 @@
+#####################################################################################
+#
+# Run `bundle exec appraisal install` on the command-line if you modify this file.
+#
+#####################################################################################
+
 source 'https://rubygems.org'
 gemspec
 
