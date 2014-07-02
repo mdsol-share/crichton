@@ -32,6 +32,7 @@ en:
     name_duplicated_exception: "Duplicated transition name found: '%{transition}' for '%{state}' state."
   descriptors:
     property_missing: "Resource '%{resource}' does not have a '%{prop}' property"
+    href_not_supported_value: "Descriptor '%{id}' has 'href' property with invalid url: '%{vl}'. Fragments are not supported."
     doc_media_type_invalid: "Resource '%{resource}', doc property media type '%{media_type}' is invalid"
     type_invalid: "Resource '%{resource}' type property '%{type_prop}' is invalid"
     link_invalid: "Resource '%{resource}' links property '%{link}' is invalid"

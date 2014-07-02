@@ -115,7 +115,18 @@ module Crichton
 
           # all NON top level descriptors should have a sample and href entry
           add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
-          add_warning('descriptors.property_missing', options.merge({prop: 'href'})) unless descriptor.href
+          check_href_property(descriptor, options)
+        end
+      end
+
+      def check_href_property(descriptor, options)
+        if uri = descriptor.href
+          link = Addressable::URI.parse(uri)
+          if link.absolute? && link.fragment
+            add_error('descriptors.href_not_supported_value', options.merge({ id: descriptor.id, vl: uri }))
+          end
+        else
+          add_warning('descriptors.property_missing', options.merge({prop: 'href'}))
         end
       end
 
