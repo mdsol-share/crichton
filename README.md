@@ -7,7 +7,7 @@ Crichton is a library to simplify implementing Hypermedia APIs. It has the knowl
 Checkout the [documentation][] for more info and/or try the [demo service][].
 
 ## Overview
-Crichton is opinionated that Hypermedia APIs and their associated resources should be designed and implemented as 
+Crichton is opinionated in that Hypermedia APIs and their associated resources should be designed and implemented as 
 state-machines. As such, the library leverages a state-machine centric, declarative 
 {file:doc/api_descriptor_documents.md API descriptor document} which it uses to dynamically decorate data as 
 Hypermedia representations for different media-types.
@@ -25,7 +25,7 @@ process and artifacts of an (overly simplified) eBook API example that illustrat
 
 ### Analyze Resource Semantics
 Assuming one has analysed a business problem and isolated a resource or simple set of related resources including 
-determining desired properties and actions necessary to accomplish the associated work, the next step is groom the 
+determining desired properties and actions necessary to accomplish the associated work, the next step is to groom the 
 resource(s). This analysis is part of "Contract First" development and lays the groundwork for Hypermedia Contracts and 
 State-machine analysis and definition.
 

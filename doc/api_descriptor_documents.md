@@ -19,7 +19,7 @@ of the affordances, the links and forms, that are associated with a resource's s
 these or reference an external semantic document.
 - The Descriptor Document assumes that it can reference an external, human-readable semantic documentation of any 
 properties or affordances such as the links and forms that the Descriptor Document exposes. You can use an _API 
-Descriptor Document_ to generate some of human-readable information; however, the Document presupposes external 
+Descriptor Document_ to generate some of the human-readable information; however, the Document presupposes external 
 repositories for any URIs that it references.
 - The Descriptor Document separates the definition of protocol and media-type information from the semantic definition 
 of the resource's semantic data and transitions as a RESTful design tool.
@@ -41,6 +41,7 @@ For more information, see [Design Goals](roadmap.md#design-goals).
 _API Descriptor Documents_ are built by specifying a set of metadata and [descriptor elements](#descriptor-elements). 
 Though the document sections can be maintained in any order, the following steps reflect a workflow associated with the 
 progressive design of a Hypermedia API. 
+
 1. Document metadata about the profile.
 
 2. Analyze the resources, states and transitions associated with the underlying workflow.
