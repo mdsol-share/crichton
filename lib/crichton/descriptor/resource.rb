@@ -92,7 +92,19 @@ module Crichton
           end
         end
       end
-      
+
+      Route = Struct.new :controller, :action
+      private_constant :Route
+      ##
+      # Returns the routes descriptors specified in the resource descriptor document.
+      #
+      # @return [Hash] The protocol transition descriptors.
+      def routes
+        @descriptors[:routes] ||= (descriptor_document[ROUTES] || {}).each_with_object({}) do |(transition, route_descriptor), h|
+          h[transition] = Route.new(route_descriptor[CONTROLLER], route_descriptor[ACTION])
+        end
+      end
+
       ##
       # Returns a protocol-specific transition descriptor.
       #
@@ -102,6 +114,18 @@ module Crichton
       # @return [Object] The descriptor instance.
       def protocol_transition(protocol, transition_name)
         protocols[protocol] && protocols[protocol][transition_name] 
+      end
+
+      ##
+      # Returns a protocol-controller-action-specific transition descriptor.
+      #
+      # @param [String] protocol The protocol name.
+      # @param [String] controller The controller name.
+      # @param [String] action The action name.
+      #
+      # @return [Object] The protocol descriptor instance.
+      def protocol_route(protocol, controller, action)
+        protocol_transition(protocol, routes.key(Route.new(controller, action)))
       end
 
       ##
