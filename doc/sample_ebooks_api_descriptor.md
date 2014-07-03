@@ -12,6 +12,7 @@
 # decorating service responses.
 #
 id: EBooks # REQUIRED. Unique id of the document (and the related ALPS profile generated from this document).
+doc: Describes the semantics, states and state transitions associated with eBooks.
 links:
   self: EBooks # REQUIRED. Can be absolute or relative if 'alps_base_uri' configured in cricton.yml
   help: http:/example.com/EBooks #OPTIONAL. Can be relative path if 'documentation_base_uri' configured in cricton.yml

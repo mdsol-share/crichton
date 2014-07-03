@@ -7,12 +7,12 @@ module Crichton
 
       ##
       #
-      # @param resource_uri [String] uri of the entry point of the resource
-      # @param resource_relation [String] name of the resource relation
-      # @param resource_id [String] name of the resource
+      # @param [String] resource_uri_path uri of the entry point of the resource
+      # @param [String] resource_name name of the resource relation
+      # @param [String] resource_id name of the resource
       def initialize(resource_uri_path, resource_name, resource_id)
-        @resource_name = resource_name
         @resource_uri_path = resource_uri_path
+        @resource_name = resource_name
         @resource_id = resource_id
       end
 

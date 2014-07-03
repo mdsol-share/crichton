@@ -9,7 +9,7 @@ module Crichton
       #
       # Saves a collection of EntryPoint objects eventually used in serialization
       #
-      # @param [Set] resources A Set collection of EntryPoint objects
+      # @param [Set] entry_point_objects A Set collection of EntryPoint objects
       def initialize(entry_point_objects)
         @entry_point_objects = entry_point_objects
       end
