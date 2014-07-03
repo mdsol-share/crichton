@@ -21,7 +21,7 @@ HTTP protocol properties include the following:
    with the templated parameter(s).
    - `method` - Required. The uniform interface method; for example, GET, POST, or DELETE.
    - `headers` - Optional. An array of headers to be set on responses.
-   - `slt` - Optional. The Service Level Target (SLT) for the endpoint. If specified, [SLT_RESPONSE_HEADER][] will
+   - `slt` - Optional. The Service Level Target (SLT) for the endpoint. If specified, [SLT Response Header][] will
    be set on response.
       - `99th_percentile` - Required if there is an SLT. The 99th percentile time-limit.
       - `std_dev` - Required if there is an SLT. The standard deviation around the 99th percentile.
