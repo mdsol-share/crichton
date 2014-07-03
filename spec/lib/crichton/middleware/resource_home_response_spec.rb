@@ -83,7 +83,7 @@ module Crichton
           end
 
           it_behaves_like "a jsony producer", "application/vnd.hale+json"
-          it_behaves_like "a jsony producer", "application/vnd.hal+json"
+          it_behaves_like "a jsony producer", "application/hal+json"
           it_behaves_like "a jsony producer", "application/json"
 
           shared_examples_for "a xmly producer" do |media_type_s|
