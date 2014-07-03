@@ -14,6 +14,7 @@ doc/lint.md
 doc/sample_ebooks_hypermedia_contract.md
 doc/sample_ebooks_state_machine_analysis.md
 doc/sample_ebooks_api_descriptor.md
+spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
 doc/roadmap.md
  
 CONTRIBUTING.md

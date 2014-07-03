@@ -18,7 +18,7 @@ implementing Crichton. To configure your application:
 
 It is considered a best practice to commit your `crichton.yml.dice` template to your repo (not `crichton.yml`) and 
 include a startup rake task in your application that generates crichton.yml during the release phase. For more 
-information, see the [sample template][] and [Dice Bag][] documentation.
+information, see the [Dice Bag][] documentation.
 
 ### Crichton YAML Properties
 The following defines the configuration properties:

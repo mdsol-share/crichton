@@ -27,15 +27,15 @@ of the resource's semantic data and transitions as a RESTful design tool.
 definitions of a resource and its states, you can design an API and generate a human-readable contract directly from 
 the _API Descriptor Document_.
 
-The Crichton library uses [_Resource Descriptors_][] defined in API Descriptor documents to generate service responses 
-and to generate related ALPS profiles. These profiles can further be included in responses that ALPS-aware Hypermedia 
-agents can consume for different media-types.
+The Crichton library uses {file:doc/resource_descriptors.md Resource Descriptors} defined in API Descriptor documents to 
+generate service responses and to generate related ALPS profiles. These profiles can further be included in responses 
+that ALPS-aware Hypermedia agents can consume for different media-types.
 
 This document uses key words that follow [RFC2119](http://tools.ietf.org/html/rfc2119) standards. These key words 
 include: "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and 
 "OPTIONAL".
 
-For more information, see [Design Goals](roadmap.md#design-goals).
+For more information, {file:doc/roadmap.md#design-goals Design Goals}.
 
 ## Properties and Examples<a name="properties-and-examples"></a>
 _API Descriptor Documents_ are built by specifying a set of metadata and [descriptor elements](#descriptor-elements). 
@@ -57,8 +57,9 @@ formatted body.
 
 7. Define routing/scaffolding information for the resource. OPTIONAL.
 
-* [Example eBooks API Descriptor Document][]
-* [Example DRDs API Descriptor Document][]
+* {file:doc/sample_ebooks_api_descriptor.md Example eBooks API Descriptor Document}
+* {file:spec/fixtures/resource_descriptors/drds_descriptor_v1.yml Example DRDs API Descriptor Document}
+
 
 ## Properties/ALPS Correlation<a name="properties-alps-correlation"></a>
 A number of the properties in a _API Descriptor Document_ correspond directly to their related meanings in the 
@@ -86,19 +87,19 @@ Profile metadata properties include the following:
 
 - `id` - Required. The ID of the profile. Enter using the CamelCase standard for the name of the profile. Used to 
 generate the profile URI.
-- `version` - Required. The version of the document. Follow versioning standards. For internal use.
 - `doc` - Required. Documents the contents of the profile in human-readable form.
 - `links` - Recommended. Links related to the profile.
   - `profile` - Used in accordance with [RFC 5988 - Web Linking](http://tools.ietf.org/html/rfc5988).
   - `help` - Used in accordance with [RFC 5988 - Web Linking](http://tools.ietf.org/html/rfc5988).
 
     Note: When you include `profile` and/or `help` links as relative links, they are generated in ALPS profiles as
-fully qualified URIs using the `alps_base_uri` and/or `documentation_base_uri` configuration variables. See  
-[Crichton Configuration](getting_started.md#configuration) for more information. Any other link that you include must 
-specify a fully qualified URI.
+fully qualified URIs using the `alps_base_uri` and/or `documentation_base_uri` configuration variables. See 
+{file:doc/getting_started.md#configuration Crichton Configuration} for more information. Any other link that you 
+include must specify a fully qualified URI.
 
 ### Code Example<a name="code-example"></a>
-The following example highlights the top section of the [Example Resource Descriptor][]. In this example, the associated 
+The following example highlights the top section of the 
+{file:doc/sample_ebooks_api_descriptor.md Example eBooks API Descriptor Document}. In this example, the associated 
 profile URI would be `http://alps.example.org/DRDs`.
 
 ```yaml
@@ -114,9 +115,9 @@ links:
 ## Descriptor Elements<a name="descriptor-elements"></a>
 The following detail the properties of each subsection of an _API Descriptor Document_:
 
-- [Data and Transition Descriptors](data_and_transition_descriptors.md)
-- [Resource Descriptors](resource_descriptors.md)
-- [Protocol and Route Descriptors](protocol_and_route_descriptors.md)
+* {file:doc/data_and_transition_descriptors.md Data and Transition Descriptors}
+* {file:doc/resource_descriptors.md Resource Descriptors}
+* {file:doc/protocol_and_route_descriptors.md Protocol and Route Descriptors}
 
 ## Crichton Lint<a name="crichton-lint"></a>
 Developing a Hypermedia aware resource, whose behavior is structured within a API Descriptor document, may appear 
@@ -132,14 +133,14 @@ Single or multiple descriptor files can be validated via lint through the rdlint
 
 * `bundle exec rake crichton:lint[all]` Use rake to validate all files in the resource descriptor directory
 
-To understand all of the details of linting descriptors files, please view the [Lint](doc/lint.md) documentation.
+To understand all of the details of linting descriptors files, please view the {file:doc/lint.md Lint} documentation.
 
 ## Related Topics<a name="related-topics"></a>
-- [ALPS][] specification
-- [Example eBooks API Descriptor Document][]
-- [Example DRDs API Descriptor Document][]
+* [ALPS][] specification
+* {file:doc/sample_ebooks_api_descriptor.md Example eBooks API Descriptor Document}
+* {file:spec/fixtures/resource_descriptors/drds_descriptor_v1.yml Example DRDs API Descriptor Document}
+* {file:doc/data_and_transition_descriptors.md Data and Transition Descriptors}
+* {file:doc/resource_descriptors.md Resource Descriptors}
+* {file:doc/protocol_and_route_descriptors.md Protocol and Route Descriptors}
 
 [ALPS]: http://alps.io/spec/index.html
-[_Resource Descriptors_]: resource_descriptors.md
-[Example eBooks API Descriptor Document]: sample_ebooks_api_descriptor.md
-[Example DRDs API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml

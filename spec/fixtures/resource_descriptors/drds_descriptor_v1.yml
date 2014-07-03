@@ -1,5 +1,9 @@
+# @title Sample DRDs API Descriptor
+
 id: DRDs
+
 doc: Describes the semantics, states and state transitions associated with DRDs.
+
 links:
   self: DRDs
   help: Things/DRDs
