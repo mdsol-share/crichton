@@ -16,6 +16,16 @@ module Crichton
 
       ##
       #
+      # Returns true if the collection of objects used to create
+      # this EntryPoints include objects. Else false
+      #
+      # @return [Boolean]
+      def empty?
+        @entry_point_objects.empty?
+      end
+
+      ##
+      #
       # Serialization method for root based requests
       #
       # @param media_type [Symbol] :hale_json, :hal_json, :json, :html
