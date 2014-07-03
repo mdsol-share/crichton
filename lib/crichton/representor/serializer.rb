@@ -1,8 +1,11 @@
 require 'crichton/representor'
+require 'crichton/helpers'
 
 module Crichton
   module Representor
     class Serializer
+      include Crichton::Helpers::ConfigHelper
+
       class << self
         ##
         # Serializer factory method that returns a serializer associated with a particular media-type.
@@ -136,7 +139,7 @@ module Crichton
           resource = Crichton.raw_profile_registry[object.class.resource_descriptor.parent_descriptor.id]
           protocol_transition = resource.protocol_route(request.scheme, request[:controller], request[:action])
           if protocol_transition && (slt = protocol_transition.slt)
-            response_headers['SLT_HEADER'] = slt.map { |k, v| "#{k}=#{v}" }.join(',')
+            response_headers[config.service_level_target_header] = slt.map { |k, v| "#{k}=#{v}" }.join(',')
           end
           response_headers.merge(object.response_headers)
         end

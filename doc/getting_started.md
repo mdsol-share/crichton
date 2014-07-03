@@ -35,7 +35,8 @@ the service.
 * `use_discovery_middleware` - Rails only. Whether or not to autoload middleware to support rendering local resource
 catalogue of entry points.
 * `resource_home_response_expiry` - Configures the expiry of resource entry point middleware that 
-serves a catalogue of resource entry points served directly from the service. 
+serves a catalogue of resource entry points served directly from the service.
+* `service_level_target_header` - Configures service level target (SLT) response header name.
 * `crichton_proxy_base_uri` - URI to use to capture and proxy AJAX requests to related resources when surfing an 
 API in browser. Allows an application to proxy the request for authentication/authorization.
 * `css_uri` - The fully-qualified URI for a CSS file to use when surfing an API in a browser. 

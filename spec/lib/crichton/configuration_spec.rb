@@ -81,6 +81,21 @@ module Crichton
       end
     end
 
+    describe '#service_level_target_header' do
+      context 'when configured' do
+        it 'returns service level target header name' do
+          expect(configuration.service_level_target_header).to eq('CONFIGURED_SLT_HEADER')
+        end
+      end
+
+      context 'when not configured' do
+        it 'returns default service level target header name' do
+          @config = example_environment_config.except('service_level_target_header')
+          expect(configuration.service_level_target_header).to eq('SLT_RESPONSE_HEADER')
+        end
+      end
+    end
+
     %w(alps deployment discovery documentation).each do |attribute|
       describe "\##{attribute}_base_uri" do
         it "returns the #{attribute} base URI" do

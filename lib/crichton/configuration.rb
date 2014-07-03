@@ -54,6 +54,10 @@ module Crichton
       @alps_profile_response_expiry ||= { 'expiry' => (@config['alps_profile_response_expiry'] || 20) }
     end
 
+    def service_level_target_header
+      @service_level_target_header ||= @config['service_level_target_header'] || 'SLT_RESPONSE_HEADER'
+    end
+
     ##
     # @!attribute [r] css_uri
     # The URI where CSS is hosted.
