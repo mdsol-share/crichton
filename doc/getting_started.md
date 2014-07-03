@@ -20,7 +20,7 @@ It is considered a best practice to commit your `crichton.yml.dice` template to 
 include a startup rake task in your application that generates crichton.yml during the release phase. For more 
 information, see the [sample template][] and [Dice Bag][] documentation.
 
-### Crichton YAML Properties
+### Crichton YAML Properties<a name="crichton-yaml-properties"></a>
 The following defines the configuration properties:
 
 * `alps_base_uri` - The base URI for the ALPS profile registry for profiles referenced as relative paths in an 
