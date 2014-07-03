@@ -131,7 +131,7 @@ module Crichton
           request.stub(:scheme).and_return('http')
           request.stub(:[]).with(:controller).and_return('drds')
           request.stub(:[]).with(:action).and_return('index')
-          expected_result = { 'SLT_RESPONSE_HEADER' => '99th_percentile=100ms,std_dev=25ms,requests_per_second=50' }
+          expected_result = { 'REQUEST_SLT' => '99th_percentile=100ms,std_dev=25ms,requests_per_second=50' }
           object.stub(:self_transition).and_return(nil)
           expect(MediaTypeSerializer.new(object).response_headers(object, request)).to eq(expected_result)
         end
