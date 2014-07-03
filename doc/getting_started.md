@@ -37,7 +37,7 @@ catalogue of entry points.
 * `resource_home_response_expiry` - Configures the expiry of resource entry point middleware that 
 serves a catalogue of resource entry points served directly from the service.
 * `service_level_target_header` - Configures service level target (SLT) response header name. If not specified,
-`SLT_RESPONSE_HEADER` name will be used as default.
+defaults to 'REQUEST_SLT'.
 * `crichton_proxy_base_uri` - URI to use to capture and proxy AJAX requests to related resources when surfing an 
 API in browser. Allows an application to proxy the request for authentication/authorization.
 * `css_uri` - The fully-qualified URI for a CSS file to use when surfing an API in a browser. 
