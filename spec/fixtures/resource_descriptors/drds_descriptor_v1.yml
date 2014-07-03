@@ -1,5 +1,9 @@
+# @title Sample DRDs API Descriptor
+
 id: DRDs
+
 doc: Describes the semantics, states and state transitions associated with DRDs.
+
 links:
   self: DRDs
   help: Things/DRDs
@@ -18,9 +22,10 @@ semantics:
     doc: The UUID of the DRD.
     href: http://alps.io/schema.org/Text
     sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
-  name: &name
+  name:
     doc: The name of the DRD.
     href: http://alps.io/schema.org/Text
+    sample: drdname
   status:
     doc: How is the DRD.
     href: http://alps.io/schema.org/Text
@@ -79,19 +84,11 @@ semantics:
     sample: searchterm
 
 extensions:
-  _name: &_name
-    <<: *name
+  validated_input_field:
     field_type: text
-    sample: drdname
-  _create_name:
-    <<: *_name
     validators:
       - required
       - maxlength: 50
-  _update_name:
-    <<: *_name
-    validators:
-      - required
 
 safe:
   list:
@@ -106,7 +103,8 @@ safe:
         field_type: text
       - href: name
         name: search_name
-        ext: _name
+        field_type: text
+        sample: drdname
 
   show:
     doc: Shows a particular DRD.
@@ -137,7 +135,7 @@ idempotent:
     links:
       self: DRDs#update
       help: forms/update
-    semantics:
+    data:
       - href: status
         sample: renegade
         field_type: select
@@ -192,7 +190,7 @@ unsafe:
     href: update
     semantics:
       - href: name
-        ext: _create_name
+        ext: validated_input_field
       - href: leviathan_uuid
         field_type: text
       - href: leviathan_health_points
@@ -261,7 +259,6 @@ resources:
     descriptors:
       - href: uuid
       - href: name
-        ext: _name
       - href: status
       - href: old_status
       - href: kind

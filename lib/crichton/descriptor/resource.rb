@@ -4,6 +4,7 @@ require 'crichton/descriptor/detail'
 require 'crichton/descriptor/state'
 require 'net/http'
 require 'crichton/descriptor/descriptor_keywords'
+require 'crichton/discovery/entry_point'
 
 module Crichton
   module Descriptor
@@ -146,7 +147,7 @@ module Crichton
       def entry_points
         @entry_points ||= begin
           trans = protocols[:http.to_s].values.find {|tran| tran.entry_point }
-          Crichton::Discovery::EntryPoint.new(trans.uri, trans.entry_point, trans.id, self.id) if trans
+          Crichton::Discovery::EntryPoint.new(trans.uri, trans.entry_point, self.id) if trans
         end
      end
 

@@ -2,7 +2,7 @@
 
 ## Configuration
 Crichton includes a default [Dice Bag][] template that supports [12-Factor App][] configuration of applications 
-implementing Crichton. To configure configure your application:
+implementing Crichton. To configure your application:
 
 * Generate the `crichton.yml.dice` template in the `path_to_app\config` (default) folder of your application
 
@@ -18,7 +18,7 @@ implementing Crichton. To configure configure your application:
 
 It is considered a best practice to commit your `crichton.yml.dice` template to your repo (not `crichton.yml`) and 
 include a startup rake task in your application that generates crichton.yml during the release phase. For more 
-information, see the [sample template][] and [Dice Bag][] documentation.
+information, see the [Dice Bag][] documentation.
 
 ### Crichton YAML Properties
 The following defines the configuration properties:
@@ -67,7 +67,7 @@ In your browser, you simply call the root of the service to access a list of res
 curl and content negotiate responses with several media types. 
 
 ```
-$ curl -v --header "Accept: application/json-home" http://example.com
+$ curl -v --header "Accept: application/hal+json" http://example.com
 ```
 
 The following are acceptable media types for content negotiating the entry points catalogue:
@@ -75,7 +75,8 @@ The following are acceptable media types for content negotiating the entry point
 * html - text/html
 * xhtml - application/xhtml+xml
 * xml - application/xml
-* json - home - application/json-home
+* hale_json - application/vnd.hale+json
+* hal_json - application/hal+json
 * json - application/json
 * any - \*/\*
 
@@ -83,7 +84,7 @@ If no `Accept` header is set or an unsupported media type is used, the server re
 
 > Status: 406
 Not Acceptable media type(s): [bad_media_type]. Supported types are: text/html, 
-application/xhtml+xml, application/xml, application/json-home, application/json, \*/\*
+application/xhtml+xml, application/xml, application/vnd.hale+json, application/hal+json, application/json, \*/\*
 
 ### ALPS Profiles
 Returns either a list of ALPS profiles, or individual profiles for service resources. 

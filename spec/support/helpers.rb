@@ -186,26 +186,6 @@ module Support
 
     alias :copy_resource_to_config_dir :build_dir_for_lint_rspec
 
-    def entry_points_descriptor
-      YAML.load_file(entry_points_filename)
-    end
-
-    def entry_points_filename
-      File.join(DISCOVERY_DIR, 'entry_points.yml')
-    end
-
-    def middleware_fixture_path(*args)
-      File.join(SPEC_DIR, 'fixtures', 'middleware', args)
-    end
-
-    def root_html_body
-      @root_html_body ||= File.read(middleware_fixture_path('root_response_body.html'))
-    end
-
-    def root_xml_body
-      @root_xml_body ||= File.read(middleware_fixture_path('root_response_body.xml'))
-    end
-
     def stub_configured_profiles
       copy_resource_to_config_dir('api_descriptors', 'fixtures/resource_descriptors')
       FileUtils.rm_rf('api_descriptors/leviathans_descriptor_v1.yaml')

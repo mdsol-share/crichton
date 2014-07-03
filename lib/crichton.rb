@@ -234,7 +234,6 @@ require 'crichton/errors'
 require 'crichton/dice_bag/template'
 require 'crichton/representor'
 require 'crichton/alps/deserialization'
-require 'crichton/discovery/entry_point'
 require 'crichton/discovery/entry_points'
 
 if defined?(Rails)

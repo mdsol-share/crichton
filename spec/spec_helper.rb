@@ -14,6 +14,8 @@ require 'bundler'
 require 'equivalent-xml'
 require 'webmock/rspec'
 require 'simplecov'
+require 'json_spec'
+require 'timecop'
 
 SimpleCov.start
 Debugger.start
@@ -57,4 +59,6 @@ RSpec.configure do |config|
     Crichton.config_directory = File.join('spec', 'fixtures', 'config')
     Crichton.initialize_registry(drds_descriptor)
   end
+
+  config.include JsonSpec::Helpers
 end

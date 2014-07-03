@@ -7,7 +7,7 @@ Crichton is a library to simplify implementing Hypermedia APIs. It has the knowl
 Checkout the [documentation][] for more info and/or try the [demo service][].
 
 ## Overview
-Crichton is opinionated that Hypermedia APIs and their associated resources should be designed and implemented as 
+Crichton is opinionated in that Hypermedia APIs and their associated resources should be designed and implemented as 
 state-machines. As such, the library leverages a state-machine centric, declarative 
 {file:doc/api_descriptor_documents.md API descriptor document} which it uses to dynamically decorate data as 
 Hypermedia representations for different media-types.
@@ -25,7 +25,7 @@ process and artifacts of an (overly simplified) eBook API example that illustrat
 
 ### Analyze Resource Semantics
 Assuming one has analysed a business problem and isolated a resource or simple set of related resources including 
-determining desired properties and actions necessary to accomplish the associated work, the next step is groom the 
+determining desired properties and actions necessary to accomplish the associated work, the next step is to groom the 
 resource(s). This analysis is part of "Contract First" development and lays the groundwork for Hypermedia Contracts and 
 State-machine analysis and definition.
 
@@ -131,7 +131,7 @@ There are a couple of options for defining the implementing state-machine functi
 
 If a class does not implement a `state` instance method, but includes `Crichton::Representor` 
 or `Crichton::Representor::State` module, Crichton assumes that resource has only one `default` state. 
-See [Resource States](./doc/resource_descriptors.md#states) for more information.
+See {file:doc/resource_descriptors.md#states Resource States} for more information.
 
 ## Controllers<a name="controllers"></a>
 The simplicity of Crichton is that it implements a single interface `to_media_type` on an object which accepts a 
@@ -160,8 +160,8 @@ end
 ```
   
 #### Known Rails Issues
-* Crichton does not currently support ActiveModel::Naming and thus representor instances will not set location headers 
-unless ActiveModel::Naming is manually implemented in the related class(es).
+* Crichton does not currently support ActiveModel::Naming and thus representor instances will not set `location` headers 
+unless ActiveModel::Naming is implemented in the related class(es).
 * Using a default format in routes.rb will prevent proper content-negotiation using headers. This appears to be a 
 Rails issue. E.g. `defaults: { format: :json }` would prevent content negotiation with an Accept header 
 `application/hal+json'.
