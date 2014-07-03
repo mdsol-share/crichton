@@ -91,7 +91,7 @@ module Crichton
       context 'when not configured' do
         it 'returns default service level target header name' do
           @config = example_environment_config.except('service_level_target_header')
-          expect(configuration.service_level_target_header).to eq('SLT_RESPONSE_HEADER')
+          expect(configuration.service_level_target_header).to eq('REQUEST_SLT')
         end
       end
     end

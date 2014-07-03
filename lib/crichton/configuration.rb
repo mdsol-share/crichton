@@ -55,7 +55,7 @@ module Crichton
     end
 
     def service_level_target_header
-      @service_level_target_header ||= @config['service_level_target_header'] || 'SLT_RESPONSE_HEADER'
+      @service_level_target_header ||= @config['service_level_target_header'] || 'REQUEST_SLT'
     end
 
     ##
