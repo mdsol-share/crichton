@@ -131,7 +131,7 @@ There are a couple of options for defining the implementing state-machine functi
 
 If a class does not implement a `state` instance method, but includes `Crichton::Representor` 
 or `Crichton::Representor::State` module, Crichton assumes that resource has only one `default` state. 
-See [Resource States](./doc/resource_descriptors.md#states) for more information.
+See {file:doc/resource_descriptors.md#states Resource States} for more information.
 
 ## Controllers<a name="controllers"></a>
 The simplicity of Crichton is that it implements a single interface `to_media_type` on an object which accepts a 
@@ -160,8 +160,8 @@ end
 ```
   
 #### Known Rails Issues
-* Crichton does not currently support ActiveModel::Naming and thus representor instances will not set location headers 
-unless ActiveModel::Naming is manually implemented in the related class(es).
+* Crichton does not currently support ActiveModel::Naming and thus representor instances will not set `location` headers 
+unless ActiveModel::Naming is implemented in the related class(es).
 * Using a default format in routes.rb will prevent proper content-negotiation using headers. This appears to be a 
 Rails issue. E.g. `defaults: { format: :json }` would prevent content negotiation with an Accept header 
 `application/hal+json'.
