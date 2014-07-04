@@ -27,7 +27,10 @@ module Crichton
       end
 
       let(:object) do
-        Class.new { include Representor }.new
+        Class.new do
+          include Representor
+          represents :drd
+        end.new
       end
 
       context 'when subclassed' do
@@ -118,6 +121,19 @@ module Crichton
           serializer_instance = MediaTypeSerializer.new(object)
           expect(serializer_instance).to receive(:as_media_type).with(options)
           serializer_instance.to_media_type(options)
+        end
+      end
+
+      describe '#response_headers' do
+        it 'returns comma-separated slt header' do
+          create_media_type_serializer
+          request = double('request')
+          request.stub(:scheme).and_return('http')
+          request.stub(:[]).with(:controller).and_return('drds')
+          request.stub(:[]).with(:action).and_return('index')
+          expected_result = { 'REQUEST_SLT' => '99th_percentile=100ms,std_dev=25ms,requests_per_second=50' }
+          object.stub(:self_transition).and_return(nil)
+          expect(MediaTypeSerializer.new(object).response_headers(object, request)).to eq(expected_result)
         end
       end
     end

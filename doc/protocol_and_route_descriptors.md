@@ -21,7 +21,8 @@ HTTP protocol properties include the following:
    with the templated parameter(s).
    - `method` - Required. The uniform interface method; for example, GET, POST, or DELETE.
    - `headers` - Optional. An array of headers to be set on responses.
-   - `slt` - Optional. The Service Level Target (SLT) for the endpoint.
+   - `slt` - Optional. The Service Level Target (SLT) for the endpoint. If specified,
+   {file:doc/protocol_and_route_descriptors.md#slt-header SLT Header} will be set on response.
       - `99th_percentile` - Required if there is an SLT. The 99th percentile time-limit.
       - `std_dev` - Required if there is an SLT. The standard deviation around the 99th percentile.
       - `requests_per_second` - Required if there is an SLT. The load the SLT is valid at.
@@ -50,6 +51,14 @@ http_protocol:
       std_dev: 25ms
       requests_per_second: 50 
 ```
+
+### SLT Header<a name="slt-header"></a>
+Service level target (SLT) measures the performance of a system. Certain goals are defined and the SLT gives the
+percentage to which those goals should be achieved. SLT header is set on response if `slt` property is specified
+on a transition in protocols section. The SLT header name is configured in
+{file:doc/getting_started.md#crichton-yaml-properties Crichton YAML properties}. SLT header format is
+a comma-separated string of  key/value pairs of `slt` descriptor properties, for example:
+`99th_percentile=100ms,std_dev=25ms,requests_per_second=50`.
 
 ## Route Descriptors 
 Route descriptors define metadata that you can use to scaffold models and controllers and to generate routes for

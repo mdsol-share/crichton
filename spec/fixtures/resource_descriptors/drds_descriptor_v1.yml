@@ -416,21 +416,19 @@ http_protocol:
     uri_source: repair_history_url
 
 routes:
-  drds:
-    list: &list
-      controller: drds_controller
-      action: index
-    search: *list
-    create:
-      controller: drds_controller
-      action: create
-  drd:
-    show:
-      controller: drds_controller
-      action: show
-    update:
-      controller: drds_controller
-      action: update
-    delete:
-      controller: drds_controller
-      action: update
+  list: &list
+    controller: drds
+    action: index
+  search: *list
+  create:
+    controller: drds
+    action: create
+  show:
+    controller: drds
+    action: show
+  update:
+    controller: drds
+    action: update
+  delete:
+    controller: drds
+    action: update

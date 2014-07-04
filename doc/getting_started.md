@@ -20,7 +20,7 @@ It is considered a best practice to commit your `crichton.yml.dice` template to 
 include a startup rake task in your application that generates crichton.yml during the release phase. For more 
 information, see the [Dice Bag][] documentation.
 
-### Crichton YAML Properties
+### Crichton YAML Properties<a name="crichton-yaml-properties"></a>
 The following defines the configuration properties:
 
 * `alps_base_uri` - The base URI for the ALPS profile registry for profiles referenced as relative paths in an 
@@ -35,7 +35,9 @@ the service.
 * `use_discovery_middleware` - Rails only. Whether or not to autoload middleware to support rendering local resource
 catalogue of entry points.
 * `resource_home_response_expiry` - Configures the expiry of resource entry point middleware that 
-serves a catalogue of resource entry points served directly from the service. 
+serves a catalogue of resource entry points served directly from the service.
+* `service_level_target_header` - Configures service level target (SLT) response header name. If not specified,
+defaults to 'REQUEST_SLT'.
 * `crichton_proxy_base_uri` - URI to use to capture and proxy AJAX requests to related resources when surfing an 
 API in browser. Allows an application to proxy the request for authentication/authorization.
 * `css_uri` - The fully-qualified URI for a CSS file to use when surfing an API in a browser. 
