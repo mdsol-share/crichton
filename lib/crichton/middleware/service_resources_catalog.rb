@@ -1,7 +1,7 @@
 require 'crichton/middleware/middleware_base'
 require 'crichton/discovery/entry_points'
 
-class Crichton::Middleware::ServiceResourceCatalog < Crichton::Middleware::MiddlewareBase
+class Crichton::Middleware::ServiceResourcesCatalog < Crichton::Middleware::MiddlewareBase
   ##
   # Class to handle root path requests to all hypermedia based services. When root is requested, this class,
   # deployed as rack middleware, will return a listing of all resources and their entry point urls in the service.

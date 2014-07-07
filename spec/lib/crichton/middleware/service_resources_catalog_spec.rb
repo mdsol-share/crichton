@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'crichton/middleware/service_resource_catalog'
+require 'crichton/middleware/service_resources_catalog'
 
-describe Crichton::Middleware::ServiceResourceCatalog do
+describe Crichton::Middleware::ServiceResourcesCatalog do
 
   let (:rack_app) { double('rack_app') }
 
