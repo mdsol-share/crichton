@@ -71,7 +71,7 @@ class Crichton::Middleware::ServiceResourceCatalog < Crichton::Middleware::Middl
 
   ##
   #
-  # generate home response to client
+  # generate response to client
   #
   # @param [String] return_content_type Content type to set in the response to the request
   # @param [Symbol] media_type :html or :xhtml to generate document response
