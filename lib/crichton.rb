@@ -193,7 +193,7 @@ module Crichton
   end
 
   ##
-  # Returns an array of objects ready for json-home serialization
+  # Returns an array of objects ready response which represents entry point objects
   #
   # @return [Array] array of EntryPoint objects
   def self.entry_points
