@@ -90,11 +90,11 @@ comments are expounded in the structure and some material is removed for simplic
 routes:
   drds: # Corresponds to fragment ID of related secondary profile descriptor of the resource.
     list: &list # Corresponds to the 'list' transition of the 'drds' resource.
-      controller: drds_controller
+      controller: drds
       action: index
     search: *list # Corresponds to the 'search' transition of the 'drds' resource.
     create: # Corresponds to the 'create' transition of the 'drds' resource.
-      controller: drds_controller
+      controller: drds
       action: create
 ```
 
