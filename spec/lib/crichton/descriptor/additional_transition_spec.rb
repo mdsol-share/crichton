@@ -21,6 +21,16 @@ module Crichton
           @link = { 'href' => 'http://www.example.com' }
           expect(subject.url).to eq(@link['href'])
         end
+
+        it 'returns the name of transition as string' do
+          @name = :profile
+          expect(subject.name).to be_instance_of(String)
+        end
+
+        it 'returns stringified name of the transition' do
+          @name = :profile
+          expect(subject.name).to eq('profile')
+        end
       end
 
       describe '#safe?' do

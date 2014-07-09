@@ -16,7 +16,7 @@ module Crichton
       # @param name [String] The name of the transition.
       # @param link [Hash or String] The link hash with 'href' key or the URL of the transition.
       def initialize(name, link)
-        @name = name
+        @name = name.to_s
         @link = link
       end
 
