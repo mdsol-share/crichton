@@ -32,21 +32,25 @@ describe Crichton::Middleware::ServiceResourcesCatalog do
 
     context 'when the root' do
 
+      let(:expected_headers) do
+        {'Content-Type' => 'application/vnd.hale+json',
+          'expires' => (Time.now + 10.minutes).httpdate,
+          "Cache-Control" => "max-age=600, private"}
+      end
+
       it 'uses the first supported media type in the HTTP_ACCEPT header' do
-        headers = {'Content-Type' => 'application/vnd.hale+json', 'expires' => (Time.now + 10.minutes).httpdate}
         response = get_rack_response('bogus/media_type,*/a,application/vnd.hale+json,text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*')
         expect(response.status).to eq 200
-        headers["Content-Length"] = response.body.length.to_s
-        expect(response.headers).to eq headers
+        expected_headers["Content-Length"] = response.body.length.to_s
+        expect(response.headers).to eq expected_headers
         expect(response.body).to_not be_empty
       end
 
       it 'responds correctly with a non standard HTTP_ACCEPT header' do
-        headers = {'Content-Type' => 'application/vnd.hale+json', 'expires' => (Time.now + 10.minutes).httpdate}
         response = get_rack_response('bogus/media_type, application/vnd.hale+json,  text/html,  application/xhtml+xml, application/xml;q=0.9,  image/webp, */*')
         expect(response.status).to eq 200
-        headers["Content-Length"] = response.body.length.to_s
-        expect(response.headers).to eq headers
+        expected_headers["Content-Length"] = response.body.length.to_s
+        expect(response.headers).to eq expected_headers
         expect(response.body).to_not be_empty
       end
 
@@ -118,6 +122,33 @@ describe Crichton::Middleware::ServiceResourcesCatalog do
           env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
           response = Rack::MockResponse.new(*responder.call(env))
           expect(response.headers["expires"]).to eq twenty_minutes_httpdate
+        end
+
+        it "does not set a expiration header if 0 is passed as the option" do
+          responder = described_class.new(rack_app, {:expiry => 0})
+          env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
+          response = Rack::MockResponse.new(*responder.call(env))
+          expect(response.headers["expires"]).to be_nil
+        end
+      end
+
+      describe "setting the cache header" do
+        let(:media_type) {'application/vnd.hale+json'}
+
+        it "sets the correct cache control header when expiry is 0" do
+          responder = described_class.new(rack_app, {:expiry => 0})
+          env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
+          response = Rack::MockResponse.new(*responder.call(env))
+          expect(response.headers["Cache-Control"]).
+            to eq "max-age=0, private"
+        end
+
+        it "sets the correct cache control header when expiry is greater than 0" do
+          responder = described_class.new(rack_app, {:expiry => 20})
+          env = {'PATH_INFO' => '/', 'HTTP_ACCEPT' => media_type}
+          response = Rack::MockResponse.new(*responder.call(env))
+          expect(response.headers["Cache-Control"]).
+            to eq "max-age=#{20 * 60}, private"
         end
       end
     end
