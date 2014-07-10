@@ -21,7 +21,7 @@ module Crichton
       end
 
       def url
-        @url ||= link.is_a?(Hash) ? link[HREF] : link
+        @url ||= link.is_a?(Hash) ? link.stringify_keys[HREF] : link
       end
 
       def safe?
