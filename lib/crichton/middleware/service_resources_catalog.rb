@@ -76,7 +76,15 @@ class Crichton::Middleware::ServiceResourcesCatalog < Crichton::Middleware::Midd
   # @param [String] return_content_type Content type to set in the response to the request
   # @param [Symbol] media_type :html or :xhtml to generate document response
   def respond(return_content_type, media_type)
-    [200, {'Content-Type' => "#{return_content_type}", 'expires' => "#{(Time.now + @expiry).httpdate}"},
+    headers = {'Content-Type' => "#{return_content_type}"}
+    if @expiry > 0
+      headers['Cache-Control'] = "max-age=#{@expiry}, private"
+      headers['expires'] = "#{(Time.now + @expiry).httpdate}"
+    else
+      headers['Cache-Control'] = "max-age=0, private"
+    end
+
+    [200, headers,
       [Crichton::Discovery::EntryPoints.new(Crichton.entry_points).to_media_type(media_type)]]
   end
 end
