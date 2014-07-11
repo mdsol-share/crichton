@@ -236,7 +236,7 @@ options = { embed_optional: { embed: ['author'] } }
 Allows dynamically adding new links to the top-level resource.
 
 ```ruby
-options = { additional_links: { next: { href: 'http://example.com/next' } }
+options = { additional_links: { 'next' => { href: 'http://example.com/next' } }
 ```
 
 `eBooks`

@@ -28,7 +28,6 @@ data:
     sample: 5 # Planned: value to use in generated sample media-type representations
   items:
     doc: An embedded list of individual eBook items
-    href: ebook # relative URL references a descriptor in this document. See `resources` ebook below.
     embed: multiple # Indicates multiple ebook resource entities should be embedded as this property
   authors:
     doc: An embedded list of eBook authors
