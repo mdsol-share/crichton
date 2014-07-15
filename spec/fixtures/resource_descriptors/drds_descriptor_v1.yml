@@ -432,3 +432,9 @@ routes:
   delete:
     controller: drds
     action: update
+  activate:
+    controller: drds
+    action: update
+  deactivate:
+    controller: drds
+    action: update
