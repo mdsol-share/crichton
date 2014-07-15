@@ -74,4 +74,6 @@ en:
     missing_slt_property: "Slt property '%{property}' is missing for transition '%{action}', protocol '%{protocol}'"
     invalid_status_code: "Status code '%{code}' is not valid for transition '%{action}', protocol '%{protocol}'"
     missing_status_codes_property: "Status codes property '%{property}' is missing for transition '%{action}', protocol '%{protocol}'"
+  routes:
+    missing_key: "Resource descriptor document '%{resource}' is missing '%{key}' property in routes section for '%{route}' route."
   aok: "Resource descriptor file passes lint validation."
