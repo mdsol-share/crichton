@@ -87,7 +87,7 @@ module Crichton
           #23 should have a valid link property
           if descriptor.links.empty?
             #22 should have a link property
-            add_warning('descriptors.property_missing', options.merge({prop: 'link'}))
+            add_error('descriptors.property_missing', options.merge({prop: 'link'}))
           else
             unless valid_link_property?(descriptor.link['self'])
               add_error('descriptors.link_invalid', options.merge({link: descriptor.link.keys.first}))

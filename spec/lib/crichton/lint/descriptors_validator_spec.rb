@@ -71,8 +71,8 @@ module Crichton
           @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds'].except!('links')
           end
-          @warnings = expected_output(:warning, 'descriptors.property_missing', resource: 'drds', prop: 'link',
-            filename: filename, section: :descriptors, sub_header: :warning)
+          @errors = expected_output(:error, 'descriptors.property_missing', resource: 'drds', prop: 'link',
+            filename: filename, section: :descriptors, sub_header: :error)
         end
 
         it 'reports an invalid link self property error if a link self property is invalid' do
