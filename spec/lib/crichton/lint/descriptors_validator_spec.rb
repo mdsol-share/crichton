@@ -227,6 +227,14 @@ module Crichton
               expected_output(:error, 'descriptors.invalid_option_source_type', id: 'items',
                 options_attr: 'external')
           end
+
+          it 'reports an error when there is no field_type property' do
+            @descriptor = drds_descriptor.tap do |document|
+              document['safe']['search']['parameters'][0].except!('field_type')
+            end
+            @errors = expected_output(:error, 'descriptors.missing_field_type', descriptor: 'search_term', parent: 'search',
+              filename: filename, section: :descriptors, sub_header: :error)
+          end
         end
       end
     end
