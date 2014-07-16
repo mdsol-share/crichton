@@ -40,7 +40,12 @@ optparse.parse!
 Crichton::Lint.version if options[:version]
 
 if options[:all]
-  puts "#{Crichton::Lint.validate_all(options) ? 'true'.green : 'false'.red}"
+  if Crichton::Lint.validate_all(options)
+    puts 'true'.green
+  else
+    puts 'false'.red
+    exit false
+  end
 elsif ARGV.any?
   ARGV.each do |file|
     retval = Crichton::Lint.validate(file, options)
@@ -48,7 +53,7 @@ elsif ARGV.any?
       # strict mode is pass/fail, true/false. Go away once we encounter the first false return
       unless retval
         puts "#{retval}\n".red
-        exit
+        exit false
       end
     end
   end

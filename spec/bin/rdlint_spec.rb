@@ -90,6 +90,18 @@ describe 'rdlint' do
       expect(%x(bundle exec rdlint -s #{filename})).to eq(%Q(#{false_string.red}\n))
     end
 
+    it 'exits with a zero status code when no errors occur' do
+      @descriptor = drds_descriptor
+      %x(bundle exec rdlint -s #{filename})
+      expect($?.exitstatus).to eq(0)
+    end
+
+    it 'exits with a non-zero status code when errors occur' do
+      @descriptor = drds_descriptor.tap { |doc| doc['http_protocol'].except!('list') }
+      %x(bundle exec rdlint -s #{filename})
+      expect($?.exitstatus).not_to eq(0)
+    end
+
     context 'with multiple files' do
       after do
         expect(%x(bundle exec rdlint -s #{@filename1} #{@filename2})).to eq(%Q(#{@output}\n))
@@ -129,6 +141,11 @@ describe 'rdlint' do
 
     it 'returns the correct value together with the --strict option ' do
       expect(%x(bundle exec rdlint -as)).to eq('false'.red << "\n")
+    end
+
+    it 'returns a non-zero status code when errors occur with the --strict option ' do
+      %x(bundle exec rdlint -as)
+      expect($?.exitstatus).not_to eq(0)
     end
   end
 end
