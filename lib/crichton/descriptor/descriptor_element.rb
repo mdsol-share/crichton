@@ -76,9 +76,8 @@ module Crichton
           if h = dereferenced_hash[key]
             acc.merge!({ hash[HREF] => extensions_dereference(registry, dereferenced_hash, hash, h) })
           else
-            raw_registry_lookup(key, registry, dereferenced_hash) do |result|
-              acc.merge!({ hash[HREF] => extensions_dereference(registry, dereferenced_hash, hash, result) })
-            end
+            result = raw_registry_lookup(key, registry, dereferenced_hash)
+            acc.merge!({ hash[HREF] => extensions_dereference(registry, dereferenced_hash, hash, result) })
           end
         end
       end
@@ -88,7 +87,7 @@ module Crichton
       end
 
       def registry_key(key)
-        "#{document_id}\##{key}"
+        uri(key).fragment ? key : "#{document_id}\##{key}"
       end
 
       def extensions_dereference(registry, dereferenced_hash, original, dereferenced)
