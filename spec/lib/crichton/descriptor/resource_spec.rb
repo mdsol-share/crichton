@@ -132,7 +132,7 @@ module Crichton
         end
 
         it 'returns a collection of routes' do
-          expect(resource_descriptor.routes.keys).to eq(%w(list search create show update delete))
+          expect(resource_descriptor.routes.keys).to eq(%w(list search create show update delete activate deactivate))
         end
       end
 

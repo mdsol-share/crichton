@@ -87,7 +87,7 @@ module Crichton
           #23 should have a valid link property
           if descriptor.links.empty?
             #22 should have a link property
-            add_warning('descriptors.property_missing', options.merge({prop: 'link'}))
+            add_error('descriptors.property_missing', options.merge({prop: 'link'}))
           else
             unless valid_link_property?(descriptor.link['self'])
               add_error('descriptors.link_invalid', options.merge({link: descriptor.link.keys.first}))
@@ -116,6 +116,7 @@ module Crichton
           # all NON top level descriptors should have a sample and href entry
           add_warning('descriptors.property_missing', options.merge({prop: 'sample'})) unless descriptor.sample
           check_href_property(descriptor, options)
+          check_field_type_property(descriptor, options)
         end
       end
 
@@ -127,6 +128,15 @@ module Crichton
           end
         else
           add_warning('descriptors.property_missing', options.merge({prop: 'href'}))
+        end
+      end
+
+      def check_field_type_property(descriptor, options)
+        if descriptor.parent_descriptor.transition?
+          unless descriptor.field_type
+            opts = options.merge({ parent: descriptor.parent_descriptor.name, descriptor: descriptor.name })
+            add_error('descriptors.missing_field_type', opts)
+          end
         end
       end
 
