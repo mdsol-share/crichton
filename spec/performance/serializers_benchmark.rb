@@ -12,7 +12,7 @@ describe Crichton::Discovery::EntryPoints do
   let(:instance) {described_class.new([entry_point])}
 
   describe '#to_media_type' do
-    it 'is fast' do
+    it 'is benchmarked' do
       [:hale_json, :hal_json, :json, :html, :xhtml].each do |media_type|
         puts "Benchmarching serializing '#{media_type}' media type:"
         Benchmark.bm do |x|
