@@ -122,9 +122,7 @@ Developing a Hypermedia-aware resource whose behavior is structured within a API
 daunting at first. The development of a well-structured and logically correct resource descriptor document can take 
 several iterations.
 
-To help with your development of hypermedia resources, Crichton has a lint feature that helps you catch major and minor errors in the design of the resource descriptor document.
-
-Single or multiple descriptor files can be validated by way of lint through the rdlint gem executable or rake. For example:
+To help with the design of your hypermedia resources, Crichton has a lint tool that helps you catch major and minor errors in your resource descriptor documents. Single or multiple descriptor files can be validated by way of lint through the rdlint gem executable or rake. For example:
 
 * `bundle exec rdlint -a (or --all) ` Lint validate all files in the resource descriptor directory
 
