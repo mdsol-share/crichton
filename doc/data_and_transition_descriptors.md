@@ -42,7 +42,7 @@ You can define data descriptors as child descriptors of transition elements. Dat
 tag of a transition element define templated url properties. Data descriptors under the `semantics` tag of a 
 transition element define template bodies.
 
-A best practice is to define data descriptors grouped under a top-level `semantics` element. Use `parameters` and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. Thus, you can use `data` and `semantics` elements interchangeably. See the examples below.
+A best practice while designing your data descriptors is to group them under a top-level `semantics` element. Use `parameters` and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. Thus, you can use `data` and `semantics` elements interchangeably. See the examples below.
 
 ### Examples
 
