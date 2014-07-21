@@ -106,6 +106,10 @@ The RSpec specification for Crichton employs four simple tests:
 - Tests for a warning count.
 - Does a pass/fail test, returning true or false, with the `--strict` option.
 
+## Make Crichton Lint be part of your continuous integration with Kender
+ 
+The [CI gem kender](https://github.com/mdsol/kender) has been updated to run the Crichton lint tool as part of your ```ci:run```. Currently, there is no tag you can use for this addition to kender.
+
 ## Related Topics
 Click the following links to view documents related to Lint:
 
