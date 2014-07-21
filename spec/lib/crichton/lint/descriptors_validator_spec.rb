@@ -71,8 +71,8 @@ module Crichton
           @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds'].except!('links')
           end
-          @warnings = expected_output(:warning, 'descriptors.property_missing', resource: 'drds', prop: 'link',
-            filename: filename, section: :descriptors, sub_header: :warning)
+          @errors = expected_output(:error, 'descriptors.property_missing', resource: 'drds', prop: 'link',
+            filename: filename, section: :descriptors, sub_header: :error)
         end
 
         it 'reports an invalid link self property error if a link self property is invalid' do
@@ -226,6 +226,14 @@ module Crichton
                 'external', filename: filename, section: :descriptors, sub_header: :error) <<
               expected_output(:error, 'descriptors.invalid_option_source_type', id: 'items',
                 options_attr: 'external')
+          end
+
+          it 'reports an error when there is no field_type property' do
+            @descriptor = drds_descriptor.tap do |document|
+              document['safe']['search']['parameters'][0].except!('field_type')
+            end
+            @errors = expected_output(:error, 'descriptors.missing_field_type', descriptor: 'search_term', parent: 'search',
+              filename: filename, section: :descriptors, sub_header: :error)
           end
         end
       end

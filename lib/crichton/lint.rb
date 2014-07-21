@@ -6,6 +6,7 @@ require 'crichton/lint/resource_descriptor_validator'
 require 'crichton/lint/states_validator'
 require 'crichton/lint/descriptors_validator'
 require 'crichton/lint/protocol_validator'
+require 'crichton/lint/routes_validator'
 require 'colorize'
 
 # Needed to avoid warnings when using this library
@@ -56,6 +57,7 @@ module Crichton
       validators << StatesValidator.new(resource_descriptor, filename, options)
       validators << DescriptorsValidator.new(resource_descriptor, filename, options)
       validators << ProtocolValidator.new(resource_descriptor, filename, options)
+      validators << RoutesValidator.new(resource_descriptor, filename, options)
 
       validators.each do |validator|
         validator.validate

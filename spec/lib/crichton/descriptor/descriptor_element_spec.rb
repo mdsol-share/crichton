@@ -34,7 +34,8 @@ module Crichton
             }),
             'DRDs#_size' => DescriptorElement.new('DRDs', '_size', {
                 'doc' => 'Size of the DRD', 'options' => { 'list' => [ 'small', 'large' ] }
-            })
+            }),
+            'External#name' => DescriptorElement.new('External', 'name', { 'type' => 'semantic' })
         }
       end
 
@@ -187,6 +188,23 @@ module Crichton
         context 'when dereferencing external href' do
           before(:all) do
             @update = 'http://example.org/Something'
+          end
+
+          it_behaves_like 'dereferencing href'
+        end
+
+        context 'when dereferencing semi-local href' do
+          before(:all) do
+            @name = 'External#name'
+            @update = 'update'
+          end
+
+          it 'returns dereferenced external descriptor' do
+            expect(dereferenced_hash['DRDs#create']['descriptors']).to have_key('name')
+          end
+
+          it 'returns dereferenced item as hash' do
+            expect(dereferenced_hash['DRDs#create']['descriptors']['name']).to be_a(Hash)
           end
 
           it_behaves_like 'dereferencing href'
