@@ -106,6 +106,10 @@ The RSpec specification for Crichton employs four simple tests:
 - Tests for a warning count.
 - Does a pass/fail test, returning true or false, with the `--strict` option.
 
+## Make Crichton Lint be part of your continuous integration with Kender
+ 
+The [CI gem kender](https://github.com/mdsol/kender) has been updated to run the Crichton lint tool as part of it's continuous integration run. This means that when you use Crichton and execute ```ci:run``` it will automatically check that your resource descriptor documents are valid. Currently, there is no tag that can be used for this kender feature. We will update this documentation as soon as such a tag is available.
+
 ## Related Topics
 Click the following links to view documents related to Lint:
 
