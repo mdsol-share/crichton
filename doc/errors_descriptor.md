@@ -3,7 +3,7 @@ id: errors
 version: v1.0.0
 links:
   profile: errors
-  help: Errors
+  help: errors
 data:
   remedy_description:
     doc: If a remedy is known, describe the remedy here.  If the remedy involves going to another resource, the link to that resource should be described in the remedy link.
@@ -17,7 +17,7 @@ data:
   logref:
     doc: A unique ID for logging.
     href: http://alps.io/schema.org/Text
-  retry-after:
+  retry_after:
     href: http://alps.io/schema.org/Integer
     doc: Specifies how long in seconds the client should wait before trying the request again.
   httpstatus
