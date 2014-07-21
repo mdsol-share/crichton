@@ -36,7 +36,9 @@ safe:
     doc: Links to a document that describes the error. This has the same definition as the help link relation in the HTML5 specification.
   describes:
     href: http://alps.io/iana/relations.xml#describes
-    doc: Link to the resource the error is describing.  If the current resource is not the same as the one the client requested, this should refer the the requested URL.
+    doc: |
+           Link to the resource the error is describing. If the current resource is not the same as the one the
+           client requested, this should refer the the requested URL.
   monitor:
     href: http://alps.io/iana/relations.xml#monitor
     doc: A log or other resource to track the error.
