@@ -10,7 +10,7 @@ are layered on top of the transport protocol(s) that the resource(s) support.
 An _API Descriptor Document_ has a number of key concepts underlying its design and properties, including:
 
 - One of the foundations of the structure and elements that an API Descriptor Document is built on is the 
-[ALPS][] specification. This specification defines a protocol and media-type independent 
+[ALPS specification](http://alps.io/spec/index.html). This specification defines a protocol and media-type independent 
 resource semantic profile that is machine-readable.
 - In principle, an _API Descriptor Document_ does not define a schema or actions. Instead it defines the semantics or 
 "vocabulary" that is associated with the referenced resource's data and state transitions. Therefore, it can define 
@@ -55,13 +55,13 @@ formatted body.
 
 7. Define routing/scaffolding information for the resource. OPTIONAL.
 
-* {file:doc/sample_ebooks_api_descriptor.md Example eBooks API Descriptor Document}
-* {file:spec/fixtures/resource_descriptors/drds_descriptor_v1.yml Example DRDs API Descriptor Document}
+* [Example eBooks API Descriptor Document](sample_ebooks_api_descriptor.md)
+* [Example DRDs API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
 
 
 ## Properties/ALPS Correlation<a name="properties-alps-correlation"></a>
 A number of the properties in a _API Descriptor Document_ correspond directly to their related meanings in the 
-[ALPS][] specification. These properties include the following:
+[ALPS specification](http://alps.io/spec/index.html). These properties include the following:
 
 - `id` - Unless explicitly defined for a particular descriptor, `id` is defined by the YAML key associated with a 
 descriptor.
