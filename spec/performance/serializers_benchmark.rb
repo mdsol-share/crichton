@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'benchmark'
 
+# This performance spec is temporary until the representers gem is integrated into Crichton. When this happens
+# we can solely rely on the benchmark rake task provided by representers.
 describe Crichton::Discovery::EntryPoints do
   let(:resource_uri) { "foos" }
   let(:resource_relation) {"foos"}
@@ -12,7 +14,7 @@ describe Crichton::Discovery::EntryPoints do
   let(:instance) {described_class.new([entry_point])}
 
   ITERATIONS = 3
-  OP_COUNT = 2000
+  OP_COUNT = 10000
 
   describe '#to_media_type' do
     it 'is benchmarked' do
