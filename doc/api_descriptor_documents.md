@@ -131,11 +131,9 @@ To help with the design of your hypermedia resources, Crichton has a lint tool t
 To understand all of the details of linting descriptors files, see the {file:doc/lint.md Lint} documentation.
 
 ## Related Topics<a name="related-topics"></a>
-* [ALPS][] specification
-* {file:doc/sample_ebooks_api_descriptor.md Example eBooks API Descriptor Document}
-* {file:spec/fixtures/resource_descriptors/drds_descriptor_v1.yml Example DRDs API Descriptor Document}
-* {file:doc/data_and_transition_descriptors.md Data and Transition Descriptors}
-* {file:doc/resource_descriptors.md Resource Descriptors}
-* {file:doc/protocol_and_route_descriptors.md Protocol and Route Descriptors}
-
-[ALPS]: http://alps.io/spec/index.html
+* [ALPS specification](http://alps.io/spec/index.html)
+* [Example eBooks API Descriptor Document](sample_ebooks_api_descriptor.md)
+* [Example DRDs API Descriptor Document](spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
+* [Data and Transition Descriptors](data_and_transition_descriptors.md)
+* [Resource Descriptors](resource_descriptors.md)
+* [Protocol and Route Descriptors](protocol_and_route_descriptors.md)  
