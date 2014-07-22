@@ -113,9 +113,9 @@ links:
 ## Descriptor Elements<a name="descriptor-elements"></a>
 The following documents detail the properties of each subsection of an _API Descriptor Document_:
 
-* {file:doc/data_and_transition_descriptors.md Data and Transition Descriptors}
-* {file:doc/resource_descriptors.md Resource Descriptors}
-* {file:doc/protocol_and_route_descriptors.md Protocol and Route Descriptors}
+* [Data and Transition Descriptors](data_and_transition_descriptors.md)
+* [Resource Descriptors](resource_descriptors.md)
+* [Protocol and Route Descriptors](protocol_and_route_descriptors.md)
 
 ## Crichton Lint<a name="crichton-lint"></a>
 Developing a Hypermedia-aware resource whose behavior is structured within a API Descriptor document may appear 
