@@ -133,7 +133,7 @@ To understand all of the details of linting descriptors files, see the {file:doc
 ## Related Topics<a name="related-topics"></a>
 * [ALPS specification](http://alps.io/spec/index.html)
 * [Example eBooks API Descriptor Document](sample_ebooks_api_descriptor.md)
-* [Example DRDs API Descriptor Document](spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
+* [Example DRDs API Descriptor Document](../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml)
 * [Data and Transition Descriptors](data_and_transition_descriptors.md)
 * [Resource Descriptors](resource_descriptors.md)
 * [Protocol and Route Descriptors](protocol_and_route_descriptors.md)  
