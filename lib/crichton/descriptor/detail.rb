@@ -145,7 +145,7 @@ module Crichton
       ##
       # Whether descriptor has multiple property.
       def multiple?
-        (cardinality = descriptor_document[CARDINALITY]).present? && cardinality == MULTIPLE
+        descriptor_document[CARDINALITY] == MULTIPLE
       end
 
       ##
