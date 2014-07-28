@@ -299,13 +299,26 @@ idempotent:
         ext: validated_input_field
 ```
 
-### Using cardinality attribute to specify bulk create form
+The following two examples show how to use cardinality attribute.
+
+### Using cardinality attribute to specify simple bulk create form
 ```yaml
 unsafe:
   bulk_create:
     doc: Creates a list of drds using collection of names.
     data:
       - href: name
+        cardinality: multiple
+    rt: drds
+```
+
+### Using cardinality attribute to specify bulk create form using complex object
+```yaml
+unsafe:
+  bulk_create:
+    doc: Creates a list of drds using collection of drd properties.
+    data:
+      - href: drd
         cardinality: multiple
     rt: drds
 ```
