@@ -61,7 +61,6 @@ module Crichton
       end
 
       def semantic_map(sem)
-        sem = sem.nil? ? 'object' : sem
         {type: "#{SEMANTIC_TYPES[sem.to_sym]}:#{sem}"}
       end
 
@@ -82,14 +81,18 @@ module Crichton
       
       def get_options(transition_semantic)
         options = transition_semantic.options
-        hale_opts = { "#{transition_semantic.name}_options.options" => {} } if options.external?
-        hale_opts = { :options => options.each { |k, v| {k => v} } } if options.enumerable?
-        hale_opts || {}
+        if options.external?
+          { "#{transition_semantic.name}_options.options" => {} }
+        elsif options.enumerable?
+          { :options => options.each { |k, v| {k => v} } }
+        else
+          {}
+        end
       end
 
       def get_control(transition_semantic)
         halelet_semantics = map_and_merge(transition_semantic.semantics, method(:get_control))
-        type_data = semantic_map(transition_semantic.field_type)
+        type_data = semantic_map(transition_semantic.field_type || 'object')
         scope_url = transition_semantic.scope? ? type_data.merge({ 'scope' => 'href' }) : type_data
         multi = transition_semantic.multiple? ? scope_url.merge({ 'multi' => 'true' }) : scope_url
         validators = multi.merge(handle_validator(transition_semantic.validators))
