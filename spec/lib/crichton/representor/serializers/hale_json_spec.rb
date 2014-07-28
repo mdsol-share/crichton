@@ -31,6 +31,15 @@ module Crichton
           @hale = JSON.load(drds_hale_json).except('total_count').to_json
           @document = drds_descriptor.tap { |doc| doc['resources']['drds']['descriptors'].delete({ 'href' => 'total_count' }) }
         end
+
+        it 'returns resource representation with multi attribute when cardinality is specified' do
+          @hale = JSON.load(drds_hale_json).tap do
+            |hale| hale['_links']['create']['data']['name'].merge!({ 'multi' => 'true' })
+          end.to_json
+          @document = normalized_drds_descriptor.tap do
+            |doc| doc['descriptors']['drds']['descriptors']['create']['descriptors']['name'].merge!({ 'cardinality' => 'multiple' })
+          end
+        end
       end
     end
   end
