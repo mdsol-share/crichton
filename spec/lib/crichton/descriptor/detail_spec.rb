@@ -14,7 +14,6 @@ module Crichton
       end
       let(:descriptor) { Detail.new(resource_descriptor, parent_descriptor, 'drds') }
       let(:name_semantic) { descriptor.transitions['create'].semantics['name'] }
-      let(:create_descriptor) {  }
 
       describe '.new' do
         it 'returns a subclass of Profile' do
