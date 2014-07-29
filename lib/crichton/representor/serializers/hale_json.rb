@@ -91,14 +91,18 @@ module Crichton
       end
 
       def get_control(transition_semantic)
-        halelet_semantics = map_and_merge(transition_semantic.semantics, method(:get_control))
-        type_data = semantic_map(transition_semantic.field_type || 'object')
-        scope_url = transition_semantic.scope? ? type_data.merge({ 'scope' => 'href' }) : type_data
-        multi = transition_semantic.multiple? ? scope_url.merge({ 'multi' => 'true' }) : scope_url
-        validators = multi.merge(handle_validator(transition_semantic.validators))
-        halelet_opt = get_options(transition_semantic)
-        halelet = validators.deep_merge(halelet_opt)
+        halelet_semantics = traverse_and_merge(transition_semantic.semantics, method(:get_control))
+        halelet = build_halelet(transition_semantic)
         halelet_semantics.any? ? halelet.merge(DATA => halelet_semantics) : halelet
+      end
+
+      def build_halelet(semantic_element)
+        type_data = semantic_map(semantic_element.field_type || 'object')
+        scope_url = semantic_element.scope? ? type_data.merge({ 'scope' => 'href' }) : type_data
+        multi = semantic_element.multiple? ? scope_url.merge({ 'multi' => 'true' }) : scope_url
+        validators = multi.merge(handle_validator(semantic_element.validators))
+        halelet_opt = get_options(semantic_element)
+        validators.deep_merge(halelet_opt)
       end
 
       def relations
@@ -172,7 +176,7 @@ module Crichton
         unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
       end
 
-      def map_and_merge(object, function)
+      def traverse_and_merge(object, function)
         object.any? ? object.map { |name, child| { name => function.(child) } }.reduce(&:deep_merge) : {}
       end
 
