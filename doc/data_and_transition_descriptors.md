@@ -209,9 +209,10 @@ following. All are OPTIONAL, but it is best practice to include as many as apply
 	- `target` - Specifies the name of the attribute inside the element that the value will be taken from.
 	- `prompt` - Specifies the attribute of the text of the item will be taken from are used to specify the fields that 
 	are to be used to assemble the list or hash. In case of a list, the target and prompt are identical.
-	- `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
+- `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
 	[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
-	- `validators` - OPTIONAL. Hash of validator objects associated with a field.
+- `validators` - OPTIONAL. Hash of validator objects associated with a field.
+- `cardinality` - OPTIONAL. Specifies whether multiple items are allowed. Possible values are `multiple` or `single`. `single` is implied by default. Most common use case is specifying array of objects to be included into the form. 
 
 	NOTE: You can only have one of the `list`, `hash`, or `external` properties. This applies also for `href` entries that you include. In the case of `external`, the `source` element can contain a link to an external resource or method to call on a target object. If `source` is a link to an external resource, you must include `prompt` and `target` elements.
 
@@ -296,6 +297,30 @@ idempotent:
     parameters:
       - href: name
         ext: validated_input_field
+```
+
+The following two examples show how to use cardinality attribute.
+
+### Using cardinality attribute to specify simple bulk create form
+```yaml
+unsafe:
+  bulk_create:
+    doc: Creates a list of drds using collection of names.
+    data:
+      - href: name
+        cardinality: multiple
+    rt: drds
+```
+
+### Using cardinality attribute to specify bulk create form using complex object
+```yaml
+unsafe:
+  bulk_create:
+    doc: Creates a list of drds using collection of drd properties.
+    data:
+      - href: drd
+        cardinality: multiple
+    rt: drds
 ```
 
 ## Related Topics

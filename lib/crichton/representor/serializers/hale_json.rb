@@ -18,13 +18,14 @@ module Crichton
         text: "text",
         boolean: "bool", #a Server should accept ?cat&dog or ?cat=cat&dog=dog
         number: "number",
-        email: "text",     
-        tel: "text", 
-        datetime: "text", 
+        email: "text",
+        tel: "text",
+        datetime: "text",
         time: "text",
-        date: "text", 
-        month: "text", 
-        week: "text", 
+        date: "text",
+        month: "text",
+        week: "text",
+        object: "object",
         :"datetime-local" => "text"
       }
       ##
@@ -62,33 +63,46 @@ module Crichton
       def semantic_map(sem)
         {type: "#{SEMANTIC_TYPES[sem.to_sym]}:#{sem}"}
       end
-      
-      
+
       def hale_links(transition_name, transition_semantic, data)
         { _links: { transition_name => { DATA => { transition_semantic.name => data } } } }
       end
       
       def hale_meta_options(transition_semantic)
+        hale_meta_opts = if transition_semantic.semantics.any?
+          transition_semantic.semantics.values.map { |value| hale_meta_options(value) }.reduce(&:deep_merge)
+        end
         options = transition_semantic.options
-        opts = { _source: options.source, _target: options.target || "." }
-        { _meta: { "#{transition_semantic.name}_options" =>  opts } }
+        external = if options && options.external?
+          { "#{transition_semantic.name}_options" =>  { _source: options.source, _target: options.target || "." } }
+        end
+        (hale_meta_opts || {}).deep_merge(external || {})
       end
       
       def get_options(transition_semantic)
         options = transition_semantic.options
-        hale_opts = { "#{transition_semantic.name}_options.options" => {} } if options.external?
-        hale_opts = { :options => options.each { |k, v| {k => v} } } if options.enumerable?
-        ->(name) { hale_links(name, transition_semantic, hale_opts || {} ) }
+        if options.external?
+          { "#{transition_semantic.name}_options.options" => {} }
+        elsif options.enumerable?
+          { :options => options.each { |k, v| {k => v} } }
+        else
+          {}
+        end
       end
 
-      def get_control(transition_name, transition_semantic)
-        type_data = semantic_map(transition_semantic.field_type)
-        scope_url = type_data.merge({ 'scope' => 'href' }) if transition_semantic.scope?
-        validators = (scope_url || type_data).merge(handle_validator(transition_semantic.validators))
-        halelet = hale_links(transition_name, transition_semantic, validators)
-        halelet_opt = get_options(transition_semantic).(transition_name)
-        hale_meta = transition_semantic.options.external? ? hale_meta_options(transition_semantic) : {}
-        halelet.deep_merge(halelet_opt).deep_merge(hale_meta)
+      def get_control(transition_semantic)
+        halelet_semantics = traverse_and_merge(transition_semantic.semantics, method(:get_control))
+        halelet = build_halelet(transition_semantic)
+        halelet_semantics.any? ? halelet.merge(DATA => halelet_semantics) : halelet
+      end
+
+      def build_halelet(semantic_element)
+        type_data = semantic_map(semantic_element.field_type || 'object')
+        scope_url = semantic_element.scope? ? type_data.merge({ 'scope' => 'href' }) : type_data
+        multi = semantic_element.multiple? ? scope_url.merge({ 'multi' => 'true' }) : scope_url
+        validators = multi.merge(handle_validator(semantic_element.validators))
+        halelet_opt = get_options(semantic_element)
+        validators.deep_merge(halelet_opt)
       end
 
       def relations
@@ -117,12 +131,10 @@ module Crichton
       def get_form_elements(transition)
         semantics = defined?(transition.semantics) ? transition.semantics : {}
         semantics.values.each_with_object({}) do |semantic, h|
-          elements = if semantic.semantics.any?
-            semantic.semantics.values.map { |fsemantic| get_control(transition.name, fsemantic) }.reduce(&:deep_merge)
-          else
-            get_control(transition.name, semantic)
-          end
-          h.deep_merge!(elements)
+          halelet = get_control(semantic)
+          hale_options = { _meta: hale_meta_options(semantic) }
+          hale_document = hale_links(transition.name, semantic, halelet).merge(hale_options)
+          h.deep_merge!(hale_document)
         end
       end
 
@@ -162,6 +174,10 @@ module Crichton
       #Todo: Move to a helpers.rb file
       def map_or_apply(unknown_object, function)
         unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
+      end
+
+      def traverse_and_merge(object, function)
+        object.any? ? object.map { |name, child| { name => function.(child) } }.reduce(&:deep_merge) : {}
       end
 
       #Todo: Make Representor::xhtml refactored similarly

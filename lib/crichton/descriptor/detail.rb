@@ -8,7 +8,13 @@ module Crichton
     class Detail < Profile
       # @private
       SAFE = 'safe'
-      
+
+      # @private
+      MULTIPLE = 'multiple'
+
+      # @private
+      CARDINALITY = 'cardinality'
+
       # @private
       OPTIONS = 'options'
 
@@ -134,6 +140,12 @@ module Crichton
       # Whether descriptor has scope attribute. If it has, considered to be parameter for url.
       def scope?
         descriptor_document['scope'].present?
+      end
+
+      ##
+      # Whether descriptor has multiple property.
+      def multiple?
+        descriptor_document[CARDINALITY] == MULTIPLE
       end
 
       ##
