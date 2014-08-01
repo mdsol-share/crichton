@@ -141,7 +141,7 @@ module Crichton
           if protocol_transition && (slt = protocol_transition.slt)
             response_headers[config.service_level_target_header] = slt.map { |k, v| "#{k}=#{v}" }.join(',')
           end
-          response_headers.merge!(object.response_headers)
+          response_headers.merge!(object.response_headers(@options))
         end
       end
 
