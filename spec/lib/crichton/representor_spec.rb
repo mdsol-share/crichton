@@ -434,6 +434,7 @@ module Crichton
 
       describe '#response_headers' do
         let(:attributes) { { @state_method => @state } }
+        let(:subject) { simple_test_class.new(attributes) }
         before do
           @state_method = 'my_state_method'
           @state = 'collection'
@@ -443,20 +444,24 @@ module Crichton
         it 'returns empty hash if not response headers are specified' do
           @resource_name = 'drd'
           @state = 'activated'
-          expect(simple_test_class.new(attributes).response_headers).to be_empty
+          expect(subject.response_headers).to be_empty
         end
 
         it 'returns non empty response headers hash if specified' do
-          expect(simple_test_class.new(attributes).response_headers).to have(1).item
+          expect(subject.response_headers).to have(1).item
         end
 
         it 'returns response headers hash if specified' do
-          expect(simple_test_class.new(attributes).response_headers).to eq({ 'Cache-Control' => 'no-cache' })
+          expect(subject.response_headers).to eq({ 'Cache-Control' => 'no-cache' })
         end
 
         it 'returns empty hash if self transition is nil' do
-          subject = simple_test_class.new(attributes)
           subject.stub(:self_transition).and_return(nil)
+          expect(subject.response_headers).to be_empty
+        end
+
+        it 'returns empty hash if self transition is not TransitionDecorator' do
+          subject.stub(:self_transition).and_return(an_instance_of(Array))
           expect(subject.response_headers).to be_empty
         end
       end
