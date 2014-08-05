@@ -10,7 +10,7 @@ module Crichton
         end
 
         it 'loads resource descriptors from a resource descriptor directory if configured' do
-          expect(Registry.new.descriptor_registry.size).to eq(3)
+          expect(Registry.new.descriptor_registry.size).to eq(4)
         end
       end
 
