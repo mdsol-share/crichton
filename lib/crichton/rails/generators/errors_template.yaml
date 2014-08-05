@@ -1,10 +1,10 @@
-id: Errors
+id: {resource_capitalize}
 
 doc: Describes the semantics, states and state transitions associated with Errors.
 
 links:
-  self: Errors
-  help: Errors/help
+  self: {resource_capitalize}
+  help: {resource_capitalize}/help
 
 semantics:
   title:
@@ -36,10 +36,6 @@ semantics:
     href: http://alps.io/schema.org/Text
 
 safe:
-#  {remedy id}:
-#    name: remedy
-#    doc: {Remedy Documentation}
-#    href: {Resource#Transition}
   describes_link:
     name: describes
     doc: The link to the resource that the error describes.
@@ -48,8 +44,8 @@ resources:
   {resource_name}:
     doc: Describes an error.
     links:
-      self: Errors#error
-      help: Errors/help
+      self: {resource_capitalize}#error
+      help: {resource_capitalize}/help
     descriptors:
       - href: title
       - href: details
@@ -59,7 +55,6 @@ resources:
       - href: logref
       - href: stack_trace
       - href: describes_link
-#      - href: {remedy id}
     states:
       default:
         transitions:
@@ -71,17 +66,9 @@ resources:
             name: help
             next:
               - default
-#          {remedy id}:
-#            next:
-#              - location: {Resource#state}
 
 http_protocol:
   describes_link:
     uri_source: describes_url
   help_link:
     uri_source: help_url
-#  {remedy id}:
-#    uri: {resource}
-#    method: {METHOD}
-#    headers:
-#    {slt block}

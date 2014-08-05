@@ -36,6 +36,7 @@ semantics:
     href: http://alps.io/schema.org/Text
 
 safe:
+
   describes_link:
     name: describes
     doc: The link to the resource that the error describes.
