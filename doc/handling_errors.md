@@ -1,147 +1,144 @@
-# @title Getting Started
+# @title Handling Errors
 
-## Configuration
-Crichton includes a default [Dice Bag][] template that supports [12-Factor App][] configuration of applications
-that implement Crichton. To configure your application, perform the following steps: 
+## Simple Setup
+Crichton provides default erroring functionality through a rails generator.  In this case you can simply run
+"rails generate errors_description [path to errors class]"  it also optionally takes a resource name as a second
+argument if you don't like the default of "Errors", and an api directory as a third argument if you have your
+descriptors somewhere other than 'api_descriptors'.
 
-1. Generate the `crichton.yml.dice` template in the `path_to_app\config` (default) folder of your application.
+## Using Errors
+To use errors, simply instantiate your errors class with the attributes you want and render them in your controller.
 
-    ```
-    [bundle exec] rake config:generate_all
-    ```
-2. Update the template with local development defaults.
-3. Generate the `cricthon.yml` configuration.
-
-    ```
-    [bundle exec] rake config:deploy
-    ```
-
-It is a best practice to commit your `crichton.yml.dice` template to your repo, not `crichton.yml`, and
-to include a startup rake task in your application that generates crichton.yml during the release phase. For more
-information, see the [Dice Bag][] documentation.
-
-### Crichton YAML Properties<a name="crichton-yaml-properties"></a>
-The following list defines the configuration properties:
-
-* `alps_base_uri` - The base URI for the ALPS profile registry for profiles that are referenced as relative paths in an
-[_API Descriptor Document_][]. If none, use `http://[domain]/alps`.
-* `deployment_base_uri` - The base URI for the application: `http://[domain]`
-* `discovery_base_uri` - The base URI for a discovery service that Crichton will publish entry points to.
-* `documentation_base_uri` - The base URI for any hosted external documentation that is referenced as relative paths in an [_API Descriptor Document_][].
-* `use_alps_middleware` - Rails only. Identifies whether or not to autoload middleware to support rendering local ALPS profiles.
-* `alps_profile_response_expiry` - Configures the expiry of ALPS middleware that serves ALPS profiles directly from
-the service.
-* `use_discovery_middleware` - Rails only. Identifies whether or not to autoload middleware to support rendering local resource catalog of entry points.
-* `resources_catalog_response_expiry` - Configures the expiry of resource entry point middleware that
-serves a catalog of resource entry points provided directly from the service.
-* `service_level_target_header` - Configures a service level target (SLT) response header name. If left unspecified,
-the property defaults to `REQUEST_SLT`.
-* `crichton_proxy_base_uri` - URI to use to capture and proxy AJAX requests to related resources when surfing an
-API in a browser. Allows an application to proxy the request for authentication/authorization.
-* `css_uri` - The fully qualified URI for a CSS file to use when surfing an API in a browser.
-* `js_uri` -  The fully qualified URI for a Javascript file to load when surfing an API in a browser.
-
-## Vendor Profile Dependencies
-Given that an [_API Descriptor Document_][] may reference external ALPS profiles, it is important to vendor external
-profiles into your application. This way, changes to those profiles do not modify application behavior unawares by being dynamically loaded at runtime. Vendored profiles are loaded from the local repository instead of an external
-ALPS profile registry.
-
-To support vendoring, Crichton contains two rake tasks: one task to vendor external profiles and another task to check if differences exist between vendored profiles and external profiles. These methods are, respectively:
-
-````
-$ rake alps:store_all_external_documents
-$ rake alps:check_all_external_documents
-````
-
-## Middleware
-Crichton includes utility Rack middleware for interacting with Hypermedia APIs in a service. For Rails applications,
-this middleware is automatically included. For other frameworks, you can add the middleware to provide this default
-functionality.
-
-### Entry Points
-Returns a catalog of resource entry points for a service on the root of the service.
-
-In your browser, you simply call the root of the service to access a list of resource entry points. You can also use
-curl and content-negotiate responses with several media types.
-
-```
-$ curl -v --header "Accept: application/hal+json" http://example.com
+```ruby
+  def index
+    if (params[:search_term] == 'search')
+      error = Error.new({ title: 'Not supported search term',
+                          error_code: :search_term_is_not_supported,
+                          http_status: 422,
+                          details: 'You requested search but it is not a valid search_term',
+                          controller: self})
+      respond_with(error, status: 404)
+    else
+      @drds = Drds.find(params[:search_term])
+      respond_with(@drds, options)
+    end
+  end
 ```
 
-The following are acceptable media types for content-negotiating the entry points catalog:
-
-* html - text/html
-* xhtml - application/xhtml+xml
-* xml - application/xml
-* hale_json - application/vnd.hale+json
-* hal_json - application/hal+json
-* json - application/json
-* any - \*/\*
-
-If you have not set an `Accept` header or used an unsupported media type, the server returns the following error:
-
-> Status: 406
-Not Acceptable media type(s): [bad_media_type]. Supported types are: text/html,
-application/xhtml+xml, application/xml, application/vnd.hale+json, application/hal+json, application/json, \*/\*
-
-### ALPS Profiles
-Returns either a list of ALPS profiles or individual profiles for service resources.
-
-In your browser, you simply call the `root/alps` path of the service to access a list of resource entry points. You can
-also use curl and content-negotiate responses with several media types.
-
-```
-$ curl -v --header "Accept: application/alps+xml" http://example.com/alps
-```
-
-In your browser, you can call also load any profile links, found in the above list to view the actual individual
-profile. For example, you can load `http://example.com/alps/DRDs`. You can also curl individual profiles.
-
-```
-$ curl -v --header "Accept: application/alps+xml" http://example.com/alps/DRDs
-```
-
-The following are acceptable media types that you can set as the content type in the response header:
-
-* html (text/html, for surfing ALPS Profiles in a browser) - application/xml
-* alps_xml - application/alps+xml
-* alps_json - application/alps+json
-
-If you have not set an `Accept` header or used an unsupported media type, the server returns the following error:
-
-> Status: 406
-Not Acceptable media type(s): [bad_media_type]. Supported types are: text/html,
-application/alps+xml, application/alps+json.
-
-If you make a request on a non-existent resource - for example, http://example.com/alps/blah - the error response will be:
-	"Profile <ID> not found"
-
-### Non-Rails Frameworks
-Include non-Rails frameworks as normal Rack middleware at the top of the stack.
-
-```
-require 'crichton/middleware/service_resources_catalog'
-require 'crichton/middleware/alps_profile_response'
-
-# ...
-# expiry is optional, # of minutes to expire the request response, string or symbol
-config.middleware.use "Crichton::Middleware::ServiceResourcesCatalog", { 'expiry' => 20 }
-
-# expiry is optional, # of minutes to expire the request response, string or symbol
-config.middleware.use "Crichton::Middleware::AlpsProfileResponse", { 'expiry' => 20 }
-```
-
-## Logging
-If you use Rails, then the `Rails.logger` is configured automatically. If you have no logger configured, the current
-behavior is to log to STDOUT. You can override it by calling the following:
-
+## Customizing
+To customize Error handling, you can simply extend the functionality generated, or add create your own class and
+ descriptor file to generate the Errors resource.  For example if we wanted to add a remedy link we may extend the
+ default functionality like so:
+ 
+ ### Custom Errors Descriptor
+ ```yaml
+ id: Errors
+ 
+ doc: Describes the semantics, states and state transitions associated with Errors.
+ 
+ links:
+   self: Errors
+   help: Errors/help
+ 
+ semantics:
+   title:
+     doc: Title SHOULD describe the error in a concise, generic manner.
+     href: http://alps.io/schema.org/Text
+   details:
+     doc: Error explanation and reason for the error.
+     href: http://alps.io/schema.org/Text
+   error_code:
+     doc: Error code is the service's internal error code that describes the error.
+     href: http://example.org/profiles/ErrorCodes
+   http_status:
+     doc: HTTP status is the HTTP status returned, if the service returned one.
+     href: http://alps.io/schema.org/Integer
+   retry_after:
+     doc: This semantic element specifies to the client how long to wait before making another request.
+     href: http://alps.io/schema.org/Integer
+   logref:
+     doc: It is a unique ID used for logging or otherwise tracking the error.
+     href: http://alps.io/schema.org/Text
+   stack_trace:
+     doc: Error stacktrace.
+     href: http://alps.io/schema.org/Text
+   help:
+     doc: The link directs the user to a document that describes the error.
+     href: http://alps.io/schema.org/URL
+   contact:
+     doc: Contact link should provide a contact.
+     href: http://alps.io/schema.org/Text
+ 
+ safe:
+   try_different_search_term:
+     name: remedy
+     doc: Try different search term
+     href: DRDs#search
+   describes_link:
+     name: describes
+     doc: The link to the resource that the error describes.
+ 
+ resources:
+   error:
+     doc: Describes an error.
+     links:
+       self: Errors#error
+       help: Errors/help
+     descriptors:
+       - href: title
+       - href: details
+       - href: error_code
+       - href: http_status
+       - href: retry_after
+       - href: logref
+       - href: stack_trace
+       - href: describes_link
+       - href: try_different_search_term
+     states:
+       default:
+         transitions:
+           describes_link:
+             name: describes
+             next:
+               - location: exit
+           help_link:
+             name: help
+             next:
+               - default
+           try_different_search_term:
+             next:
+               - location: DRDs#drds
+ 
+ http_protocol:
+   describes_link:
+     uri_source: describes_url
+   help_link:
+     uri_source: help_url
+   try_different_search_term:
+     uri: drds
+     method: GET
+     headers:
+     slt: &slt2
+       99th_percentile: 250ms
+       std_dev: 50ms
+       requests_per_second: 25
+ ```
+ 
+ ### Custom Errors Class
  ```ruby
- Crichton.logger = Logger.new("some logging sink")
+ class Error
+   include Crichton::Representor::State
+   represents :error
+   attr_reader :title, :details, :error_code, :http_status, :stack_trace, :controller
+ 
+   def initialize(data = {})
+     data.each { |name, value| instance_variable_set("@#{name.to_sym}", value) }
+   end
+ 
+   def describes_url
+     controller.request.path
+   end
+ end
  ```
 
-[\#to_media_type]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
-[Dice Bag]: https://github.com/mdsol/dice_bag
-[sample template]: ../lib/crichton/dice_bag/crichton.yml.dice
-[12-Factor App]: http://12factor.net
-[_API Descriptor Document_]: api_descriptor_documents.md
-
+ 
