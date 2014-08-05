@@ -18,7 +18,7 @@ require 'json_spec'
 require 'timecop'
 
 SimpleCov.start
-#Debugger.start
+Debugger.start
 Bundler.setup
 
 require 'crichton'
