@@ -9,7 +9,7 @@ $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
 
 require 'rspec'
-#require 'debugger'
+require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
 require 'webmock/rspec'
