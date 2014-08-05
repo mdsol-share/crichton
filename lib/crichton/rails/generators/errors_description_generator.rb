@@ -7,10 +7,10 @@ module Crichton
     source_root File.expand_path("../", __FILE__)
 
     argument :errors_class_path, type: :string, desc: "The path that the errors class will go to"
-    argument :resource_name, default: 'error', type: :string, desc: "The name for the errors resource"
+    argument :resource_name, default: 'errors', type: :string, desc: "The name for the errors resource"
     argument :api_dir, type: :string, default: 'api_descriptors', desc: 'directory for our api docs'
 
-    desc "This generator will generate a errors resource descriptor file."
+    desc "This generator will generate a errors resource descriptor file and errors class."
     def create_description
       copy_file "errors_template.yaml", yaml_filename
       gsub_file yaml_filename, "{resource_name}", resource_name
@@ -26,7 +26,7 @@ module Crichton
     end
 
     def class_filename
-      "#{errors_class_path}/#{resource_name}.rb" #where does this go?
+      "#{errors_class_path}/#{resource_name}.rb"
     end
   end
 end
