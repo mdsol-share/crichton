@@ -9,7 +9,7 @@ $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
 
 require 'rspec'
-require 'debugger'
+#require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
 require 'webmock/rspec'
@@ -18,7 +18,7 @@ require 'json_spec'
 require 'timecop'
 
 SimpleCov.start
-Debugger.start
+#Debugger.start
 Bundler.setup
 
 require 'crichton'
