@@ -1,5 +1,4 @@
 .bundle
-.idea*
 api_descriptors/
 gemfiles/*.lock
 Gemfile.lock

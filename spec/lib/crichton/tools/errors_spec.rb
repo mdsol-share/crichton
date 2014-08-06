@@ -30,20 +30,14 @@ module Crichton
       end
       let(:serializer) { HaleJsonSerializer }
 
-      it 'self-registers as a serializer for the hale+json media-type' do
-        expect(Serializer.registered_serializers[:hale_json]).to eq(serializer)
-      end
-
       describe '#as_media_type' do
-        after do
+        it 'returns an error body' do
+          @hale = JSON.load(drds_hale_json)
           stub_example_configuration
           Crichton.initialize_registry(@document || errors_descriptor)
           expect(serializer.new(drds).as_media_type(conditions: 'can_do_anything')['details']).to eq("You requested search but it is not a valid search_term")
         end
 
-        it 'returns an error body' do
-          @hale = JSON.load(drds_hale_json)
-        end
       end
     end
   end

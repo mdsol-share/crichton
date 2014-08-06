@@ -1,8 +1,8 @@
 # @title Handling Errors
 
 ## Simple Setup
-Crichton provides default erroring functionality through a rails generator.  In this case you can simply run
-"rails generate errors_description [path to errors class]"  it also optionally takes a resource name as a second
+Crichton provides default error functionality through a rails generator.  In this case you can simply run
+"bundle exec rails generate crichton:errors_description ./lib/". It also optionally takes a resource name as a second
 argument if you don't like the default of "Errors", and an api directory as a third argument if you have your
 descriptors somewhere other than 'api_descriptors'.
 
@@ -10,24 +10,26 @@ descriptors somewhere other than 'api_descriptors'.
 To use errors, simply instantiate your errors class with the attributes you want and render them in your controller.
 
 ```ruby
-  def index
-    if (params[:search_term] == 'search')
-      error = Error.new({ title: 'Not supported search term',
-                          error_code: :search_term_is_not_supported,
-                          http_status: 422,
-                          details: 'You requested search but it is not a valid search_term',
-                          controller: self})
-      respond_with(error, status: 404)
-    else
-      @drds = Drds.find(params[:search_term])
-      respond_with(@drds, options)
-    end
-  end
+  require 'crichton_error'
+ 
+  errors = Crichton_error.new({
+        title: e.message,
+        details: '',
+        error_code: error_cause,
+        http_status: 422,
+        stack_trace: '',
+        controller: self
+  })
+
+  respond_to do |format|
+    format.html { render text: errors.to_media_type(:xhtml, { semantics: :styled_microdata }), status: error_cause }
+    format.hale_json { render text: errors.to_media_type(:hale_json), status: error_cause }
+  end 
 ```
 
 ## Customizing
-To customize Error handling, you can simply extend the functionality generated, or add create your own class and
- descriptor file to generate the Errors resource.  For example if we wanted to add a remedy link we may extend the
+To customize Error handling, you can simply extend the functionality generated, or create your own class and
+ descriptor file to generate the Errors resource.  For example, if we wanted to add a remedy link we may extend the
  default functionality like so:
  
  ### Custom Errors Descriptor
