@@ -136,7 +136,6 @@ describe 'rdlint' do
         doc['id'] = 'DRDs2'
         doc.except!('descriptors')
       end
-
       create_drds_file(descriptor,'nodescriptors.yml', 'api_descriptors')
     end
 
