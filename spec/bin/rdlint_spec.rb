@@ -128,12 +128,12 @@ describe 'rdlint' do
     # stub does not work in a new shell apparently, so a forced copy to the default api_descriptor dir is made
     before(:all) do
       descriptor = normalized_drds_descriptor.tap do |doc|
-        doc['id'] = 'DRDs1'
+        doc.merge!('id' => 'DRDs1')
         doc.except!('http_protocol')
       end
       create_drds_file(descriptor, 'noprotocols.yml', 'api_descriptors')
       descriptor = normalized_drds_descriptor.tap do |doc|
-        doc['id'] = 'DRDs2'
+        doc.merge!('id' => 'DRDs2')
         doc.except!('descriptors')
       end
       create_drds_file(descriptor,'nodescriptors.yml', 'api_descriptors')
