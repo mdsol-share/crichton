@@ -22,11 +22,10 @@ module Crichton
           end
 
         end
-        error = SubErrors.new({ title: 'Not supported search term',
-                            error_code: :search_term_is_not_supported,
-                            http_status: 422,
-                            details: 'You requested search but it is not a valid search_term',})
-        error
+        SubErrors.new({ title: 'Not supported search term',
+                        error_code: :search_term_is_not_supported,
+                        http_status: 422,
+                        details: 'You requested search but it is not a valid search_term',})
       end
       let(:serializer) { HaleJsonSerializer }
 
