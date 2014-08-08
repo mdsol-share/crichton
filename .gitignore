@@ -1,5 +1,4 @@
 .bundle
-
 api_descriptors/
 gemfiles/*.lock
 Gemfile.lock

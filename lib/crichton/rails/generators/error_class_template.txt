@@ -1,0 +1,10 @@
+require 'crichton/tools/base_errors'
+
+class {resource_capitalize} < Crichton::Tools::BaseErrors
+  include Crichton::Representor::State
+  represents :{resource_name}
+
+  def initialize(data)
+    super(data)
+  end
+end
