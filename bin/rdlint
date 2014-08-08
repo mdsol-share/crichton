@@ -40,7 +40,7 @@ optparse.parse!
 Crichton::Lint.version if options[:version]
 
 if options[:all]
-  if Crichton::Lint.validate_all(options)
+  if Crichton::Lint.validate_all(options.merge(automatic_load: true))
     puts 'true'.green
   else
     puts 'false'.red

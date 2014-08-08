@@ -22,7 +22,7 @@ module Crichton
     def self.validate(filename, options = {})
       # first check for yml compliance. If the yml file is not correctly formed, no sense of continuing.
       begin
-        registry = Crichton::Registry.new(automatic_load: false)
+        registry = Crichton::Registry.new(automatic_load: options[:automatic_load] || false)
         registry.register_single(filename)
         resource_dereferencer = registry.resources_registry.values.first
         hash = resource_dereferencer.dereference(registry.dereferenced_descriptors)

@@ -7,7 +7,7 @@ module Crichton
       # @private valid field_type keywords
       def self.field_types
         @field_types ||=
-          %w(text search email tel url datetime date time month week datetime-local number boolean select)
+          %w(text search email tel url datetime date time month week datetime-local number boolean select object)
       end
 
       # @private valid types of field_types

@@ -143,6 +143,13 @@ module Crichton
           @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
         end
 
+        it 'reports no errors with a descriptor file containing field_type: object' do
+          @descriptor = normalized_drds_descriptor.tap do |document|
+            document['descriptors']['drds']['descriptors']['create']['descriptors']['destroyed'].merge!('field_type' => 'object')
+          end
+          @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
+        end
+
         it 'reports an error when external url has fragment' do
           @descriptor = drds_descriptor.tap do |document|
             document['semantics']['total_count']['href'] = 'http://alps.io/schema.org/Integer#fragment'
