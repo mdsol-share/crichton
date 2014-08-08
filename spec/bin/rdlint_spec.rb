@@ -129,7 +129,7 @@ describe 'rdlint' do
     before(:all) do
       descriptor = normalized_drds_descriptor.tap do |doc|
         doc.merge!('id' => 'DRDs1')
-        doc.except!('http_protocol')
+        doc.except!('protocols')
       end
       create_drds_file(descriptor, 'noprotocols.yml', 'api_descriptors')
       descriptor = normalized_drds_descriptor.tap do |doc|
