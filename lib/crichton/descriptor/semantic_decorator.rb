@@ -23,8 +23,10 @@ module Crichton
       # @return [Object] The data value.
       def value
         val = @target.is_a?(Hash) ? @target[source] : @target.try(source)
-        logger.warn("Source '#{source}' corresponding to descriptor #{name} is not defined on #{@target.inspect}. " <<
-          "Make sure the object implements the source name or check for a misspelled descriptor key, name or source property.") unless val
+        if val.nil?
+          logger.warn("Source '#{source}' corresponding to descriptor #{name} is not defined on #{@target.inspect}. " <<
+            "Make sure the object implements the source name or check for a misspelled descriptor key, name or source property.")
+        end
         val
       end
       

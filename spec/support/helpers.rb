@@ -32,6 +32,10 @@ module Support
       YAML.load_file(drds_filename)
     end
 
+    def errors_descriptor
+      YAML.load_file(errors_filename)
+    end
+
     def create_drds_file(descriptor, filename, directory = SPECS_TEMP_DIR)
       path = temporary_drds_filepath(filename, directory)
       File.open(path, 'w') { |file| file.write descriptor.to_yaml }
@@ -57,6 +61,10 @@ module Support
 
     def drds_filename
       fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
+    end
+
+    def errors_filename
+      fixture_path('resource_descriptors', 'errors_descriptor.yml')
     end
 
     def drds_non_existent_filename
@@ -90,10 +98,11 @@ module Support
       config['crichton_proxy_base_uri'] = 'http://example.org/crichton'
       config['css_uri'] = 'http://example.org/resources/css.css'
       config['js_uri'] = 'http://example.org/resources/js.js'
-      config['resource_home_response_expiry'] = 40
+      config['resources_catalog_response_expiry'] = 40
       config['alps_profile_response_expiry'] = 40
       config['use_alps_middleware'] = true
       config['use_discovery_middleware'] = true
+      config['service_level_target_header'] = 'CONFIGURED_SLT_HEADER'
       config
     end
 

@@ -1,7 +1,7 @@
 module Crichton
   # Manages the configuration of the Crichton environment.
   class Configuration
-      
+
     ##
     # @!attribute [r] alps_base_uri
     # The base URI of the ALPS repository.
@@ -42,8 +42,8 @@ module Crichton
       @use_discovery_middleware ||= (@config['use_discovery_middleware'] === true)
     end
 
-    def resource_home_response_expiry
-      @resource_home_response_expiry ||= { 'expiry' => (@config['resource_home_response_expiry'] || 20) }
+    def resources_catalog_response_expiry
+      @resources_catalog_response_expiry ||= { 'expiry' => (@config['resources_catalog_response_expiry'] || 20) }
     end
 
     def use_alps_middleware?
@@ -52,6 +52,10 @@ module Crichton
 
     def alps_profile_response_expiry
       @alps_profile_response_expiry ||= { 'expiry' => (@config['alps_profile_response_expiry'] || 20) }
+    end
+
+    def service_level_target_header
+      @service_level_target_header ||= @config['service_level_target_header'] || 'REQUEST_SLT'
     end
 
     ##

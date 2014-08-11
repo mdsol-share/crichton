@@ -13,15 +13,15 @@ module Crichton
       ##
       # Constructs a new instance of AdditionalTransition.
       #
-      # @param name [String] The name of the transition.
+      # @param name [String or Symbol] The name of the transition.
       # @param link [Hash or String] The link hash with 'href' key or the URL of the transition.
       def initialize(name, link)
-        @name = name
+        @name = name.to_s
         @link = link
       end
 
       def url
-        @url ||= link.is_a?(Hash) ? link[HREF] : link
+        @url ||= link.is_a?(Hash) ? link.stringify_keys[HREF] : link
       end
 
       def safe?

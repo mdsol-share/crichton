@@ -1,11 +1,13 @@
 # @title Sample eBooks Hypermedia Contract
 
+# Overview
+
 The following sample Hypermedia resource contract defines the state-machine API for a subset of resources in a service 
 or the platform in general. That is, it does not specify a monolithic contract for an entire service, but rather 
-resources, irrespective of the service the actually reside in.
+resources, irrespective of the service that they actually reside in.
 
-Depending on the nature of the associated workflow, there may only be one resource represented, or possibly as a list 
-resource and an entity resource.
+Depending on the nature of the associated workflow, there may only be one resource represented or possibly a list 
+resource and an entity resource. 
 
 ## Resource: eBooks
 Represents a list of eBooks.

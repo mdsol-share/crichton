@@ -1,45 +1,37 @@
 # @title Sample eBooks State-machine Analysis
 
 # Overview
-In order to determine the appropriate the state-machine associated with a resource, or set of closely related resources, 
-one must understand concepts and principles behind:
+To determine the appropriate state machine that is associated with a resource or set of closely related resources, 
+one must understand concepts and principles behind the following:
 
-1. [Finite State Machines](http://en.wikipedia.org/wiki/Finite-state_machine)
-2. [State Design Pattern](http://en.wikipedia.org/wiki/State_pattern)
+* [Finite State Machines](http://en.wikipedia.org/wiki/Finite-state_machine)
+* [State Design Pattern](http://en.wikipedia.org/wiki/State_pattern)
 
-Further, one understand the constraints on available state-transitions based on:
+Further, one must understand the constraints on available state transitions based on:
 
-1. Business Rules driven by the data properties
-2. Permissions driven by context (Roles, Traits, etc.)
+* Business Rules driven by the data properties
+* Permissions driven by context; that is, Roles, Traits, and so on.
 
-Assuming initial semantic analysis associated with resources data and link relations has been performed, the following 
-discussion outlines steps on how to determine the appropriate state-machine that represents the resource workflow and 
-relationships to other resources.
+The following discussion assumes that you have performed a semantic analysis associated with resource data and link relations. The discussion outlines steps to determine the appropriate state machine that represents the resource workflow and the resource's relationships to other resources.
 
 ## Hypermedia State Transitions
-Available state-transitions are present in Hypermedia responses (depending on media-type) as links with defined link 
-relations. These transitions, discovered at runtime, will transition either resource state or application state.
+Available state transitions are present in Hypermedia responses (depending on media-type) as links with defined link 
+relations. These transitions, which are discovered at runtime, will transition either resource state or application state.
 
 ### Resource State Transitions
-Resource state transitions transform the state of a resource such as updating properties, locking them, etc. As a rule 
-of thumb, these transitions are semantically defined as verbs.
+Resource state transitions transform the state of a resource. Transformation can include such actions as updating properties, locking them, and so on. Resource state transitions are semantically defined as verbs.
 
 ### Application State Transitions
-Application state transitions transform the state of an application, which effectively means transitions state from one 
-resource to another. As a rule of thumb, these transitions are semantically defined as nouns.
+Application state transitions transform the state of an application. Transformation here means the transitions state from one resource to another. Application state transitions are semantically defined as nouns.
 
 ## Finding the states
 Depending on the nature of the workflow associated with a particular resource or related set of resources, the state(s) 
-of the resource may be obvious or take a while to expose. Technically, one could argue that for any resource where one 
-can modify the underlying data, there are infinite resource states. Though, this is accurate, it is not really a useful 
-concept in determining the states and related transitions for a Hypermedia API. 
+of the resource can be obvious. On the other hand, they can take a while to expose. Technically, you can argue that for any resource where one can modify the underlying data there are an infinite number of resource states. While logically true, this is not useful in helping to determine the states and related transitions for a Hypermedia API. 
 
-> States are associated with distinct sets of possible state-transitions or dissimilar permission rules for the same set
+> States are associated with distinct sets of possible state transitions or dissimilar permission rules for the same set
 of transitions in a resource.
 
-The following outlines a number of ideas and constraints to determine the state-machine API of resources. For the sake 
-of illustration, we will work on the related state-machines of the 'eBooks' and 'eBook' resources that were analyzed 
-and summarized in the [Sample eBooks Hypermedia Contract][].
+The following description outlines a number of ideas and constraints to determine the state-machine API of resources. For the sake  of illustration, we work on the related state-machines of the 'eBooks' and 'eBook' resources that were analyzed and summarized in the [Sample eBooks Hypermedia Contract][].
 
 The 'eBooks' resource has the following link relations:
 
@@ -57,43 +49,34 @@ The 'eBook' resource has the following set of link relations:
 * author
 
 ### Isolate unique sets of link relations
-Business Rules associated with the underlying work a resource does dictate which link relations are available based on 
-some aspect of the data. This may be some combination of data elements to define the state or effectively some property, 
-like a "status" on underlying data. In order to initially determine states, one attempts to find groups of resources 
-that are context independent. That is, for example, they exist on the state for some user or they don't exist on a 
-state regardless of use.
+Business rules associated with the underlying work that a resource does dictate which link relations are available based on some aspect of the data. This may be some combination of data elements to define the state or effectively some property like a "status" on underlying data. To determine states, one attempts to find groups of resources that are context independent. That is, for example, they exist in the state for some user or they don't exist in a state, regardless of use.
 
 #### eBooks Example
-In our sample analysis, we initially find two states which we call Draft and Published with the following link 
-relations:
+In our sample analysis, we first found two states for eBooks that we called Draft and Published. These states have the following link relations:
 
 * Collection: list (self), search, create
 * Navigation: list, search (self), create
 
-One could argue that a single state would be sufficient for a resource that lists other resources. However, as a 
-practice, once you have applied a search or filter transition, the data of the resource is in a different state than 
-the base URI of the resource as the full collection (even if it is paginated).
+You could say that a single state is sufficient for a resource that lists other resources. However, as a 
+practice once you apply a search or filter transition, the data of the resource is in a different state than 
+the base URI of the resource as the full collection, even when it is paginated.
 
 #### eBook Example
-In our sample analysis, we initially find two states which we call Draft and Published with the following link 
-relations:
+In our sample analysis, we initially also found two states for eBook that we called Draft and Published. These states have the following link relations:
 
 * Draft: read (self), edit, copy, publish, delete, author
 * Published: read (self), author
 
-The name of the states, ideally encapsulate the nature of the state, but since the underlying state-machine of a 
-resource is an encapsulated detail of a service and not externally documented for Hypermedia APIs, it is less a 
-factor than the groups of available transitions.
+NOTE: The name of the state ideally encapsulates the nature of the state. However, since the underlying state machine of a resource is an encapsulated detail of a service and is not externally documented for Hypermedia APIs, the name is less a factor than the groups of available transitions.
+
+At this stage, the state machine looks like the one shown in Figure 1.
 
 ![Missing Figure 1][]
 
-Figure 1 Initial State-machine of eBooks/eBook Resources*
+Figure 1 Initial State Machine of eBooks/eBook Resources*
 
 ### Analyze unique sets of permissions
-Once a set of states are isolated by analyzing like groups of transitions dictated solely by business rules associated 
-with the 'state' of the data, it is necessary to assess for each state, which transitions are available based on context 
-(e.g. permissions, role, etc.). To do this, one constructs for each state permission grids that map which transitions 
-are available in which state (assuming there is more than one for the resource).
+Once you isolate a set of states by analyzing similar groups of transitions dictated by business rules that are associated with the 'state' of the data, you must assess for each state which transitions are available based on context; for example, permissions, roles, and so on. To do this, you construct grids for each state permission. The grids map which transitions are available in which state (assuming there is more than one for the resource). Table 1 shows how the grid for eBooks looks at this stage. Table 2 shows the grid for eBook. Table 3 shows the grid for the published state. 
 
 #### eBooks Example
 
@@ -171,8 +154,8 @@ Table 1 Collection/Navigation State Context Analysis
     </tbody>
 </table>
 
-\* A publisher can only perform these functions if the author has made the draft visible for review 
-(from business requirements).
+\* A publisher can only perform these functions if the author has made the draft visible for review. 
+(From the business requirements.)
 
 Table 2 Draft State Context Analysis
  
@@ -219,13 +202,9 @@ Table 2 Draft State Context Analysis
 
 Table 3 Published State Context Analysis
  
-Upon analyzing Table 2, it follows that there are different rules for a Publisher than for an Author associated with the 
-same set of transitions that are generally available on the resource. This situation arises when there is actually 
-another state around that may not initially have been obvious, In this case, until an author makes a Draft visible. 
-That is, a "Rough Draft" vs. a "Draft". This may be seem artificial, but it is more for illumination that different 
-permission sets surface different states for the same set of transitions.
+Table 2 shows that there are different rules for a Publisher than for an Author who are associated with the same set of transitions that are available on the resource. This situation arises when there is actually another state that may not initially have been obvious. In this case, the rules associated with an author who makes a Draft visible; that is, a "Rough Draft" versus a "Draft." This may seem artificial, but it illuminates the fact that different permission sets surface different states for the same set of transitions.
 
-As such, the following outlines the permissions for the states more accurately.
+As such, Table 4 outlines the permissions for the rough draft state more accurately. Table 5 shows the permissions for the draft state.
  
 <table>
     <tbody>
@@ -313,35 +292,25 @@ Table 4 Rough Draft State Context Analysis
 
 Table 5 Draft State Context Analysis
 
-## Iterate for re-usable semantics
-Sometimes in the course of state-machine analysis, it becomes apparent initial semantics are not the most applicable in 
-light of initially unrecognized functionality, states, etc. In this case, one could ask whether "Publish" is the best 
-transition name given, it is a bit of a force fit to say I am publishing a Rough Draft. It may be fine, but for the 
-sake of contrived argument, one may determine that the more applicable name is "Release". If I "release" a Rough Draft, 
-it becomes a Draft and has those permissions. If I "release" a Draft it becomes published and has a completely 
-different set of transitions, etc.
+## Iterate for reusable semantics
+Sometimes during state-machine analysis it becomes apparent that initial semantics are not the most applicable in light of initially unrecognized functionality, states, and so on. In this case, you could ask whether "Publish" is the best transition name to give. That is, it seems strange to say that I am publishing a rough draft. It may be fine, but for the sake of argument one could determine that the more accurate name is "release." If I "release" a Rough Draft, it becomes a Draft and has those permissions. If I "release" a Draft it becomes published and has a completely 
+different set of transitions, and so on.
 
-At this point, the resource state-machine has evolved to:
+After this further analysis, the resource state machine looks like the one shown in Figure 2:
 
 ![Missing Figure 2][]
 
 Figure 2 Completed State-machine of eBooks/eBook Resources
 
 ### State Design Pattern
-The "release" link relation doing different things as a function of state is an example of the State Design Pattern 
-underlying the eBook resource. By using this pattern when applicable, one can minimize the number of unique link 
-relations associated with a resource.
+That the "release" link relation performs different things as a function of state is an example of the State Design Pattern that underlies the eBook resource. By using this pattern when applicable, one minimizes the number of unique link relations for a resource.
 
 ## Analyze Transition Conditions
-On final step in analyzing a state-machine is to define the conditions that must be present for the inclusion of a link 
-relation in a response. This information can be used in external authorization systems or locally to determine from the 
-context of a request what conditions apply. These conditions names can be arbitrary or follow some canonical convention. 
-Regardless, if the conditions for some link relation to be present in a response, regardless of their existence for the 
-state of the resource, a Hypermedia API must not return that link in a response.
+A final step in analyzing a state machine is to define the conditions that must be present for including a link 
+relation in a response. You can use this conditional information in external authorization systems or locally to determine from the context of a request what conditions apply. These condition names can be arbitrary or follow some canonical convention. Regardless, if the conditions for some link relation are to be present in a response independent of their existence for the state of the resource, then a Hypermedia API must not return that link in a response.
 
-In analyzing the above permission matrices, one notices that anyone can Read an eBook or look up an Author. As such 
-there are no context related conditions on those resources. Thus, the following highlights the Conditions Matrix of the 
-sample eBook resource:
+In analyzing the permission matrices above, one notices that anyone can Read an eBook or look up an Author. As such, 
+there are no context-related conditions on those resources. Thus, Table 6 highlights the Conditions Matrix of the sample eBook resource:
 
 <table>
     <tbody>

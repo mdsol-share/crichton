@@ -125,6 +125,22 @@ module Crichton
           expect(resource_descriptor.to_key).to eq('DRDs')
         end
       end
+
+      describe '#routes' do
+        it 'returns a non-empty collection of routes' do
+          expect(resource_descriptor.routes).to_not be_empty
+        end
+
+        it 'returns a collection of routes' do
+          expect(resource_descriptor.routes.keys).to eq(%w(list search create show update delete activate deactivate))
+        end
+      end
+
+      describe '#protocol_route' do
+        it 'returns a protocol specific transition descriptor' do
+          expect(resource_descriptor.protocol_route('http', 'drds', 'index')).to be_instance_of(Http)
+        end
+      end
     end
   end
 end

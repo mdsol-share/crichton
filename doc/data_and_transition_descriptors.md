@@ -4,9 +4,9 @@
 Data and Transition Descriptors are the building blocks of [Resource Descriptors](doc/resource_descriptor.md).
 
 ## Data Descriptors<a name="data-descriptors"></a>
-Data descriptors define the semantics, or vocabulary, of the data-related attributes of a resource and/or the semantics 
-of the data associated with 'forms' in transitions that either template queries for a `safe` transition or template 
-bodies in `unsafe` and `idempotent` transitions.
+Data descriptors define the semantics or "vocabulary" of the data-related attributes of a resource and/or the semantics 
+of the data associated with `forms` in transitions that either template queries for a `safe` transition or template 
+bodies in `unsafe` and `idempotent` transitions. 
 
 ### Data Descriptor Properties<a name="data-descriptor-properties"></a>
 The YAML keys, which appear directly under the `semantics`/`parameters` property, are the ALPS IDs of the individual 
@@ -33,11 +33,7 @@ of the resource.
        - `single-optional-link` - Allows setting the mode of embedding.
        - `multiple-optional-link` - Allows setting the mode of embedding.
 
-      If you do not specify a value for `embed`, the default value is `single`. The values `multiple` and 
-      `multiple-link` indicate the item should be embedded as an array. The values that contain `optional` 
-      indicate that the client can request the way the item is to be embedded. They default to `:link` for if they end 
-      with `-link`, to `:embed` otherwise. The option `:embed_optional` - a hash with string keys as the names and 
-      either `:embed` or `:link` as the values - allows setting the mode of embedding.
+      NOTE: If you do not specify a value for `embed`, the default value is `single`. The values `multiple` and `multiple-link` indicate that the item should be embedded as an array. The values that contain `optional` indicate that the client can request the way the item is to be embedded. They default to `:link` if they end with `-link`, otherwise they default to `:embed`. The option `:embed_optional` - a hash with string keys as the names and either `:embed` or `:link` as the values - allows setting the mode of embedding.
 
 ### Defining Data Descriptors
 
@@ -46,11 +42,11 @@ You can define data descriptors as child descriptors of transition elements. Dat
 tag of a transition element define templated url properties. Data descriptors under the `semantics` tag of a 
 transition element define template bodies.
 
-Defining data descriptors grouped under a top-level `semantics` element is considered a best practice. Use `parameters` 
-and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. Thus, 
-you can use `data` and `semantics` elements interchangeably. See the examples below.
+A best practice while designing your data descriptors is to group them under a top-level `semantics` element. Use `parameters` and/or `semantics`, and `href` properties to reference already defined data descriptor elements in transitions. Thus, you can use `data` and `semantics` elements interchangeably. See the examples below.
 
 ### Examples
+
+The following examples provide details for defining data descriptors.
 
 #### Data descriptors defined under top-level `semantics` element
 The following example highlights a few parts of the [Example API Descriptor Document][] `semantics` section associated
@@ -69,6 +65,7 @@ semantics:
 ```
 
 #### Data descriptors defined under top-level `data` element
+
 ```yaml
 data:
   total_count:
@@ -82,6 +79,7 @@ data:
 ```
 
 #### Referenced data descriptors defined under `parameters` element
+
 ```yaml
 safe:
   search:
@@ -102,6 +100,7 @@ idempotent:
 ```
 
 #### Data descriptors defined under `parameters` element
+
 ```yaml
 safe:
   search:
@@ -119,31 +118,27 @@ types of transitions: `safe`, `unsafe`, and `idempotent`. You can group transiti
 corresponding top-level element.
 
 ### Transition Properties
-- `transition_type` - Required. Section that groups transition descriptors by type.
+- `transition_type` - REQUIRED. Section that groups transition descriptors by type.
  - \[alps_id\] - A YAML key that is the unique ID of the associated ALPS profile.
-   - `doc` - Required. A human-readable description of the transition descriptor.
-    - `name` - Optional. The name associated with the related element in a response. Overrides the ID of the descriptor 
+   - `doc` - REQUIRED. A human-readable description of the transition descriptor.
+    - `name` - OPTIONAL. The name associated with the related element in a response. Overrides the ID of the descriptor 
     as the default name.
-    - `links` - Recommended. Links related to the transition descriptor.
-    - `href` - Optional. An underlying ALPS profile.
-    - `rt` - Required. The return type; enter as an absolute or relative URI to an ALPS profile.
+    - `links` - RECOMMENDED. Links related to the transition descriptor.
+    - `href` - OPTIONAL. An underlying ALPS profile.
+    - `rt` - REQUIRED. The return type; enter as an absolute or relative URI to an ALPS profile.
 
 ### Dependencies
-Transition descriptors relate directly to elements in the [Protocol Descriptors][] and to the states section of 
+Transition descriptors relate directly to elements in the [Protocol Descriptors][] and to the States section of 
 [Resource Descriptors](resource_descriptors.md#states). These sections indicate implementation details 
 of the transitions. Thus, dependencies for a transition descriptor include the following:
 
-- Must have a related Protocol Descriptor whose ID - the YAML key - is the same as some transition.
-- Must use a `name` property to override the associated name of the affordance as implemented in a specific media-type.
-- SHOULD use a `name` property to override the associated name of the affordance as implemented in a particular 
-media-type if the ID of the descriptor is not the required semantic of the descriptor, and is rather a uniqueified ID.
-- Must have a related transition in a State Descriptor for the associated resource.
+- MUST have a related Protocol Descriptor whose ID - the YAML key - is the same as some transition.
+- MUST use a `name` property to override the associated name of the affordance as implemented in a specific media-type.
+- MUST have a related transition in a State Descriptor for the associated resource.
 
 ### Code Example
-The following example highlights a few parts of the 
-[Example API Descriptor Document][] sections associated with 
-transition descriptors and any related data descriptors. In-line comments are expounded in the structure and some 
-material is removed for simplicity, indicated by # ... . 
+The following example highlights a few parts of the [Example API Descriptor Document][] sections associated with 
+transition descriptors and any related data descriptors. Some material is removed for simplicity. 
 
 ```yaml
 safe:
@@ -199,9 +194,7 @@ unsafe:
 You can use extensions to augment data descriptor elements with specific information such as field types and their 
 options, as well as validators.
 
-Extensions are grouped under the top-level `extensions` element. The data descriptor extensions section is OPTIONAL, 
-so you can omit it in the API Descriptor Document. However, you can still define extensions as part of referenced data 
-descriptor elements. See the [Code Examples](#code-examples) below.
+Group extensions under the top-level `extensions` element. The data descriptor extensions section is OPTIONAL, so you can omit it in the API Descriptor Document. However, you can still define extensions as part of referenced data descriptor elements. See the [Code Examples](#code-examples).
 
 ### Properties
 You can assign the following properties to extensions:
@@ -216,13 +209,12 @@ following. All are OPTIONAL, but it is best practice to include as many as apply
 	- `target` - Specifies the name of the attribute inside the element that the value will be taken from.
 	- `prompt` - Specifies the attribute of the text of the item will be taken from are used to specify the fields that 
 	are to be used to assemble the list or hash. In case of a list, the target and prompt are identical.
-	- `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
+- `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
 	[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
-	- `validators` - OPTIONAL. Hash of validator objects associated with a field.
+- `validators` - OPTIONAL. Hash of validator objects associated with a field.
+- `cardinality` - OPTIONAL. Specifies whether multiple items are allowed. Possible values are `multiple` or `single`. `single` is implied by default. Most common use case is specifying array of objects to be included into the form. 
 
-NOTE: You can only have one of the `list`, `hash`, or `external` properties. This applies also for `href` entries that 
-you include. In the case of `external`, the `source` element can contain a link to an external resource or method to 
-call on a target object. If `source` is a link to an external resource, you must include `prompt` and `target` elements.
+	NOTE: You can only have one of the `list`, `hash`, or `external` properties. This applies also for `href` entries that you include. In the case of `external`, the `source` element can contain a link to an external resource or method to call on a target object. If `source` is a link to an external resource, you must include `prompt` and `target` elements.
 
 ### List of Supported Input Types and Validators
 The following table lists the supported input types and the validators that you can apply to them.
@@ -248,10 +240,11 @@ The following table lists the supported input types and the validators that you 
 (*) `boolean` is a generic input type to use instead of `checkbox`. The HTML5 `checkbox` type doesn't make sense in 
 media-types other than HTML. Therefore, you can replace it with a generic `boolean` type.
 
-### Code Examples
-The following two examples show the YAML for extensions:
+### Code Examples<a name="code-examples"></a>
+The following two examples show the YAML for extensions.
 
 #### Defining data descriptor extensions
+
 ```yaml
 semantics:
   name:
@@ -277,6 +270,7 @@ extensions:
 ```
 
 #### Using data descriptor extensions and extending data descriptors as part of referenced descriptor
+
 ```yaml
 safe:
   search:
@@ -303,6 +297,30 @@ idempotent:
     parameters:
       - href: name
         ext: validated_input_field
+```
+
+The following two examples show how to use cardinality attribute.
+
+### Using cardinality attribute to specify simple bulk create form
+```yaml
+unsafe:
+  bulk_create:
+    doc: Creates a list of drds using collection of names.
+    data:
+      - href: name
+        cardinality: multiple
+    rt: drds
+```
+
+### Using cardinality attribute to specify bulk create form using complex object
+```yaml
+unsafe:
+  bulk_create:
+    doc: Creates a list of drds using collection of drd properties.
+    data:
+      - href: drd
+        cardinality: multiple
+    rt: drds
 ```
 
 ## Related Topics

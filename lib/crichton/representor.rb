@@ -71,6 +71,13 @@ module Crichton
       end
 
       ##
+      # The id of top-level resource descriptor.
+      #
+      def resource_descriptor_id
+        resource_descriptor.parent_descriptor.id
+      end
+
+      ##
       # The name of the resource to be represented.
       #
       # @return [String] The resource name.
@@ -155,8 +162,9 @@ module Crichton
       end
     end
 
-    def response_headers
-      @response_headers ||= self_transition ? self_transition.response_headers : {}
+    def response_headers(options = {})
+      transition = self_transition(options)
+      @response_headers ||= transition.is_a?(Crichton::Descriptor::TransitionDecorator) ? transition.response_headers : {}
     end
 
     ##
@@ -186,7 +194,7 @@ module Crichton
         raise ArgumentError, "options must be nil or a hash. Received '#{options.inspect}'."
       end
 
-      filtered_descriptors(type, descriptor, options).each do |descriptor| 
+      filtered_descriptors(type, descriptor, options).each do |descriptor|
         # For semantic descriptors, use the target in case it is a hash adapter. For transition descriptors, use
         # the actual Representor instance which implements state functionality regardless.
         decorated_descriptor = descriptor.decorate(descriptor.semantic? ? target : self, options)

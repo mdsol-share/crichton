@@ -53,7 +53,7 @@ module Crichton
       end
 
       def map_options(hash)
-        ((data = hash[OPTIONS]) && (id = hash[OPTIONS][ID])) ? { registry_key(id) => data } : {}
+        ((data = hash[OPTIONS]) && (id = hash[OPTIONS][ID])) ? { to_registry_key(id) => data } : {}
       end
 
       def resolve_descriptors(registry, dereferenced_hash)
@@ -66,19 +66,18 @@ module Crichton
 
       def resolve_hash_descriptors(registry, dereferenced_hash)
         descriptors.inject({}) do |acc, (tag, content)|
-          acc.merge!({ tag => dereferenced_hash[registry_key(tag)].merge(content) })
+          acc.merge!({ tag => dereferenced_hash[to_registry_key(tag)].merge(content) })
         end
       end
 
       def resolve_array_descriptors(registry, dereferenced_hash)
         descriptors.inject({}) do |acc, hash|
-          key = registry_key(hash[HREF])
+          key = to_registry_key(hash[HREF])
           if h = dereferenced_hash[key]
-            acc.merge!({ hash[HREF] => extensions_dereference(registry, dereferenced_hash, hash, h) })
+            acc.merge!({ to_descriptor_key(hash[HREF]) => extensions_dereference(registry, dereferenced_hash, hash, h) })
           else
-            raw_registry_lookup(key, registry, dereferenced_hash) do |result|
-              acc.merge!({ hash[HREF] => extensions_dereference(registry, dereferenced_hash, hash, result) })
-            end
+            result = raw_registry_lookup(key, registry, dereferenced_hash)
+            acc.merge!({ to_descriptor_key(hash[HREF]) => extensions_dereference(registry, dereferenced_hash, hash, result) })
           end
         end
       end
@@ -87,14 +86,18 @@ module Crichton
         Addressable::URI.parse(href)
       end
 
-      def registry_key(key)
-        "#{document_id}\##{key}"
+      def to_registry_key(key)
+        uri(key).fragment ? key : "#{document_id}\##{key}"
+      end
+
+      def to_descriptor_key(key)
+        (name = uri(key).fragment) ? name : key
       end
 
       def extensions_dereference(registry, dereferenced_hash, original, dereferenced)
         dereferenced.deep_merge(original.reject{ |tag, _| tag == HREF}).tap do |acc|
           if key = original[EXT]
-            raw_registry_lookup(registry_key(key), registry, dereferenced_hash) do |h|
+            raw_registry_lookup(to_registry_key(key), registry, dereferenced_hash) do |h|
               acc.merge!(h).reject!{ |tag, _| tag == EXT }
             end
           end
@@ -127,7 +130,7 @@ module Crichton
 
       def local_dereference
         lambda do |uri, registry, dereferenced_hash|
-          key = uri.fragment ? uri.to_s : registry_key(uri.to_s)
+          key = uri.fragment ? uri.to_s : to_registry_key(uri.to_s)
           if dereferenced_hash[key]
             (result = dereferenced_hash[key]) ? result : {}
           else
@@ -147,7 +150,7 @@ module Crichton
       def dereference_options(registry, hash)
         if (options = hash[OPTIONS]) && (href = options[HREF])
           uri = uri(href)
-          key = uri.fragment ? uri.to_s : registry_key(uri.to_s)
+          key = uri.fragment ? uri.to_s : to_registry_key(uri.to_s)
           hash.merge({ OPTIONS => registry[key] })
         else
           hash

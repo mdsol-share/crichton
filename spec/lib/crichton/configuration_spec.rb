@@ -51,17 +51,17 @@ module Crichton
       end
     end
 
-    describe '#resource_home_response_expiry' do
+    describe '#resources_catalog_response_expiry' do
       context 'when configured' do
-        it 'returns the resource home response expiry' do
-          expect(configuration.resource_home_response_expiry).to eq({ 'expiry' => 40 })
+        it 'returns the resource catalog response expiry' do
+          expect(configuration.resources_catalog_response_expiry).to eq({ 'expiry' => 40 })
         end
       end
 
       context 'when not configured' do
-        it 'returns default resource home response expiry' do
-          @config = example_environment_config.except('resource_home_response_expiry')
-          expect(configuration.resource_home_response_expiry).to eq({ 'expiry' => 20 })
+        it 'returns default expiry for the resource catalog response' do
+          @config = example_environment_config.except('resources_catalog_response_expiry')
+          expect(configuration.resources_catalog_response_expiry).to eq({ 'expiry' => 20 })
         end
       end
     end
@@ -77,6 +77,21 @@ module Crichton
         it 'returns default alps profile response expiry' do
           @config = example_environment_config.except('alps_profile_response_expiry')
           expect(configuration.alps_profile_response_expiry).to eq({ 'expiry' => 20 })
+        end
+      end
+    end
+
+    describe '#service_level_target_header' do
+      context 'when configured' do
+        it 'returns service level target header name' do
+          expect(configuration.service_level_target_header).to eq('CONFIGURED_SLT_HEADER')
+        end
+      end
+
+      context 'when not configured' do
+        it 'returns default service level target header name' do
+          @config = example_environment_config.except('service_level_target_header')
+          expect(configuration.service_level_target_header).to eq('REQUEST_SLT')
         end
       end
     end

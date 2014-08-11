@@ -1,12 +1,10 @@
 # @title Know Your Options
 
-## Overview
-When responding to a request, there are a number of options that can be used in the context of a request in a controller 
-to modify the response rendered by Crichton. Options will typically be determined based on some request 
-params/context/permission logic or [Service Object][] in a controller to dynamically customize the response. 
-The following examples assume a client negotiates an `application/hal+json` response.
+# Overview
+When responding to a request, you can use a number of options in the context of a request in a controller 
+to modify the response that Crichton renders. Use options on some request params/context/permission logic or [Service Object][] in a controller to dynamically customize the response. The following examples assume that a client negotiates an `application/hal+json` response. 
 
-### Code Example
+### Options Code Example
 
 ```ruby
 def index
@@ -56,8 +54,10 @@ Baseline `show` method response with {} options specified.
 ```
 
 ## Options
+The following sections identify the available options and their use.
+
 ### :conditions
-The list of conditions applicable to the request that Crichton uses to filter available links as defined in individual 
+The list of conditions that apply to the request that Crichton uses to filter available links as defined in individual 
 state transitions in an [_API Descriptor Document_][].
 
 ```ruby
@@ -121,7 +121,7 @@ options = { conditions: ['can_edit', 'can_copy'] }
 ```
 
 ### :except
-Data descriptor names to filter out from the response data.
+Identifies data descriptor names to filter out from the response data.
 
 ```ruby
 options = { except: [:text] }
@@ -141,7 +141,7 @@ options = { except: [:text] }
 ```
 
 ### :only
-Data descriptor names to limit the response data to.
+Identifies data descriptor names that you want to limit the response data to.
 
 ```ruby
 options = { only: ['text'] }
@@ -160,7 +160,7 @@ options = { only: ['text'] }
 ```
 
 ### :include
-Embedded resource descriptor names to include in the response.
+Identifies embedded resource descriptor names that you want to include in the response.
 
 ```ruby
 options = { include: [:items] }
@@ -184,7 +184,7 @@ options = { include: [:items] }
 ```
 
 ### :exclude
-Embedded resource descriptor names to exclude from the response.
+Identifies embedded resource descriptor names that you want to exclude from the response.
 
 ```ruby
 options = { exclude: ['items'] }
@@ -233,10 +233,10 @@ options = { embed_optional: { embed: ['author'] } }
 ```
 
 ### :additional_links
-Allows dynamically adding new links to the top-level resource.
+Allows you to dynamically add new links to the top-level resource.
 
 ```ruby
-options = { additional_links: { next: { href: 'http://example.com/next' } }
+options = { additional_links: { 'next' => { href: 'http://example.com/next' } }
 ```
 
 `eBooks`
@@ -258,7 +258,7 @@ options = { additional_links: { next: { href: 'http://example.com/next' } }
 ```
 
 ### :override_links
-Allow overriding the URL set in defined links.
+Allows overriding the URL that is set in defined links.
 
 ```ruby
 options = { override_links: { 'self' => { href: 'http://example.com/other_self' } }
@@ -279,7 +279,7 @@ options = { override_links: { 'self' => { href: 'http://example.com/other_self' 
 ```
 
 ### :state
-The state of the resource, which can be used to set or override the state of the resource.
+Identifies the state of the resource, which you can use to set or override the state of the resource.
 
 ```ruby
 options = { state: 'published', conditions: :is_author }

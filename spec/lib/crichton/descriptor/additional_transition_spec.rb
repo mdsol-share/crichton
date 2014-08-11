@@ -7,25 +7,42 @@ module Crichton
       let (:subject) { AdditionalTransition.new(@name, @link) }
 
       describe '#initialize' do
-        it 'returns the name of transition' do
+        it 'sets the name of transition' do
           @name = 'profile'
           expect(subject.name).to eq(@name)
         end
 
-        it 'returns the url of transition passed as string' do
+        it 'sets the url of transition passed as string' do
           @link = 'http://www.example.com'
           expect(subject.url).to eq(@link)
         end
 
-        it 'returns the url of transition passed as hash' do
-          @link = { 'href' => 'http://www.example.com' }
-          expect(subject.url).to eq(@link['href'])
+        it 'sets the name of transition as string' do
+          @name = :profile
+          expect(subject.name).to be_instance_of(String)
+        end
+
+        it 'sets stringified name of the transition' do
+          @name = :profile
+          expect(subject.name).to eq('profile')
         end
       end
 
       describe '#safe?' do
         it 'returns true for any transition' do
           expect(subject.safe?).to be_true
+        end
+      end
+
+      describe '#url' do
+        it 'returns the url of transition passed as hash with key passed as string' do
+          @link = { 'href' => 'http://www.example.com' }
+          expect(subject.url).to eq(@link['href'])
+        end
+
+        it 'sets the url of transition passed as hash with key passed as symbol' do
+          @link = { href: 'http://www.example.com' }
+          expect(subject.url).to eq(@link[:href])
         end
       end
 

@@ -91,7 +91,9 @@ module Crichton
             end
             @errors = expected_output(:error, 'protocols.descriptor_transition_not_found', transition: 'search',
               protocol: 'http', filename: filename, section: :protocols, sub_header: :error) <<
-              expected_output(:error, 'protocols.state_transition_not_found', transition: 'search', protocol: 'http')
+              expected_output(:error, 'protocols.state_transition_not_found', transition: 'search', protocol: 'http') <<
+              expected_output(:error, 'routes.missing_protocol_transitions', section: :routes,
+              sub_header: :error, route: 'search', resource: 'DRDs')
           end
         end
 

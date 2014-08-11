@@ -1,21 +1,21 @@
-# @title Sample eBooks API Descriptor
+# @title Sample eBooks API Descriptor 
 
 ```yaml
 #
 # An API descriptor document is a declarative configuration file that defines the semantic data,  
-# states, and state transitions associated with a particular resource (or set of closely 
-# related resources) independent of protocol or media-type. Further, it details implementation specific details
+# states, and state transitions that are associated with a particular resource or set of closely 
+# related resources, independent of protocol or media-type. It also details implementation-specific details
 # of the resources for internal use in generating responses.
 #
-# The following sections facilitate a number of objectives including generating an ALPS profile 
-# of the resource(s), generating human readable documents including sample representations and
+# The following sections facilitate a number of objectives. These objectives include generating an ALPS profile 
+# of the resource(s), generating human-readable documents that include sample representations, and
 # decorating service responses.
 #
 id: EBooks # REQUIRED. Unique id of the document (and the related ALPS profile generated from this document).
 doc: Describes the semantics, states and state transitions associated with eBooks.
 links:
-  self: EBooks # REQUIRED. Can be absolute or relative if 'alps_base_uri' configured in cricton.yml
-  help: http:/example.com/EBooks #OPTIONAL. Can be relative path if 'documentation_base_uri' configured in cricton.yml
+  self: EBooks # REQUIRED. Can be absolute or relative if `alps_base_uri` configured in cricton.yml
+  help: http:/example.com/EBooks #OPTIONAL. Can be relative path if `documentation_base_uri` configured in cricton.yml
 
 # Data descriptors define the semantics of all the individual data `descriptor` elements that are the building 
 # blocks for the resources defined below in the `resources` section. Separating these at the top is considered a 
@@ -28,7 +28,6 @@ data:
     sample: 5 # Planned: value to use in generated sample media-type representations
   items:
     doc: An embedded list of individual eBook items
-    href: ebook # relative URL references a descriptor in this document. See `resources` ebook below.
     embed: multiple # Indicates multiple ebook resource entities should be embedded as this property
   authors:
     doc: An embedded list of eBook authors
@@ -246,10 +245,10 @@ media_types:
   - application/xhtml+xml
 
 # Details the protocol specific implementation details of the transitions. Currently, this is redundant with routes. 
-# Future versions will support DRYing this out with framework routes functionality, e.g. routes.rb in Rails.
+# Future versions will support DRYing this out with framework routes functionality; for example routes.rb in Rails.
 http_protocol:
   list: &list
-    uri: ebooks # Relative to the configured deployment_base_uri in crichton.yml
+    uri: ebooks # Relative to the configured `deployment_base_uri` in crichton.yml
     method: GET
     slt: &slt1 # OPTIONAL. If defined, crichton adds the SLT of the request as a configurable header in responses.
       99th_percentile: 100ms

@@ -71,8 +71,8 @@ module Crichton
           @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds'].except!('links')
           end
-          @warnings = expected_output(:warning, 'descriptors.property_missing', resource: 'drds', prop: 'link',
-            filename: filename, section: :descriptors, sub_header: :warning)
+          @errors = expected_output(:error, 'descriptors.property_missing', resource: 'drds', prop: 'link',
+            filename: filename, section: :descriptors, sub_header: :error)
         end
 
         it 'reports an invalid link self property error if a link self property is invalid' do
@@ -140,6 +140,13 @@ module Crichton
 
         it 'reports no errors with a descriptor file containing valid field_types and validators' do
           @descriptor = drds_descriptor
+          @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
+        end
+
+        it 'reports no errors with a descriptor file containing field_type: object' do
+          @descriptor = normalized_drds_descriptor.tap do |document|
+            document['descriptors']['drds']['descriptors']['create']['descriptors']['destroyed'].merge!('field_type' => 'object')
+          end
           @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
         end
 
@@ -226,6 +233,14 @@ module Crichton
                 'external', filename: filename, section: :descriptors, sub_header: :error) <<
               expected_output(:error, 'descriptors.invalid_option_source_type', id: 'items',
                 options_attr: 'external')
+          end
+
+          it 'reports an error when there is no field_type property' do
+            @descriptor = drds_descriptor.tap do |document|
+              document['safe']['search']['parameters'][0].except!('field_type')
+            end
+            @errors = expected_output(:error, 'descriptors.missing_field_type', descriptor: 'search_term', parent: 'search',
+              filename: filename, section: :descriptors, sub_header: :error)
           end
         end
       end

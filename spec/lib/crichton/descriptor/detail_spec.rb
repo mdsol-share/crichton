@@ -8,7 +8,7 @@ module Crichton
       let(:descriptor_document) { normalized_drds_descriptor['descriptors']['drds'] }
       let(:parent_descriptor) do
         descriptor = double('parent_descriptor')
-        allow(descriptor).to receive(:child_descriptor_document).with('drds').and_return(descriptor_document)
+        allow(descriptor).to receive(:child_descriptor_document).with('drds').and_return(@descriptor || descriptor_document)
         allow(descriptor).to receive(:name).and_return('DRDs')
         descriptor
       end
@@ -207,6 +207,26 @@ module Crichton
       describe '#field_type' do
         it 'returns the descriptor field_type' do
           expect(name_semantic.field_type).to eq('text')
+        end
+      end
+
+      describe '#multiple?' do
+        it 'returns false when cardinality is not specified' do
+          expect(name_semantic.multiple?).to be_false
+        end
+
+        it 'returns false when cardinality is single' do
+          @descriptor = normalized_drds_descriptor.tap do |doc|
+            doc['descriptors']['drds']['descriptors']['create']['descriptors']['name'].merge!({ 'cardinality' => 'single' })
+          end
+          expect(name_semantic.multiple?).to be_false
+        end
+
+        it 'returns false when cardinality is single' do
+          @descriptor = normalized_drds_descriptor.tap do |doc|
+            doc['descriptors']['drds']['descriptors']['create']['descriptors']['name'].merge!({ 'cardinality' => 'multiple' })
+          end
+          expect(name_semantic.multiple?).to be_true
         end
       end
 

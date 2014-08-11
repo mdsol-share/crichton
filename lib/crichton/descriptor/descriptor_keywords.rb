@@ -18,5 +18,8 @@ module Crichton
     TYPE = 'type'
 
     PROTOCOL = 'protocol'
+    CONTROLLER = 'controller'
+    ACTION = 'action'
+    ROUTES = 'routes'
   end
 end

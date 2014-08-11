@@ -44,6 +44,14 @@ describe Crichton::Lint do
           missing_section: 'states', sub_header: :error)
       end
 
+      it 'reports a missing routes section error when the routes section is missing' do
+        @descriptor = drds_descriptor.tap do |document|
+          document.except!('routes')
+        end
+        @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
+          missing_section: 'routes', sub_header: :error)
+      end
+
       it 'reports a missing descriptor errors when the descriptor section is missing' do
         @descriptor = normalized_drds_descriptor.except('descriptors')
         @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,

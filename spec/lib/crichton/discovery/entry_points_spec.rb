@@ -17,6 +17,18 @@ describe Crichton::Discovery::EntryPoints do
     expect(instance).to be_kind_of Crichton::Representor
   end
 
+  describe "#empty?" do
+
+    it "returns false when it has when it has individual entry points" do
+      expect(instance.empty?).to be_false
+    end
+
+    it "returns true when it does not have individual entry points" do
+      instance = described_class.new([])
+      expect(instance.empty?).to be_true
+    end
+  end
+
   shared_examples_for "a jsony-producer" do |media_type_s, media_type_sym|
 
     describe media_type_s do
@@ -92,7 +104,7 @@ describe Crichton::Discovery::EntryPoints do
       end
     end
   end
-  
+
   context 'with application/xhtml+xml' do
     let(:expected_xhtml_markup) do
       <<-MARKUP.gsub /^\s+/, ""
@@ -108,7 +120,7 @@ describe Crichton::Discovery::EntryPoints do
         </html>
       MARKUP
     end
-    
+
     describe '#as_media_type' do
       it 'produces :xhtml format' do
         result = instance.as_media_type(:xhtml, {})

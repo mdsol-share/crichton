@@ -90,6 +90,18 @@ describe 'rdlint' do
       expect(%x(bundle exec rdlint -s #{filename})).to eq(%Q(#{false_string.red}\n))
     end
 
+    it 'exits with a zero status code when no errors occur' do
+      @descriptor = drds_descriptor
+      %x(bundle exec rdlint -s #{filename})
+      expect($?.exitstatus).to eq(0)
+    end
+
+    it 'exits with a non-zero status code when errors occur' do
+      @descriptor = drds_descriptor.tap { |doc| doc['http_protocol'].except!('list') }
+      %x(bundle exec rdlint -s #{filename})
+      expect($?.exitstatus).not_to eq(0)
+    end
+
     context 'with multiple files' do
       after do
         expect(%x(bundle exec rdlint -s #{@filename1} #{@filename2})).to eq(%Q(#{@output}\n))
@@ -115,9 +127,15 @@ describe 'rdlint' do
   context 'with the --all option' do
     # stub does not work in a new shell apparently, so a forced copy to the default api_descriptor dir is made
     before(:all) do
-      descriptor = normalized_drds_descriptor.tap { |doc| doc.except!('http_protocol') }
+      descriptor = normalized_drds_descriptor.tap do |doc|
+        doc.merge!('id' => 'DRDs1')
+        doc.except!('protocols')
+      end
       create_drds_file(descriptor, 'noprotocols.yml', 'api_descriptors')
-      descriptor = normalized_drds_descriptor.tap { |doc| doc.except!('descriptors') }
+      descriptor = normalized_drds_descriptor.tap do |doc|
+        doc.merge!('id' => 'DRDs2')
+        doc.except!('descriptors')
+      end
       create_drds_file(descriptor,'nodescriptors.yml', 'api_descriptors')
     end
 
@@ -129,6 +147,11 @@ describe 'rdlint' do
 
     it 'returns the correct value together with the --strict option ' do
       expect(%x(bundle exec rdlint -as)).to eq('false'.red << "\n")
+    end
+
+    it 'returns a non-zero status code when errors occur with the --strict option ' do
+      %x(bundle exec rdlint -as)
+      expect($?.exitstatus).not_to eq(0)
     end
   end
 end

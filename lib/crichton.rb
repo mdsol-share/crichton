@@ -193,7 +193,7 @@ module Crichton
   end
 
   ##
-  # Returns an array of objects ready for json-home serialization
+  # Returns an array of objects ready response which represents entry point objects
   #
   # @return [Array] array of EntryPoint objects
   def self.entry_points
@@ -240,5 +240,6 @@ if defined?(Rails)
   require 'crichton/rake_lint'
   require 'core_ext/action_controller/responder'
   require 'crichton/rails/generators/resource_description_generator'
+  require 'crichton/rails/generators/errors_description_generator'
   require 'crichton/railtie'
 end
