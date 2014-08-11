@@ -24,7 +24,7 @@ module Crichton
       begin
         registry = Crichton::Registry.new(automatic_load: options[:automatic_load] || false)
         registry.register_single(filename)
-        resource_dereferencer = registry.resources_registry.values.first
+        resource_dereferencer = registry.resources_registry[get_resource_id(filename)]
         hash = resource_dereferencer.dereference(registry.dereferenced_descriptors)
         resource_descriptor = Crichton::Descriptor::Resource.new(hash)
       rescue StandardError => e
@@ -102,6 +102,19 @@ module Crichton
     end
 
     private
+    def self.get_resource_id(file)
+      hash_descriptor = case file
+      when String
+        raise ArgumentError, "Filename #{file} is not valid." unless File.exists?(file)
+        YAML.load_file(file)
+      when Hash
+        file
+      else
+        raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
+      end
+      hash_descriptor['id']
+    end
+
     # used to determine if the ---count option is set
     def self.count_option?(options)
       options[:count] == :error || options[:count] == :warning
