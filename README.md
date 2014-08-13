@@ -6,7 +6,7 @@ Crichton is a library to simplify implementing Hypermedia APIs. It has the knowl
 
 Checkout the [documentation][] for more info and/or try the [demo service][].
 
-***** added 13 Aug 1:55 PM MT
+***** added 13 Aug 1:56 PM MT
 
 ## Overview
 Crichton is opinionated in that Hypermedia APIs and their associated resources should be designed and implemented as 
@@ -86,7 +86,7 @@ There are a couple of options for defining the implementing state-machine functi
 
 * A class has a `state` instance method:
 
-    ```ruby
+    ```
     class DRD
       include Crichton::Representor::State 
       represents :drd
@@ -101,7 +101,7 @@ There are a couple of options for defining the implementing state-machine functi
     
 * A class incorporates a gem with a `state` method (e.g. state_machine Gem):
 
-    ```ruby
+    ```
     require 'state_machine'
     
     class DRD
