@@ -62,14 +62,13 @@ in decorating data as resources in Crichton.
 Any class can be represented as a resource by simply including the `Crichton::Representor` module and specifying the 
 corresponding resource that represents it defined in an API descriptor document.
 
-```ruby
-class DRD
-  include Crichton::Representor
-  represents :drd
+  class DRD
+    include Crichton::Representor
+    represents :drd
   
-  # Other methods ...
-end
-```
+    # Other methods ...
+  end
+  
 This basic implementation is useful for a resource that has only one state and has no context related conditions 
 (e.g. user role or permission constraints) limiting the presence of transitions (links and forms) in the representation. 
 Thus, in the previous example, all available transitions will be returned in the response.
