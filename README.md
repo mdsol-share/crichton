@@ -6,6 +6,8 @@ Crichton is a library to simplify implementing Hypermedia APIs. It has the knowl
 
 Checkout the [documentation][] for more info and/or try the [demo service][].
 
+added 13 Aug 1:53 PM MT
+
 ## Overview
 Crichton is opinionated in that Hypermedia APIs and their associated resources should be designed and implemented as 
 state-machines. As such, the library leverages a state-machine centric, declarative 
