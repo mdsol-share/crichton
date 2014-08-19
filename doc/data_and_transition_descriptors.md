@@ -208,7 +208,10 @@ following. All are OPTIONAL, but it is best practice to include as many as apply
 	- `external` - Retrieves values from an external source.
 	- `target` - Specifies the name of the attribute inside the element that the value will be taken from.
 	- `prompt` - Specifies the attribute of the text of the item will be taken from are used to specify the fields that 
-	are to be used to assemble the list or hash. In case of a list, the target and prompt are identical. See the [Code Examples](#specifying-select-lists).
+	are to be used to assemble the list or hash. In case of a list, the target and prompt are identical. 
+
+See the [Code Examples](#specifying-select-lists).
+
 - `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
 	[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
 - `validators` - OPTIONAL. Hash of validator objects associated with a field.
@@ -324,8 +327,7 @@ unsafe:
 ```
 
 ### Specifying select lists<a name="specifying-select-lists"></a>
-Crichton supports two ways of specifying values for select lists. For a smaller lists, it is possible to specify data in
-API Descriptor Document directly. See below:
+Crichton supports two ways of specifying values for select lists. For a smaller lists, it is possible to specify data in an API Descriptor Document directly:
 
 * Simple list of possible values:
 ```yaml
@@ -359,8 +361,7 @@ unsafe:
             planet3: Vulcan  
 ```
 
-However, for a bigger lists it may not be the best solution. Crichton supports decorating [Service Objects][] with methods, 
-which when called will return either `list`, `hash` or reference to `external` resource. See below:
+However, for a bigger lists it may not be the best solution. Crichton supports decorating [Service Objects][] with methods, which when called will return either `list`, `hash` or reference to `external` resource:
 
 * Specify method which will be called on a service object
 ```yaml
@@ -385,12 +386,13 @@ class ServiceObject
 
   def location_source
     { 'list' => %w(Nibiru Kronos Vulcan) }
+    #{ 'hash' => { planet1: 'Nibiru', planet2: 'Kronos', planet3: 'Vulcan' } }
   end 
 end
 ```
 
 It is also possible to represent a list of items as hash object and decorate it with some additiona data. In such 
-scenario, `location_source` method is represented as lambda. See below:
+scenario, `location_source` method is represented as lambda:
 
 ```ruby
 class ServiceObject
