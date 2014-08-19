@@ -208,7 +208,7 @@ following. All are OPTIONAL, but it is best practice to include as many as apply
 	- `external` - Retrieves values from an external source.
 	- `target` - Specifies the name of the attribute inside the element that the value will be taken from.
 	- `prompt` - Specifies the attribute of the text of the item will be taken from are used to specify the fields that 
-	are to be used to assemble the list or hash. In case of a list, the target and prompt are identical.
+	are to be used to assemble the list or hash. In case of a list, the target and prompt are identical. See the [Code Examples](#specifying-select-lists).
 - `field_type` - Defines the type of field for the form. Most of the valid input types were borrowed from the 
 	[HTML5 specification](http://www.w3.org/html/wg/drafts/html/master/forms.html#the-input-element). 
 - `validators` - OPTIONAL. Hash of validator objects associated with a field.
@@ -323,6 +323,106 @@ unsafe:
     rt: drds
 ```
 
+### Specifying select lists<a name="specifying-select-lists"></a>
+Crichton supports two ways of specifying values for select lists. For a smaller lists, it is possible to specify data in
+API Descriptor Document directly. See below:
+
+* Simple list of possible values:
+```yaml
+unsafe:
+  create:
+    data:
+      location:
+        doc: The area the DRD is currently in
+        href: http://alps.io/schema.org/Text
+        field_type: select
+        options:
+          list:
+            - Nibiru
+            - Kronos
+            - Vulcan  
+```
+
+* Simple collection of key/value pairs:
+```yaml
+unsafe:
+  create:
+    data:
+      location:
+        doc: The area the DRD is currently in
+        href: http://alps.io/schema.org/Text
+        field_type: select
+        options:
+          hash:
+            planet1: Nibiru
+            planet2: Kronos
+            planet3: Vulcan  
+```
+
+However, for a bigger lists it may not be the best solution. Crichton supports decorating [Service Objects][] with methods, 
+which when called will return either `list`, `hash` or reference to `external` resource. See below:
+
+* Specify method which will be called on a service object
+```yaml
+unsafe:
+  create:
+    data:
+      location:
+        doc: The area the DRD is currently in
+        href: http://alps.io/schema.org/Text
+        field_type: select
+        options:
+          external:
+            source: location_source
+```
+* Define method `location_source` on a service object
+```ruby
+class ServiceObject
+  include Crichton::Representor::State
+  represents :drd
+
+  #...
+
+  def location_source
+    { 'list' => %w(Nibiru Kronos Vulcan) }
+  end 
+end
+```
+
+It is also possible to represent a list of items as hash object and decorate it with some additiona data. In such 
+scenario, `location_source` method is represented as lambda. See below:
+
+```ruby
+class ServiceObject
+  include Crichton::Representor::Factory
+  represents :drds
+
+  #...
+
+  def value
+    drds_collection = {
+      total_count: @items.count,
+      items: @items,
+      location_source: ->(options) { { 'list' => %w(Nibiru Kronos Vulcan) } }
+    }
+    build_state_representor(drds_collection, :drds, {state: :collection})
+  end
+end
+```
+
+And then, in a controller:
+
+```ruby
+class DRDsController
+  respond_to(:hale_json, :hal_json, :html)
+  
+  def index
+    drds = ServiceObject.new(DRD.all, self)
+    respond_with(drds.value)
+  end
+end
+```
+
 ## Related Topics
 - [Back to API Descriptor Documents](api_descriptor_documents.md)
 - [Example API Descriptor Document][]
@@ -330,3 +430,5 @@ unsafe:
 [Protocol Descriptors]: protocol_and_route_descriptors.md#protocol-descriptors
 [ALPS]: http://alps.io/spec/index.html
 [Example API Descriptor Document]: ../spec/fixtures/resource_descriptors/drds_descriptor_v1.yml
+[Code Examples]: ../README.md#specifying-select-lists
+[Service Objects]: ../README.md#service-objects
