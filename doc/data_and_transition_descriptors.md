@@ -391,7 +391,7 @@ class ServiceObject
 end
 ```
 
-It is also possible to represent a list of items as hash object and decorate it with some additiona data. In such 
+It is also possible to represent a list of items as hash object and decorate it with some additional data. In such
 scenario, `location_source` method is represented as lambda:
 
 ```ruby
