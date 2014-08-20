@@ -83,6 +83,12 @@ module Crichton
           @registered_media_types ||= {}
         end
 
+        ##
+        # Returns true if serializer has been registered
+        def serializers?(serializer)
+          Serializer.registered_serializers.keys.include?(serializer)
+        end
+
         private
           def register_serializer(media_type, serializer)
             Serializer.registered_serializers[media_type] = serializer
@@ -96,6 +102,8 @@ module Crichton
               ActionController::Renderers.add media_type do |obj, options|
                 type = media_type
                 if obj.is_a?(Crichton::Representor)
+                  options.merge!({ top_level: true, override_links: { 'self' => request.url } }) if request.get?
+                  options.merge!(semantics: :styled_microdata) if media_type == :html
                   obj.to_media_type(type, options) do |serializer|
                     serializer.response_headers(obj, request).each { |k, v| response.headers[k] = v }
                   end
