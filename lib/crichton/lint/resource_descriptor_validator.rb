@@ -5,7 +5,7 @@ module Crichton
     # class to lint validate with respect to catastrophic errors
     class ResourceDescriptorValidator < BaseValidator
       # @private the three major mandatory sections in a resource descriptor document
-      MAJOR_SECTIONS = %w(descriptors protocols states routes)
+      MAJOR_SECTIONS = %w(descriptors protocols states)
       section :catastrophic
 
       # standard lint validate method
@@ -41,7 +41,7 @@ module Crichton
 
       def check_for_top_level_properties_values
         link = resource_descriptor.links['self']
-        add_error("profile.missing_self_value") unless link.present? && !link.href.empty?
+        add_error('profile.missing_self_value') unless link.present? && !link.href.empty?
       end
     end
   end

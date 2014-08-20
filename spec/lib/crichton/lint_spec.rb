@@ -18,7 +18,7 @@ describe Crichton::Lint do
   describe '.validate' do
     context 'with no options' do
       after do
-        expect(validation_report).to eq(@errors || @message)
+        expect(validation_report).to eq(@errors || @warnings || @message)
       end
 
       def validation_report
@@ -45,11 +45,8 @@ describe Crichton::Lint do
       end
 
       it 'reports a missing routes section error when the routes section is missing' do
-        @descriptor = drds_descriptor.tap do |document|
-          document.except!('routes')
-        end
-        @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
-          missing_section: 'routes', sub_header: :error)
+        @descriptor = drds_descriptor.tap { |document| document.except!('routes') }
+        @warnings = expected_output(:warning, 'routes.no_routes', filename: filename, sub_header: :warning, section: 'routes')
       end
 
       it 'reports a missing descriptor errors when the descriptor section is missing' do
