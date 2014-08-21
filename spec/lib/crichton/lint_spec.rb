@@ -44,7 +44,7 @@ describe Crichton::Lint do
           missing_section: 'states', sub_header: :error)
       end
 
-      it 'reports a missing routes section error when the routes section is missing' do
+      it 'reports a missing routes section warning when the routes section is missing' do
         @descriptor = drds_descriptor.tap { |document| document.except!('routes') }
         @warnings = expected_output(:warning, 'routes.no_routes', filename: filename, sub_header: :warning, section: 'routes')
       end
