@@ -49,7 +49,7 @@ module Crichton
         end
 
         def respond_to?(method, include_private = false)
-          method =~ /^to_(\w*)$/ ? Crichton::Representor::Serializer.serializers?($1.to_sym) : super
+          (method =~ /^to_(\w*)$/) ? Crichton::Representor::Serializer.serializers?($1.to_sym) : super
         end
 
         def method_missing(method, *args, &block)
