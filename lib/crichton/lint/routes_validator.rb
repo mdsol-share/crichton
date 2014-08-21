@@ -8,9 +8,13 @@ module Crichton
 
       # standard validation method
       def validate
-        check_for_property_issues
+        if resource_descriptor.routes.empty?
+          add_warning('routes.no_routes')
+        else
+          check_for_property_issues
 
-        check_transition_equivalence
+          check_transition_equivalence
+        end
       end
 
       private
