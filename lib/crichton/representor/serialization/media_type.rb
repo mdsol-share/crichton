@@ -1,6 +1,8 @@
 require 'crichton/representor/serializers/xhtml'
 require 'crichton/representor/serializers/hale_json'
 require 'crichton/representor/serializers/hal_json'
+require 'crichton/representor/serializers/representor_serializer'
+
 
 module Crichton
   module Representor
@@ -42,10 +44,13 @@ module Crichton
         # @option options [String, Symbol, Array] :override_links Allow overriding the URL set in links.
         # @option options [String, Symbol, Array] :state The state of the resource.
         def to_media_type(media_type, options = {})
-          serializer = built_serializer(media_type, self, options)
-          serializer.to_media_type(options).tap do
-            yield serializer if block_given?
-          end
+          serializer = Crichton::Representor::RepresentorSerializer.new(self, options)
+          representor = serializer.to_representor(options)
+          representor.to_media_type(media_type, options)
+          # serializer = built_serializer(media_type, self, options)
+          # serializer.to_media_type(options).tap do
+          #   yield serializer if block_given?
+          # end
         end
 
         def respond_to?(method, include_private = false)
