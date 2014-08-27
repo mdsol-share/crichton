@@ -31,5 +31,5 @@ group :test do
   gem 'json_spec',      '~> 1.1.1'
   gem 'timecop',        '~> 0.7.1'
   #TODO: replace when fix for v1.0.0 will be released
-  gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git', ref: '7711d4d'
+  gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git', tag: 'v1.0.2'
 end
