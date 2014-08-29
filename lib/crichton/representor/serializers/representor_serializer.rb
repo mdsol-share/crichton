@@ -17,11 +17,12 @@ module Crichton
       end
 
       def to_representor(options)
-        representor_hash = []
-        representor_hash << { attributes: get_semantic_data(options) }
-        representor_hash << { transitions: get_transition_data(options) }
-        representor_hash << { embedded: get_embedded_data(options) }
-        Representors::Representor.new(representor_hash.reduce(&:deep_merge))
+        representor_hash = {
+          attributes: get_semantic_data(options),
+          transitions: get_transition_data(options),
+          embedded: get_embedded_data(options)
+        }
+        Representors::Representor.new(representor_hash)
       end
 
       def get_semantic_data(options)
@@ -49,7 +50,7 @@ module Crichton
         profile = element.href ? { profile: element.href } : {}
         field_type = element.field_type ? { field_type: element.field_type } : {}
         validators = element.validators.any? ? { validators: element.validators } : {}
-        #need to add options
+        #TODO: need to add options
         attribute = doc.merge(type).merge(sample).merge(value).merge(profile).merge(field_type).merge(validators)
         semantics.any? ? attribute.merge(TAG => semantics) : attribute
       end
