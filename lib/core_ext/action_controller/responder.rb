@@ -1,24 +1,16 @@
 module ActionController
   class Responder
-    alias :old_navigation_behavior :navigation_behavior
+    CRICHTON_FORMATS = [:html, :xhtml]
 
-    def navigation_behavior(error)
-      if get? && resource.is_a?(Crichton::Representor)
-        api_behavior(error)
-      else
-        old_navigation_behavior(error)
-      end
-    end
+    alias :original_default_render :default_render
 
-    alias :old_resourceful? :resourceful?
-    def resourceful?
-      if resource.is_a?(Crichton::Representor)
-        http_accept = request.env['HTTP_ACCEPT']
-        options.merge!({ top_level: true, override_links: { 'self' => request.url } })
-        options.merge!(semantics: :styled_microdata) if http_accept && http_accept.include?('text/html')
-        true
+    def default_render
+      original_default_render
+    rescue ActionView::MissingTemplate => e
+      if get? && resource.is_a?(Crichton::Representor) && CRICHTON_FORMATS.include?(format)
+        api_behavior(e)
       else
-        old_resourceful?
+        raise e
       end
     end
   end
