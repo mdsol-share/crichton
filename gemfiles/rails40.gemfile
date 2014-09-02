@@ -11,6 +11,7 @@ gem "redcarpet", "~> 3.0.0"
 gem "rake", "~> 0.9"
 gem "awesome_print", "~> 1.1.0"
 gem "representors", :git => "https://github.com/mdsol/representors.git", :branch => "misc_updates"
+gem "rails", "4.0.5"
 
 group :development, :test do
   gem "pry"
