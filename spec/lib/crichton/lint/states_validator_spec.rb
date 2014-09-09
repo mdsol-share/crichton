@@ -118,7 +118,7 @@ module Crichton
           it 'reports an error if its url points to an invalid address' do
             stub_profile_request(404)
             @descriptor = drds_descriptor.tap do |document|
-              external_location = [{ 'location' => external_url }] #THIS DOESNT DO ANYTHING!
+              external_location = [{ 'location' => external_url }]
               document['resources']['drd']['states']['activated']['transitions']['repair-history']['next'] = external_location
             end
             @errors = expected_output(:error, 'states.invalid_external_location', link: external_url,
