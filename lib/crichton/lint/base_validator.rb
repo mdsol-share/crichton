@@ -67,7 +67,6 @@ module Crichton
       # base class method that must be overridden by child classes
       def validate(options = {})
         validators.map {|validator| perform_lint_by_type(validator) }
-        #raise "Abstract method #validate must be overridden in #{self.class.name}."
       end
 
       def validators

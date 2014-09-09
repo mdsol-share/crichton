@@ -133,12 +133,12 @@ module Crichton
         unless transition_decorator.next_state_location == 'exit'
           return if external_document_store.get(transition_decorator.next_state_location)
           response, body = external_document_store.send(:download, transition_decorator.next_state_location)
+          response_hash = {link: transition_decorator.next_state_location,
+              secondary_descriptor: resource_name, state: state_name, transition: transition_decorator.name}
           if response == 200
-            add_warning('states.download_external_profile', link: transition_decorator.next_state_location,
-              secondary_descriptor: resource_name, state: state_name, transition: transition_decorator.name)
+            add_warning('states.download_external_profile', response_hash)
           else
-            add_error('states.invalid_external_location', link: transition_decorator.next_state_location,
-              secondary_descriptor: resource_name, state: state_name, transition: transition_decorator.name)
+            add_error('states.invalid_external_location', response_hash)
           end
         end
       end
