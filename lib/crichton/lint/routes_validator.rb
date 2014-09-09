@@ -7,17 +7,19 @@ module Crichton
       section :routes
 
       # standard validation method
-      def validate
-        if resource_descriptor.routes.empty?
-          add_warning('routes.no_routes')
-        else
-          check_for_property_issues
-
-          check_transition_equivalence
-        end
+      def validators
+        [
+          :check_for_routes,
+          :check_for_property_issues,
+          :check_transition_equivalence,
+        ]
       end
 
       private
+      def check_for_routes
+          add_warning('routes.no_routes') if resource_descriptor.routes.empty?
+      end
+      
       def check_for_property_issues
         (resource_descriptor.descriptor_document['routes'] || {}).each do |route_name, hash|
           %w(controller action).each do |key|
