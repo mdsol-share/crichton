@@ -130,7 +130,7 @@ module Crichton
                 secondary_descriptor: 'drd', state: 'deactivated', transition: 'leviathan')
           end
           
-          it 'reports doesnt report an error if its next location is exit' do
+          it "doesn't report an error if its next location is exit" do
             #stub_profile_request(404)
             @descriptor = drds_descriptor.tap do |document|
               external_location = [{ 'location' => 'exit' }]
