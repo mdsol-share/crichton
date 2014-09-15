@@ -201,7 +201,7 @@ describe Crichton::Lint do
     end
     
     context 'when linting the errors descriptor file' do
-      it 'returns true if the --strict option is set' do
+      it 'passes even if the --strict option is set' do
         drds_path = fixture_path('resource_descriptors', 'errors_descriptor.yml')
         expect(Crichton::Lint.validate(drds_path, {strict: true})).to be_true
       end
