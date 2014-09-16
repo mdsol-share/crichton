@@ -34,13 +34,35 @@ module Crichton
         end
 
         def respond_to?(method, include_private = false)
-          (method =~ /^to_(\w*)$/) ? Crichton::Representor::Serializer.serializers?($1.to_sym) : super
-         # (method =~ /^to_(\w*)$/) ? Representors::SerializerFactory.serializers?($1.to_sym) : super
+          if (match = method.to_s.match(/^to_(\w*)$/))
+            registered?(match[1].to_sym)
+          else
+            super
+          end
+        end
+
+        def as_media_type(media_type, options)
+          serializer = Crichton::Representor::RepresentorSerializer.new(self, options)
+          serializer.as_media_type(options)
         end
 
         def method_missing(method, *args, &block)
-          (method =~ /^to_(\w*)$/) ? to_media_type($1.to_sym, *args, &block) : super
+          if (match = method.to_s.match(/^to_(\w*)$/))
+            type = match[1].to_sym
+            if registered?(type)
+              to_media_type(type, *args, &block)
+            else
+              raise NameError, "#{method} is not defined for #{self} and #{type} is not a registered media-type"
+            end
+          else
+            super
+          end
         end
+
+        def registered?(type)
+          Crichton::Representor::Serializer.serializers?(type) #|| Representors::SerializerFactory.serializers?(type)
+        end
+
       end
     end
   end

@@ -1,4 +1,6 @@
 require 'representors/representor_builder'
+require 'representors/representor'
+require 'representors/representor_hash'
 
 module Crichton
   module Representor
@@ -23,6 +25,10 @@ module Crichton
           embedded: get_embedded_data(options)
         }
         Representors::Representor.new(representor_hash)
+      end
+
+      def as_media_type(options)
+        to_representor(options).to_media_type(options)
       end
 
       def get_semantic_data(options)
