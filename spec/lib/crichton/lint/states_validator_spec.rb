@@ -129,6 +129,15 @@ module Crichton
               expected_output(:error, 'states.invalid_external_location', link: external_url,
                 secondary_descriptor: 'drd', state: 'deactivated', transition: 'leviathan')
           end
+          
+          it "doesn't report an error if its next location is exit" do
+            #stub_profile_request(404)
+            @descriptor = drds_descriptor.tap do |document|
+              external_location = [{ 'location' => 'exit' }]
+              document['resources']['drd']['states']['activated']['transitions']['repair-history']['next'] = external_location
+            end
+            @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
+          end
 
           it 'reports a warning if its url has a valid address but is not downloaded to disk' do
             stub_profile_request(200)

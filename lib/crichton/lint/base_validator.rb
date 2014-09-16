@@ -12,7 +12,7 @@ module Crichton
       attr_reader :errors
 
       # @attr_reader [Array] warnings
-       attr_reader :warnings
+      attr_reader :warnings
 
       # @attr_reader [Crichton::Descriptor::Resource] resource_descriptor
       attr_reader :resource_descriptor
@@ -20,6 +20,14 @@ module Crichton
       # @attr_reader [String] filename
       attr_reader :filename
 
+      NONVALIDATOR_MAP = {
+        'error' => [
+          :check_state_transition_names, 
+          :check_descriptor_graph,
+          :check_transition_equivalence,
+          :check_for_property_issues,
+        ]
+      }
       ##
       # Constructor
       #
@@ -58,9 +66,13 @@ module Crichton
 
       # base class method that must be overridden by child classes
       def validate(options = {})
-        raise "Abstract method #validate must be overridden in #{self.class.name}."
+        validators.map {|validator| perform_lint_by_type(validator) }
       end
 
+      def validators
+        raise "Abstract method #validate must be overridden in #{self.class.name}."
+      end
+      
       # @return [Boolean] true if there are any warnings or errors, false if not
       def issues?
         errors.any? || warnings.any?
@@ -92,6 +104,11 @@ module Crichton
 
       protected
 
+      def perform_lint_by_type(validator_type)
+        validators = NONVALIDATOR_MAP[resource_descriptor.descriptor_type] || []
+        send(validator_type) unless validators.include?(validator_type)
+      end
+      
       # @return [Array] a list of resources in the linted file
       def secondary_descriptors
         resource_descriptor.descriptors

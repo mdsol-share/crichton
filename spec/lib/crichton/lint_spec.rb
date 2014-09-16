@@ -44,11 +44,6 @@ describe Crichton::Lint do
           missing_section: 'states', sub_header: :error)
       end
 
-      it 'reports a missing routes section warning when the routes section is missing' do
-        @descriptor = drds_descriptor.tap { |document| document.except!('routes') }
-        @warnings = expected_output(:warning, 'routes.no_routes', filename: filename, sub_header: :warning, section: 'routes')
-      end
-
       it 'reports a missing descriptor errors when the descriptor section is missing' do
         @descriptor = normalized_drds_descriptor.except('descriptors')
         @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
@@ -204,5 +199,13 @@ describe Crichton::Lint do
         "No resource descriptor directory exists. Default is #{Crichton.descriptor_location}."
       end
     end
+    
+    context 'when linting the errors descriptor file' do
+      it 'passes even if the --strict option is set' do
+        drds_path = fixture_path('resource_descriptors', 'errors_descriptor.yml')
+        expect(Crichton::Lint.validate(drds_path, {strict: true})).to be_true
+      end
+    end
+    
   end
 end

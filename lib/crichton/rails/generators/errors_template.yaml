@@ -2,6 +2,8 @@ id: {resource_capitalize}
 
 doc: Describes the semantics, states and state transitions associated with Errors.
 
+descriptor_type: error
+
 links:
   self: {resource_capitalize}
   help: {resource_capitalize}/help

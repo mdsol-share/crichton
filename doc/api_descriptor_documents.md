@@ -86,6 +86,7 @@ Profile metadata properties include the following:
 - `id` - REQUIRED. The ID of the profile. Enter using the CamelCase standard for the name of the profile. Used to 
 generate the profile URI.
 - `doc` - REQUIRED. Documents the contents of the profile in human-readable form.
+- `descriptor_type` - OPTIONAL. Defines the type of descriptor, currently 'resource' and 'error' are supported.  The default is 'resource'.
 - `links` - RECOMMENDED. Links related to the profile.
   - `profile` - Used in accordance with [RFC 5988 - Web Linking](http://tools.ietf.org/html/rfc5988).
   - `help` - Used in accordance with [RFC 5988 - Web Linking](http://tools.ietf.org/html/rfc5988).
