@@ -111,7 +111,7 @@ module Crichton
 
       def get_link_transition(transition)
         link = { href: transition.url }
-        link = { href: transition.templated_url, templated: true } if transition.templated?
+        link = { href: transition.templated_url, templated: true } if transition.templated? && transition.name != 'self'
         method = defined?(transition.interface_method) ? transition.interface_method : 'GET'
         link = link.merge({ method: method }) unless method == 'GET'
         link[:href] ? { _links: { transition.name => link } } : {}
@@ -129,6 +129,9 @@ module Crichton
       end
 
       def get_form_elements(transition)
+        if transition.name == 'self'
+          return {}
+        end
         semantics = defined?(transition.semantics) ? transition.semantics : {}
         semantics.values.each_with_object({}) do |semantic, h|
           halelet = get_control(semantic)
