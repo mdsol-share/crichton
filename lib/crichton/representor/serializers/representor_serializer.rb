@@ -1,5 +1,6 @@
-require 'representors/representor_builder'
-require 'representors/representor'
+require 'representors'
+#require 'representors/representor_builder'
+#require 'representors/representor'
 
 module Crichton
   module Representor
