@@ -1,0 +1,87 @@
+id: People
+doc: Describes the semantics, states and state transitions associated for a Medidation.
+links:
+  self: Medidation
+  help: help/medidations
+
+data:
+  total_count:
+    doc: The total count of Medidations
+    type: semantic
+    href: http://alps.io/schema.org/Integer
+    sample: 1
+  search_term:
+    doc: Only medidations whose last name contains this string as a substring will be returned
+    href: http://alps.io/schema.org/Text
+    sample: lastname
+  first_name:
+    doc: The first name of a medidation.
+    href: http://alps.io/schema.org/Text
+    sample: firstname
+  last_name:
+    doc: The last name of a medidation.
+    href: http://alps.io/schema.org/Text
+    sample: firstname
+    
+safe:
+  list:
+    doc: View all medidations.
+    rt: medidations
+  search:
+    doc: View a filtered list of medidations.
+    rt: medidations
+    parameters:
+      - href: first_name
+        field_type: text
+      - href: last_name
+        field_type: text
+      - href: search_term
+        field_type: text
+    
+resources:
+  people:
+    doc:
+      html: <p>A list of Medidations.</p>
+    type: semantic
+    links:
+      self:  Medidations#medidations
+    states:
+      collection:
+        doc: The entry point state for interacting with Medidation
+        location: entry
+        transitions:
+          list:
+            name: self
+            next:
+              - collection
+          search:
+            next:
+              - collection
+    descriptors:
+      - href: total_count    
+      
+http_protocol:
+  list:
+    uri: people
+    entry_point: medidations
+    method: GET
+    headers:
+      - Content-Type
+      - ETag
+    slt: &slt
+      99th_percentile: 100ms
+      std_dev: 25ms
+      requests_per_second: 50
+  search:
+    uri: people
+    method: GET
+    headers:
+    slt: *slt
+    
+routes:
+  list:
+    controller: medidations
+    action: index
+  search:
+    controller: medidations
+    action: index

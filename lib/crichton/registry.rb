@@ -158,11 +158,11 @@ module Crichton
     end
 
     def external_document_store
-      @external_document_store ||= Crichton::ExternalDocumentStore.new
+      @external_document_store = Crichton::ExternalDocumentStore.new
     end
 
     def external_document_cache
-      @external_document_cache ||= Crichton::ExternalDocumentCache.new
+      @external_document_cache = Crichton::ExternalDocumentCache.new
     end
   end
 end

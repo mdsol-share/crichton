@@ -177,6 +177,14 @@ module Crichton
     drds_sample = 'spec/fixtures/resource_descriptors/drds_descriptor_v1.yml'
     initialize_registry(File.join(File.expand_path('../../', __FILE__), drds_sample))
   end
+  
+  def self.project_dir=(dir)
+    @project_dir ||= dir
+  end  
+  
+  def self.project_dir
+    @project_dir ||= Dir.pwd
+  end
 
   ##
   # The root directory of parent project.
@@ -188,7 +196,7 @@ module Crichton
     elsif const_defined?('Sinatra')
       Sinatra.settings.root
     else
-      Dir.pwd
+      project_dir
     end
   end
 

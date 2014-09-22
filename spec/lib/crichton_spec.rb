@@ -90,7 +90,7 @@ describe Crichton do
     end
 
     it 'loads the crichton.yml file from the configuration directory' do
-
+      print example_environment_config, SPECS_TEMP_DIR
       build_configuration_files(example_environment_config, SPECS_TEMP_DIR)
 
       %w(alps deployment discovery documentation).each do |type|
@@ -112,6 +112,7 @@ describe Crichton do
 
     it 'returns the path to the crichton.yml file' do
       @root = Dir.pwd
+      print @root
       expect(Crichton.config_file).to eq(file_path)
     end
 
@@ -132,7 +133,7 @@ describe Crichton do
         it 'returns the config directory under the Rails root' do
           ::Rails = @app unless defined?(Rails)
           @root = 'rails_root'
-
+          print file_path
           allow(::Rails).to receive(:root).and_return(@root)
           expect(Crichton.config_file).to eq(file_path)
         end

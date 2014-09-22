@@ -1,8 +1,9 @@
+ENV["RAILS_ENV"] = "test"
 SPEC_DIR = File.expand_path("..", __FILE__)
 lib_dir = File.expand_path("../lib", SPEC_DIR)
 LINT_DIR = File.expand_path("../lib/crichton/lint", SPEC_DIR)
 DISCOVERY_DIR = File.expand_path("../lib/crichton/discovery", SPEC_DIR)
-
+THIS_DIR = Dir.pwd
 SPECS_TEMP_DIR = 'tmp'
 
 $LOAD_PATH.unshift(lib_dir)
@@ -17,6 +18,7 @@ require 'simplecov'
 require 'json_spec'
 require 'timecop'
 
+
 SimpleCov.start
 Debugger.start
 Bundler.setup
@@ -25,11 +27,14 @@ require 'crichton'
 
 # Delete the tmp specs directory and all its contents.
 require 'fileutils'
+
+
 FileUtils.rm_r SPECS_TEMP_DIR if File.exists?(SPECS_TEMP_DIR)
 Dir.mkdir SPECS_TEMP_DIR
 
-Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
 
+Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
+Crichton::project_dir = THIS_DIR
 Crichton::config_directory = File.join('spec', 'fixtures', 'config')
 
 Crichton.logger = ::Logger.new(STDOUT)
@@ -37,6 +42,7 @@ Crichton.logger.level = Logger::ERROR # Avoid non-error to populate the terminal
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
@@ -56,9 +62,11 @@ RSpec.configure do |config|
   config.before(:each) do
     stub_alps_requests
     Crichton.reset
+    Crichton.project_dir = THIS_DIR
     Crichton.config_directory = File.join('spec', 'fixtures', 'config')
     Crichton.initialize_registry(drds_descriptor)
   end
+  
 
   config.include JsonSpec::Helpers
 end
