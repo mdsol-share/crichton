@@ -1,0 +1,982 @@
+Connecting to database specified by database.yml
+Connecting to database specified by database.yml
+Connecting to database specified by database.yml
+Connecting to database specified by database.yml
+Connecting to database specified by database.yml
+  [1m[36m (16.7ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to CreatePeople (20140918143305)
+  [1m[35m (136.7ms)[0m  CREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `first_name` varchar(255), `last_name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (1.1ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140918143305')[0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+
+
+Started GET "/" for 127.0.0.1 at 2014-09-18 10:37:00 -0400
+Connecting to database specified by database.yml
+
+ActionController::RoutingError (No route matches [GET] "/"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (14.2ms)
+
+
+Started GET "/users" for 127.0.0.1 at 2014-09-18 10:38:17 -0400
+
+ActionController::RoutingError (No route matches [GET] "/users"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (1.2ms)
+
+
+Started GET "/v1" for 127.0.0.1 at 2014-09-18 11:00:18 -0400
+Connecting to database specified by database.yml
+
+ActionController::RoutingError (No route matches [GET] "/v1"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (1.4ms)
+
+
+Started GET "/" for 127.0.0.1 at 2014-09-18 11:00:23 -0400
+
+ActionController::RoutingError (No route matches [GET] "/"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (0.5ms)
+Connecting to database specified by database.yml
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:02:24 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  Rendered people/index.html.erb within layouts/application (3.4ms)
+Compiled people.css  (0ms)  (pid 77842)
+Compiled scaffold.css  (0ms)  (pid 77842)
+Compiled application.css  (12ms)  (pid 77842)
+Completed 500 Internal Server Error in 87.9ms
+
+ActionView::Template::Error (couldn't find file 'jquery'
+  (in /Users/svalentine/Projects/temp/crichton/spec/dummy/app/assets/javascripts/application.js:13)):
+    3: <head>
+    4:   <title>Dummy</title>
+    5:   <%= stylesheet_link_tag    "application", :media => "all" %>
+    6:   <%= javascript_include_tag "application" %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body>
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___3695355901939582017_70288052677960'
+  app/controllers/people_controller.rb:7:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.2ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (9.1ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:04:05 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  Rendered people/index.html.erb within layouts/application (1.8ms)
+Completed 500 Internal Server Error in 90.9ms
+
+ActionView::Template::Error (couldn't find file 'jquery'
+  (in /Users/svalentine/Projects/temp/crichton/spec/dummy/app/assets/javascripts/application.js:13)):
+    3: <head>
+    4:   <title>Dummy</title>
+    5:   <%= stylesheet_link_tag    "application", :media => "all" %>
+    6:   <%= javascript_include_tag "application" %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body>
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___2821634290406710631_70340030041380'
+  app/controllers/people_controller.rb:7:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (6.3ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:08:00 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  Rendered people/index.html.erb within layouts/application (2.1ms)
+Completed 500 Internal Server Error in 84.6ms
+
+ActionView::Template::Error (couldn't find file 'jquery'
+  (in /Users/svalentine/Projects/temp/crichton/spec/dummy/app/assets/javascripts/application.js:13)):
+    3: <head>
+    4:   <title>Dummy</title>
+    5:   <%= stylesheet_link_tag    "application", :media => "all" %>
+    6:   <%= javascript_include_tag "application" %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body>
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb__4052556047086328024_70362841162560'
+  app/controllers/people_controller.rb:7:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (6.1ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:08:03 -0400
+Processing by PeopleController#index as HTML
+  [1m[35mPerson Load (0.3ms)[0m  SELECT `people`.* FROM `people` 
+  Rendered people/index.html.erb within layouts/application (0.3ms)
+Completed 500 Internal Server Error in 6.5ms
+
+ActionView::Template::Error (couldn't find file 'jquery'
+  (in /Users/svalentine/Projects/temp/crichton/spec/dummy/app/assets/javascripts/application.js:13)):
+    3: <head>
+    4:   <title>Dummy</title>
+    5:   <%= stylesheet_link_tag    "application", :media => "all" %>
+    6:   <%= javascript_include_tag "application" %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body>
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb__4052556047086328024_70362841162560'
+  app/controllers/people_controller.rb:7:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (6.4ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:10:41 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  Rendered people/index.html.erb within layouts/application (2.0ms)
+Completed 500 Internal Server Error in 102.4ms
+
+ActionView::Template::Error (couldn't find file 'jquery'
+  (in /Users/svalentine/Projects/temp/crichton/spec/dummy/app/assets/javascripts/application.js:13)):
+    3: <head>
+    4:   <title>Dummy</title>
+    5:   <%= stylesheet_link_tag    "application", :media => "all" %>
+    6:   <%= javascript_include_tag "application" %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+    9: <body>
+  app/views/layouts/application.html.erb:6:in `_app_views_layouts_application_html_erb___1703087814852995595_70126420136520'
+  app/controllers/people_controller.rb:8:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.2ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (6.6ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:12:22 -0400
+Processing by PeopleController#index as HTML
+  [1m[35mPerson Load (0.2ms)[0m  SELECT `people`.* FROM `people` 
+Completed 500 Internal Server Error in 41.2ms
+
+NameError (uninitialized constant PeopleController::True):
+  app/controllers/people_controller.rb:8:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (5.7ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:12:35 -0400
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.3ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+Completed 500 Internal Server Error in 58.1ms
+
+NameError (uninitialized constant Mime::HALE):
+  app/controllers/people_controller.rb:8:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (6.0ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:17:37 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.1ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+Completed 500 Internal Server Error in 64.7ms
+
+NoMethodError (undefined method `build_state_representor' for #<PeopleController:0x007fc13313f6b8>):
+  app/controllers/people_controller.rb:12:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (8.2ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:19:46 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+Completed 500 Internal Server Error in 68.6ms
+
+NoMethodError (undefined method `render_hypermedia_index' for #<PeopleController:0x007fd3b465c9f0>):
+  app/controllers/people_controller.rb:15:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:14:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (8.4ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:25:19 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.3ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+Completed 500 Internal Server Error in 73.6ms
+
+NoMethodError (undefined method `all' for {:total_count=>0, :items=>[]}:Hash):
+  app/controllers/people_controller.rb:22:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:15:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:14:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (6.7ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:26:16 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+Completed 500 Internal Server Error in 30.3ms
+
+NoMethodError (undefined method `all' for []:Array):
+  app/controllers/people_controller.rb:18:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:11:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:10:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (6.8ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:26:38 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.1ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+Completed 500 Internal Server Error in 121.0ms
+
+NoMethodError (undefined method `paginate_collection' for #<PeopleController:0x007fbe8cdc9748>):
+  app/controllers/people_controller.rb:18:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:11:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:10:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.9ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (9.1ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:27:14 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.2ms)[0m  SELECT COUNT(*) FROM `people` 
+Completed 500 Internal Server Error in 74.9ms
+
+NameError (undefined local variable or method `pagination_links' for #<PeopleController:0x007fedf11a8dd0>):
+  app/controllers/people_controller.rb:24:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:11:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:10:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (8.9ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:27:46 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.2ms)[0m  SELECT COUNT(*) FROM `people` 
+Completed 500 Internal Server Error in 105.1ms
+
+RuntimeError (In order to use respond_with, first you need to declare the formats your controller responds to in the class level):
+  app/controllers/people_controller.rb:26:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:11:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:10:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (7.5ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:28:19 -0400
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+Completed 500 Internal Server Error in 52.2ms
+
+NameError (uninitialized constant Mime::HALE):
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (6.3ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:28:56 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.2ms)[0m  SELECT COUNT(*) FROM `people` 
+Completed 500 Internal Server Error in 107.6ms
+
+NameError (uninitialized constant Mime::HALE):
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (7.4ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:29:07 -0400
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+Completed 500 Internal Server Error in 2.9ms
+
+NameError (uninitialized constant Mime::HALE):
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (6.3ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:30:34 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+Completed 500 Internal Server Error in 70.7ms
+
+NameError (uninitialized constant Mime::HAL):
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (7.5ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:31:25 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+  Rendered people/index.html.erb within layouts/application (3.6ms)
+Completed 500 Internal Server Error in 93.6ms
+
+ActionView::Template::Error (undefined method `each' for nil:NilClass):
+    9:     <th></th>
+    10:   </tr>
+    11: 
+    12: <% @people.each do |person| %>
+    13:   <tr>
+    14:     <td><%= person.first_name %></td>
+    15:     <td><%= person.last_name %></td>
+  app/views/people/index.html.erb:12:in `_app_views_people_index_html_erb___2433652126221905805_70188666721700'
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (6.5ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:32:43 -0400
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+  Rendered people/index.html.erb within layouts/application (0.6ms)
+Completed 500 Internal Server Error in 4.2ms
+
+ActionView::Template::Error (undefined method `each' for nil:NilClass):
+    9:     <th></th>
+    10:   </tr>
+    11: 
+    12: <% @people.each do |person| %>
+    13:   <tr>
+    14:     <td><%= person.first_name %></td>
+    15:     <td><%= person.last_name %></td>
+  app/views/people/index.html.erb:12:in `_app_views_people_index_html_erb___2433652126221905805_70188666721700'
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (5.8ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:40:49 -0400
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.1ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+  Rendered people/index.html.erb within layouts/application (0.6ms)
+Completed 500 Internal Server Error in 9.6ms
+
+ActionView::Template::Error (undefined method `each' for nil:NilClass):
+    9:     <th></th>
+    10:   </tr>
+    11: 
+    12: <% @people.each do |person| %>
+    13:   <tr>
+    14:     <td><%= person.first_name %></td>
+    15:     <td><%= person.last_name %></td>
+  app/views/people/index.html.erb:12:in `_app_views_people_index_html_erb___2433652126221905805_70188666721700'
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.8ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (6.5ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:42:48 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+  Rendered people/index.html.erb within layouts/application (3.2ms)
+Completed 500 Internal Server Error in 75.9ms
+
+ActionView::Template::Error (undefined method `each' for nil:NilClass):
+    9:     <th></th>
+    10:   </tr>
+    11: 
+    12: <% @people.each do |person| %>
+    13:   <tr>
+    14:     <td><%= person.first_name %></td>
+    15:     <td><%= person.last_name %></td>
+  app/views/people/index.html.erb:12:in `_app_views_people_index_html_erb__2651601630279276120_70188039136220'
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (5.9ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:43:53 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+  Rendered people/index.html.erb within layouts/application (3.2ms)
+Completed 500 Internal Server Error in 31.2ms
+
+ActionView::Template::Error (undefined method `each' for nil:NilClass):
+    9:     <th></th>
+    10:   </tr>
+    11: 
+    12: <% @people.each do |person| %>
+    13:   <tr>
+    14:     <td><%= person.first_name %></td>
+    15:     <td><%= person.last_name %></td>
+  app/views/people/index.html.erb:12:in `_app_views_people_index_html_erb__268567314648291233_70236862568620'
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.0ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (5.9ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:43:57 -0400
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.1ms)[0m  SELECT COUNT(*) FROM `people` 
+  Rendered people/index.html.erb within layouts/application (0.6ms)
+Completed 500 Internal Server Error in 4.5ms
+
+ActionView::Template::Error (undefined method `each' for nil:NilClass):
+    9:     <th></th>
+    10:   </tr>
+    11: 
+    12: <% @people.each do |person| %>
+    13:   <tr>
+    14:     <td><%= person.first_name %></td>
+    15:     <td><%= person.last_name %></td>
+  app/views/people/index.html.erb:12:in `_app_views_people_index_html_erb__268567314648291233_70236862568620'
+  app/controllers/people_controller.rb:27:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (1.3ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/template_error.erb within rescues/layout (7.6ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 11:53:36 -0400
+Connecting to database specified by database.yml
+
+ActionController::RoutingError (No route matches [GET] "/people"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (1.7ms)
+
+
+Started GET "/" for 127.0.0.1 at 2014-09-18 11:53:38 -0400
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+  [1m[35m (0.2ms)[0m  SELECT COUNT(*) FROM `people` 
+Completed 500 Internal Server Error in 24.2ms
+
+NameError (undefined local variable or method `people_url' for #<PeopleController:0x007fedfc2f6fd8>):
+  app/controllers/people_controller.rb:25:in `render_hypermedia_index'
+  app/controllers/people_controller.rb:12:in `block (2 levels) in index'
+  app/controllers/people_controller.rb:11:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (0.9ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.7ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (7.0ms)
+Connecting to database specified by database.yml
+Connecting to database specified by database.yml
+  [1m[36m (92.3ms)[0m  [1mDROP DATABASE IF EXISTS `blueprintservice_development`[0m
+  [1m[35m (42.3ms)[0m  DROP DATABASE IF EXISTS `blueprintservice_test`
+  [1m[36m (0.3ms)[0m  [1mCREATE DATABASE `blueprintservice_development` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`[0m
+  [1m[35m (0.2ms)[0m  CREATE DATABASE `blueprintservice_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+  [1m[36m (303.9ms)[0m  [1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (288.7ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to CreatePeople (20140918143305)
+  [1m[35m (121.9ms)[0m  CREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `first_name` varchar(255), `last_name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.8ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140918143305')[0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Migrating to CreatePeople (20140918143305)
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Connecting to database specified by database.yml
+Connecting to database specified by database.yml
+Connecting to database specified by database.yml
+  [1m[36m (114.7ms)[0m  [1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (263.0ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to CreatePeople (20140918143305)
+  [1m[35m (154.0ms)[0m  CREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `first_name` varchar(255), `last_name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140918143305')[0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Migrating to CreatePeople (20140918143305)
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Connecting to database specified by database.yml
+  [1m[36m (111.9ms)[0m  [1mDROP DATABASE IF EXISTS `crichton_dummy_development`[0m
+  [1m[35m (0.6ms)[0m  DROP DATABASE IF EXISTS `crichton_dummy_test`
+  [1m[36m (0.5ms)[0m  [1mCREATE DATABASE `crichton_dummy_development` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`[0m
+  [1m[35m (0.4ms)[0m  CREATE DATABASE `crichton_dummy_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+  [1m[36m (63.3ms)[0m  [1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (165.7ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to CreatePeople (20140918143305)
+  [1m[35m (122.7ms)[0m  CREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `first_name` varchar(255), `last_name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.7ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140918143305')[0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Migrating to CreatePeople (20140918143305)
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Connecting to database specified by database.yml
+  [1m[36m (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.7ms)[0m  [1mDROP DATABASE IF EXISTS `crichton_dummy_test`[0m
+  [1m[35m (0.5ms)[0m  CREATE DATABASE `crichton_dummy_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+  [1m[36m (0.4ms)[0m  [1mDROP DATABASE IF EXISTS `crichton_dummy_test`[0m
+  [1m[35m (0.3ms)[0m  CREATE DATABASE `crichton_dummy_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+  [1m[36m (165.2ms)[0m  [1mCREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `first_name` varchar(255), `last_name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (367.6ms)[0m  CREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB
+  [1m[36m (149.2ms)[0m  [1mCREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)[0m
+  [1m[35m (0.1ms)[0m  SELECT version FROM `schema_migrations`
+  [1m[36m (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (version) VALUES ('20140918143305')[0m
+  [1m[35m (3.4ms)[0m  DROP TABLE `people`
+  [1m[36m (125.7ms)[0m  [1mCREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `first_name` varchar(255), `last_name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  SELECT version FROM `schema_migrations`
+Connecting to database specified by database.yml
+  [1m[36m (8.2ms)[0m  [1mDROP DATABASE IF EXISTS `crichton_dummy_development`[0m
+  [1m[35m (13.5ms)[0m  DROP DATABASE IF EXISTS `crichton_dummy_test`
+  [1m[36m (0.3ms)[0m  [1mCREATE DATABASE `crichton_dummy_development` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`[0m
+  [1m[35m (0.2ms)[0m  CREATE DATABASE `crichton_dummy_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+  [1m[36m (202.7ms)[0m  [1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (138.2ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+Migrating to CreatePeople (20140918143305)
+  [1m[35m (120.9ms)[0m  CREATE TABLE `people` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `first_name` varchar(255), `last_name` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (1.2ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20140918143305')[0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Migrating to CreatePeople (20140918143305)
+  [1m[36m (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.2ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+  [1m[36m (0.2ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations` [0m
+  [1m[35m (0.1ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations` 
+Connecting to database specified by database.yml
+
+
+Started GET "/" for 127.0.0.1 at 2014-09-18 12:26:29 -0400
+
+
+Started GET "/v1/medidations" for 127.0.0.1 at 2014-09-18 12:26:41 -0400
+
+ActionController::RoutingError (No route matches [GET] "/v1/medidations"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (2.7ms)
+
+
+Started GET "/drds" for 127.0.0.1 at 2014-09-18 12:26:45 -0400
+
+ActionController::RoutingError (No route matches [GET] "/drds"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (1.1ms)
+Connecting to database specified by database.yml
+Connecting to database specified by database.yml
+
+
+Started GET "/" for 127.0.0.1 at 2014-09-18 12:36:24 -0400
+Connecting to database specified by database.yml
+
+
+Started GET "/alps/People" for 127.0.0.1 at 2014-09-18 12:36:26 -0400
+
+
+Started GET "/v1/medidations" for 127.0.0.1 at 2014-09-18 12:36:32 -0400
+
+ActionController::RoutingError (No route matches [GET] "/v1/medidations"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (1.7ms)
+
+
+Started GET "/" for 127.0.0.1 at 2014-09-18 12:38:37 -0400
+Connecting to database specified by database.yml
+
+
+Started GET "/v1" for 127.0.0.1 at 2014-09-18 12:38:39 -0400
+
+ActionController::RoutingError (No route matches [GET] "/v1"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (1.5ms)
+
+
+Started GET "/v1" for 127.0.0.1 at 2014-09-18 12:39:35 -0400
+Connecting to database specified by database.yml
+
+ActionController::RoutingError (No route matches [GET] "/v1"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (1.5ms)
+
+
+Started GET "/" for 127.0.0.1 at 2014-09-18 12:40:13 -0400
+Connecting to database specified by database.yml
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 12:40:15 -0400
+
+ActionController::RoutingError (No route matches [GET] "/people"):
+  actionpack (3.2.19) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+  railties (3.2.19) lib/rails/rack/logger.rb:32:in `call_app'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `block in call'
+  activesupport (3.2.19) lib/active_support/tagged_logging.rb:22:in `tagged'
+  railties (3.2.19) lib/rails/rack/logger.rb:16:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/request_id.rb:22:in `call'
+  rack (1.4.5) lib/rack/methodoverride.rb:21:in `call'
+  rack (1.4.5) lib/rack/runtime.rb:17:in `call'
+  activesupport (3.2.19) lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+  rack (1.4.5) lib/rack/lock.rb:15:in `call'
+  actionpack (3.2.19) lib/action_dispatch/middleware/static.rb:63:in `call'
+  railties (3.2.19) lib/rails/engine.rb:484:in `call'
+  railties (3.2.19) lib/rails/application.rb:231:in `call'
+  rack (1.4.5) lib/rack/content_length.rb:14:in `call'
+  railties (3.2.19) lib/rails/rack/log_tailer.rb:17:in `call'
+  rack (1.4.5) lib/rack/handler/webrick.rb:59:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:138:in `service'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/httpserver.rb:94:in `run'
+  /Users/svalentine/.rvm/rubies/ruby-2.1.1/lib/ruby/2.1.0/webrick/server.rb:295:in `block in start_thread'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/routing_error.erb within rescues/layout (1.8ms)
+
+
+Started GET "/people" for 127.0.0.1 at 2014-09-18 12:40:34 -0400
+Connecting to database specified by database.yml
+Processing by PeopleController#index as HTML
+  [1m[36mPerson Load (0.2ms)[0m  [1mSELECT `people`.* FROM `people` [0m
+Completed 500 Internal Server Error in 127.8ms
+
+NameError (uninitialized class variable @@people in PeopleController):
+  app/controllers/people_controller.rb:13:in `index'
+
+
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_trace.erb (1.1ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/_request_and_response.erb (0.9ms)
+  Rendered /Users/svalentine/.rvm/gems/ruby-2.1.1/gems/actionpack-3.2.19/lib/action_dispatch/middleware/templates/rescues/diagnostics.erb within rescues/layout (39.1ms)
