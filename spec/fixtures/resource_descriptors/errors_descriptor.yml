@@ -15,9 +15,6 @@ semantics:
   details:
     doc: Error explanation and reason for the error.
     href: http://alps.io/schema.org/Text
-  error_code:
-    doc: Error code is the service's internal error code that describes the error.
-    href: http://example.org/profiles/ErrorCodes
   http_status:
     doc: HTTP status is the HTTP status returned, if the service returned one.
     href: http://alps.io/schema.org/Integer
@@ -52,7 +49,6 @@ resources:
     descriptors:
       - href: title
       - href: details
-      - href: error_code
       - href: http_status
       - href: retry_after
       - href: logref

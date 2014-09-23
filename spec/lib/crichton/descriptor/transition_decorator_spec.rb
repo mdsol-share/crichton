@@ -194,6 +194,7 @@ module Crichton
 
         it 'returns true if the transition has semantic descriptors' do
           @transition = 'search'
+          debugger
           expect(decorator).to be_templated
         end
 
