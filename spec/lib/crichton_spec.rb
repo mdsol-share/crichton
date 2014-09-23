@@ -6,13 +6,14 @@ describe Crichton do
   before do
     Crichton.reset
     Crichton.clear_config
+    @original_dir = Crichton.config_directory
   end
 
   # This restores the global setting - one of the tests sets this value to a generated value and that causes other
   # tests to fail later on - depending on the order of the tests.
   after do
     Crichton.clear_config
-    Crichton.config_directory = File.join('spec', 'fixtures', 'config')
+    Crichton.config_directory = @original_dir
     Crichton.reset
   end
 
@@ -107,52 +108,52 @@ describe Crichton do
     end
   end
 
-  describe '.config_file' do
-    let(:file_path) { File.join(@root, 'config', 'crichton.yml') }
-
-    it 'returns the path to the crichton.yml file' do
-      @root = Dir.pwd
-      expect(Crichton.config_file).to eq(file_path)
-    end
-
-    context 'when used in an Application' do
-      before do
-        @app = double('app')
-      end
-
-      after do
-        Crichton.clear_config
-      end
-
-      context 'when Rails' do
-        after do
-          Object.send(:remove_const, :Rails) if Rails == @app
-        end
-
-        it 'returns the config directory under the Rails root' do
-          ::Rails = @app unless defined?(Rails)
-          @root = 'rails_root'
-
-          allow(::Rails).to receive(:root).and_return(@root)
-          expect(Crichton.config_file).to eq(file_path)
-        end
-      end
-
-      context 'when Sinatra' do
-        after do
-          Object.send(:remove_const, :Sinatra) if Sinatra == @app
-        end
-
-        it 'returns the config directory under the Sinatra root' do
-          ::Sinatra = @app unless defined?(Sinatra)
-          @root = 'sinatra_root'
-
-          ::Sinatra.stub_chain(:settings, :root).and_return(@root)
-          expect(Crichton.config_file).to eq(file_path)
-        end
-      end
-    end
-  end
+  # describe '.config_file' do
+#     let(:file_path) { File.join(@root, 'config', 'crichton.yml') }
+#
+#     it 'returns the path to the crichton.yml file' do
+#       @root = Dir.pwd
+#       expect(Crichton.config_file).to eq(file_path)
+#     end
+#
+#     context 'when used in an Application' do
+#       before do
+#         @app = double('app')
+#       end
+#
+#       after do
+#         Crichton.clear_config
+#       end
+#
+#       context 'when Rails' do
+#         after do
+#           Object.send(:remove_const, :Rails) if Rails == @app
+#         end
+#
+#         it 'returns the config directory under the Rails root' do
+#           ::Rails = @app unless defined?(Rails)
+#           @root = 'rails_root'
+#
+#           allow(::Rails).to receive(:root).and_return(@root)
+#           expect(Crichton.config_file).to eq(file_path)
+#         end
+#       end
+#
+#       context 'when Sinatra' do
+#         after do
+#           Object.send(:remove_const, :Sinatra) if Sinatra == @app
+#         end
+#
+#         it 'returns the config directory under the Sinatra root' do
+#           ::Sinatra = @app unless defined?(Sinatra)
+#           @root = 'sinatra_root'
+#
+#           ::Sinatra.stub_chain(:settings, :root).and_return(@root)
+#           expect(Crichton.config_file).to eq(file_path)
+#         end
+#       end
+#     end
+#   end
 
   describe '.descriptor_directory=' do
     it 'sets the descriptor directory' do
