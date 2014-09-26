@@ -30,7 +30,11 @@ Dir.mkdir SPECS_TEMP_DIR
 
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
 
-Crichton::config_directory = File.join('spec', 'fixtures', 'config')
+CONF_DIR = File.join('spec', 'fixtures', 'config')
+ROOT_DIR = SPEC_DIR
+
+Crichton::config_directory = CONF_DIR
+Crichton::root = ROOT_DIR
 Crichton.instance_variable_set(:@root, Dir.pwd)
 require File.expand_path("../crichton-demo-service/config/environment", __FILE__)
 require 'rspec/rails'
@@ -59,7 +63,7 @@ RSpec.configure do |config|
   config.before(:each) do
     stub_alps_requests
     Crichton.reset
-    Crichton.config_directory = File.join('spec', 'fixtures', 'config')
+    Crichton.config_directory = CONF_DIR
     Crichton.initialize_registry(drds_descriptor)
   end
 

@@ -191,7 +191,11 @@ module Crichton
       Dir.pwd
     end
   end
-
+  
+  def self.root=(directory)
+    #@config_file = nil
+    @root = directory
+  end
   ##
   # Returns an array of objects ready response which represents entry point objects
   #
