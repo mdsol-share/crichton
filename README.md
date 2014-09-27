@@ -1,6 +1,6 @@
 # Crichton
 
-[![Build Status](https://travis-ci.org/mdsol/crichton.svg)](https://travis-ci.org/mdsol/crichton)
+<!---[![Build Status](https://travis-ci.org/mdsol/crichton.svg)](https://travis-ci.org/mdsol/crichton)--->
 
 Crichton is a library to simplify implementing Hypermedia APIs. It has the knowledge of Hypermedia from the Ancients.
 
@@ -386,14 +386,14 @@ helped crystallize ideas underlying Crichton. And, of course, thanks to all the 
 ## Copyright
 Copyright (c) 2013 Medidata Solutions Worldwide. See {file:LICENSE.md} for details.
 
-[documentation]: http://rubydoc.info/github/mdsol/crichton
+[documentation]: http://rubydoc.info/github/mdsol-share/crichton
 [demo service]: https://github.com/fosrias/crichton-demo-service
-[\#to_media_type]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
+[\#to_media_type]: http://rubydoc.info/github/mdsol-share/crichton/Crichton/Representor/Serialization/MediaType#to_media_type-instance_method
 [supported media-types]: #supported-media-types
-[Documentation]: http://rubydoc.info/github/mdsol/crichton
+[Documentation]: http://rubydoc.info/github/mdsol-share/crichton
 [Mike Amundsen]: https://twitter.com/mamund
 [Jon Moore]: https://twitter.com/jon_moore
-[contributors]: https://github.com/mdsol/crichton/graphs/contributors
+[contributors]: https://github.com/mdsol-share/crichton/graphs/contributors
 
-[\#build_representor]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_representor-instance_method
-[\#build_state_representor]: http://rubydoc.info/github/mdsol/crichton/Crichton/Representor/Factory#build_state_representor-instance_method
+[\#build_representor]: http://rubydoc.info/github/mdsol-share/crichton/Crichton/Representor/Factory#build_representor-instance_method
+[\#build_state_representor]: http://rubydoc.info/github/mdsol-share/crichton/Crichton/Representor/Factory#build_state_representor-instance_method
