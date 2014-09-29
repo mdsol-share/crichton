@@ -36,7 +36,7 @@ ROOT_DIR = SPEC_DIR
 Crichton::config_directory = CONF_DIR
 Crichton::root = ROOT_DIR
 Crichton.instance_variable_set(:@root, Dir.pwd)
-require File.expand_path("../crichton-demo-service/config/environment", __FILE__)
+require File.expand_path("../integration/crichton-demo-service/config/environment", __FILE__)
 require 'rspec/rails'
 Crichton.logger = ::Logger.new(STDOUT)
 Crichton.logger.level = Logger::ERROR # Avoid non-error to populate the terminal when running specs

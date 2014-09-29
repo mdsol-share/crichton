@@ -38,4 +38,5 @@ group :test do
   gem 'timecop',        '~> 0.7.1'
   #TODO: replace when fix for v1.0.0 will be released
   gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git', ref: '7711d4d'
+  gem 'rspec-rails'
 end
