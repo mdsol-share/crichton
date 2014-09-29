@@ -61,6 +61,7 @@ RSpec.configure do |config|
   config.include Support::EPHelpers
 
   config.before(:each) do
+    Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
     stub_alps_requests
     Crichton.reset
     Crichton.config_directory = CONF_DIR

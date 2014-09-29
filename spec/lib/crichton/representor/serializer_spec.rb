@@ -11,7 +11,6 @@ module Crichton
       after(:all) do
         # Necessary since other specs load serializers so that randomization does not cause erroneous failures
         # since registered_serializers is a class method.
-        Object.send(:remove_const, :Rails)
         reset_serializers(@existing_serializers)
         
       end
