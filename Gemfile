@@ -31,12 +31,11 @@ group :test do
   gem 'launchy'
   gem 'webmock',        '~> 1.13.0'
   gem 'equivalent-xml', '~> 0.3.0'
-  gem 'rspec',          '~> 2.14.0'
-  gem 'rspec-rails'
+  gem 'rspec',          '~> 2.14'
+  gem 'rspec-rails',    '~> 2.14'
   gem 'simplecov',      '~> 0.8'
   gem 'json_spec',      '~> 1.1.1'
   gem 'timecop',        '~> 0.7.1'
   #TODO: replace when fix for v1.0.0 will be released
   gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git', ref: '7711d4d'
-  gem 'rspec-rails'
 end
