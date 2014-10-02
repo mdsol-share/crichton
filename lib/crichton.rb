@@ -193,7 +193,6 @@ module Crichton
   end
   
   def self.root=(directory)
-    #@config_file = nil
     @root = directory
   end
   ##

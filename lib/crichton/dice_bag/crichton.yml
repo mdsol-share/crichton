@@ -1,5 +1,5 @@
 common: &common
-  alps_base_uri: http://localhost:7000
+  alps_base_uri: http://localhost:7000/alps
   deployment_base_uri: http://localhost:3000
   discovery_base_uri: http://localhost:7000
   documentation_base_uri: http://example.org
