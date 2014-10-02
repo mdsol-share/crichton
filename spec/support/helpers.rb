@@ -60,7 +60,6 @@ module Support
     end
 
     def drds_filename
-      #debugger
       crichton_fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
 
