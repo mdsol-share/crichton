@@ -41,7 +41,6 @@ Crichton.logger.level = Logger::ERROR # Avoid non-error to populate the terminal
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
-  #Crichton.instance_variable_set(:@root, Dir.pwd)
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
@@ -60,7 +59,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     if example.example_group.metadata[:integration]
-        Rails = CRICHTON_DEMO_SERVICE
+      Rails = CRICHTON_DEMO_SERVICE
     else
       Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
     end
