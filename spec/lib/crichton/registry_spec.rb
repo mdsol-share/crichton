@@ -6,11 +6,12 @@ module Crichton
     describe '.initialize' do
       context 'with a directory of resource descriptors specified' do
         before do
+          
           allow(Crichton).to receive(:descriptor_location).and_return(resource_descriptor_fixtures)
         end
 
         it 'loads resource descriptors from a resource descriptor directory if configured' do
-          expect(Registry.new.descriptor_registry.size).to eq(4)
+          expect(Registry.new.descriptor_registry.size).to eq(Crichton.descriptor_registry.size)
         end
       end
 
