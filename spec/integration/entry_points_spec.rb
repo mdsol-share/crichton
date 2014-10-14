@@ -11,19 +11,28 @@ describe '/', :type => :controller, integration: true do
   # Workaround I don't understand found in https://github.com/rspec/rspec-rails/issues/860
   render_views
 
-  it 'gets' do
-    get '/drds'
+  it 'gets hale' do
+    get '/', {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+    expect(response.status).to eq(200)
+  end
+
+  it 'gets xhtml' do
+    get '/'
     expect(response.status).to eq(200)
   end
 
   it "returns itself as it's 'self' link" do
-    get '/drds', {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-    expect(response.status).to eq(200)
+    get '/', {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+    drds = JSON.load(response.body)['_links']['drds']['href']
     
-    first_doc = JSON.load(response.body)
-    get first_doc["_links"]["self"]["href"], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-    second_doc = JSON.load(response.body)
-    expect(first_doc).to eq(second_doc)
+    get drds, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+
+    response_body = JSON.load(response.body)
+    self_link = response_body["_links"]["self"]["href"]
+    get self_link, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+    self_doc = JSON.load(response.body)
+    expect(response_body).to eq(self_doc)
+
   end
 
 end

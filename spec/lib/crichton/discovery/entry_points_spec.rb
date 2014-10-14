@@ -36,10 +36,11 @@ describe Crichton::Discovery::EntryPoints do
       let(:expected_hale_json) do
         <<-JSON
           {"_links":
-            {"#{entry_point.link_relation}":
+            {"#{entry_point.name}":
               {
                 "href": "#{entry_point.href}",
-                "name": "#{entry_point.name}"
+                "name": "#{entry_point.name}",
+                "profile": "#{entry_point.link_relation}"
               }
             }
           }

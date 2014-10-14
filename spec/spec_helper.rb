@@ -59,7 +59,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     if example.example_group.metadata[:integration]
-      Rails = CRICHTON_DEMO_SERVICE
+      Rails = CRICHTON_DEMO_SERVICE unless Object.const_defined?(:Rails)
     else
       Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
     end
