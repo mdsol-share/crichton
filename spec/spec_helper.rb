@@ -51,7 +51,6 @@ RSpec.configure do |config|
   config.include Support::ALPS
   config.include Support::Controllers
   config.include Support::DRDHelpers
-  config.include Support::EPHelpers
 
   config.before(:each) do
     stub_alps_requests
