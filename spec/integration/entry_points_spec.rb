@@ -24,10 +24,9 @@ describe '/', :type => :controller, integration: true do
   it "returns itself as it's 'self' link" do
     get '/', {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
     drds = JSON.load(response.body)['_links']['drds']['href']
-    
     get drds, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-
     response_body = JSON.load(response.body)
+    
     self_link = response_body["_links"]["self"]["href"]
     get self_link, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
     self_doc = JSON.load(response.body)
