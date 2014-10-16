@@ -6,15 +6,17 @@ describe Crichton do
   before do
     Crichton.reset
     Crichton.clear_config
-    @original_dir = Crichton.config_directory
   end
 
   # This restores the global setting - one of the tests sets this value to a generated value and that causes other
   # tests to fail later on - depending on the order of the tests.
   after do
+    
     Crichton.clear_config
-    Crichton.config_directory = @original_dir
     Crichton.reset
+    Crichton.config_directory = CONF_DIR
+    
+   
   end
 
   describe '.descriptor_registry' do 

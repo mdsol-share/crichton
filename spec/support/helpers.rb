@@ -173,11 +173,11 @@ module Support
     end
 
     def crichton_fixture_path(*args)
-      File.join(ROOT_DIR, 'fixtures', args)
+      File.join(SPEC_DIR, 'fixtures', args)
     end
 
     def alps_fixture_path(*args)
-      File.join(ROOT_DIR, 'fixtures', 'alps', args)
+      File.join(SPEC_DIR, 'fixtures', 'alps', args)
     end
 
     def alps_json_data

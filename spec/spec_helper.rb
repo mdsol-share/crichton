@@ -62,6 +62,7 @@ RSpec.configure do |config|
       Rails = CRICHTON_DEMO_SERVICE unless Object.const_defined?(:Rails)
     else
       Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
+      #Crichton.instance_variable_set(:@root, ROOT_DIR)
     end
     stub_alps_requests
     Crichton.reset
