@@ -11,7 +11,6 @@ describe 'DRDs resource descriptor' do
   # Lint reports information to stdout. Add the following method if you do not want to see Lint output
   before do
     allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).and_return('<alps></alps>')
-    #allow($stdout).to receive(:write)
   end
 
   it 'exists' do
