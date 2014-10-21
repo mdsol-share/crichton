@@ -60,35 +60,35 @@ module Support
     end
 
     def drds_filename
-      fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
+      crichton_fixture_path('resource_descriptors', 'drds_descriptor_v1.yml')
     end
 
     def errors_filename
-      fixture_path('resource_descriptors', 'errors_descriptor.yml')
+      crichton_fixture_path('resource_descriptors', 'errors_descriptor.yml')
     end
 
     def drds_non_existent_filename
-      fixture_path('resource_descriptors', 'drds_descriptor_v1000.yml')
+      crichton_fixture_path('resource_descriptors', 'drds_descriptor_v1000.yml')
     end
 
     def drds_hal_json
-      @drds_hal_json ||= File.open(fixture_path('hal.json'))
+      @drds_hal_json ||= File.open(crichton_fixture_path('hal.json'))
     end
 
     def drds_hale_json
-      @drds_hal_json ||= File.open(fixture_path('naive_hale.json'))
+      @drds_hal_json ||= File.open(crichton_fixture_path('naive_hale.json'))
     end
 
     def drds_microdata_html
-      @drds_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_microdata.html')))
+      @drds_microdata_html ||= Nokogiri::XML(File.open(crichton_fixture_path('drds_microdata.html')))
     end
 
     def drds_styled_microdata_html
-      @drds_styled_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata.html')))
+      @drds_styled_microdata_html ||= Nokogiri::XML(File.open(crichton_fixture_path('drds_styled_microdata.html')))
     end
 
     def drds_styled_microdata_embed_html
-      @drds_styled_embed_microdata_html ||= Nokogiri::XML(File.open(fixture_path('drds_styled_microdata_embed.html')))
+      @drds_styled_embed_microdata_html ||= Nokogiri::XML(File.open(crichton_fixture_path('drds_styled_microdata_embed.html')))
     end
 
     def example_environment_config
@@ -111,7 +111,7 @@ module Support
     end
 
     def leviathans_filename
-      fixture_path('resource_descriptors', 'leviathans_descriptor_v1.yaml')
+      crichton_fixture_path('resource_descriptors', 'leviathans_descriptor_v1.yaml')
     end
 
     def stub_example_configuration
@@ -119,7 +119,7 @@ module Support
     end
 
     def resource_descriptor_fixtures
-      fixture_path('resource_descriptors')
+      crichton_fixture_path('resource_descriptors')
     end
 
     shared_examples_for 'a nested descriptor' do
@@ -172,7 +172,7 @@ module Support
       env_vars.inject('') { |s, (k, v)| s << "#{k.upcase}=#{v} " }
     end
 
-    def fixture_path(*args)
+    def crichton_fixture_path(*args)
       File.join(SPEC_DIR, 'fixtures', args)
     end
 

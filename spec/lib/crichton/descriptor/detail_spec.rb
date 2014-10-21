@@ -165,7 +165,7 @@ module Crichton
         end
 
         it 'returns the absolute self link' do
-          expect(descriptor.type_link.href).to eq('http://alps.example.com/DRDs#drds')
+          expect(descriptor.type_link.href).to eq('http://localhost:3000/alps/DRDs#drds')
         end
       end
 

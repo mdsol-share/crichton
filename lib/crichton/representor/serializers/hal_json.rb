@@ -60,7 +60,7 @@ module Crichton
       end
 
       def get_data(semantic_element, transformation)
-        Hash[semantic_element.map(&transformation)]
+        Hash[semantic_element.map(&transformation).compact]
       end
 
       def add_embedded(base_object, options)

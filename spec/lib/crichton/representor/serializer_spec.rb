@@ -12,6 +12,7 @@ module Crichton
         # Necessary since other specs load serializers so that randomization does not cause erroneous failures
         # since registered_serializers is a class method.
         reset_serializers(@existing_serializers)
+        
       end
       
       def create_media_type_serializer(serializer = nil)

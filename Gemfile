@@ -23,9 +23,16 @@ group :development, :test do
 end
 
 group :test do
+  gem 'sqlite3'
+  gem 'yajl-ruby', '~> 1.2.0'
+  gem 'faraday',   '~> 0.9.0'
+  gem 'jquery-rails'
+  gem 'nokogiri'
+  gem 'launchy'
   gem 'webmock',        '~> 1.13.0'
   gem 'equivalent-xml', '~> 0.3.0'
-  gem 'rspec',          '~> 2.14.0'
+  gem 'rspec',          '~> 2.14'
+  gem 'rspec-rails',    '~> 2.14'
   gem 'simplecov',      '~> 0.8'
   gem 'json_spec',      '~> 1.1.1'
   gem 'timecop',        '~> 0.7.1'
