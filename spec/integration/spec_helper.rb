@@ -53,6 +53,6 @@ def _http_call(link_object, data, default_media)
 end
 
 def hale_request(object, link_relation=false, options = {})
-  link = link_relation ? object : object['_links'][link_relation]
-  _http_call object['_links'][link_relation], options, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+  link = link_relation ? object['_links'][link_relation] : object
+  _http_call link, options, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
 end
