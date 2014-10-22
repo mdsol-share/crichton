@@ -96,7 +96,7 @@ describe Crichton do
 
       build_configuration_files(example_environment_config, SPECS_TEMP_DIR)
 
-      %w(alps deployment discovery documentation).each do |type|
+      %w(alps deployment documentation).each do |type|
         attribute = "#{type}_base_uri"
         expect(Crichton.config.send(attribute)).to eq(example_environment_config[attribute])
       end
@@ -171,4 +171,3 @@ describe Crichton do
     end
   end
 end
-

@@ -15,17 +15,11 @@ module Crichton
     # @return [String] The URI.
 
     ##
-    # @!attribute [r] discovery_base_uri
-    # The base URI of the discovery service.
-    #
-    # @return [String] The URI.
-
-    ##
     # @!attribute [r] documentation_base_uri
     # The base URI where documentation is hosted.
     #
     # @return [String] The URI.
-    %w(alps deployment discovery documentation crichton_proxy).each do |attribute|
+    %w(alps deployment documentation crichton_proxy).each do |attribute|
       method = "#{attribute}_base_uri"
       define_method(method) { @config[method] }
     end
@@ -80,7 +74,6 @@ module Crichton
     # @param [Hash] config The configuration hash.
     # @option config [String] alps_base_uri
     # @option config [String] deployment_base_uri
-    # @option config [String] discovery_base_uri
     # @option config [String] documentation_base_uri
     # @option config [Array] css_uri
     # @option config [Array] js_uri

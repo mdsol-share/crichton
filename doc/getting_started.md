@@ -26,7 +26,6 @@ The following list defines the configuration properties:
 * `alps_base_uri` - The base URI for the ALPS profile registry for profiles that are referenced as relative paths in an
 [_API Descriptor Document_][]. If none, use `http://[domain]/alps`.
 * `deployment_base_uri` - The base URI for the application: `http://[domain]`
-* `discovery_base_uri` - The base URI for a discovery service that Crichton will publish entry points to.
 * `documentation_base_uri` - The base URI for any hosted external documentation that is referenced as relative paths in an [_API Descriptor Document_][].
 * `use_alps_middleware` - Rails only. Identifies whether or not to autoload middleware to support rendering local ALPS profiles.
 * `alps_profile_response_expiry` - Configures the expiry of ALPS middleware that serves ALPS profiles directly from

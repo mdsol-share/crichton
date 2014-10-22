@@ -96,7 +96,7 @@ module Crichton
       end
     end
 
-    %w(alps deployment discovery documentation).each do |attribute|
+    %w(alps deployment documentation).each do |attribute|
       describe "\##{attribute}_base_uri" do
         it "returns the #{attribute} base URI" do
           expect(configuration.send("#{attribute}_base_uri")).to eq("http://#{attribute}.example.org")
