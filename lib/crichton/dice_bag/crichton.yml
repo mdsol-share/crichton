@@ -1,6 +1,7 @@
 common: &common
   alps_base_uri: http://localhost:7000
   deployment_base_uri: http://localhost:3000
+  discovery_base_uri: http://localhost:7000
   documentation_base_uri: http://example.org
   crichton_proxy_base_uri: http://localhost:3000/crichton
   use_alps_middleware: true
