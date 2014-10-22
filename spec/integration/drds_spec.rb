@@ -14,10 +14,10 @@ describe '/drds', :type => :controller, integration: true do
   
   let(:entry) do
     get '/', {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-    JSON.load(response.body)['_links']['drds']
+    JSON.load(response.body)
   end
   let(:drds_body) do
-    response = _http_call entry, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+    response = hale_request entry, 'drds'
     JSON.load(response.body)
   end  
   
@@ -26,7 +26,7 @@ describe '/drds', :type => :controller, integration: true do
   end
 
   it "returns itself as it's 'self' link" do
-    response = _http_call drds_body['_links']['self'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+    response = hale_request drds_body, 'self'
     expect(JSON.load(response.body)).to eq(drds_body)
   end
   
@@ -34,7 +34,7 @@ describe '/drds', :type => :controller, integration: true do
     response = _http_call  drds_body['_links']['profile'], {}, {'HTTP_ACCEPT' => 'application/alps+xml'}
     expect(response.status).to eq(200)
   end
-
+  
   it "contains a type link" do
     response = _http_call drds_body['_links']['type'], {}, {'HTTP_ACCEPT' => 'application/alps+xml'}
     expect(response.status).to eq(200)
@@ -77,25 +77,23 @@ describe '/drds', :type => :controller, integration: true do
   context 'the client can do anything' do
     let(:entry) do
       get '/', {conditions: 'can_do_anything'}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      JSON.load(response.body)['_links']['drds']
+      JSON.load(response.body)
     end
     
     let(:drds_body) do
-      response =  _http_call entry, {conditions: 'can_do_anything'}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      response =  hale_request entry, 'drds', {conditions: 'can_do_anything'}
       JSON.load(response.body)
     end  
     
     it "returns itself as it's 'self' link" do
-      response =  _http_call drds_body['_links']['self'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      response =  hale_request drds_body, 'self'
       expect(JSON.load(response.body)).to eq(drds_body)
     end
     
     context "when filling out the create form" do
       it "can create through a create form" do
-        create_form = drds_body['_links']['create']
-        form_data = create_form['data'].map { |key, datum| {key => random_by_datum(datum)} }.reduce({}, :merge)
-        media = {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-        response = _http_call(create_form, form_data, media)
+        form_data = drds_body['_links']['create']['data'].map { |key, datum| {key => random_by_datum(datum)} }.reduce({}, :merge)
+        response = hale_request drds_body, 'create', form_data
         response_body = JSON.load(response.body)
         ['name', 'kind', 'leviathan_uuid'].map do |k|
           expect(response_body[k]).to eq(form_data[k])

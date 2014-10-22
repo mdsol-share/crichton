@@ -13,11 +13,11 @@ describe '/drd/{item}', :type => :controller, integration: true do
   
   let(:entry) do
     get '/', {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-    JSON.load(response.body)['_links']['drds']
+    JSON.load(response.body)
   end
   
   let(:drds_item) do
-    response = _http_call entry, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+    response = hale_request entry, 'drds'
     JSON.load(response.body)['_links']['items'][0]
   end  
 
@@ -31,7 +31,7 @@ describe '/drd/{item}', :type => :controller, integration: true do
   end
   
   it "returns itself as it's 'self' link" do
-    response = _http_call drd_body['_links']['self'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+    response = hale_request drd_body, 'self'
     expect(JSON.load(response.body)).to eq(drd_body)
   end
   
@@ -53,11 +53,11 @@ describe '/drd/{item}', :type => :controller, integration: true do
     
     let(:entry) do
       get '/', {conditions: 'can_do_anything'}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      JSON.load(response.body)['_links']['drds']
+      JSON.load(response.body)
     end
     
     let(:drds_item) do
-      response = _http_call entry, {conditions: 'can_do_anything'}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      response = hale_request entry, 'drds', {conditions: 'can_do_anything'}
       JSON.load(response.body)['_links']['items'][0]
     end  
     
@@ -67,37 +67,36 @@ describe '/drd/{item}', :type => :controller, integration: true do
     end  
 
     it "returns itself as it's 'self' link" do
-      response =  _http_call drd_body['_links']['self'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      response =  hale_request drd_body, 'self'
       expect(JSON.load(response.body)).to eq(drd_body)
     end
     
     it "can toggle activation" do
+      link_toggle = ->(drd_doc) { drd_doc['_links']['activate'] ? 'activate' : 'deactivate' }
       status = drd_body['status']
-      link_toggle = drd_body['_links']['activate'] || drd_body['_links']['deactivate']
-      response =  _http_call link_toggle, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      response =  hale_request drd_body, link_toggle.(drd_body)
       expect(response.status).to eq(204)
-      new_drd = _http_call drd_body['_links']['self'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      new_drd = hale_request drd_body, 'self'
       new_drd = JSON.load(new_drd.body)
-      link_toggle = new_drd['_links']['activate'] || new_drd['_links']['deactivate']
-      response =  _http_call link_toggle, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      new_drd = _http_call drd_body['_links']['self'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      expect(new_drd['status']).not_to eq(status)
+      response =  hale_request new_drd, link_toggle.(new_drd)
+      new_drd = hale_request new_drd, 'self'
       new_drd = JSON.load(new_drd.body)
       expect(new_drd['status']).to eq(status)
     end
     
     it "can update" do
-      update = drd_body['_links']['update']
-      form_data = update['data'].map { |key, datum| {key => random_by_datum(datum)} }.reduce({}, :merge)
+      form_data = drd_body['_links']['update']['data'].map { |key, datum| {key => random_by_datum(datum)} }.reduce({}, :merge)
       media = {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      _http_call update, form_data, media 
-      new_drd = _http_call drd_body['_links']['self'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      hale_request drd_body, 'update', form_data
+      new_drd = hale_request drd_body, 'self'
       new_drd = JSON.load(new_drd.body)
       expect(new_drd['kind']).to eq(form_data['kind'])
     end
     
     it "can delete" do
-      _http_call drd_body['_links']['delete'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      response = _http_call drd_body['_links']['self'], {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      hale_request drd_body, 'delete'
+      response = hale_request drd_body, 'self'
       
       pending('expect(response.status).to eq(404) - When Errors are tested')
     end

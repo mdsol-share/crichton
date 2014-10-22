@@ -26,7 +26,7 @@ def random_by_type(datum)
 end
 
 def random_by_datum(datum)
-  options = datum.key?('options') ? datum['options'] : []
+  options = datum.fetch('options', [])
   options = options.is_a?(Hash) ? options.values : options
   options = options.empty? ? datum['type'] : options
   options = options == 'text:select' ? nil : options # Fix when CR integrated, problem with _meta
@@ -50,4 +50,8 @@ def _http_call(link_object, data, default_media)
   media = link_object["enctype"] || default_media
   media = media.is_a?(Array) ? media.sample : media
   call_rspec_rails_by_media_method(method, href, data, media)
+end
+
+def hale_request(object, link_relation, options = {})
+  _http_call object['_links'][link_relation], options, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
 end
