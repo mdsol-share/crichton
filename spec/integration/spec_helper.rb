@@ -52,6 +52,7 @@ def _http_call(link_object, data, default_media)
   call_rspec_rails_by_media_method(method, href, data, media)
 end
 
-def hale_request(object, link_relation, options = {})
+def hale_request(object, link_relation=false, options = {})
+  link = link_relation ? object : object['_links'][link_relation]
   _http_call object['_links'][link_relation], options, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
 end

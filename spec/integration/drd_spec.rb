@@ -22,7 +22,7 @@ describe '/drd/{item}', :type => :controller, integration: true do
   end  
 
   let(:drd_body) do
-    response = _http_call drds_item, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+    response = hale_request drds_item
     JSON.load(response.body)
   end  
   
@@ -62,7 +62,7 @@ describe '/drd/{item}', :type => :controller, integration: true do
     end  
     
     let(:drd_body) do
-      response = _http_call drds_item, {conditions: 'can_do_anything'}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
+      response = hale_request drds_item, false, {conditions: 'can_do_anything'}
       JSON.load(response.body)
     end  
 
