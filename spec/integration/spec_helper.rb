@@ -1,15 +1,18 @@
 require 'rake'
 
 load 'Rakefile'
-
+require_relative 'string_random'
 
 def random_text(datum)
   if datum['pattern']
-    maxlength = datum['maxlength'] || '50'
-    len_elem = datum['pattern'].scan('*').size + datum['pattern'].scan('+').size
-    sub_size = maxlength.to_i / len_elem.to_i
-    pattern = datum['pattern'].gsub('.', '\w').gsub('+', "{1,#{sub_size}}").gsub('*', "{0,#{sub_size}}")
-    Regexp.new(pattern).gen
+    rsting = StringRandom.new(datum['maxlength'] || '50')
+#     len_elem = datum['pattern'].scan('*').size + datum['pattern'].scan('+').size
+#     sub_size = maxlength.to_i / len_elem.to_i
+#     pattern = datum['pattern'].gsub('.', '\w').gsub('+', "{1,#{sub_size}}").gsub('*', "{0,#{sub_size}}")
+    #Regexp.new(pattern).gen
+    output = rsting.random_regex(datum['pattern'])
+    print output
+    output
   else
     rand(36**(datum['maxlength'] || 10)).to_s(36)
   end

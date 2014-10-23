@@ -36,7 +36,6 @@ group :test do
   gem 'simplecov',      '~> 0.8'
   gem 'json_spec',      '~> 1.1.1'
   gem 'timecop',        '~> 0.7.1'
-  gem 'randexp',        '~> 0.1.7'
   #TODO: replace when fix for v1.0.0 will be released
   gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git', ref: '7711d4d'
 end
