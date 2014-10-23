@@ -3,7 +3,16 @@ class DrdsController < ApplicationController
   
   def show
     @drd = Drd.find_by_uuid(params[:id])
-    respond_with(@drd, options)
+    if @drd.nil?
+      error = Error.new({ title: 'Item not found',
+                          error_code: :item_not_found,
+                          http_status: 404,
+                          details: "The item with id #{params[:id]} could not be found",
+                          controller: self})
+      respond_with(error, status: 404)
+    else
+      respond_with(@drd, options)
+    end
   end
   
   def index
@@ -13,7 +22,7 @@ class DrdsController < ApplicationController
                           http_status: 422,
                           details: 'You requested search but it is not a valid search_term',
                           controller: self})
-      respond_with(error, status: 404)
+      respond_with(error, status: 422)
     else
       @drds = Drds.find(params[:search_term])
       respond_with(@drds, options)
