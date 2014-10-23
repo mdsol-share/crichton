@@ -11,12 +11,15 @@ describe Crichton do
   # This restores the global setting - one of the tests sets this value to a generated value and that causes other
   # tests to fail later on - depending on the order of the tests.
   after do
+
     Crichton.clear_config
-    Crichton.config_directory = File.join('spec', 'fixtures', 'config')
     Crichton.reset
+    Crichton.config_directory = CONF_DIR
+
+
   end
 
-  describe '.descriptor_registry' do 
+  describe '.descriptor_registry' do
     it 'initializes the registry if the registry is not already initialized' do
       mock_registry = double('Registry')
       allow(mock_registry).to receive(:descriptor_registry)

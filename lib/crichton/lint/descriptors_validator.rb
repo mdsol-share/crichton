@@ -16,14 +16,13 @@ module Crichton
       section :descriptors
 
       # standard validation method
-      def validate
-        check_descriptor_graph
-
-        compare_with_state_resources
-
-        check_id_uniqueness
-
-        check_transition_equivalence
+      def validators
+        [
+        :check_descriptor_graph,
+        :compare_with_state_resources,
+        :check_id_uniqueness,
+        :check_transition_equivalence
+        ]
       end
 
       private

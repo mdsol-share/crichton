@@ -9,10 +9,11 @@ module Crichton
       section :protocols
 
       # standard lint validate method
-      def validate
-        check_for_property_issues
-
-        check_transition_equivalence
+      def validators
+        [
+        :check_for_property_issues,
+        :check_transition_equivalence
+        ]
       end
 
       private

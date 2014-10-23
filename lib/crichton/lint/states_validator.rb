@@ -7,21 +7,19 @@ module Crichton
       section :states
 
       # standard lint validate method
-      def validate
-        #7, #8
-        check_for_secondary_descriptor_states
-
-        #10, #11, #12, #13 check for the presence of required attributes for all transitions
-        check_for_required_state_transition_properties
-
-        check_transition_equivalence
-
-        # check that there is one and only one name:self property on transition per state
-        check_state_transition_names
-
-        check_for_duplicate_transition_names
+      def validators
+        [
+          #7, #8
+          :check_for_secondary_descriptor_states,
+          #10, #11, #12, #13 check for the presence of required attributes for all transitions
+          :check_for_required_state_transition_properties,
+          :check_transition_equivalence,
+          # check that there is one and only one name:self property on transition per state
+          :check_state_transition_names,
+          :check_for_duplicate_transition_names,
+        ]
       end
-
+      
       private
 
       def check_state_transition_names
@@ -132,14 +130,16 @@ module Crichton
       # check to see if an external link to another profile is setup correctly and is downloaded to local cache
       def validate_external_profile(resource_name, state_name, transition_decorator)
         external_document_store  = Crichton::ExternalDocumentStore.new
-        return if external_document_store.get(transition_decorator.next_state_location)
-        response, body = external_document_store.send(:download, transition_decorator.next_state_location)
-        if response == 200
-          add_warning('states.download_external_profile', link: transition_decorator.next_state_location,
-            secondary_descriptor: resource_name, state: state_name, transition: transition_decorator.name)
-        else
-          add_error('states.invalid_external_location', link: transition_decorator.next_state_location,
-            secondary_descriptor: resource_name, state: state_name, transition: transition_decorator.name)
+        unless transition_decorator.next_state_location == 'exit'
+          return if external_document_store.get(transition_decorator.next_state_location)
+          response, body = external_document_store.send(:download, transition_decorator.next_state_location)
+          response_hash = {link: transition_decorator.next_state_location,
+              secondary_descriptor: resource_name, state: state_name, transition: transition_decorator.name}
+          if response == 200
+            add_warning('states.download_external_profile', response_hash)
+          else
+            add_error('states.invalid_external_location', response_hash)
+          end
         end
       end
 

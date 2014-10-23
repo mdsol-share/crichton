@@ -21,17 +21,21 @@ SimpleCov.start
 Debugger.start
 Bundler.setup
 
-require 'crichton'
-
 # Delete the tmp specs directory and all its contents.
 require 'fileutils'
 FileUtils.rm_r SPECS_TEMP_DIR if File.exists?(SPECS_TEMP_DIR)
 Dir.mkdir SPECS_TEMP_DIR
 
+CONF_DIR = File.join('spec', 'fixtures', 'config')
+ROOT_DIR = SPEC_DIR
+
+require File.expand_path("../integration/crichton-demo-service/config/environment", __FILE__)
+require 'rspec/rails'
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
-
-Crichton::config_directory = File.join('spec', 'fixtures', 'config')
-
+CRICHTON_DEMO_SERVICE = Rails
+Crichton::config_directory = CONF_DIR
+#Crichton::root = ROOT_DIR
+#Crichton.instance_variable_set(:@root, Dir.pwd)
 Crichton.logger = ::Logger.new(STDOUT)
 Crichton.logger.level = Logger::ERROR # Avoid non-error to populate the terminal when running specs
 
@@ -51,12 +55,16 @@ RSpec.configure do |config|
   config.include Support::ALPS
   config.include Support::Controllers
   config.include Support::DRDHelpers
-  config.include Support::EPHelpers
 
   config.before(:each) do
+    if example.example_group.metadata[:integration]
+      Rails = CRICHTON_DEMO_SERVICE unless Object.const_defined?(:Rails)
+    else
+      Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
+    end
     stub_alps_requests
     Crichton.reset
-    Crichton.config_directory = File.join('spec', 'fixtures', 'config')
+    Crichton.config_directory = CONF_DIR
     Crichton.initialize_registry(drds_descriptor)
   end
 

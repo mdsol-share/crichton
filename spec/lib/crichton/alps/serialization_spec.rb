@@ -46,12 +46,11 @@ module Crichton
       describe '#alps_elements' do
         it 'returns a hash of alps descriptor elements' do
           expect(subject.alps_elements).to  eq({
-              'doc' => {'value' => 'Describes the semantics, states and state transitions associated with DRDs.'},
-              'link' => [
-                  {'rel' => 'profile', 'href' => 'http://alps.example.com/DRDs'},
-                  {'rel' => 'help', 'href' => 'http://docs.example.org/DRDs#help'}
-              ]
-          })
+            "doc"=>{
+              "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
+              "link"=>[
+                {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
+                {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}]})
         end
       end
 
@@ -61,13 +60,14 @@ module Crichton
             expected_result = <<-XML
               <?xml version="1.0" encoding="UTF-8"?>
               <alps>
-                <doc>Describes the semantics, states and state transitions associated with DRDs.</doc>
-                <link rel="profile" href="http://alps.example.com/DRDs" />
-                <link rel="help" href="http://docs.example.org/DRDs#help" />
+                <doc>
+              Describes the semantics, states and state transitions associated with DRDs.  </doc>
+                <link rel="profile" href="http://localhost:3000/alps/DRDs"/>
+                <link rel="help" href="http://example.org/DRDs#help"/>
                 <descriptor id="name" type="semantic" href="http://alps.io/schema.org/Text">
                 </descriptor>
                 <descriptor id="update" type="idempotent" rt="none">
-                  <link rel="profile" href="http://alps.example.com/DRDs#update"/>
+                  <link rel="profile" href="http://localhost:3000/alps/DRDs#update"/>
                   <descriptor href="#name"/>
                 </descriptor>
               </alps>
@@ -82,21 +82,20 @@ module Crichton
           it 'returns a hash in an ALPS profile structure' do
             expected_result =
             {
-              'alps' => {
-                'doc' => { 'value' => 'Describes the semantics, states and state transitions associated with DRDs.' },
-                'link' => [
-                  { 'rel' => 'profile', 'href' => 'http://alps.example.com/DRDs' },
-                  { 'rel' => 'help', 'href' => 'http://docs.example.org/DRDs#help' }
-                ],
-                'descriptor' => [
-                  { 'id' => 'name', 'type' => 'semantic', 'href' => 'http://alps.io/schema.org/Text' },
-                  {
-                    'link' => [{ 'rel' => 'profile', 'href' => 'http://alps.example.com/DRDs#update' }],
-                    'id' => 'update', 'type' => 'idempotent', 'rt' => 'none',
-                    'descriptor' => [{ 'href' => 'name' }]
-                  }
-                ]
-              }
+              "alps" => {
+                "doc"=>{
+                  "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
+                  "link"=>[
+                    {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
+                    {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}], 
+                  "descriptor"=>[
+                    {"id"=>"name", "type"=>"semantic", "href"=>"http://alps.io/schema.org/Text"}, 
+                    {
+                      "link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs#update"}], 
+                      "id"=>"update", 
+                      "type"=>"idempotent", 
+                      "rt"=>"none", 
+                      "descriptor"=>[{"href"=>"name"}]}]}
             }
             expect(subject.to_alps_hash).to eq(expected_result)
           end

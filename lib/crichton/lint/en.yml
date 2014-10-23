@@ -75,6 +75,7 @@ en:
     invalid_status_code: "Status code '%{code}' is not valid for transition '%{action}', protocol '%{protocol}'"
     missing_status_codes_property: "Status codes property '%{property}' is missing for transition '%{action}', protocol '%{protocol}'"
   routes:
+    no_routes: "No routes section found"
     missing_key: "Resource descriptor document '%{resource}' is missing '%{key}' property in routes section for '%{route}' route."
     missing_route: "Resource '%{resource}' is missing '%{transition}' transition in routes section, which is defined in protocols section."
     missing_protocol_transitions: "No protocol transition defined for route transition '%{route}' in resource '%{resource}'"
