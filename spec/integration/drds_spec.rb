@@ -1,7 +1,6 @@
 require 'spec_helper'
 require_relative 'spec_helper'
 require "addressable/template"
-require "randexp"
 
 describe '/drds', :type => :controller, integration: true do
 
