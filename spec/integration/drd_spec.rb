@@ -41,7 +41,7 @@ describe '/drd/{item}', :type => :controller, integration: true do
     expect(response.status).to eq(200)
     doc = Nokogiri::XML(response.body)
     semantic_descriptors = doc.xpath("//descriptor/@href").map {|elem| elem.to_s[0] == '#' ? elem.to_s[1..-1] : nil}
-    fields = drd_body.keys.select { |key| !['_links','_meta','_embedded'].include?(key) }
+    fields = drd_body.keys - %w[_links _meta _embedded]
     expect(semantic_descriptors).to include(*fields)
   end
   
