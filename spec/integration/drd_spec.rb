@@ -97,8 +97,10 @@ describe '/drd/{item}', :type => :controller, integration: true do
     it "can delete" do
       hale_request drd_body, 'delete'
       response = hale_request drd_body, 'self'
-      
-      pending('expect(response.status).to eq(404) - When Errors are tested')
+      expect(response.status).to eq(404)
+      hale_response = JSON.load(response.body)
+      expect(hale_response['title']).to eq("Item not found")
+      expect(hale_response['_links']).to include('describes', 'profile', 'type', 'help')
     end
     
   end
