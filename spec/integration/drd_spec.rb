@@ -1,6 +1,7 @@
 require 'spec_helper'
 require_relative 'spec_helper'
 require "addressable/template"
+require 'rexml/document'
 
 describe '/drd/{item}', :type => :controller, integration: true do
 
@@ -38,6 +39,10 @@ describe '/drd/{item}', :type => :controller, integration: true do
   it "contains a profile link" do
     response = _http_call drd_body['_links']['profile'], {}, {'HTTP_ACCEPT' => 'application/alps+xml'}
     expect(response.status).to eq(200)
+    doc = Nokogiri::XML(response.body)
+    semantic_descriptors = doc.xpath("//descriptor/@href").map {|elem| elem.to_s[0] == '#' ? elem.to_s[1..-1] : nil}
+    fields = drd_body.keys.select { |key| !['_links','_meta','_embedded'].include?(key) }
+    expect(semantic_descriptors).to include(*fields)
   end
   
   it "contains a type link" do
