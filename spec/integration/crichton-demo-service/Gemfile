@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.0'
 
 gem 'crichton', path: '../../..'#git: 'git@github.com:mdsol/crichton.git', branch: 'develop'
+gem 'representors', git: 'https://github.com/mdsol/representors.git', branch: 'fix/hale_deserializer' #FIXME
 
 gem 'launchy'
 
