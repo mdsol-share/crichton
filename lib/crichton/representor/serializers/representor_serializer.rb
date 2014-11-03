@@ -27,12 +27,12 @@ module Crichton
         Representors::Representor.new(representor_hash)
       end
 
-      def as_media_type(options)
-        to_representor(options).as_media_type(options)
+      def to_media_type(options)
+        to_representor(options).to_media_type(options)
       end
 
       def get_semantic_data(options)
-        object.each_data_semantic(options).map { |semantic| to_attribute(semantic) }
+        Hash[object.each_data_semantic(options).map { |semantic| [semantic.name, to_attribute(semantic)] }]
       end
 
       def get_transition_data(options)
@@ -41,9 +41,9 @@ module Crichton
 
       def get_embedded_data(options)
         object.each_embedded_semantic(options).map do |semantic|
-          embedded_representor = semantic.value.map { |embedded| embedded.to_representor(options) }
+          embedded_representor = semantic.value.map { |embedded| embedded.to_representor(options).to_hash }
           { semantic.name => embedded_representor }
-        end
+        end.inject({},&:merge)
       end
 
       private
@@ -76,6 +76,7 @@ module Crichton
         end
         descriptors.any? ? transition.merge(TAG => descriptors) : transition
       end
+
     end
   end
 end
