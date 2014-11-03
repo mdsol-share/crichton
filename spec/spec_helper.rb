@@ -53,7 +53,6 @@ RSpec.configure do |config|
 
   config.include Support::Helpers
   config.include Support::ALPS
-  config.include Support::Controllers
   config.include Support::DRDHelpers
 
   config.before(:each) do
