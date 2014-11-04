@@ -27,7 +27,7 @@ module Crichton
         # @option options [String, Symbol, Array] :additional_links Allows dynamically adding new links.
         # @option options [String, Symbol, Array] :override_links Allow overriding the URL set in links.
         # @option options [String, Symbol, Array] :state The state of the resource.
-        def to_representor(media_type, options = {})
+        def to_representor(options)
           serializer = Crichton::Representor::RepresentorSerializer.new(self, options)
           serializer.to_representor(options)
         end
