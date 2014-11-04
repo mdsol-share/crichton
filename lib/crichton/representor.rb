@@ -74,6 +74,7 @@ module Crichton
       # The id of top-level resource descriptor.
       #
       def resource_descriptor_id
+        
         resource_descriptor.parent_descriptor.id
       end
 

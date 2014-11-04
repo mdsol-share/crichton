@@ -1,5 +1,5 @@
 require 'representors'
-#require 'representors/representor_builder'
+require 'representors/representor_builder'
 #require 'representors/representor'
 
 module Crichton
@@ -17,26 +17,57 @@ module Crichton
       def initialize(object, options)
         @object, @options = object, options
       end
-
+#       id: nil,
+#           +      doc: nil,
+#           +      href: nil,
+#           +      attributes: {},
+#           +      links: [],
+#           +      transitions: [],
+#           +      embedded: {}
       def to_representor(options)
-        representor_hash = {
-          attributes: get_semantic_data(options),
-          transitions: get_transition_data(options),
-          embedded: get_embedded_data(options)
-        }
-        Representors::Representor.new(representor_hash)
+        builder = Representors::RepresentorBuilder.new({
+          id: @object.uuid,
+          href: @object.self_transition.url,
+          links: get_links(@object, options)
+          #doc: # No Current Way to do this in Crichton
+        })
+        #print Representors::Representor.new(builder.to_representor_hash).to_yaml
+        builder = get_semantic_data(builder, options)
+        builder = get_transition_data(builder, options)
+#           transitions: get_transition_data(options),
+#           embedded: get_embedded_data(options)
+#         }
+        print Representors::Representor.new(builder.to_representor_hash).to_hash
+        print Representors::Representor.new(builder.to_representor_hash).to_media_type(:hale_json)
+        Representors::Representor.new(builder.to_representor_hash)
       end
 
       def as_media_type(options)
-        to_representor(options).as_media_type(options)
+        to_representor(options)#.to_media_type(options)
+      end
+      
+      def get_semantic_data(builder, options)
+        #print object.each_data_semantic(options).map { |x| x.methods }
+        object.each_data_semantic(options).reduce(builder) { |builder, semantic| builder.add_attribute(semantic.name, to_attribute(semantic)) }
+      end
+      
+      def get_links(object, options)
+        object.metadata_links(options).map do |e|
+          link = e.templated? ? e.templated_url : e.url
+          transition = link ? to_transition(e) : nil
+#           print transition
+#           print Representors::Transition.new(transition).to_hash
+#           print Representors::Transition.new(transition).uri
+#           print "\n"
+          #transition[:r
+        end.reject(&:blank?)
       end
 
-      def get_semantic_data(options)
-        object.each_data_semantic(options).map { |semantic| to_attribute(semantic) }
-      end
-
-      def get_transition_data(options)
-        object.each_transition(options).map { |transition| to_transition(transition) }
+      def get_transition_data(builder, options)
+        object.each_transition(options).reduce(builder) do |builder, transition| 
+          link = transition.templated? ? transition.templated_url : transition.url
+          link ? builder.add_transition(transition.name, link, to_transition(transition)) : builder
+        end
       end
 
       def get_embedded_data(options)
@@ -62,12 +93,15 @@ module Crichton
       end
 
       def to_transition(element)
-        rel = element.name ? { rel: element.name } : {}
-        doc = element.doc ? { doc: element.doc } : {}
-        rt = element.rt ? { rt: element.rt } : {}
-        method = element.interface_method ? { method: element.interface_method } : {}
-        href = element.templated? ? { href: element.templated_url } : { href: element.url }
-        transition = rel.merge(doc).merge(href).merge(rt).merge(method)
+        transition = {}
+        [:rel, :name, :doc, :rt, :interface_method].map do |attribute|
+          if (element.respond_to?(attribute) && element.send(attribute))
+            transition[attribute] = element.public_send(attribute)
+          end
+        end
+        transition[:method] = transition[:interface_method] if transition.include?(:interface_method)               
+        transition[:href] = element.templated? ? element.templated_url : element.url
+        print transition[:href]
         descriptors = {}
         if element.templated?
           descriptors = element.semantics.values.each_with_object({}) do |semantic, h|
