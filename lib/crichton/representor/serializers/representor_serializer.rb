@@ -24,6 +24,7 @@ module Crichton
 #           +      links: [],
 #           +      transitions: [],
 #           +      embedded: {}
+
       def to_representor(options)
         #@object.inspect
         builder = Representors::RepresentorBuilder.new({
@@ -42,8 +43,12 @@ module Crichton
         to_representor(options)#.to_media_type(options)
       end
       
+      private
+       
       def get_semantic_data(builder, options)
-        object.each_data_semantic(options).reduce(builder) { |builder, semantic| builder.add_attribute(semantic.name, semantic.value, to_attribute(semantic)) }
+        object.each_data_semantic(options).reduce(builder) do |builder, semantic| 
+          builder.add_attribute(semantic.name, semantic.value, to_attribute(semantic))
+        end
       end
       
       def get_links(object, options)
@@ -82,7 +87,7 @@ module Crichton
         RepresentorSerializer.new(object, options).as_media_type(options)#.inspect
       end
       
-      private
+
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
         doc = element.doc ? { doc: element.doc } : {}
