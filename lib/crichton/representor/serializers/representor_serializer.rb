@@ -24,6 +24,7 @@ module Crichton
 #           +      links: [],
 #           +      transitions: [],
 #           +      embedded: {}
+
       def to_representor(options)
         #@object.inspect
         builder = Representors::RepresentorBuilder.new({
@@ -43,7 +44,9 @@ module Crichton
       end
 
       def get_semantic_data(builder, options)
-        object.each_data_semantic(options).reduce(builder) { |builder, semantic| builder.add_attribute(semantic.name, semantic.value, to_attribute(semantic)) }
+        object.each_data_semantic(options).reduce(builder) do |builder, semantic| 
+          builder.add_attribute(semantic.name, semantic.value, to_attribute(semantic))
+        end
       end
 
       def get_links(object, options)
@@ -78,6 +81,7 @@ module Crichton
       end
 
       private
+
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
         doc = element.doc ? { doc: element.doc } : {}
@@ -87,14 +91,15 @@ module Crichton
         profile = element.href ? { profile: element.href } : {}
         field_type = element.field_type ? { field_type: element.field_type } : {}
         validators = element.validators.any? ? { validators: element.validators } : {}
+        scope = element.scope? ? { 'scope' => 'href' } : {}
         #TODO: need to add options
-        attribute = doc.merge(type).merge(sample).merge(value).merge(profile).merge(field_type).merge(validators)
+        attribute = doc.merge(type).merge(sample).merge(value).merge(profile).merge(field_type).merge(validators).merge(scope)
         semantics.any? ? attribute.merge(TAG => semantics) : attribute
       end
 
       def to_transition(element)
         transition = {}
-        [:rel, :name, :doc, :rt, :interface_method].map do |attribute|
+        [:rel, :name, :doc, :rt, :interface_method].each do |attribute|
           if (element.respond_to?(attribute) && element.send(attribute))
             transition[attribute] = element.public_send(attribute)
           end

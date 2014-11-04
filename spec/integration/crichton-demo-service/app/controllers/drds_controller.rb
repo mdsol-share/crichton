@@ -15,7 +15,9 @@ class DrdsController < ApplicationController
                           controller: self})
       respond_with(error, status: 404)
     else
+      #print params
       @drds = Drds.find(params[:search_term])
+      #print @drds
       respond_with(@drds, options)
     end
   end
