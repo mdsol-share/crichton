@@ -59,7 +59,7 @@ describe '/drds', :type => :controller, integration: true do
                       "search_term" => 'foo',
                       "search_name" => 'bar'})
       get search_uri, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      print JSON.load(response.body)
+      #print JSON.load(response.body)
       expect(JSON.load(response.body)['_links']['items'].size).to eq(0)
     end
     
