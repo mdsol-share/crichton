@@ -26,14 +26,14 @@ module Crichton
                         http_status: 422,
                         details: 'You requested search but it is not a valid search_term',})
       end
-      let(:serializer) { HaleJsonSerializer }
+      let(:serializer) { Representors::Serialization::HaleSerializer }
 
       describe '#as_media_type' do
         it 'returns an error body' do
           @hale = JSON.load(drds_hale_json)
           stub_example_configuration
           Crichton.initialize_registry(@document || errors_descriptor)
-          expect(serializer.new(drds).as_media_type(conditions: 'can_do_anything')['details']).to eq("You requested search but it is not a valid search_term")
+          expect(serializer.new(drds).to_media_type(conditions: 'can_do_anything')['details']).to eq("You requested search but it is not a valid search_term")
         end
 
       end

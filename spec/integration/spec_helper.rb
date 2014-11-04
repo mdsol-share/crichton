@@ -56,6 +56,13 @@ def _http_call(link_object, data, default_media)
 end
 
 def hale_request(object, link_relation=false, options = {})
-  link = link_relation ? object['_links'][link_relation] : object
+  if link_relation
+    unless object['_links'] && object['_links'][link_relation]
+      raise "expected current state to have link relation #{link_relation} but links were #{object['_links'].inspect}"
+    end
+    link = object['_links'][link_relation]
+  else
+    link = object
+  end
   _http_call link, options, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
 end
