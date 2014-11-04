@@ -107,7 +107,7 @@ module Crichton
                   if obj.respond_to?("to_#{type}")
                     # TODO: Handle response headers!
                     # before: serializer.response_headers(obj, request).each { |k, v| response.headers[k] = v }
-                    obj.to_representor(options).to_media_type(type, options)
+                    Representors::Representor.new(obj.to_representor(options)).to_media_type(type, options)
                   else
                     super
                   end

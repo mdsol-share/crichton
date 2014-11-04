@@ -15,8 +15,7 @@ gem 'yard',          '~> 0.8.7'
 gem 'redcarpet',     '~> 3.0.0'
 gem 'rake',          '~> 0.9'
 gem 'awesome_print', '~> 1.1.0'
-
-gem 'representors', git: 'https://github.com/mdsol/representors.git', branch: 'develop'
+gem 'representors', path: '/Users/svalentine/Projects/temp/representors'
 
 
 group :development, :test do

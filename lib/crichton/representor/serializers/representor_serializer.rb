@@ -25,43 +25,36 @@ module Crichton
 #           +      transitions: [],
 #           +      embedded: {}
       def to_representor(options)
+        #@object.inspect
         builder = Representors::RepresentorBuilder.new({
-          id: @object.uuid,
+          #id: @object.uuid, #Not working for some reason
           href: @object.self_transition.url,
           links: get_links(@object, options)
           #doc: # No Current Way to do this in Crichton
         })
-        #print Representors::Representor.new(builder.to_representor_hash).to_yaml
         builder = get_semantic_data(builder, options)
         builder = get_transition_data(builder, options)
-#           transitions: get_transition_data(options),
-#           embedded: get_embedded_data(options)
-#         }
-        print Representors::Representor.new(builder.to_representor_hash).to_hash
-        print Representors::Representor.new(builder.to_representor_hash).to_media_type(:hale_json)
-        Representors::Representor.new(builder.to_representor_hash)
+        builder = get_embedded_data(builder, options)
+        builder.to_representor_hash
       end
 
       def as_media_type(options)
-        to_representor(options).to_media_type(options)
+        to_representor(options)#.to_media_type(options)
       end
       
       def get_semantic_data(builder, options)
-        #print object.each_data_semantic(options).map { |x| x.methods }
-        object.each_data_semantic(options).reduce(builder) { |builder, semantic| builder.add_attribute(semantic.name, to_attribute(semantic)) }
+        object.each_data_semantic(options).reduce(builder) { |builder, semantic| builder.add_attribute(semantic.name, semantic.value, to_attribute(semantic)) }
       end
       
       def get_links(object, options)
-        object.metadata_links(options).map do |e|
+        links = object.metadata_links(options).map do |e|
           link = e.templated? ? e.templated_url : e.url
           transition = link ? to_transition(e) : nil
-#           print transition
-#           print Representors::Transition.new(transition).to_hash
-#           print Representors::Transition.new(transition).uri
-#           print "\n"
-          #transition[:r
         end.reject(&:blank?)
-
+        ret = {}
+        links.each { |hash| ret[hash[:rel]] = hash[:href] }
+        ret
+      end
 
       def get_transition_data(builder, options)
         object.each_transition(options).reduce(builder) do |builder, transition| 
@@ -70,13 +63,25 @@ module Crichton
         end
       end
 
-      def get_embedded_data(options)
-        object.each_embedded_semantic(options).map do |semantic|
-          embedded_representor = semantic.value.map { |embedded| embedded.to_representor(options).to_hash }
-          { semantic.name => embedded_representor }
-        end.inject({},&:merge)
+      def map_or_apply(unknown_object, function)
+        unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
       end
 
+      
+      def get_embedded_data(builder, options)
+        @object.each_embedded_semantic(options).inject(builder) do |builder, semantic|
+          builder.add_embedded(semantic.name, get_embedded_elements(semantic, options))
+        end
+      end
+      
+      def get_embedded_elements(semantic, options)
+        map_or_apply(semantic.value, ->(object) { get_embedded_hale(object, options) })
+      end
+
+      def get_embedded_hale(object, options)
+        RepresentorSerializer.new(object, options).as_media_type(options)#.inspect
+      end
+      
       private
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
@@ -101,7 +106,6 @@ module Crichton
         end
         transition[:method] = transition[:interface_method] if transition.include?(:interface_method)               
         transition[:href] = element.templated? ? element.templated_url : element.url
-        print transition[:href]
         descriptors = {}
         if element.templated?
           descriptors = element.semantics.values.each_with_object({}) do |semantic, h|

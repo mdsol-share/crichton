@@ -15,7 +15,7 @@ module Crichton
       it 'self-registers as a serializer for the hale+json media-type' do
         expect(Serializer.registered_serializers[:hale_json]).to eq(serializer)
       end
-=begin
+
       describe '#as_media_type' do
         after do
           stub_example_configuration
@@ -41,7 +41,7 @@ module Crichton
           end
         end
       end
-=end
+
     end
   end
 end
