@@ -1,7 +1,5 @@
 require 'spec_helper'
 require_relative 'spec_helper'
-require 'rexml/document'
-include REXML
 
 describe '/', :type => :controller, integration: true do
   before do
