@@ -39,13 +39,13 @@ module Crichton
       end
 
       def as_media_type(options)
-        to_representor(options)#.to_media_type(options)
+        to_representor(options)
       end
-      
+
       def get_semantic_data(builder, options)
         object.each_data_semantic(options).reduce(builder) { |builder, semantic| builder.add_attribute(semantic.name, semantic.value, to_attribute(semantic)) }
       end
-      
+
       def get_links(object, options)
         links = object.metadata_links(options).map do |e|
           link = e.templated? ? e.templated_url : e.url
@@ -57,31 +57,26 @@ module Crichton
       end
 
       def get_transition_data(builder, options)
-        object.each_transition(options).reduce(builder) do |builder, transition| 
+        object.each_transition(options).reduce(builder) do |builder, transition|
           link = transition.templated? ? transition.templated_url : transition.url
           link ? builder.add_transition(transition.name, link, to_transition(transition)) : builder
         end
       end
 
-      def map_or_apply(unknown_object, function)
-        unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
-      end
-
-      
       def get_embedded_data(builder, options)
         @object.each_embedded_semantic(options).inject(builder) do |builder, semantic|
           builder.add_embedded(semantic.name, get_embedded_elements(semantic, options))
         end
       end
-      
+
       def get_embedded_elements(semantic, options)
         map_or_apply(semantic.value, ->(object) { get_embedded_hale(object, options) })
       end
 
       def get_embedded_hale(object, options)
-        RepresentorSerializer.new(object, options).as_media_type(options)#.inspect
+        RepresentorSerializer.new(object, options).as_media_type(options)
       end
-      
+
       private
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
@@ -104,7 +99,7 @@ module Crichton
             transition[attribute] = element.public_send(attribute)
           end
         end
-        transition[:method] = transition[:interface_method] if transition.include?(:interface_method)               
+        transition[:method] = transition[:interface_method] if transition.include?(:interface_method)
         transition[:href] = element.templated? ? element.templated_url : element.url
         descriptors = {}
         if element.templated?
@@ -114,6 +109,11 @@ module Crichton
         end
         descriptors.any? ? transition.merge(TAG => descriptors) : transition
       end
+
+      def map_or_apply(unknown_object, function)
+        unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
+      end
+
 
     end
   end

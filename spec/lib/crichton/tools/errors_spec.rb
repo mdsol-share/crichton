@@ -1,13 +1,12 @@
 require 'spec_helper'
 require 'crichton/representor'
 require 'crichton/representor/factory'
-require 'crichton/representor/serializers/hale_json'
 require 'crichton/tools/base_errors'
 require 'json_spec'
 
 module Crichton
   module Representor
-    describe HaleJsonSerializer do
+    describe 'hale-json errors' do
 
       let (:drds) do
         class SubErrors < Crichton::Tools::BaseErrors
