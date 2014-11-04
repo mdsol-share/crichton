@@ -15,8 +15,12 @@ gem 'yard',          '~> 0.8.7'
 gem 'redcarpet',     '~> 3.0.0'
 gem 'rake',          '~> 0.9'
 gem 'awesome_print', '~> 1.1.0'
+<<<<<<< HEAD
 #gem 'representors', git: 'https://github.com/mdsol/representors.git', branch: 'fix/hale_deserializer'
 gem 'representors', path: '/Users/svalentine/Projects/temp/representors'
+=======
+gem 'representors', git: 'https://github.com/mdsol/representors.git', branch: 'develop'
+>>>>>>> 4c85ba3d44a3f358504b43a937fa695698407e6a
 
 group :development, :test do
   gem 'pry'

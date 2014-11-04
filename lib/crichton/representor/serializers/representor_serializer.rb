@@ -43,7 +43,7 @@ module Crichton
       end
 
       def as_media_type(options)
-        to_representor(options)#.to_media_type(options)
+        to_representor(options).to_media_type(options)
       end
       
       def get_semantic_data(builder, options)
@@ -61,7 +61,7 @@ module Crichton
 #           print "\n"
           #transition[:r
         end.reject(&:blank?)
-      end
+
 
       def get_transition_data(builder, options)
         object.each_transition(options).reduce(builder) do |builder, transition| 
@@ -72,9 +72,9 @@ module Crichton
 
       def get_embedded_data(options)
         object.each_embedded_semantic(options).map do |semantic|
-          embedded_representor = semantic.value.map { |embedded| embedded.to_representor(options) }
+          embedded_representor = semantic.value.map { |embedded| embedded.to_representor(options).to_hash }
           { semantic.name => embedded_representor }
-        end
+        end.inject({},&:merge)
       end
 
       private
@@ -110,6 +110,7 @@ module Crichton
         end
         descriptors.any? ? transition.merge(TAG => descriptors) : transition
       end
+
     end
   end
 end
