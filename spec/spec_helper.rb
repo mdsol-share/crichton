@@ -64,7 +64,7 @@ RSpec.configure do |config|
     stub_alps_requests
     Crichton.reset
     Crichton.config_directory = CONF_DIR
-    Crichton.initialize_registry(drds_descriptor)
+    Crichton.descriptor_registry
   end
 
   config.include JsonSpec::Helpers
