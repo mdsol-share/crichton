@@ -30,27 +30,14 @@ module Crichton
         (opts = options) && opts.include?(EXTERNAL)
       end
 
-      ##
-      # Iterator allowing the generation of select lists from the values
-      #
-      # This iterator should provide a unified interface for generating option lists. It should avoid the need to
-      # check if the option is a hash or list, so for both it uses two parameters for the yield.
-      def each
-        if opts =  options
-          if opts.include?(HASH)
-            opts[HASH].each { |k, v| yield k, v }
-          elsif opts.include?(LIST)
-            opts[LIST].each { |k| yield k, k }
-          else
-            Crichton::logger.warn("did not find list or hash key in options data: #{opts.to_s}")
-          end
-        end
+      def values
+        options[HASH] || options[LIST]
       end
-      
+
       def type
         options.include?(HASH) ? Hash : Array
       end
-      
+
       def source
         external[SOURCE]
       end

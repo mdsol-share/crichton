@@ -10,7 +10,7 @@ module Crichton
 
       SEMANTIC_TYPES = { # This perhaps should be in Representor
         select: "text", #No way in Crichton to distinguish [Int] and [String]
-        search:"text",
+        search: "text",
         text: "text",
         boolean: "bool", #a Server should accept ?cat&dog or ?cat=cat&dog=dog
         number: "number",
@@ -47,6 +47,8 @@ module Crichton
       def as_media_type(options)
         to_representor(options)
       end
+
+      private
 
       def get_semantic_data(builder, options)
         object.each_data_semantic(options).reduce(builder) do |builder, semantic| 
@@ -85,22 +87,20 @@ module Crichton
         RepresentorSerializer.new(object, options).as_media_type(options)
       end
 
-      private
-
+      #TODO: If this stays in Crichton, we need integration specs testing that options actually get serialized
       def get_options(element)
         opts = element.options
-        opts = if opts && opts.external?
-          { 'external' => { source: opts.source, target: opts.target || "." } }
-        elsif opts.enumerable?
-          avl_options = opts.type.new(opts.each { |k, v| {k => v} })
-          key = (opts.type==Array) ? 'list' : 'hash'
-          { key => avl_options }
-        else
+        case
+        when opts.nil?
           {}
+        when opts.external?
+          { 'external' => { source: opts.source, target: opts.target || "." } }
+        when opts.enumerable?
+          key = opts.type == Array ? 'list' : 'hash'
+          { key => opts.values }
         end
-        opts
       end
-      
+
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
         doc = element.doc ? { doc: element.doc } : {}
