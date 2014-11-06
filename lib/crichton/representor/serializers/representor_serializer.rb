@@ -74,7 +74,7 @@ module Crichton
       end
 
       def get_embedded_data(builder, options)
-        @object.each_embedded_semantic(options).inject(builder) do |builder, semantic|
+        @object.each_embedded_semantic(options).reduce(builder) do |builder, semantic|
           builder.add_embedded(semantic.name, get_embedded_elements(semantic, options))
         end
       end
