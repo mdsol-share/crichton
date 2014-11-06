@@ -1,14 +1,8 @@
 require 'representors'
 require 'representors/representor_builder'
-#require 'representors/representor'
 
 module Crichton
   module Representor
-
-    ##
-    # Manages the serialization of a Crichton::Representor to a representor_hash instance.
-    # TODO: THIS HAS TO BE REFACTORED TO USE RepresentorBuilder INTERFACE
-    # TODO: WHEN RepresentorBuilder INTERFACE READY
     class RepresentorSerializer
       attr_reader :object, :options
 
@@ -110,8 +104,6 @@ module Crichton
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
         doc = element.doc ? { doc: element.doc } : {}
-
-
         sample = element.sample ? { sample: element.sample } : {}
         value = element.source_defined? ? { value: element.value } : {}
         profile = element.href ? { profile: element.href } : {}
