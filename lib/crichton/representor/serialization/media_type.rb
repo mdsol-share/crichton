@@ -58,8 +58,9 @@ module Crichton
           end
         end
 
+        #TODO: Should use representors
         def registered?(type)
-          Crichton::Representor::Serializer.serializers?(type) #|| Representors::SerializerFactory.serializers?(type)
+          Crichton::Representor::Serializer.serializers?(type)
         end
 
       end
