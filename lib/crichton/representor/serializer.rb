@@ -104,8 +104,12 @@ module Crichton
                 if obj.is_a?(Crichton::Representor)
                   options.merge!({ top_level: true, override_links: { 'self' => request.url } }) if request.get?
                   options.merge!(semantics: :styled_microdata) if media_type == :html
-                  obj.to_media_type(type, options) do |serializer|
-                    serializer.response_headers(obj, request).each { |k, v| response.headers[k] = v }
+                  if obj.respond_to?("to_#{type}")
+                    # TODO: Handle response headers!
+                    # before: serializer.response_headers(obj, request).each { |k, v| response.headers[k] = v }
+                    Representors::Representor.new(obj.to_representor(options)).to_media_type(type, options)
+                  else
+                    super
                   end
                 else
                   raise(ArgumentError,
@@ -151,34 +155,6 @@ module Crichton
           end
           response_headers.merge!(object.response_headers(@options))
         end
-      end
-
-      ##
-      # Returns a serialized media-type for the response as a Hash or XML. This method is used for serialization
-      # of a response and should not typically be used as the method to generate the final response, which should be
-      # returned using the <tt>to_media_type</tt> method instead.
-      #
-      # This abstract method must be overridden in concrete serializer subclasses.
-      def as_media_type(options = {})
-        raise("The method #as_media_type is an abstract method of the Crichton::Serializer class and must be " <<
-          "overridden in the #{self.class.name} subclass.")
-      end
-
-      ##
-      # Returns the serializer as the final media-type in correct format.
-      #
-      # Sub-classes should override the default functionality which delegates to #as_media_type, if, for example, 
-      # the result should be returned as JSON string.
-      #
-      # @example
-      #   # application/hal+json
-      #   def to_media_type(options = {})
-      #     self.as_media_type(options).to_json
-      #   end
-      #
-      # @param [Hash] options Conditional options.
-      def to_media_type(options = {})
-        self.as_media_type(options)
       end
     end
   end

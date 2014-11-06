@@ -1,5 +1,5 @@
 .bundle
-api_descriptors/
+/api_descriptors/
 gemfiles/*.lock
 Gemfile.lock
 coverage
@@ -9,4 +9,4 @@ tmp
 yardoc
 spec/fixtures/external_documents_cache/
 spec/fixtures/external_documents_store/
-config
+./config

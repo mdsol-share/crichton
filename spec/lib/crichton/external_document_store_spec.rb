@@ -163,9 +163,12 @@ module Crichton
         Support::ALPSSchema::StubUrls.each do |url, body|
           stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
         end
+        stub_request(:get, "http://example.org/profiles/ErrorCodes").
+          to_return(:status => 200, :body => "An arbitrary body", :headers => {})
         FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
         FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
         FileUtils.rm Dir.glob(File.join(@pathname, '*.profile'))
+        
       end
 
       after do
@@ -176,10 +179,7 @@ module Crichton
       it 'loads external documents' do
         eds = ExternalDocumentStore.new(@pathname)
         eds.store_all_external_documents
-        files = Dir.glob(File.join([@pathname, '*'])).collect {|f| f.split('schema_org_').last}
-        expect(files.sort).to eq(%w(Array.meta Array.profile Boolean.meta Boolean.profile DataType.meta DataType.profile
-          DateTime.meta DateTime.profile Integer.meta Integer.profile Number.meta Number.profile Text.meta
-          Text.profile Thing_Leviathan.meta Thing_Leviathan.profile).sort)
+        expect(eds.compare_stored_documents_with_their_original_documents).to eq("")
       end
     end
   end

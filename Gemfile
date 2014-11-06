@@ -15,7 +15,8 @@ gem 'yard',          '~> 0.8.7'
 gem 'redcarpet',     '~> 3.0.0'
 gem 'rake',          '~> 0.9'
 gem 'awesome_print', '~> 1.1.0'
-gem 'representors', git: 'https://www.github.com/mdsol/representors.git', branch: 'develop'
+gem 'representors', git: 'git@github.com:mdsol/representors.git', branch: 'develop'
+
 
 group :development, :test do
   gem 'pry'
@@ -24,12 +25,19 @@ group :development, :test do
 end
 
 group :test do
+  gem 'sqlite3'
+  gem 'yajl-ruby', '~> 1.2.0'
+  gem 'faraday',   '~> 0.9.0'
+  gem 'jquery-rails'
+  gem 'nokogiri'
+  gem 'launchy'
   gem 'webmock',        '~> 1.13.0'
   gem 'equivalent-xml', '~> 0.3.0'
-  gem 'rspec',          '~> 2.14.0'
+  gem 'rspec',          '~> 2.14'
+  gem 'rspec-rails',    '~> 2.14'
   gem 'simplecov',      '~> 0.8'
   gem 'json_spec',      '~> 1.1.1'
   gem 'timecop',        '~> 0.7.1'
   #TODO: replace when fix for v1.0.0 will be released
-  gem 'appraisal', git: 'https://github.com/thoughtbot/appraisal.git', ref: '7711d4d'
+  gem 'appraisal', git: 'git@github.com:thoughtbot/appraisal.git', tag: 'v1.0.2'
 end

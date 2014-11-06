@@ -52,7 +52,7 @@ module Crichton
       
       describe '#profile_link' do
         it 'returns an absolute link' do
-          expect(resource_descriptor.profile_link.href).to eq('http://alps.example.com/DRDs')
+          expect(resource_descriptor.profile_link.href).to eq('http://localhost:3000/alps/DRDs')
         end
 
         it 'returns a link with the name profile' do
