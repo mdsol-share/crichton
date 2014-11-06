@@ -1,5 +1,3 @@
-require 'crichton/representor/serializers/xhtml'
-
 module Crichton
   module Discovery
 

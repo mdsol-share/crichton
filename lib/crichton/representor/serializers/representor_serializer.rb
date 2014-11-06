@@ -99,7 +99,7 @@ module Crichton
           { 'external' => { source: opts.source, target: opts.target || "." } }
         elsif opts.enumerable?
           avl_options = opts.type.new(opts.each { |k, v| {k => v} })
-          key = opts.type.is_a?(Array) ? 'list' : 'hash'
+          key = (opts.type==Array) ? 'list' : 'hash'
           { key => avl_options }
         else
           {}
