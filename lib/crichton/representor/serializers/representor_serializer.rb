@@ -31,7 +31,7 @@ module Crichton
 
       def to_representor(options)
         buider_init = {}
-        unless @object.self_transition.is_a?(Array)
+        unless @object.self_transition.is_a?(Array) #FIXME: workaround for bug in representor.rb
           buider_init[:id] = @object.respond_to?(:uuid) ? @object.uuid : @object.self_transition.url
           buider_init[:href] =  @object.self_transition.url
         end
@@ -60,7 +60,7 @@ module Crichton
         links = object.metadata_links(options).map do |e|
           link = e.templated? ? e.templated_url : e.url
           transition = link ? to_transition(e) : nil
-        end.reject(&:blank?)
+        end.reject{ |link| link.to_s == ''}
         ret = {}
         links.each { |hash| ret[hash[:rel]] = hash[:href] }
         ret
