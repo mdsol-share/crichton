@@ -163,6 +163,8 @@ module Crichton
         Support::ALPSSchema::StubUrls.each do |url, body|
           stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
         end
+        stub_request(:get, "http://example.org/profiles/ErrorCodes").
+          to_return(:status => 200, :body => "An arbitrary body", :headers => {})
         FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
         FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
         FileUtils.rm Dir.glob(File.join(@pathname, '*.profile'))
