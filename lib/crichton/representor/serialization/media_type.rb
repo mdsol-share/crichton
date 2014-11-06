@@ -45,6 +45,10 @@ module Crichton
           serializer.as_media_type(options)
         end
 
+        def to_media_type(media_type, options)
+          Representors::Representor.new(as_media_type(media_type, options)).to_media_type(media_type, options)
+        end
+
         def method_missing(method, *args, &block)
           if (match = method.to_s.match(/^to_(\w*)$/))
             type = match[1].to_sym
