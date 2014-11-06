@@ -46,7 +46,11 @@ module Crichton
           end
         end
       end
-
+      
+      def type
+        options.include?(HASH) ? Hash : Array
+      end
+      
       def source
         external[SOURCE]
       end

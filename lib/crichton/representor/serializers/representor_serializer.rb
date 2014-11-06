@@ -14,25 +14,36 @@ module Crichton
 
       TAG = 'descriptors'
 
+      SEMANTIC_TYPES = { # This perhaps should be in Representor
+        select: "text", #No way in Crichton to distinguish [Int] and [String]
+        search:"text",
+        text: "text",
+        boolean: "bool", #a Server should accept ?cat&dog or ?cat=cat&dog=dog
+        number: "number",
+        email: "text",
+        tel: "text",
+        datetime: "text",
+        time: "text",
+        date: "text",
+        month: "text",
+        week: "text",
+        object: "object",
+        :"datetime-local" => "text"
+      }
+      
       def initialize(object, options)
         @object, @options = object, options
       end
-#       id: nil,
-#           +      doc: nil,
-#           +      href: nil,
-#           +      attributes: {},
-#           +      links: [],
-#           +      transitions: [],
-#           +      embedded: {}
 
       def to_representor(options)
-        #@object.inspect
-        builder = Representors::RepresentorBuilder.new({
-          #id: @object.uuid, #Not working for some reason
-          href: @object.self_transition.url,
-          links: get_links(@object, options)
-          #doc: # No Current Way to do this in Crichton
-        })
+        buider_init = {}
+        unless @object.self_transition.is_a?(Array)
+          buider_init[:id] = @object.respond_to?(:uuid) ? @object.uuid : @object.self_transition.url
+          buider_init[:href] =  @object.self_transition.url
+        end
+        buider_init[:links] = get_links(@object, options)
+
+        builder = Representors::RepresentorBuilder.new(buider_init)
         builder = get_semantic_data(builder, options)
         builder = get_transition_data(builder, options)
         builder = get_embedded_data(builder, options)
@@ -73,27 +84,43 @@ module Crichton
       end
 
       def get_embedded_elements(semantic, options)
-        map_or_apply(semantic.value, ->(object) { get_embedded_hale(object, options) })
+        map_or_apply(semantic.value, ->(object) { get_embedded_rep(object, options) })
       end
 
-      def get_embedded_hale(object, options)
+      def get_embedded_rep(object, options)
         RepresentorSerializer.new(object, options).as_media_type(options)
       end
 
       private
 
+      def get_options(element)
+        opts = element.options
+        opts = if opts && opts.external?
+          { 'external' => { source: opts.source, target: opts.target || "." } }
+        elsif opts.enumerable?
+          avl_options = opts.type.new(opts.each { |k, v| {k => v} })
+          key = opts.type.is_a?(Array) ? 'list' : 'hash'
+          { key => avl_options }
+        else
+          {}
+        end
+        opts
+      end
+      
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
         doc = element.doc ? { doc: element.doc } : {}
-        type = element.type ? { type: element.type } : {}
+
+
         sample = element.sample ? { sample: element.sample } : {}
         value = element.source_defined? ? { value: element.value } : {}
         profile = element.href ? { profile: element.href } : {}
-        field_type = element.field_type ? { field_type: element.field_type } : {}
+        field_type = element.field_type ? { field_type: element.field_type, type: SEMANTIC_TYPES[element.field_type.to_sym] } : {}
         validators = element.validators.any? ? { validators: element.validators } : {}
+        validators[:validators] = validators[:validators].map { |h| h[-1].nil? ? h[0] : Hash[[h]] } if validators[:validators]
         scope = element.scope? ? { 'scope' => 'href' } : {}
-        #TODO: need to add options
-        attribute = doc.merge(type).merge(sample).merge(value).merge(profile).merge(field_type).merge(validators).merge(scope)
+        opts = element.options ? { options: get_options(element) } : {}
+        attribute = doc.merge(sample).merge(value).merge(profile).merge(field_type).merge(validators).merge(scope).merge(opts)
         semantics.any? ? attribute.merge(TAG => semantics) : attribute
       end
 
