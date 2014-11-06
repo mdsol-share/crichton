@@ -1,5 +1,3 @@
-require 'crichton/representor/serializers/xhtml'
-
 module Crichton
   module Discovery
 
@@ -118,7 +116,7 @@ module Crichton
       LINK_OBJECT_NAME = :name
       PROFILE = :profile
       RESERVED_HREF = :href
-  	  RESERVED_LINKS = :_links
+      RESERVED_LINKS = :_links
 
       # Requires objects that have three methods: href, :link_relation, and :name.
       # href method should return the URL where resources can be found
