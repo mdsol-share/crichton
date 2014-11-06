@@ -80,7 +80,7 @@ module Crichton
       end
 
       def get_embedded_elements(semantic, options)
-        map_or_apply(semantic.value, ->(object) { get_embedded_rep(object, options) })
+        map_or_apply(semantic.value) { |object| get_embedded_rep(object, options) }
       end
 
       def get_embedded_rep(object, options)
@@ -101,6 +101,7 @@ module Crichton
         end
       end
 
+      # TODO: Refactor or move to Representors
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
         doc = element.doc ? { doc: element.doc } : {}
@@ -116,6 +117,7 @@ module Crichton
         semantics.any? ? attribute.merge(TAG => semantics) : attribute
       end
 
+      #TODO: Refactor or move to Representors
       def to_transition(element)
         transition = {}
         [:rel, :name, :doc, :rt, :interface_method].each do |attribute|
@@ -134,7 +136,7 @@ module Crichton
         descriptors.any? ? transition.merge(TAG => descriptors) : transition
       end
 
-      def map_or_apply(unknown_object, function)
+      def map_or_apply(unknown_object, &function)
         unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
       end
 
