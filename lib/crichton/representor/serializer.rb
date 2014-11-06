@@ -85,8 +85,8 @@ module Crichton
 
         ##
         # Returns true if serializer has been registered
-        def serializers?(serializer)
-          Serializer.registered_serializers.keys.include?(serializer)
+        def serializer?(serializer)
+          Serializer.registered_serializers.key?(serializer)
         end
 
         private

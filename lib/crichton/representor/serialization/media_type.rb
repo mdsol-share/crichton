@@ -60,7 +60,7 @@ module Crichton
 
         #TODO: Should use representors
         def registered?(type)
-          Crichton::Representor::Serializer.serializers?(type)
+          Crichton::Representor::Serializer.serializer?(type)
         end
 
       end
