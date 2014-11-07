@@ -120,11 +120,14 @@ module Crichton
       #TODO: Refactor or move to Representors
       def to_transition(element)
         transition = {}
-        [:rel, :name, :doc, :rt, :interface_method].each do |attribute|
+        [:rel, :name, :doc, :route_link, :interface_method].each do |attribute|
           if (element.respond_to?(attribute) && element.send(attribute))
             transition[attribute] = element.public_send(attribute)
           end
         end
+
+        #transition[:profile] = transition[:profile_link].href if transition.include?(:profile_link)
+        transition[:profile] = transition[:route_link] if transition.include?(:route_link) #&& transition[:rt][0..4] != 'http'
         transition[:method] = transition[:interface_method] if transition.include?(:interface_method)
         transition[:href] = element.templated? ? element.templated_url : element.url
         descriptors = {}
@@ -139,7 +142,6 @@ module Crichton
       def map_or_apply(unknown_object, &function)
         unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
       end
-
 
     end
   end

@@ -162,6 +162,20 @@ module Crichton
         @validators ||= [*descriptor_document['validators']].map { |v| v.is_a?(String) ? { v => nil } : v }.inject({}, :update)
       end
 
+      def route_link
+        absolute_href(rt)
+      end
+
+      def absolute_href(href)
+        if href and href != 'none'
+          if Addressable::URI.parse(href).absolute?
+            href
+          else
+            "#{config.alps_base_uri}/#{href}"
+          end
+        end
+      end
+      
     private
       def decorator_class
         @decorator_class ||= begin

@@ -54,6 +54,10 @@ describe '/drds', :type => :controller, integration: true do
       template = Addressable::Template.new(drds_body['_links']['search']['href'])
     end
     
+    it 'profiles the search' do
+      expect(drds_body['_links']['search']['profile']).to eq('http://localhost:3000/alps/drds')
+    end    
+    
     it 'returns empty items with unknown key/values' do
       search_uri = search_template.expand({
                       "search_term" => 'foo',
