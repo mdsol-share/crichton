@@ -59,7 +59,7 @@ describe '/drds', :type => :controller, integration: true do
                       "search_term" => 'foo',
                       "search_name" => 'bar'})
       get search_uri, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      expect(JSON.load(response.body)['_links']['items'].size).to eq(0)
+      expect(JSON.load(response.body)['_links']['items']).to be_nil
     end
     
     it 'contains item searched for' do
@@ -68,7 +68,7 @@ describe '/drds', :type => :controller, integration: true do
       search_uri = search_template.expand({
          "search_term" => embedded_item['name']}) #it being search_term is silliness
       get search_uri, {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      expect(JSON.load(response.body)['_links']['items'][0]['href']).to eq(embedded_href)
+      expect(JSON.load(response.body)['_links']['items']['href']).to eq(embedded_href)
     end
     
   end
