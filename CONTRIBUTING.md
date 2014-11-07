@@ -48,7 +48,7 @@ running `$ bundle exec rake doc:yard` locally.
 
 ## Demo service
 * The Crichton demo service is located in spec/integration/crichton-demo-service/
-* Crichton demo service requires [SQLite](www.sqlite.org/download.html) and must be installed locally
+* Crichton demo service requires [SQLite](http://www.sqlite.org/download.html) and must be installed locally
 * To set up the demo service run:
 
   ```
