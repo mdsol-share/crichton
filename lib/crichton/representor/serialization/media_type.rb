@@ -41,12 +41,7 @@ module Crichton
         end
 
         def as_media_type(media_type, options)
-          if self.respond_to?(:as_media_type) #TODO: XHTML Serialization in Representors
-            built_serializer(media_type, self, options).as_media_type(options)
-          else
-            serializer = Crichton::Representor::RepresentorSerializer.new(self, options)
-            serializer.as_media_type(options)
-          end
+          built_serializer(media_type, self, options).as_media_type(options)
         end
 
         # @deprecated
