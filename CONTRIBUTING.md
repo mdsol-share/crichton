@@ -38,9 +38,21 @@ running `$ bundle exec rake doc:yard` locally.
 * Add specs for it. This is important so future versions don't break it unintentionally.
 * Send a pull request.
 * For a proposed version bump, update the CHANGELOG.
-* Run specs and confirm coverage for your code additions:
+* Run specs and confirm coverage for your code additions 
+(Note: some specs exist in the demo service which must be set up with the below instructions to pass) :
 
     ```
     $ bundle exec appraisal install
     $ bundle exec appraisal rspec
     ```
+
+## Demo service
+* The Crichton demo service is located in spec/integration/crichton-demo-service/
+* Crichton demo service requires [SQLite](www.sqlite.org/download.html) and must be installed locally
+* To set up the demo service run:
+  ```
+  $ cd spec/integration/crichton-demo-service/
+  $ bundle exec install
+  $ bundle exec rake setup 
+  ```
+  
