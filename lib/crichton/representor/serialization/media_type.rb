@@ -41,8 +41,25 @@ module Crichton
         end
 
         def as_media_type(media_type, options)
-          serializer = Crichton::Representor::RepresentorSerializer.new(self, options)
-          serializer.as_media_type(options)
+          if self.respond_to?(:as_media_type) #TODO: XHTML Serialization in Representors
+            built_serializer(media_type, self, options).as_media_type(options)
+          else
+            serializer = Crichton::Representor::RepresentorSerializer.new(self, options)
+            serializer.as_media_type(options)
+          end
+        end
+
+        # @deprecated
+        def as_link(media_type, options = {})
+          built_serializer(media_type, self, options).as_link(self_transition, options)
+        end
+
+        # @deprecated
+        def built_serializer(media_type, object, options)
+          raise ArgumentError, 'The media_type argument cannot be blank.' if media_type.blank?
+
+          # TODO: !slice serializer options related options
+          Crichton::Representor::Serializer.build(media_type.to_sym, object, options)
         end
 
         def to_media_type(media_type, options)

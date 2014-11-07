@@ -22,17 +22,8 @@ module Crichton
         
         describe '#as_media_type' do
           it 'delegates to a built serializer for the media type' do
-            pending('is it still supposed to do this?')
             expect(@serializer).to receive(:as_media_type).with(@options)
             simple_test_instance.as_media_type(:media_type, @options)
-          end
-        end
-
-        describe '#to_media_type' do
-          it 'delegates to a built serializer for the media type' do
-            pending('is it still supposed to do this?')
-            expect(@serializer).to receive(:to_media_type).with(@options)
-            simple_test_instance.to_media_type(:media_type, @options)
           end
         end
 
