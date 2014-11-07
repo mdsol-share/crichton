@@ -1,14 +1,8 @@
 require 'representors'
 require 'representors/representor_builder'
-#require 'representors/representor'
 
 module Crichton
   module Representor
-
-    ##
-    # Manages the serialization of a Crichton::Representor to a representor_hash instance.
-    # TODO: THIS HAS TO BE REFACTORED TO USE RepresentorBuilder INTERFACE
-    # TODO: WHEN RepresentorBuilder INTERFACE READY
     class RepresentorSerializer
       attr_reader :object, :options
 
@@ -16,7 +10,7 @@ module Crichton
 
       SEMANTIC_TYPES = { # This perhaps should be in Representor
         select: "text", #No way in Crichton to distinguish [Int] and [String]
-        search:"text",
+        search: "text",
         text: "text",
         boolean: "bool", #a Server should accept ?cat&dog or ?cat=cat&dog=dog
         number: "number",
@@ -37,7 +31,7 @@ module Crichton
 
       def to_representor(options)
         buider_init = {}
-        unless @object.self_transition.is_a?(Array)
+        unless @object.self_transition.is_a?(Array) #FIXME: workaround for bug in representor.rb
           buider_init[:id] = @object.respond_to?(:uuid) ? @object.uuid : @object.self_transition.url
           buider_init[:href] =  @object.self_transition.url
         end
@@ -54,6 +48,8 @@ module Crichton
         to_representor(options)
       end
 
+      private
+
       def get_semantic_data(builder, options)
         object.each_data_semantic(options).reduce(builder) do |builder, semantic| 
           builder.add_attribute(semantic.name, semantic.value, to_attribute(semantic))
@@ -64,7 +60,7 @@ module Crichton
         links = object.metadata_links(options).map do |e|
           link = e.templated? ? e.templated_url : e.url
           transition = link ? to_transition(e) : nil
-        end.reject(&:blank?)
+        end.reject{ |link| link.to_s == ''}
         ret = {}
         links.each { |hash| ret[hash[:rel]] = hash[:href] }
         ret
@@ -78,40 +74,37 @@ module Crichton
       end
 
       def get_embedded_data(builder, options)
-        @object.each_embedded_semantic(options).inject(builder) do |builder, semantic|
+        @object.each_embedded_semantic(options).reduce(builder) do |builder, semantic|
           builder.add_embedded(semantic.name, get_embedded_elements(semantic, options))
         end
       end
 
       def get_embedded_elements(semantic, options)
-        map_or_apply(semantic.value, ->(object) { get_embedded_rep(object, options) })
+        map_or_apply(semantic.value) { |object| get_embedded_rep(object, options) }
       end
 
       def get_embedded_rep(object, options)
         RepresentorSerializer.new(object, options).as_media_type(options)
       end
 
-      private
-
+      #TODO: If this stays in Crichton, we need integration specs testing that options actually get serialized
       def get_options(element)
         opts = element.options
-        opts = if opts && opts.external?
-          { 'external' => { source: opts.source, target: opts.target || "." } }
-        elsif opts.enumerable?
-          avl_options = opts.type.new(opts.each { |k, v| {k => v} })
-          key = (opts.type==Array) ? 'list' : 'hash'
-          { key => avl_options }
-        else
+        case
+        when opts.nil?
           {}
+        when opts.external?
+          { 'external' => { source: opts.source, target: opts.target || "." } }
+        when opts.enumerable?
+          key = opts.type == Array ? 'list' : 'hash'
+          { key => opts.values }
         end
-        opts
       end
-      
+
+      # TODO: Refactor or move to Representors
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
         doc = element.doc ? { doc: element.doc } : {}
-
-
         sample = element.sample ? { sample: element.sample } : {}
         value = element.source_defined? ? { value: element.value } : {}
         profile = element.href ? { profile: element.href } : {}
@@ -124,6 +117,7 @@ module Crichton
         semantics.any? ? attribute.merge(TAG => semantics) : attribute
       end
 
+      #TODO: Refactor or move to Representors
       def to_transition(element)
         transition = {}
         [:rel, :name, :doc, :rt, :interface_method].each do |attribute|
@@ -142,7 +136,7 @@ module Crichton
         descriptors.any? ? transition.merge(TAG => descriptors) : transition
       end
 
-      def map_or_apply(unknown_object, function)
+      def map_or_apply(unknown_object, &function)
         unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
       end
 
