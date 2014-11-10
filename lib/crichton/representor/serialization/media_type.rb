@@ -48,7 +48,11 @@ module Crichton
         end
 
         def to_media_type(media_type, options={})
-          Representors::Representor.new(as_media_type(media_type, options)).to_media_type(media_type, options)
+          if media_type == :xhtml #TODO: Remove when Representor serializer XHTML
+            as_media_type(media_type, options)
+          else
+            Representors::Representor.new(as_media_type(media_type, options)).to_media_type(media_type, options)
+          end
         end
         
         # @deprecated
