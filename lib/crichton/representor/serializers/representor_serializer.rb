@@ -126,7 +126,6 @@ module Crichton
           end
         end
 
-        #transition[:profile] = transition[:profile_link].href if transition.include?(:profile_link)
         transition[:profile] = transition[:route_link] if transition.include?(:route_link) #&& transition[:rt][0..4] != 'http'
         transition[:method] = transition[:interface_method] if transition.include?(:interface_method)
         transition[:href] = element.templated? ? element.templated_url : element.url
