@@ -33,10 +33,8 @@ module Crichton
         end
 
         def respond_to?(method, include_private = false)
-          if (match = method.to_s.match(/^to_(\w*)$/))
+          super || if (match = method.to_s.match(/^to_(\w*)$/))
             registered?(match[1].to_sym)
-          else
-            super
           end
         end
 
