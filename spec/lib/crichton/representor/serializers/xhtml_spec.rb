@@ -25,7 +25,7 @@ module Crichton
         expect(Serializer.registered_serializers[:html]).to eq(XHTMLSerializer)
       end
       
-      describe('#as_media_type', pending: 'need to fix builder interface') do
+      describe('#as_media_type') do
         let (:serializer) { XHTMLSerializer.new(drds) }
 
         context 'without styled interface for API surfing' do

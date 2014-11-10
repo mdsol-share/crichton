@@ -30,6 +30,19 @@ module Crichton
         (opts = options) && opts.include?(EXTERNAL)
       end
 
+      #@deprecated
+      def each #TODO: Remove when XHTML Serialization is handled by Representor
+        if opts =  options
+          if opts.include?(HASH)
+            opts[HASH].each { |k, v| yield k, v }
+          elsif opts.include?(LIST)
+            opts[LIST].each { |k| yield k, k }
+          else
+            Crichton::logger.warn("did not find list or hash key in options data: #{opts.to_s}")
+          end
+        end
+      end
+
       def values
         options[HASH] || options[LIST]
       end

@@ -101,7 +101,6 @@ module Crichton
         end
       end
 
-      # TODO: Refactor or move to Representors
       def to_attribute(element)
         semantics = element.semantics.map { |name, semantic| { name => to_attribute(semantic) } }
         doc = element.doc ? { doc: element.doc } : {}
@@ -117,14 +116,16 @@ module Crichton
         semantics.any? ? attribute.merge(TAG => semantics) : attribute
       end
 
-      #TODO: Refactor or move to Representors
+      # TODO: transition[:profile] doesn't work, transition[:route_link] if 
+      # transition.include?(:route_link) #&& transition[:rt][0..4] != 'http' is close
       def to_transition(element)
         transition = {}
-        [:rel, :name, :doc, :rt, :interface_method].each do |attribute|
+        [:rel, :name, :doc, :route_link, :interface_method].each do |attribute|
           if (element.respond_to?(attribute) && element.send(attribute))
-            transition[attribute] = element.public_send(attribute)
+            transition[attribute] = element.send(attribute)
           end
         end
+        
         transition[:method] = transition[:interface_method] if transition.include?(:interface_method)
         transition[:href] = element.templated? ? element.templated_url : element.url
         descriptors = {}
@@ -139,7 +140,6 @@ module Crichton
       def map_or_apply(unknown_object, &function)
         unknown_object.is_a?(Array) ? unknown_object.map(&function) : function.(unknown_object)
       end
-
 
     end
   end
