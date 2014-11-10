@@ -39,10 +39,11 @@ running `$ bundle exec rake doc:yard` locally.
 * Send a pull request.
 * For a proposed version bump, update the CHANGELOG.
 * Run specs and confirm coverage for your code additions 
-(Note: some specs exist in the demo service which must be set up using the below demo service instructions) :
+(Note: some specs exist in the demo service which will be set up in the below instructions) :
 
     ```
     $ bundle exec appraisal install
+    $ bundle exec appraisal rake demo_service:setup
     $ bundle exec appraisal rspec
     ```
 
