@@ -167,7 +167,7 @@ module Crichton
       end
 
       def absolute_href(href)
-        if href and href != 'none'
+        if href && href != 'none'
           if Addressable::URI.parse(href).absolute?
             href
           else
