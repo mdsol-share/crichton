@@ -6,12 +6,7 @@ require_relative 'string_random'
 def random_text(datum)
   if datum['pattern']
     rsting = StringRandom.new(datum['maxlength'] || '50')
-#     len_elem = datum['pattern'].scan('*').size + datum['pattern'].scan('+').size
-#     sub_size = maxlength.to_i / len_elem.to_i
-#     pattern = datum['pattern'].gsub('.', '\w').gsub('+', "{1,#{sub_size}}").gsub('*', "{0,#{sub_size}}")
-    #Regexp.new(pattern).gen
     output = rsting.random_regex(datum['pattern'])
-    print output
     output
   else
     rand(36**(datum['maxlength'] || 10)).to_s(36)
@@ -56,6 +51,13 @@ def _http_call(link_object, data, default_media)
 end
 
 def hale_request(object, link_relation=false, options = {})
-  link = link_relation ? object['_links'][link_relation] : object
+  if link_relation
+    unless object['_links'] && object['_links'][link_relation]
+      raise "expected current state to have link relation #{link_relation} but links were #{object['_links'].inspect}"
+    end
+    link = object['_links'][link_relation]
+  else
+    link = object
+  end
   _http_call link, options, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
 end

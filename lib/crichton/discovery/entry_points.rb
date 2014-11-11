@@ -1,5 +1,3 @@
-require 'crichton/representor/serializers/hal_json'
-
 module Crichton
   module Discovery
 
@@ -117,7 +115,9 @@ module Crichton
 
       LINK_OBJECT_NAME = :name
       PROFILE = :profile
-      
+      RESERVED_HREF = :href
+      RESERVED_LINKS = :_links
+
       # Requires objects that have three methods: href, :link_relation, and :name.
       # href method should return the URL where resources can be found
       # name should return the type of the resource to be found at the URL
@@ -129,7 +129,7 @@ module Crichton
 
       def to_json
         link_objects = @entry_point_objects.inject({}) do |link_objects, entry_point|
-          link_objects[entry_point.name] = Hash[Crichton::Representor::HalJsonSerializer::RESERVED_HREF,
+          link_objects[entry_point.name] = Hash[RESERVED_HREF,
                                                          entry_point.href,
                                                          LINK_OBJECT_NAME,
                                                          entry_point.name,
@@ -137,7 +137,7 @@ module Crichton
                                                          entry_point.link_relation]
           link_objects
         end
-        Hash[Crichton::Representor::HalJsonSerializer::RESERVED_LINKS, link_objects].to_json
+        Hash[RESERVED_LINKS, link_objects].to_json
       end
     end
   end

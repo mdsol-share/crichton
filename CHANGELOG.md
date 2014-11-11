@@ -1,3 +1,6 @@
+# 0.1.0
+# Large internal refactors to use Representors for json serialization
+#
 # 0.0.3
 * Small bug fixes to the Lint tool.
 * In depth documentation updates.

@@ -106,24 +106,6 @@ module Crichton
           end
         end
       end
-       
-      describe '#as_media_type' do
-        it 'raises an error unless overridden by a subclass' do
-          create_media_type_serializer
-          expect { MediaTypeSerializer.new(object).as_media_type }.to raise_error(
-            /The method #as_media_type is an abstract method of the Crichton::Serializer class.*/)
-        end
-      end
-
-      describe '#to_media_type' do
-        it 'delegates to #as_media_type as the default behavior' do
-          create_media_type_serializer
-          options = double('options') 
-          serializer_instance = MediaTypeSerializer.new(object)
-          expect(serializer_instance).to receive(:as_media_type).with(options)
-          serializer_instance.to_media_type(options)
-        end
-      end
 
       describe '#response_headers' do
         it 'returns comma-separated slt header' do
