@@ -99,6 +99,7 @@ module Crichton
 
             if defined?(Rails)
               register_mime_types(media_type, content_types)
+              #TODO: Move this block into its own method(s)
               ActionController::Renderers.add media_type do |obj, options|
                 type = media_type
                 if obj.is_a?(Crichton::Representor)
