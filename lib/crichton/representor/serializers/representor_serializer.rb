@@ -1,5 +1,6 @@
 require 'representors'
 require 'representors/representor_builder'
+#TODO: Most logic in this file belongs in Representors, probably, and there's substantial overlap
 
 module Crichton
   module Representor
@@ -8,7 +9,7 @@ module Crichton
 
       TAG = 'descriptors'
 
-      SEMANTIC_TYPES = { # This perhaps should be in Representor
+      SEMANTIC_TYPES = {
         select: "text", #No way in Crichton to distinguish [Int] and [String]
         search: "text",
         text: "text",
