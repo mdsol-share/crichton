@@ -90,6 +90,6 @@ class DrdsController < ApplicationController
   
   # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   def options
-    OPTIONS_KEYS.reduce({}) { |memo, key| memo.merge(params[key] ? {key => params[key]} : {}) }
+    params.slice(*OPTIONS_KEYS).symbolize_keys
   end
 end
