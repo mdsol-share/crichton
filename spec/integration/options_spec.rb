@@ -2,11 +2,11 @@ require 'spec_helper'
 require_relative 'spec_helper'
 
 describe 'response options', :type => :controller, integration: true do
-
   before do
     Crichton.reset
     Crichton.clear_config
   end
+
   render_views
 
   let(:entry) do
@@ -74,7 +74,7 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with exclude options' do
-      it 'exludes specified embedded resources from the response' do
+      it 'excludes specified embedded resources from the response' do
         response = hale_request entry, 'drds', { exclude: ['items'] }
         expect(JSON.parse(response.body)['_embedded']).to be_nil
       end
@@ -96,10 +96,10 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with override_links options' do
-      # TODO: override links options do not appear to work.  Spec below generates an href of
-      # "http://localhost/drds?override_links[self]=http%3A%2F%2Fdvor.nik"
       let(:new_href) { 'http://dvor.nik' }
 
+      # TODO: override links options do not appear to work.  Spec below generates an href of
+      # "http://localhost/drds?override_links[self]=http%3A%2F%2Fdvor.nik"
       xit 'overrides a defined url in the links of a response' do
         response = hale_request entry, 'drds', { override_links: { self: new_href} }
         expect(JSON.parse(response.body)['_links']['self']['href']).to eq(new_href)
@@ -114,8 +114,8 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with state options' do
-      # TODO: Investigate this, it seems broken.  The following test will raise a Crichton::MissingState.
-      # It appears to be trying to apply the passed state to its embedded resources.
+      # TODO: Investigate this, it seems broken.  The following test will raise a Crichton::MissingState error.
+      # It appears to be trying to apply the passed state to its embedded resources.  Not good.
       xit 'sets the state of a resource in a response' do
         response = hale_request entry, 'drds', { state: 'navigation' }
         # In navigation, only search and create are specified transitions (collection includes list as self)
