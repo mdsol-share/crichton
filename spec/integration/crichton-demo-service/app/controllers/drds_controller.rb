@@ -78,7 +78,55 @@ class DrdsController < ApplicationController
     params.slice(:name, :leviathan_uuid, :kind).reject { |_, v| v.blank? }
   end
   
+  # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   def options
-    (conditions = params[:conditions]) ? {conditions: conditions.split(',').map(&:strip)} : {}
+    [ conditions_option,
+      except_option,
+      only_option,
+      include_option,
+      exclude_option,
+      embed_optional_option,
+      additional_links_option,
+      override_links_option,
+      state_option,
+    ].reduce(&:merge)
+  end
+
+  # The conditions options specify a list of conditions that Crichton uses to filter available links as
+  # defined in an individual state transitions in API Descriptor Document
+  def conditions_option
+    params[:conditions] ? {conditions: params[:conditions].split(',').map(&:strip)} : {}
+  end
+
+  def except_option
+    {}
+  end
+
+  def only_option
+    {}
+  end
+
+  def include_option
+    {}
+  end
+
+  def exclude_option
+    {}
+  end
+
+  def embed_optional_option
+    {}
+  end
+
+  def additional_links_option
+    {}
+  end
+
+  def override_links_option
+    {}
+  end
+
+  def state_option
+    {}
   end
 end
