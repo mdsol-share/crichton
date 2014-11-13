@@ -91,16 +91,33 @@ describe 'response options', :type => :controller, integration: true do
     context 'with additional_links options' do
       it 'dynamically adds new links to the top level resource' do
         response = hale_request entry, 'drds', { additional_links: { drad: {href: 'http://draddest.teh'}}}
+        binding.pry
         expect(JSON.parse(response.body)['_links'].keys).to include('drad')
       end
     end
 
     context 'with override_links options' do
-      xit 'overrides a defined url in the links of a response'
+      # TODO: override links options do not appear to work.  Spec below generates an href of
+      # "http://localhost/drds?override_links[self]=http%3A%2F%2Fdvor.nik"
+      let(:new_href) { 'http://dvor.nik' }
+
+      xit 'overrides a defined url in the links of a response' do
+        response = hale_request entry, 'drds', { override_links: { self: new_href} }
+        expect(JSON.parse(response.body)['_links']['self']['href']).to eq(new_href)
+      end
+
+      it 'does not override the links of embedded items with the same rel' do
+        response = hale_request entry, 'drds', { override_links: {self: new_href} }
+        embedded_self_href = JSON.parse(response.body)['_embedded']['items'][0]['_links']['self']['href']
+        expect(embedded_self_href).to be_a String
+        expect(embedded_self_href).to_not eq(new_href)
+      end
     end
 
     context 'with state options' do
-      xit 'sets the state of a resource in a response'
+      it 'sets the state of a resource in a response' do
+
+      end
     end
   end
 end
