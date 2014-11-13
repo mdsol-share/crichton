@@ -74,7 +74,10 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with exclude options' do
-      xit 'exludes specified embedded resources from the response'
+      it 'exludes specified embedded resources from the response' do
+        response = hale_request entry, 'drds', { exclude: ['items'] }
+        expect(JSON.parse(response.body)['_embedded']).to be_nil
+      end
     end
 
     context 'with embed_optional options' do
