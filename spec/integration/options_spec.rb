@@ -14,11 +14,6 @@ describe 'response options', :type => :controller, integration: true do
     JSON.load(response.body)
   end
 
-  let(:drds_body) do
-    response = hale_request entry, 'drds'
-    JSON.load(response.body)
-  end
-
   # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   describe 'options behavior' do
     context 'with conditions options' do
@@ -31,12 +26,26 @@ describe 'response options', :type => :controller, integration: true do
         response = hale_request entry, 'drds', { conditions: [] }
         expect(JSON.parse(response.body)["_links"].keys).to_not include("create")
       end
-
-
     end
 
     context 'with except options' do
-      xit 'filters data descriptors in response'
+      it 'does not filter data descriptors when an empty array is specified' do
+        response = hale_request entry, 'drds', { except: [] }
+        # total_count is the only non optional data descriptor on the drds collection
+        expect(JSON.parse(response.body)).to include("total_count")
+      end
+
+      it 'filters specified data descriptors on top level objects' do
+        response = hale_request entry, 'drds', { except: ["total_count"] }
+        expect(JSON.parse(response.body)).to_not include("total_count")
+      end
+
+      it 'filters the data descriptors of embedded items' do
+        response = hale_request entry, 'drds', { except: [] }
+        expect(JSON.parse(response.body)["_embedded"]["items"][0].keys).to include("name")
+        response = hale_request entry, 'drds', { except: ["name"] }
+        expect(JSON.parse(response.body)["_embedded"]["items"][0].keys).to_not include("name")
+      end
     end
 
     context 'with only options' do
