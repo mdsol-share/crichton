@@ -42,6 +42,7 @@ describe 'response options', :type => :controller, integration: true do
 
       it 'filters the data descriptors of embedded items' do
         response = hale_request entry, 'drds', { except: [] }
+        # Ensure it's there before asserting its absence
         expect(JSON.parse(response.body)["_embedded"]["items"][0].keys).to include("name")
         response = hale_request entry, 'drds', { except: ["name"] }
         expect(JSON.parse(response.body)["_embedded"]["items"][0].keys).to_not include("name")
@@ -49,7 +50,17 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with only options' do
-      xit 'limits the response to specified data descriptors'
+      let(:drd) do
+        response = hale_request entry, 'drds', {}
+        JSON.parse(response.body)["_embedded"]["items"][0]
+      end
+
+      let(:reserved_keys) { ["_links", "_embedded", "_meta"] }
+
+      it 'limits the response to specified data descriptors' do
+        response = hale_request drd, 'self', { only: ['uuid'] }
+        expect(JSON.parse(response.body).keys - reserved_keys).to eq(['uuid'])
+      end
     end
 
     context 'with include options' do
