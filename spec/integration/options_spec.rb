@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative 'spec_helper'
 
-describe '/drd/{item}', :type => :controller, integration: true do
+describe 'response options', :type => :controller, integration: true do
 
   before do
     Crichton.reset
@@ -22,30 +22,39 @@ describe '/drd/{item}', :type => :controller, integration: true do
   # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   describe 'options behavior' do
     context 'with conditions options' do
+      xit 'filters available links in response'
     end
 
     context 'with except options' do
+      xit 'filters data descriptors in response'
     end
 
     context 'with only options' do
+      xit 'limits the response to specified data descriptors'
     end
 
     context 'with include options' do
+      xit 'includes specified embedded resources in response'
     end
 
     context 'with exclude options' do
+      xit 'exludes specified embedded resources from the response'
     end
 
     context 'with embed_optional options' do
+      xit 'includes optional embedded resources in the response'
     end
 
     context 'with additional_links options' do
+      xit 'dynamically adds new links to the top level resource'
     end
 
     context 'with override_links options' do
+      xit 'overrides a defined url in the links of a response'
     end
 
     context 'with state options' do
+      xit 'sets the state of a resource in a response'
     end
   end
 end
