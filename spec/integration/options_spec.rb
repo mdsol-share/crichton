@@ -22,7 +22,17 @@ describe 'response options', :type => :controller, integration: true do
   # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   describe 'options behavior' do
     context 'with conditions options' do
-      xit 'filters available links in response'
+      it 'includes transitions when conditions are met' do
+        response = hale_request entry, 'drds', { conditions: ["can_create"] }
+        expect(JSON.parse(response.body)["_links"].keys).to include("create")
+      end
+
+      it 'filters out available transitions for unmet conditions' do
+        response = hale_request entry, 'drds', { conditions: [] }
+        expect(JSON.parse(response.body)["_links"].keys).to_not include("create")
+      end
+
+
     end
 
     context 'with except options' do
