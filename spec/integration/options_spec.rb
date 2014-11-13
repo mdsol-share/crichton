@@ -14,6 +14,13 @@ describe 'response options', :type => :controller, integration: true do
     JSON.load(response.body)
   end
 
+  let(:drd) do
+    response = hale_request entry, 'drds', {}
+    JSON.parse(response.body)["_embedded"]["items"][0]
+  end
+
+  let(:reserved_keys) { ["_links", "_embedded", "_meta"] }
+
   # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   describe 'options behavior' do
     context 'with conditions options' do
@@ -50,13 +57,6 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with only options' do
-      let(:drd) do
-        response = hale_request entry, 'drds', {}
-        JSON.parse(response.body)["_embedded"]["items"][0]
-      end
-
-      let(:reserved_keys) { ["_links", "_embedded", "_meta"] }
-
       it 'limits the response to specified data descriptors' do
         response = hale_request drd, 'self', { only: ['uuid'] }
         expect(JSON.parse(response.body).keys - reserved_keys).to eq(['uuid'])
@@ -64,7 +64,13 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with include options' do
-      xit 'includes specified embedded resources in response'
+      # TODO: This test is lame.  We should create an embeddable resource on a drd representation
+      # that is not there by default, and test for the absence/presence of _embedded and the
+      # key of the resource, but that requires a significant addition to the demo service
+      it 'includes specified embedded resources in response' do
+        response = hale_request entry, 'drds', { include: ['items'] }
+        expect(JSON.parse(response.body)['_embedded'].keys).to include('items')
+      end
     end
 
     context 'with exclude options' do
