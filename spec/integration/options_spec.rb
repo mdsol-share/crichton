@@ -81,7 +81,11 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with embed_optional options' do
-      xit 'includes optional embedded resources in the response'
+      # TODO: this test suffers from the same problems as the include options test
+      it 'includes optional embedded resources in the response' do
+        response = hale_request entry, 'drds', { embed_optional: {embed: ['items'] }
+        expect(JSON.parse(response.body)['_embedded'].keys).to include('items')
+      end
     end
 
     context 'with additional_links options' do
