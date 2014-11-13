@@ -91,7 +91,6 @@ describe 'response options', :type => :controller, integration: true do
     context 'with additional_links options' do
       it 'dynamically adds new links to the top level resource' do
         response = hale_request entry, 'drds', { additional_links: { drad: {href: 'http://draddest.teh'}}}
-        binding.pry
         expect(JSON.parse(response.body)['_links'].keys).to include('drad')
       end
     end
@@ -115,8 +114,12 @@ describe 'response options', :type => :controller, integration: true do
     end
 
     context 'with state options' do
-      it 'sets the state of a resource in a response' do
-
+      # TODO: Investigate this, it seems broken.  The following test will raise a Crichton::MissingState.
+      # It appears to be trying to apply the passed state to its embedded resources.
+      xit 'sets the state of a resource in a response' do
+        response = hale_request entry, 'drds', { state: 'navigation' }
+        # In navigation, only search and create are specified transitions (collection includes list as self)
+        expect(JSON.parse(response.body)['_links'].keys).to match_array(["help", "profile", "self", "type"])
       end
     end
   end
