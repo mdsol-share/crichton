@@ -83,13 +83,16 @@ describe 'response options', :type => :controller, integration: true do
     context 'with embed_optional options' do
       # TODO: this test suffers from the same problems as the include options test
       it 'includes optional embedded resources in the response' do
-        response = hale_request entry, 'drds', { embed_optional: {embed: ['items'] }
+        response = hale_request entry, 'drds', { embed_optional: {embed: ['items']} }
         expect(JSON.parse(response.body)['_embedded'].keys).to include('items')
       end
     end
 
     context 'with additional_links options' do
-      xit 'dynamically adds new links to the top level resource'
+      it 'dynamically adds new links to the top level resource' do
+        response = hale_request entry, 'drds', { additional_links: { drad: {href: 'http://draddest.teh'}}}
+        expect(JSON.parse(response.body)['_links'].keys).to include('drad')
+      end
     end
 
     context 'with override_links options' do
