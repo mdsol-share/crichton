@@ -26,12 +26,12 @@ describe 'response options', :type => :controller, integration: true do
     context 'with conditions options' do
       it 'includes transitions when conditions are met' do
         response = hale_request entry, 'drds', { conditions: ["can_create"] }
-        expect(JSON.parse(response.body)["_links"].keys).to include("create")
+        expect(JSON.parse(response.body)["_links"]).to have_key("create")
       end
 
       it 'filters out available transitions for unmet conditions' do
         response = hale_request entry, 'drds', { conditions: [] }
-        expect(JSON.parse(response.body)["_links"].keys).to_not include("create")
+        expect(JSON.parse(response.body)["_links"]).to_not have_key("create")
       end
     end
 
@@ -39,20 +39,20 @@ describe 'response options', :type => :controller, integration: true do
       it 'does not filter data descriptors when an empty array is specified' do
         response = hale_request entry, 'drds', { except: [] }
         # total_count is the only non optional data descriptor on the drds collection
-        expect(JSON.parse(response.body)).to include("total_count")
+        expect(JSON.parse(response.body)).to have_key("total_count")
       end
 
       it 'filters specified data descriptors on top level objects' do
         response = hale_request entry, 'drds', { except: ["total_count"] }
-        expect(JSON.parse(response.body)).to_not include("total_count")
+        expect(JSON.parse(response.body)).to_not have_key("total_count")
       end
 
       it 'filters the data descriptors of embedded items' do
         response = hale_request entry, 'drds', { except: [] }
         # Ensure it's there before asserting its absence
-        expect(JSON.parse(response.body)["_embedded"]["items"][0].keys).to include("name")
+        expect(JSON.parse(response.body)["_embedded"]["items"][0]).to have_key("name")
         response = hale_request entry, 'drds', { except: ["name"] }
-        expect(JSON.parse(response.body)["_embedded"]["items"][0].keys).to_not include("name")
+        expect(JSON.parse(response.body)["_embedded"]["items"][0]).to_not have_key("name")
       end
     end
 
@@ -69,7 +69,7 @@ describe 'response options', :type => :controller, integration: true do
       # key of the resource, but that requires a significant addition to the demo service
       it 'includes specified embedded resources in response' do
         response = hale_request entry, 'drds', { include: ['items'] }
-        expect(JSON.parse(response.body)['_embedded'].keys).to include('items')
+        expect(JSON.parse(response.body)['_embedded']).to have_key('items')
       end
     end
 
@@ -84,14 +84,14 @@ describe 'response options', :type => :controller, integration: true do
       # TODO: this test suffers from the same problems as the include options test
       it 'includes optional embedded resources in the response' do
         response = hale_request entry, 'drds', { embed_optional: {embed: ['items']} }
-        expect(JSON.parse(response.body)['_embedded'].keys).to include('items')
+        expect(JSON.parse(response.body)['_embedded']).to have_key('items')
       end
     end
 
     context 'with additional_links options' do
       it 'dynamically adds new links to the top level resource' do
         response = hale_request entry, 'drds', { additional_links: { drad: {href: 'http://draddest.teh'}}}
-        expect(JSON.parse(response.body)['_links'].keys).to include('drad')
+        expect(JSON.parse(response.body)['_links']).to have_key('drad')
       end
     end
 
