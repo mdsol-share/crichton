@@ -1,3 +1,4 @@
+require 'debugger'
 require 'spec_helper'
 require_relative 'spec_helper'
 
@@ -31,5 +32,33 @@ describe '/', :type => :controller, integration: true do
     expect(response_body).to eq(self_doc)
 
   end
+  
+  shared_examples 'with accept type' do |accept|
 
+    HEADER_KEYS = [ 'Content-Type','Cache-Control', 'expires', 'X-UA-Compatible', 'ETag', 'X-Request-Id', 'X-Runtime', 'Content-Length' ]
+
+    before do
+      get '/', {},  {'HTTP_ACCEPT' => accept}
+    end
+
+    it 'contains the correct header keys' do
+      HEADER_KEYS.each {|k| expect(response.headers.keys).to include(k)}
+    end
+
+    it 'contains accurate content-type' do
+      expect(response.headers['content-type']).to eql(accept)
+    end
+
+    it 'contains accurate content-length' do
+      expect(response.headers['content-length']).to eql(response.body.length.to_s)
+    end
+  end
+  
+  context 'correct response headers' do
+    it_should_behave_like 'with accept type', 'application/xml'
+    it_should_behave_like 'with accept type', 'application/vnd.hale+json'
+    it_should_behave_like 'with accept type', 'application/hal+json'
+    it_should_behave_like 'with accept type', 'text/html'
+  end
+  
 end
