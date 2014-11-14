@@ -24,7 +24,7 @@ module Crichton
     describe '#external_documents_cache_directory' do
       context 'when configured' do
         it 'returns the conifgured external documents cache directory' do
-          expect(configuration.external_documents_cache_directory).to eq('not/the/default')
+          expect(configuration.external_documents_cache_directory).to eq('tmp/not/the/default')
         end
       end
 
@@ -39,7 +39,7 @@ module Crichton
     describe '#external_documents_store_directory' do
       context 'when configured' do
         it 'returns the configured external documents store directory' do
-          expect(configuration.external_documents_store_directory).to eq('also/not/the/default')
+          expect(configuration.external_documents_store_directory).to eq('tmp/also/not/the/default')
         end
       end
 
