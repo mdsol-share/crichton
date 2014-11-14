@@ -5,9 +5,19 @@ module Crichton
   describe Configuration do
     let(:configuration) { Configuration.new(@config || example_environment_config) }
 
-    describe '#crichton_proxy_base_uri' do
-      it 'returns the crichton_proxy base URI' do
-        expect(configuration.crichton_proxy_base_uri).to eq('http://example.org/crichton')
+    describe 'base uri methods' do
+      describe '#crichton_proxy_base_uri' do
+        it 'returns the crichton_proxy base URI' do
+          expect(configuration.crichton_proxy_base_uri).to eq('http://example.org/crichton')
+        end
+      end
+
+      %w(alps deployment discovery documentation).each do |attribute|
+        describe "\##{attribute}_base_uri" do
+          it "returns the #{attribute} base URI" do
+            expect(configuration.send("#{attribute}_base_uri")).to eq("http://#{attribute}.example.org")
+          end
+        end
       end
     end
 
@@ -92,14 +102,6 @@ module Crichton
         it 'returns default service level target header name' do
           @config = example_environment_config.except('service_level_target_header')
           expect(configuration.service_level_target_header).to eq('REQUEST_SLT')
-        end
-      end
-    end
-
-    %w(alps deployment discovery documentation).each do |attribute|
-      describe "\##{attribute}_base_uri" do
-        it "returns the #{attribute} base URI" do
-          expect(configuration.send("#{attribute}_base_uri")).to eq("http://#{attribute}.example.org")
         end
       end
     end
