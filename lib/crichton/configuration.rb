@@ -63,6 +63,7 @@ module Crichton
     # The URI where CSS is hosted.
     #
     # @return [Array] The CSS URI.
+    # TODO: Remove this when xhtml serializer refactored to Representors
     def css_uri
       @css_uri ||= (css = *@config['css_uri'])
     end
@@ -72,6 +73,7 @@ module Crichton
     # The URI where JS is hosted.
     #
     # @return [Array] The JS URI.
+    # TODO: Remove this when xhtml serializer refactored to Representors
     def js_uri
       @js_uri ||= (js = *@config['js_uri'])
     end
