@@ -39,7 +39,7 @@ module Crichton
     end
 
     def use_discovery_middleware?
-      @use_discovery_middleware ||= @config['use_discovery_middleware'] || false
+      @use_discovery_middleware
     end
 
     def resources_catalog_response_expiry
@@ -47,7 +47,7 @@ module Crichton
     end
 
     def use_alps_middleware?
-      @use_alps_middleware ||= @config['use_alps_middleware'] || false
+      @use_alps_middleware
     end
 
     def alps_profile_response_expiry
@@ -88,6 +88,8 @@ module Crichton
     # @return [Configuration] The configuration instance.
     def initialize(config)
       @config = config || {}
+      @use_discovery_middleware = @config['use_discovery_middleware'] || false
+      @use_alps_middleware = @config['use_alps_middleware'] || false
     end
   end
 end
