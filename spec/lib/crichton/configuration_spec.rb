@@ -30,7 +30,23 @@ module Crichton
 
       context 'when not configured' do
         it 'returns the default external documents cache directory' do
+          @config = example_environment_config.except('external_documents_cache_directory')
           expect(configuration.external_documents_cache_directory).to eq('tmp/external_documents_cache')
+        end
+      end
+    end
+
+    describe '#external_documents_store_directory' do
+      context 'when configured' do
+        it 'returns the configured external documents store directory' do
+          expect(configuration.external_documents_store_directory).to eq('also/not/the/default')
+        end
+      end
+
+      context 'when not configured' do
+        it 'returns the default external documents store directory' do
+          @config = example_environment_config.except('external_documents_store_directory')
+          expect(configuration.external_documents_store_directory).to eq('api_descriptors/external_documents_store')
         end
       end
     end

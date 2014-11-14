@@ -104,6 +104,7 @@ module Support
       config['use_discovery_middleware'] = true
       config['service_level_target_header'] = 'CONFIGURED_SLT_HEADER'
       config['external_documents_cache_directory'] = 'not/the/default'
+      config['external_documents_store_directory'] = 'also/not/the/default'
       config
     end
 
