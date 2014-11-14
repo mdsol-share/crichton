@@ -39,7 +39,7 @@ module Crichton
     end
 
     def use_discovery_middleware?
-      @use_discovery_middleware ||= (@config['use_discovery_middleware'] === true)
+      @use_discovery_middleware ||= @config['use_discovery_middleware'] || false
     end
 
     def resources_catalog_response_expiry
@@ -47,7 +47,7 @@ module Crichton
     end
 
     def use_alps_middleware?
-      @use_alps_middleware ||= (@config['use_alps_middleware'] === true)
+      @use_alps_middleware ||= @config['use_alps_middleware'] || false
     end
 
     def alps_profile_response_expiry
