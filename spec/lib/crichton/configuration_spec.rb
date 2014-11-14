@@ -5,7 +5,7 @@ module Crichton
   describe Configuration do
     let(:configuration) { Configuration.new(@config || example_environment_config) }
 
-    describe 'crichton_proxy_base_uri' do
+    describe '#crichton_proxy_base_uri' do
       it 'returns the crichton_proxy base URI' do
         expect(configuration.crichton_proxy_base_uri).to eq('http://example.org/crichton')
       end
