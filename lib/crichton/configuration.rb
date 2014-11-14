@@ -3,6 +3,22 @@ module Crichton
   class Configuration
 
     ##
+    # @param [Hash] config The configuration hash.
+    # @option config [String] alps_base_uri
+    # @option config [String] deployment_base_uri
+    # @option config [String] discovery_base_uri
+    # @option config [String] documentation_base_uri
+    # @option config [Array] css_uri
+    # @option config [Array] js_uri
+    #
+    # @return [Configuration] The configuration instance.
+    def initialize(config)
+      @config = config || {}
+      @use_discovery_middleware = @config['use_discovery_middleware'] || false
+      @use_alps_middleware = @config['use_alps_middleware'] || false
+    end
+
+    ##
     # @!attribute [r] alps_base_uri
     # The base URI of the ALPS repository.
     #
@@ -76,22 +92,6 @@ module Crichton
     # TODO: Remove this when xhtml serializer refactored to Representors
     def js_uri
       @js_uri ||= (js = *@config['js_uri'])
-    end
-
-    ##
-    # @param [Hash] config The configuration hash.
-    # @option config [String] alps_base_uri
-    # @option config [String] deployment_base_uri
-    # @option config [String] discovery_base_uri
-    # @option config [String] documentation_base_uri
-    # @option config [Array] css_uri
-    # @option config [Array] js_uri
-    #
-    # @return [Configuration] The configuration instance.
-    def initialize(config)
-      @config = config || {}
-      @use_discovery_middleware = @config['use_discovery_middleware'] || false
-      @use_alps_middleware = @config['use_alps_middleware'] || false
     end
   end
 end
