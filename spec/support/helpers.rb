@@ -103,6 +103,7 @@ module Support
       config['use_alps_middleware'] = true
       config['use_discovery_middleware'] = true
       config['service_level_target_header'] = 'CONFIGURED_SLT_HEADER'
+      config['external_documents_cache_directory'] = 'not/the/default'
       config
     end
 

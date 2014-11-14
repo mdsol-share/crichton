@@ -21,6 +21,20 @@ module Crichton
       end
     end
 
+    describe '#external_documents_cache_directory' do
+      context 'when configured' do
+        it 'returns the conifgured external documents cache directory' do
+          expect(configuration.external_documents_cache_directory).to eq('not/the/default')
+        end
+      end
+
+      context 'when not configured' do
+        it 'returns the default external documents cache directory' do
+          expect(configuration.external_documents_cache_directory).to eq('tmp/external_documents_cache')
+        end
+      end
+    end
+
     describe '#use_discovery_middleware?' do
       context 'when configured' do
         it 'returns true when configured value is true' do
