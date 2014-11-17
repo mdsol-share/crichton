@@ -1,6 +1,7 @@
 require 'spec_helper'
 require_relative 'spec_helper'
 require "addressable/template"
+require_relative 'shared_spec'
 
 describe '/drds', :type => :controller, integration: true do
 
@@ -15,9 +16,13 @@ describe '/drds', :type => :controller, integration: true do
     get '/', {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
     JSON.load(response.body)
   end
+  
+  let(:drds_response) do
+    hale_request entry, 'drds'
+  end
+  
   let(:drds_body) do
-    response = hale_request entry, 'drds'
-    JSON.load(response.body)
+    JSON.load(drds_response.body)
   end  
   
   it "contains the total count and items" do
@@ -45,6 +50,17 @@ describe '/drds', :type => :controller, integration: true do
 
   it "has embedded resources" do
     expect(drds_body['_embedded']['items'].size).to eq(drds_body['_links']['items'].size)
+  end
+  
+  context 'with accept header application/vnd.hale+json' do
+    before do
+      @response = drds_response
+    end
+    
+    it_should_behave_like 'a response with well formed headers' do
+      let(:accept) { 'application/vnd.hale+json' }
+      let(:response) { @response }
+    end
   end
   
   context "is searchable" do
