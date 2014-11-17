@@ -31,5 +31,4 @@ describe '/', :type => :controller, integration: true do
     expect(response_body).to eq(self_doc)
 
   end
-
 end

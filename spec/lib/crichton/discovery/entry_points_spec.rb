@@ -25,7 +25,7 @@ describe Crichton::Discovery::EntryPoints do
 
     it "returns true when it does not have individual entry points" do
       instance = described_class.new([])
-      expect(instance.empty?).to be_true
+      expect(instance.empty?).to be true
     end
   end
 

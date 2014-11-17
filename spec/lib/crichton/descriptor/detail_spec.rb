@@ -107,7 +107,7 @@ module Crichton
       describe '#embeddable?' do
         it 'returns true if an embed value is set' do
           descriptor_document['embed'] = 'optional'
-          expect(descriptor.embeddable?).to be_true
+          expect(descriptor.embeddable?).to be true
         end
 
         it 'returns false if an embed value is not set' do
@@ -226,7 +226,7 @@ module Crichton
           @descriptor = normalized_drds_descriptor.tap do |doc|
             doc['descriptors']['drds']['descriptors']['create']['descriptors']['name'].merge!({ 'cardinality' => 'multiple' })
           end
-          expect(name_semantic.multiple?).to be_true
+          expect(name_semantic.multiple?).to be true
         end
       end
 

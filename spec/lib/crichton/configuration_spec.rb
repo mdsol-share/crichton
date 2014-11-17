@@ -14,7 +14,7 @@ module Crichton
     describe '#use_discovery_middleware?' do
       context 'when configured' do
         it 'returns true when configured value is true' do
-          expect(configuration.use_discovery_middleware?).to be_true
+          expect(configuration.use_discovery_middleware?).to be true
         end
 
         it 'returns false when configured value is false' do
@@ -34,7 +34,7 @@ module Crichton
     describe '#use_alps_middleware?' do
       context 'when configured' do
         it 'returns true when configured value is true' do
-          expect(configuration.use_alps_middleware?).to be_true
+          expect(configuration.use_alps_middleware?).to be true
         end
 
         it 'returns false when configured value is false' do

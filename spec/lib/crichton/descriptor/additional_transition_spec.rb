@@ -30,7 +30,7 @@ module Crichton
 
       describe '#safe?' do
         it 'returns true for any transition' do
-          expect(subject.safe?).to be_true
+          expect(subject.safe?).to be true
         end
       end
 
@@ -64,7 +64,7 @@ module Crichton
 
         it 'returns true if templated property is true' do
           @link = { 'templated' => true }
-          expect(subject.templated?).to be_true
+          expect(subject.templated?).to be true
         end
       end
 

@@ -14,7 +14,7 @@ describe 'DRDs resource descriptor' do
   end
 
   it 'exists' do
-    expect(File.exists?(filename)).to be_true
+    expect(File.exists?(filename)).to be true
   end
 
   it 'contains the proper number of warnings' do
@@ -22,6 +22,6 @@ describe 'DRDs resource descriptor' do
   end
 
   it 'passes validation with the --strict option' do
-    expect(validator.validate(filename, {strict: true})).to be_true
+    expect(validator.validate(filename, {strict: true})).to be true
   end
 end
