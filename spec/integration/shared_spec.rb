@@ -1,6 +1,7 @@
 # Shared spec for testing response headers
 
-shared_examples_for 'with accept type' do
+shared_examples_for 'a response with well formed headers' do
+  
   HEADER_KEYS = [ 'Content-Type','Cache-Control', 'expires', 'X-UA-Compatible', 'ETag', 'X-Request-Id', 'X-Runtime', 'Content-Length' ]
 
   it 'contains the correct header keys' do

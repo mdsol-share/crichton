@@ -34,13 +34,13 @@ describe '/', :type => :controller, integration: true do
   end
   
   ['application/xml', 'application/vnd.hale+json', 'application/hal+json', 'text/html'].each do |accept|
-    context 'correct response headers' do
+    context "with accept header #{accept}" do
       before do
         get('/', {}, {'HTTP_ACCEPT' => accept})
         @response=response
       end
       
-      it_should_behave_like 'with accept type' do
+      it_should_behave_like 'a response with well formed headers' do
         let(:accept) {accept}
         let(:response) {@response}
       end
