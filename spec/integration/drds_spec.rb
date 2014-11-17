@@ -57,7 +57,7 @@ describe '/drds', :type => :controller, integration: true do
       @response = drds_response
     end
     
-    it_should_behave_like 'with accept type' do
+    it_should_behave_like 'a response with well formed headers' do
       let(:accept) { 'application/vnd.hale+json' }
       let(:response) { @response }
     end
