@@ -20,7 +20,7 @@ describe Crichton::Discovery::EntryPoints do
   describe "#empty?" do
 
     it "returns false when it has when it has individual entry points" do
-      expect(instance.empty?).to be_false
+      expect(instance.empty?).to be false
     end
 
     it "returns true when it does not have individual entry points" do

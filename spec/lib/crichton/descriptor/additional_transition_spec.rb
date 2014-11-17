@@ -49,17 +49,17 @@ module Crichton
       describe '#templated?' do
         it 'returns false if templated property value is not boolean' do
           @link = { 'templated' => 'yes' }
-          expect(subject.templated?).to be_false
+          expect(subject.templated?).to be false
         end
 
         it 'returns false if templated property is not specified' do
           @link = { 'href' => 'http://www.example.org' }
-          expect(subject.templated?).to be_false
+          expect(subject.templated?).to be false
         end
 
         it 'returns false if link provided is string' do
           @link = 'http://www.example.org'
-          expect(subject.templated?).to be_false
+          expect(subject.templated?).to be false
         end
 
         it 'returns true if templated property is true' do

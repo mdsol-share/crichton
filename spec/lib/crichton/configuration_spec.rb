@@ -19,14 +19,14 @@ module Crichton
 
         it 'returns false when configured value is false' do
           @config = example_environment_config.merge({ 'use_discovery_middleware' => false })
-          expect(configuration.use_discovery_middleware?).to be_false
+          expect(configuration.use_discovery_middleware?).to be false
         end
       end
 
       context 'when not configured' do
         it 'returns false' do
           @config = example_environment_config.except('use_discovery_middleware')
-          expect(configuration.use_discovery_middleware?).to be_false
+          expect(configuration.use_discovery_middleware?).to be false
         end
       end
     end
@@ -39,14 +39,14 @@ module Crichton
 
         it 'returns false when configured value is false' do
           @config = example_environment_config.merge({ 'use_alps_middleware' => false })
-          expect(configuration.use_alps_middleware?).to be_false
+          expect(configuration.use_alps_middleware?).to be false
         end
       end
 
       context 'when not configured' do
         it 'returns false' do
           @config = example_environment_config.except('use_alps_middleware')
-          expect(configuration.use_alps_middleware?).to be_false
+          expect(configuration.use_alps_middleware?).to be false
         end
       end
     end

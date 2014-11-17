@@ -26,7 +26,7 @@ module Crichton
           it 'returns false if the hash does not include the descriptor value' do
             @descriptor_document = {'name' => 'uuid'}
             @target = {}
-            expect(decorator.source_defined?).to be_false
+            expect(decorator.source_defined?).to be false
           end
         end
 

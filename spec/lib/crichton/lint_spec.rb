@@ -134,7 +134,7 @@ describe Crichton::Lint do
 
     context 'when both --strict and other options are set' do
       after do
-        expect(Crichton::Lint.validate(filename, @option)).to be_false
+        expect(Crichton::Lint.validate(filename, @option)).to be false
       end
 
       # error_count > 0, therefore cannot be false
@@ -162,7 +162,7 @@ describe Crichton::Lint do
       end
 
       it 'returns false when both --strict and --all options are set' do
-        expect(Crichton::Lint.validate_all({strict: true, all: true})).to be_false
+        expect(Crichton::Lint.validate_all({strict: true, all: true})).to be false
       end
     end
 

@@ -111,7 +111,7 @@ module Crichton
         end
 
         it 'returns false if an embed value is not set' do
-          expect(descriptor.embeddable?).to be_false
+          expect(descriptor.embeddable?).to be false
         end
       end
       
@@ -212,14 +212,14 @@ module Crichton
 
       describe '#multiple?' do
         it 'returns false when cardinality is not specified' do
-          expect(name_semantic.multiple?).to be_false
+          expect(name_semantic.multiple?).to be false
         end
 
         it 'returns false when cardinality is single' do
           @descriptor = normalized_drds_descriptor.tap do |doc|
             doc['descriptors']['drds']['descriptors']['create']['descriptors']['name'].merge!({ 'cardinality' => 'single' })
           end
-          expect(name_semantic.multiple?).to be_false
+          expect(name_semantic.multiple?).to be false
         end
 
         it 'returns false when cardinality is single' do

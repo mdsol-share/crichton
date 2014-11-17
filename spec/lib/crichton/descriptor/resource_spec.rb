@@ -85,7 +85,7 @@ module Crichton
         end
 
         it 'returns false if the protocol is not defined in the descriptor document' do
-          expect(resource_descriptor.protocol_exists?('bogus')).to be_false
+          expect(resource_descriptor.protocol_exists?('bogus')).to be false
         end
       end
       
