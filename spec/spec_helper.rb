@@ -55,6 +55,7 @@ RSpec.configure do |config|
   config.include Support::Helpers
   config.include Support::ALPS
   config.include Support::DRDHelpers
+  config.infer_spec_type_from_file_location!
 
   config.before(:each) do
     if RSpec.current_example.example_group.metadata[:integration]
