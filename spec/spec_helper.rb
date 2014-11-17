@@ -9,6 +9,7 @@ $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
 
 require 'rspec'
+require 'rspec/collection_matchers'
 require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
