@@ -32,7 +32,7 @@ group :test do
   gem 'nokogiri'
   gem 'launchy'
   gem 'webmock',        '~> 1.13.0'
-  gem 'equivalent-xml', '~> 0.3.0'
+  gem 'equivalent-xml', '~> 0.5'
   gem 'rspec',          '~> 2.14'
   gem 'rspec-rails',    '~> 2.14'
   gem 'simplecov',      '~> 0.8'
