@@ -52,7 +52,7 @@ describe '/drds', :type => :controller, integration: true do
     expect(drds_body['_embedded']['items'].size).to eq(drds_body['_links']['items'].size)
   end
   
-  context 'headers' do
+  context 'with accept header application/vnd.hale+json' do
     before do
       @response = drds_response
     end
