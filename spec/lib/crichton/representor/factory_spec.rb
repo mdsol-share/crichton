@@ -19,10 +19,10 @@ module Crichton
       shared_examples_for 'a wrapped target' do
         it 'exposes a Representor interface' do
           if @check_semantics
-            expect(representor.each_data_semantic.any? { |data_semantic| data_semantic.value == '1812' }).to be_true
+            expect(representor.each_data_semantic.any? { |data_semantic| data_semantic.value == '1812' }).to be true
           else
             enumerator = representor.each_transition(conditions: 'can_do_anything')
-            expect(enumerator.any? { |transition| transition.name == 'deactivate' }).to be_true
+            expect(enumerator.any? { |transition| transition.name == 'deactivate' }).to be true
           end
         end
       end

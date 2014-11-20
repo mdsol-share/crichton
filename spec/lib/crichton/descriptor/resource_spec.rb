@@ -81,11 +81,11 @@ module Crichton
 
       describe '#protocol_exists?' do
         it 'returns true if the protocol is defined in the descriptor document' do
-          expect(resource_descriptor.protocol_exists?('http')).to be_true
+          expect(resource_descriptor.protocol_exists?('http')).to be true
         end
 
         it 'returns false if the protocol is not defined in the descriptor document' do
-          expect(resource_descriptor.protocol_exists?('bogus')).to be_false
+          expect(resource_descriptor.protocol_exists?('bogus')).to be false
         end
       end
       

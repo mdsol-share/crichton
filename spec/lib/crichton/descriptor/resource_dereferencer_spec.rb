@@ -49,7 +49,7 @@ module Crichton
         end
 
         it 'registers descriptors elements in registry' do
-          expect(resource_descriptors.values.all? { |v| v.is_a?(Crichton::Descriptor::DescriptorElement) }).to be_true
+          expect(resource_descriptors.values.all? { |v| v.is_a?(Crichton::Descriptor::DescriptorElement) }).to be true
         end
       end
 
@@ -75,7 +75,7 @@ module Crichton
         end
 
         it 'returns extensions after dereferencing' do
-          expect(dereferenced_document['extensions'].any?).to be_true
+          expect(dereferenced_document['extensions'].any?).to be true
         end
       end
     end

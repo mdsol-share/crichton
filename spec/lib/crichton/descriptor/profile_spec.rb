@@ -27,7 +27,7 @@ module Crichton
           end
   
           it 'returns an array of descriptors' do
-            expect(descriptor.descriptors.all? { |descriptor| descriptor.is_a?(Base) }).to be_true
+            expect(descriptor.descriptors.all? { |descriptor| descriptor.is_a?(Base) }).to be true
           end
         end
   
@@ -65,7 +65,7 @@ module Crichton
           end
   
           it 'returns an hash of semantic descriptors' do
-            expect(descriptor.semantics.all? { |_, descriptor| descriptor.semantic? }).to be_true
+            expect(descriptor.semantics.all? { |_, descriptor| descriptor.semantic? }).to be true
           end
         end 
   
@@ -84,7 +84,7 @@ module Crichton
           end
   
           it 'returns a hash of transition descriptors' do
-            expect(descriptor.transitions.all? { |_, descriptor| descriptor.transition? }).to be_true
+            expect(descriptor.transitions.all? { |_, descriptor| descriptor.transition? }).to be true
           end
         end
   

@@ -120,7 +120,7 @@ module Crichton
           expect(dereferenced_hash['DRDs#name']).to eq(raw_descriptors['DRDs#name'].descriptor_document)
         end
 
-        share_examples_for 'dereferencing href' do
+        shared_examples_for 'dereferencing href' do
           it 'contains additional properties from dereferenced descriptor' do
             expect(dereferenced_hash['DRDs#create']).to have_key('doc')
           end
