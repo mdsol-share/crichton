@@ -1,6 +1,16 @@
 class DrdsController < ApplicationController
   respond_to(:html, :xhtml, :hale_json, :hal_json)
   
+  OPTIONS_KEYS = [ :conditions,
+                   :except,
+                   :only,
+                   :include,
+                   :exclude,
+                   :embed_optional,
+                   :additional_links,
+                   :override_links,
+                   :state
+                 ]
   def show
     @drd = Drd.find_by_uuid(params[:id])
     if @drd.nil?
@@ -78,7 +88,8 @@ class DrdsController < ApplicationController
     params.slice(:name, :leviathan_uuid, :kind).reject { |_, v| v.blank? }
   end
   
+  # NB: Allowing a requester to directly manipulate options is not normal.  It is a convenience for testing.
   def options
-    (conditions = params[:conditions]) ? {conditions: conditions.split(',').map(&:strip)} : {}
+    params.slice(*OPTIONS_KEYS).symbolize_keys
   end
 end

@@ -3,6 +3,22 @@ module Crichton
   class Configuration
 
     ##
+    # @param [Hash] config The configuration hash.
+    # @option config [String] alps_base_uri
+    # @option config [String] deployment_base_uri
+    # @option config [String] discovery_base_uri
+    # @option config [String] documentation_base_uri
+    # @option config [Array] css_uri
+    # @option config [Array] js_uri
+    #
+    # @return [Configuration] The configuration instance.
+    def initialize(config)
+      @config = config || {}
+      @use_discovery_middleware = @config['use_discovery_middleware'] || false
+      @use_alps_middleware = @config['use_alps_middleware'] || false
+    end
+
+    ##
     # @!attribute [r] alps_base_uri
     # The base URI of the ALPS repository.
     #
@@ -39,7 +55,7 @@ module Crichton
     end
 
     def use_discovery_middleware?
-      @use_discovery_middleware ||= (@config['use_discovery_middleware'] === true)
+      @use_discovery_middleware
     end
 
     def resources_catalog_response_expiry
@@ -47,7 +63,7 @@ module Crichton
     end
 
     def use_alps_middleware?
-      @use_alps_middleware ||= (@config['use_alps_middleware'] === true)
+      @use_alps_middleware
     end
 
     def alps_profile_response_expiry
@@ -74,20 +90,6 @@ module Crichton
     # @return [Array] The JS URI.
     def js_uri
       @js_uri ||= (js = *@config['js_uri'])
-    end
-
-    ##
-    # @param [Hash] config The configuration hash.
-    # @option config [String] alps_base_uri
-    # @option config [String] deployment_base_uri
-    # @option config [String] discovery_base_uri
-    # @option config [String] documentation_base_uri
-    # @option config [Array] css_uri
-    # @option config [Array] js_uri
-    #
-    # @return [Configuration] The configuration instance.
-    def initialize(config)
-      @config = config || {}
     end
   end
 end

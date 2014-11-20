@@ -62,11 +62,11 @@ RSpec.configure do |config|
       Rails = CRICHTON_DEMO_SERVICE unless Object.const_defined?(:Rails)
     else
       Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
+      Crichton.reset
+      Crichton.config_directory = CONF_DIR
+      Crichton.descriptor_registry
     end
     stub_alps_requests
-    Crichton.reset
-    Crichton.config_directory = CONF_DIR
-    Crichton.descriptor_registry
   end
 
   config.include JsonSpec::Helpers
