@@ -26,6 +26,8 @@ module Crichton
           capture(:stdout) { validator.validate(filename) }
         end
 
+        # TODO: Look into refactoring .tap with something non-block and more readable
+
         it 'reports a missing doc property error if a resource doc property is not specified' do
           @descriptor = drds_descriptor.tap do |document|
             document['resources']['drds'].except!('doc')

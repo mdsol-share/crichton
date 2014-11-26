@@ -5,10 +5,10 @@ module Crichton
   module Lint
     describe StatesValidator do
       let(:validator) { Crichton::Lint }
-      let(:filename) { create_drds_file(@descriptor, @filename) }
+      let(:filename) { create_drds_file(@descriptor, @dest_filename) }
 
       before(:all) do
-        @filename = 'drds_lint.yml'
+        @dest_filename = 'drds_lint.yml'
       end
 
       before do
