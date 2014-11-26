@@ -54,21 +54,25 @@ describe Crichton::Lint::OptionsValidator do
     end
     
     it 'reports an invalid local option href error' do
-      @descriptor['idempotent']['update']['data'][1].merge!({'options' => {'id' => 'DRDs#local_uri', "href" => "DRDs#local_uri"}})
+      @descriptor['idempotent']['update']['data'][0].merge!({'options' => {'id' => 'DRDs#local_uri', "href" => "DRDs#local_uri"}})
       
-      @errors = expected_output(:error, 'descriptors.option_reference_not_found', id: 'old_status', options_attr: 'href',
+      @errors = expected_output(:error, 'descriptors.option_reference_not_found', id: 'status', options_attr: 'href',
         ref: 'DRDs#local_uri', type: 'option id', filename: filename, section: :descriptors, sub_header: :error) << 
-        expected_output(:error, 'descriptors.option_reference_not_found', id: 'old_status', options_attr: 'href',
+        expected_output(:error, 'descriptors.option_reference_not_found', id: 'status', options_attr: 'href',
           ref: 'DRDs#local_uri', type: 'option id')     
     end
     
-    it 'reports an invalid local option href error' do
-      @descriptor['idempotent']['update']['data'][1].merge!({'options' => {'id' => 'DRDs#local_uri', "href" => "DRDs#local_uri"}})
+    it 'reports a nonexistent id for local option href error' do
+      @descriptor['idempotent']['update']['data'][0].merge!({'options' => {'id' => 'invalid_id#local_uri', "href" => "invalid_id#local_uri"}})
 
-      @errors = expected_output(:error, 'descriptors.option_reference_not_found', id: 'old_status', options_attr: 'href',
-        ref: 'DRDs#local_uri', type: 'option id', filename: filename, section: :descriptors, sub_header: :error) << 
-        expected_output(:error, 'descriptors.option_reference_not_found', id: 'old_status', options_attr: 'href',
-          ref: 'DRDs#local_uri', type: 'option id')     
+      @errors = expected_output(:error, 'descriptors.option_reference_not_found', id: 'status', options_attr: 'href',
+        ref: 'invalid_id#local_uri', type: 'descriptor', filename: filename, section: :descriptors, sub_header: :error) << 
+        expected_output(:error, 'descriptors.option_reference_not_found', id: 'status', options_attr: 'href',
+          ref: 'invalid_id#local_uri', type: 'option id')  <<
+        expected_output(:error, 'descriptors.option_reference_not_found', id: 'status', options_attr: 'href',
+          ref: 'invalid_id#local_uri', type: 'descriptor') <<
+        expected_output(:error, 'descriptors.option_reference_not_found', id: 'status', options_attr: 'href',
+          ref: 'invalid_id#local_uri', type: 'option id')
     end
   end
 end
