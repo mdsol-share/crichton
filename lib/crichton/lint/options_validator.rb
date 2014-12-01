@@ -47,6 +47,7 @@ module Crichton
           case form_key
             when 'list'
               #5
+              # TODO: Respond with errors on other invalid ruby types other than hash
               descriptor_validator.add_error('descriptors.invalid_option_enumerator', id: descriptor.id, key_type:
                 form_key, value_type: 'hash') if value.is_a?(Hash)
             when 'hash'
