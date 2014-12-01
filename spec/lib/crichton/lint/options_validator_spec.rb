@@ -5,11 +5,7 @@ require 'crichton/lint'
 
 describe Crichton::Lint::OptionsValidator do
   let(:validator) { Crichton::Lint }
-  let(:filename) { create_drds_file(@descriptor, @dest_filename) }
-
-  before(:all) do
-    @dest_filename = 'drds_lint.yml'
-  end
+  let(:filename) { create_drds_file(@descriptor, LINT_FILENAME) }
 
   before do
     allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).and_return('<alps></alps>')
@@ -35,7 +31,7 @@ describe Crichton::Lint::OptionsValidator do
         expected_output(:error, 'descriptors.multiple_options', id: 'status', options_keys: 'hash, list')
     end
     
-    context '#list' do
+    context '#external_option_check' do
     
       it 'validates that list options do not use hashes' do
         @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"list" => {'a' => 'b'}}})
@@ -46,7 +42,7 @@ describe Crichton::Lint::OptionsValidator do
       end
     end
     
-    context '#hash' do
+    context '#hash_option_check' do
     
       it 'validates that hash options do not use lists' do
         @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"hash" => ['a', 'b']}})
@@ -71,7 +67,7 @@ describe Crichton::Lint::OptionsValidator do
       end
     end
     
-    context '#external' do
+    context '#external_option_check' do
     
       it 'validates that external options are hashes' do
         @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"external" => ['a','b']}})
@@ -100,7 +96,7 @@ describe Crichton::Lint::OptionsValidator do
       end
     end
     
-    context '#href' do
+    context '#href_option_check' do
 
       it 'validates valid local options href' do
         @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"id"=>"first_location"}})

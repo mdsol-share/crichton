@@ -2,6 +2,7 @@ SPEC_DIR = File.expand_path("..", __FILE__)
 lib_dir = File.expand_path("../lib", SPEC_DIR)
 LINT_DIR = File.expand_path("../lib/crichton/lint", SPEC_DIR)
 DISCOVERY_DIR = File.expand_path("../lib/crichton/discovery", SPEC_DIR)
+LINT_FILENAME = 'drds_lint.yml'
 
 SPECS_TEMP_DIR = 'tmp'
 

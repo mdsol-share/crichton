@@ -3,11 +3,7 @@ require 'crichton/lint'
 
 describe Crichton::Lint::StatesValidator do
   let(:validator) { Crichton::Lint }
-  let(:filename) { create_drds_file(@descriptor, @dest_filename) }
-
-  before(:all) do
-    @dest_filename = 'drds_lint.yml'
-  end
+  let(:filename) { create_drds_file(@descriptor, LINT_FILENAME) }
 
   describe '#validate' do
     before do

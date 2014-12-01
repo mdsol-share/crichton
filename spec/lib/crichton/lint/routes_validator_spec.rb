@@ -3,11 +3,7 @@ require 'crichton/lint'
 
 describe Crichton::Lint::StatesValidator do
   let(:validator) { Crichton::Lint }
-  let(:filename) { create_drds_file(@descriptor, @dest_filename) }
-
-  before(:all) do
-    @dest_filename = 'drds_lint.yml'
-  end
+  let(:filename) { create_drds_file(@descriptor, LINT_FILENAME) }
 
   before do
     allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).and_return('<alps></alps>')

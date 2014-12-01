@@ -106,8 +106,11 @@ module Crichton
       # external_hash and external_list should point to a valid web protocol
       def self.external_option_check(descriptor_validator, descriptor, form_key, value)
         #9 check if value is hash
-        (descriptor_validator.add_error('descriptors.invalid_option_enumerator', id: descriptor.id, key_type:
-            form_key, value_type: value.class) && return) unless value.is_a?(Hash)
+        unless value.is_a? Hash
+          descriptor_validator.add_error('descriptors.invalid_option_enumerator', id: descriptor.id, key_type:
+              form_key, value_type: value.class)
+          return
+        end
 
         source_option_check(descriptor_validator, descriptor, form_key, value)
       end
