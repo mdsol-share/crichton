@@ -45,9 +45,10 @@ module Crichton
       # @param [Hash] id The id of the ALPS descriptor
       def initialize(resource_descriptor, descriptor_document, id = nil)
         @resource_descriptor = resource_descriptor
-        @descriptor_document = descriptor_document && descriptor_document.dup || {}
+        @descriptor_document = descriptor_document.dup
+        @descriptor_document['id'] = id.to_s if id
         @descriptors = {}
-        set_id(id)
+        
       end
   
       ##
@@ -112,11 +113,6 @@ module Crichton
         '#<%s:0x%s %s %s>' % [self.class.name, self.hash.to_s(16), self.name, ivars.join(", ")]
       end
       
-    protected
-      # Helper method to allow inheriting classes to set the ALPS id of the descriptor.
-      def set_id(id)
-        descriptor_document['id'] = id.to_s if id
-      end
     end
   end
 end
