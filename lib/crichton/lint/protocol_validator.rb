@@ -77,7 +77,7 @@ module Crichton
       end
 
       #
-      # TODO: write a meme_type checking method by calling Andrey's real method
+      # TODO: write a mime_type verification method
       #
 
       # If slt is defined, it should have the 3 properties below specified

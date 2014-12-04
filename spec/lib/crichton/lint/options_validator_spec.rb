@@ -41,7 +41,7 @@ describe Crichton::Lint::OptionsValidator do
             value_type: 'Hash')
       end
             
-      it 'validates that list options errors on string' do
+      it 'validates that list options reports errors on strings' do
         @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"list" => 'a'}})
         @errors = expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
           value_type: 'String', filename: filename, section: :descriptors, sub_header: :error) <<
@@ -49,7 +49,7 @@ describe Crichton::Lint::OptionsValidator do
             value_type: 'String')
       end
     
-      it 'validates that list options errors on fixnum' do
+      it 'validates that list options reports errors on fixnum' do
         @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"list" => 1}})
         @errors = expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
           value_type: 'Fixnum', filename: filename, section: :descriptors, sub_header: :error) <<
