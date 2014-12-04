@@ -36,28 +36,25 @@ describe Crichton::Lint::OptionsValidator do
       it 'validates that list options do not use hashes' do
         @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"list" => {'a' => 'b'}}})
         @errors = expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
-          value_type: 'hash', filename: filename, section: :descriptors, sub_header: :error) <<
+          value_type: 'Hash', filename: filename, section: :descriptors, sub_header: :error) <<
           expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
-            value_type: 'hash')
+            value_type: 'Hash')
       end
-      
-      pending('on fix to options validator') do
-      
-        it 'validates that list options errors on string' do
-          @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"list" => 'a'}})
-          @errors = expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
-            value_type: 'String', filename: filename, section: :descriptors, sub_header: :error) <<
-            expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
-              value_type: 'String')
-        end
-      
-        it 'validates that list options errors on fixnum' do
-          @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"list" => 1}})
-          @errors = expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
-            value_type: 'Fixnum', filename: filename, section: :descriptors, sub_header: :error) <<
-            expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
-              value_type: 'Fixnum')
-        end
+            
+      it 'validates that list options errors on string' do
+        @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"list" => 'a'}})
+        @errors = expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
+          value_type: 'String', filename: filename, section: :descriptors, sub_header: :error) <<
+          expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
+            value_type: 'String')
+      end
+    
+      it 'validates that list options errors on fixnum' do
+        @descriptor['idempotent']['update']['data'][0].merge!({'options' => {"list" => 1}})
+        @errors = expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
+          value_type: 'Fixnum', filename: filename, section: :descriptors, sub_header: :error) <<
+          expected_output(:error, 'descriptors.invalid_option_enumerator', id: 'status', key_type: 'list',
+            value_type: 'Fixnum')
       end
     end
     

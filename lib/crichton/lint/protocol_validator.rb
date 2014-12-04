@@ -76,33 +76,9 @@ module Crichton
         end
       end
 
-      # check if content type for a protocol transition is one of our supported types
-      def valid_content_type(type)
-        registered_mime_types.include?(type)
-      end
-
       #
-      # TODO: replace by calling Andrey's real method
+      # TODO: write a meme_type checking method by calling Andrey's real method
       #
-      def registered_mime_types
-        %w(application/json application/hal+json application/vnd.hale+json application/xhtml+xml)
-      end
-
-      # for each status code key, check to see if it is a valid as per the protocol. Only have http currently.
-      # Also check for description and notes sub-properties
-      def check_status_codes_properties(status_codes, options)
-        status_codes.each do |code_name, code|
-          # http codes have to be > 100
-          if options[:protocol] == 'http' && code_name.to_i < 100
-            add_warning('protocols.invalid_status_code', options.merge(code: code_name))
-          end
-          %w(description notes).each do |property|
-            unless code.keys.include?(property)
-              add_warning('protocols.missing_status_codes_property', options.merge(property: property))
-            end
-          end
-        end
-      end
 
       # If slt is defined, it should have the 3 properties below specified
       def check_slt_properties(slt, options)
