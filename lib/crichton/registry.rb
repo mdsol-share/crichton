@@ -31,7 +31,7 @@ module Crichton
     # @param [Hash, String] resource_descriptors The hashified resource descriptor documents or filenames of YAML
     # resource descriptor documents.
     def register_multiple(resource_descriptors)
-      @resources_registry ||= {}.tap do |hash|
+      @resources_registry = {}.tap do |hash|
         resource_descriptors.each do |file|
           document = load_resource_descriptor(file)
           resource = Crichton::Descriptor::ResourceDereferencer.new(document)

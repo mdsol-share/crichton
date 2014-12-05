@@ -108,7 +108,7 @@ describe Crichton::Lint do
 
     context 'with the --strict option' do
       after do
-        expect(Crichton::Lint.validate(filename, {strict: true})).to (@retval ? be_true : be_false)
+        expect(Crichton::Lint.validate(filename, {strict: true})).to be !!@retval
       end
 
       it 'returns true when a clean descriptor file is validated' do
@@ -134,7 +134,7 @@ describe Crichton::Lint do
 
     context 'when both --strict and other options are set' do
       after do
-        expect(Crichton::Lint.validate(filename, @option)).to be_false
+        expect(Crichton::Lint.validate(filename, @option)).to be false
       end
 
       # error_count > 0, therefore cannot be false
@@ -162,7 +162,7 @@ describe Crichton::Lint do
       end
 
       it 'returns false when both --strict and --all options are set' do
-        expect(Crichton::Lint.validate_all({strict: true, all: true})).to be_false
+        expect(Crichton::Lint.validate_all({strict: true, all: true})).to be false
       end
     end
 
@@ -176,7 +176,7 @@ describe Crichton::Lint do
       end
 
       it 'returns true if the --strict option is set' do
-        expect(Crichton::Lint.validate_all({strict: true})).to be_true
+        expect(Crichton::Lint.validate_all({strict: true})).to be true
       end
 
       it 'returns an accurate warning count if the --all and count option are set' do
@@ -202,8 +202,8 @@ describe Crichton::Lint do
     
     context 'when linting the errors descriptor file' do
       it 'passes even if the --strict option is set' do
-        drds_path = fixture_path('resource_descriptors', 'errors_descriptor.yml')
-        expect(Crichton::Lint.validate(drds_path, {strict: true})).to be_true
+        drds_path = crichton_fixture_path('resource_descriptors', 'errors_descriptor.yml')
+        expect(Crichton::Lint.validate(drds_path, {strict: true})).to be true
       end
     end
     

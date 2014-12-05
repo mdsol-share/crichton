@@ -203,11 +203,11 @@ module Support
     end
 
     def alps_xml
-      @alps_xml ||= Nokogiri::XML(File.open(fixture_path('leviathans_alps.xml')))
+      @alps_xml ||= Nokogiri::XML(File.open(crichton_fixture_path('leviathans_alps.xml')))
     end
 
     def alps_xml_opened_file
-      @alps_xml_string ||= File.open(fixture_path('leviathans_alps.xml'))
+      @alps_xml_string ||= File.open(crichton_fixture_path('leviathans_alps.xml'))
     end
 
     def alps_json_opened_file
@@ -323,6 +323,14 @@ module Support
      </descriptor>
     </alps>
     HERE
+    
+    AlpsUrl = <<-HERE
+    <alps>
+      <descriptor id="URL" type="semantic" href="http://alps.io/schema.org/Text">
+        <doc format="html">Data type: URL.</doc>
+      </descriptor>
+    </alps>
+    HERE
 
     StubUrls = {
       'http://alps.io/schema.org/Number' => AlpsNumber,
@@ -334,6 +342,7 @@ module Support
       'http://alps.io/schema.org/Boolean' => AlpsBoolean,
       'http://alps.io/schema.org/Thing/Leviathan' => AlpsLeviathan,
       'http://alps.io/schema.org/Thing' => AlpsThing,
+      'http://alps.io/schema.org/URL' => AlpsUrl,
       'http://alps.io/schema.org/WarrantyPromise' => AlpsWarrantyPromise
     }
   end

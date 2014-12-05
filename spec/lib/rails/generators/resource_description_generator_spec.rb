@@ -2,7 +2,7 @@ require 'spec_helper'
 
 def assert_file(relative_path, regexp)
  # absolute = File.expand_path(relative, destination_root)
-  expect(File.exists?(relative_path)).to be_true
+  expect(File.exists?(relative_path)).to be true
 
   read = File.read(relative_path)
 
@@ -34,7 +34,7 @@ module Crichton
 
     it "creates a yaml file in the specified location" do
       ResourceDescriptionGenerator.start([resource_name, collection_name, path],options)
-      expect(File.exists?(filename)).to be_true
+      expect(File.exists?(filename)).to be true
     end
 
     it "creates a file with references to the resource" do

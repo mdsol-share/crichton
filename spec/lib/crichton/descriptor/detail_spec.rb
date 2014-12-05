@@ -107,11 +107,11 @@ module Crichton
       describe '#embeddable?' do
         it 'returns true if an embed value is set' do
           descriptor_document['embed'] = 'optional'
-          expect(descriptor.embeddable?).to be_true
+          expect(descriptor.embeddable?).to be true
         end
 
         it 'returns false if an embed value is not set' do
-          expect(descriptor.embeddable?).to be_false
+          expect(descriptor.embeddable?).to be false
         end
       end
       
@@ -165,7 +165,7 @@ module Crichton
         end
 
         it 'returns the absolute self link' do
-          expect(descriptor.type_link.href).to eq('http://alps.example.com/DRDs#drds')
+          expect(descriptor.type_link.href).to eq('http://localhost:3000/alps/DRDs#drds')
         end
       end
 
@@ -212,21 +212,21 @@ module Crichton
 
       describe '#multiple?' do
         it 'returns false when cardinality is not specified' do
-          expect(name_semantic.multiple?).to be_false
+          expect(name_semantic.multiple?).to be false
         end
 
         it 'returns false when cardinality is single' do
           @descriptor = normalized_drds_descriptor.tap do |doc|
             doc['descriptors']['drds']['descriptors']['create']['descriptors']['name'].merge!({ 'cardinality' => 'single' })
           end
-          expect(name_semantic.multiple?).to be_false
+          expect(name_semantic.multiple?).to be false
         end
 
         it 'returns false when cardinality is single' do
           @descriptor = normalized_drds_descriptor.tap do |doc|
             doc['descriptors']['drds']['descriptors']['create']['descriptors']['name'].merge!({ 'cardinality' => 'multiple' })
           end
-          expect(name_semantic.multiple?).to be_true
+          expect(name_semantic.multiple?).to be true
         end
       end
 

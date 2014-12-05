@@ -52,7 +52,7 @@ module Crichton
       
       describe '#profile_link' do
         it 'returns an absolute link' do
-          expect(resource_descriptor.profile_link.href).to eq('http://alps.example.com/DRDs')
+          expect(resource_descriptor.profile_link.href).to eq('http://localhost:3000/alps/DRDs')
         end
 
         it 'returns a link with the name profile' do
@@ -81,11 +81,11 @@ module Crichton
 
       describe '#protocol_exists?' do
         it 'returns true if the protocol is defined in the descriptor document' do
-          expect(resource_descriptor.protocol_exists?('http')).to be_true
+          expect(resource_descriptor.protocol_exists?('http')).to be true
         end
 
         it 'returns false if the protocol is not defined in the descriptor document' do
-          expect(resource_descriptor.protocol_exists?('bogus')).to be_false
+          expect(resource_descriptor.protocol_exists?('bogus')).to be false
         end
       end
       

@@ -20,12 +20,12 @@ describe Crichton::Discovery::EntryPoints do
   describe "#empty?" do
 
     it "returns false when it has when it has individual entry points" do
-      expect(instance.empty?).to be_false
+      expect(instance.empty?).to be false
     end
 
     it "returns true when it does not have individual entry points" do
       instance = described_class.new([])
-      expect(instance.empty?).to be_true
+      expect(instance.empty?).to be true
     end
   end
 
@@ -36,10 +36,11 @@ describe Crichton::Discovery::EntryPoints do
       let(:expected_hale_json) do
         <<-JSON
           {"_links":
-            {"#{entry_point.link_relation}":
+            {"#{entry_point.name}":
               {
                 "href": "#{entry_point.href}",
-                "name": "#{entry_point.name}"
+                "name": "#{entry_point.name}",
+                "profile": "#{entry_point.link_relation}"
               }
             }
           }
