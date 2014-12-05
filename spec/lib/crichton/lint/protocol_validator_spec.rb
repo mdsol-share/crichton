@@ -13,8 +13,7 @@ describe Crichton::Lint::ProtocolValidator do
   describe '#validate' do
     context 'when it encounters a protocol without properties' do
       it 'reports a no protocol defined error' do
-        descriptor = drds_descriptor.tap { |document| document['http_protocol'].replace({}) }
-        filename = create_drds_file(descriptor, 'drds_lint')
+        @descriptor['http_protocol'].replace({})
         errors = expected_output(:error, 'protocols.protocol_empty', protocol: 'http')
         expect(capture(:stdout) { validator.validate(filename) }).to include(errors)
       end
@@ -26,33 +25,25 @@ describe Crichton::Lint::ProtocolValidator do
       end
 
       it 'reports an error when multiple entry points are specified' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol']['create'].merge!({ 'entry_point' => 'drds' })
-        end
+          @descriptor['http_protocol']['create'].merge!({ 'entry_point' => 'drds' })
         @errors = expected_output(:error, 'protocols.entry_point_error', error: 'Multiple', protocol: 'http',
           filename: filename, section: :protocols, sub_header: :error)
       end
 
       it 'reports an error when no entry points are specified' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol']['list'].except!('entry_point')
-        end
+          @descriptor['http_protocol']['list'].except!('entry_point')
         @errors = expected_output(:error, 'protocols.entry_point_error', error: 'No', protocol: 'http',
           filename: filename, section: :protocols, sub_header: :error)
       end
 
       it 'reports a warning when an external resource action has properties other than uri_source' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
-        end
+          @descriptor['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
         @warnings = expected_output(:warning, 'protocols.extraneous_props', protocol: 'http',
           action: 'leviathan-link', filename: filename, section: :protocols, sub_header: :warning)
       end
 
       it 'reports errors when uri and method are not specified for a protocol action' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol']['list'].except!('uri').except!('method')
-        end
+          @descriptor['http_protocol']['list'].except!('uri').except!('method')
         @errors = expected_output(:error, 'protocols.property_missing', property: 'uri', protocol: 'http',
           action: 'list', filename: filename, section: :protocols, sub_header: :error) <<
           expected_output(:error, 'protocols.property_missing', property: 'method', protocol: 'http',
@@ -60,26 +51,20 @@ describe Crichton::Lint::ProtocolValidator do
       end
 
       it 'reports warnings when slt properties are not specified properly' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol']['show']['slt'].except!('std_dev')
-        end
+          @descriptor['http_protocol']['show']['slt'].except!('std_dev')
         @warnings = expected_output(:warning, 'protocols.missing_slt_property', property: 'std_dev',
           protocol: 'http', action: 'show', filename: filename, section: :protocols, sub_header: :warning)
       end
 
       it 'reports warnings when slt properties are missing' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol']['create'].except!('slt')
-        end
+          @descriptor['http_protocol']['create'].except!('slt')
         @warnings = expected_output(:warning, 'protocols.property_missing', property: 'slt', protocol: 'http',
           protocol: 'http', action: 'create', filename: filename, section: :protocols, sub_header: :warning)
       end
 
 
       it 'reports errors when the protocol actions list does not match state and descriptor transitions' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol'].except!('search')
-        end
+          @descriptor['http_protocol'].except!('search')
         @errors = expected_output(:error, 'protocols.descriptor_transition_not_found', transition: 'search',
           protocol: 'http', filename: filename, section: :protocols, sub_header: :error) <<
           expected_output(:error, 'protocols.state_transition_not_found', transition: 'search', protocol: 'http') <<
@@ -90,12 +75,10 @@ describe Crichton::Lint::ProtocolValidator do
 
     context 'when it encounters an invalid protocol' do
       it 'reports an exception error ' do
-        @descriptor = drds_descriptor.tap do |document|
-          content = document['http_protocol']
-          document.merge!({ 'ftp_protocol' => content })
-        end
+          content = @descriptor['http_protocol']
+          @descriptor.merge!({ 'ftp_protocol' => content })
         expect { capture(:stdout) { Crichton.Lint.validate(filename) } }.to raise_error
-        "Unknown protocol ftp defined in resource descriptor document DRDs."
+        "Unknown protocol ftp defined in resource descriptor @descriptor DRDs."
       end
     end
   end
