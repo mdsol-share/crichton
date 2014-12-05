@@ -4,29 +4,34 @@ require 'colorize'
 
 describe Crichton::Lint do
   let(:validator) { Crichton::Lint }
-  let(:filename) { create_drds_file(@descriptor, @filename) }
-
-  before(:all) do
-    @filename = 'drds_lint.yml'
+  let(:filename) { create_drds_file(@descriptor, LINT_FILENAME) }
+  
+  it 'prints the Crichton version' do
+    expect(capture(:stdout) { Crichton::Lint.version }).to eq("Crichton version: 0.1.0\n\n")
   end
 
   before do
     allow_any_instance_of(Crichton::ExternalDocumentStore).to receive(:get).and_return('<alps></alps>')
     load_lint_translation_file
+    @descriptor = drds_descriptor
   end
 
   describe '.validate' do
+      
+    context 'with parsed hash file' do
+      let(:loaded_file) { YAML.load_file(create_drds_file(@descriptor, LINT_FILENAME)) }
+      
+      it 'reports a success statement with a clean file' do
+        expect(validation_report(loaded_file)).to eq("In file '#{loaded_file}':\n#{I18n.t('aok').green}\n")
+      end
+    end
+  
     context 'with no options' do
       after do
-        expect(validation_report).to eq(@errors || @warnings || @message)
-      end
-
-      def validation_report
-        capture(:stdout) { validator.validate(filename) }
+        expect(validation_report(filename)).to eq(@errors || @warnings || @message)
       end
 
       it 'reports a success statement with a clean resource descriptor file' do
-        @descriptor = drds_descriptor
         @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
       end
 
@@ -36,10 +41,8 @@ describe Crichton::Lint do
       end
 
       it 'reports a missing states section error when the states section is missing' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['resources']['drds'].except!('states')
-          document['resources']['drd'].except!('states')
-        end
+          @descriptor['resources']['drds'].except!('states')
+          @descriptor['resources']['drd'].except!('states')
         @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
           missing_section: 'states', sub_header: :error)
       end
@@ -53,13 +56,13 @@ describe Crichton::Lint do
       end
 
       it 'reports a missing protocols section error when the protocols section is missing' do
-        @descriptor = drds_descriptor.except('http_protocol')
+        @descriptor.except!('http_protocol')
         @errors = expected_output(:error, 'catastrophic.section_missing', section: :catastrophic, filename: filename,
           missing_section: 'protocols', sub_header: :error)
       end
 
       it 'reports a missing top-level self property' do
-        @descriptor = drds_descriptor.tap { |doc| doc['links'].except!('self') }
+        @descriptor['links'].except!('self')
         @errors = expected_output(:error, 'profile.missing_self', section: :catastrophic, filename: filename, sub_header: :error) <<
             expected_output(:error, 'profile.missing_self_value')
       end
@@ -71,36 +74,30 @@ describe Crichton::Lint do
       end
 
       it 'returns no errors for a clean descriptor file' do
-        @descriptor = drds_descriptor
         @option = {count: :error}
         @count = 0
       end
 
       it 'returns no warnings for a clean descriptor file' do
-        @descriptor = drds_descriptor
         @option = {count: :warning}
         @count = 0
       end
 
       it 'returns an expected number of errors for a descriptor file' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol']['list'].except!('uri').except!('method')
-        end
+          @descriptor['http_protocol']['list'].except!('uri').except!('method')
         @option = {count: :error}
         @count = 2
       end
 
       it 'returns an expected number of errors for a descriptor file with catastrophic errors' do
-        @descriptor = drds_descriptor.except('http_protocol')
+        @descriptor.except!('http_protocol')
         @option = {count: :error}
         @count = 1
       end
 
       it 'returns an expected number of warnings for a descriptor file' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol']['repair-history'].merge!({ 'method' => 'GET' })
-          document['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
-        end
+          @descriptor['http_protocol']['repair-history'].merge!({ 'method' => 'GET' })
+          @descriptor['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
         @option = {count: :warning}
         @count = 2
       end
@@ -112,22 +109,17 @@ describe Crichton::Lint do
       end
 
       it 'returns true when a clean descriptor file is validated' do
-        @descriptor = drds_descriptor
         @retval = true
       end
 
       it 'returns false when a descriptor file contains errors' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['http_protocol'].except!('search')
-        end
+          @descriptor['http_protocol'].except!('search')
         @retval = false
       end
 
       it 'returns false when a catastrophic error is found' do
-        @descriptor = drds_descriptor.tap do |document|
-          document['resources']['drds'].except!('states')
-          document['resources']['drd'].except!('states')
-        end
+          @descriptor['resources']['drds'].except!('states')
+          @descriptor['resources']['drd'].except!('states')
         @return_val = false
       end
     end
@@ -171,8 +163,8 @@ describe Crichton::Lint do
         FileUtils.rm_rf(Dir.glob("#{SPECS_TEMP_DIR}/*.yml"))
         allow(Crichton).to receive(:descriptor_location).and_return(SPECS_TEMP_DIR)
         create_drds_file(drds_descriptor, 'clean_descriptor_file.yml')
-        descriptor = drds_descriptor.tap { |doc| doc['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' }) }
-        create_drds_file(descriptor, 'warnings_extra_properties.yml')
+        @descriptor['http_protocol']['leviathan-link'].merge!({ 'method' => 'GET' })
+        create_drds_file(@descriptor, 'warnings_extra_properties.yml')
       end
 
       it 'returns true if the --strict option is set' do

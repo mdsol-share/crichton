@@ -78,7 +78,7 @@ describe Crichton::Lint::ProtocolValidator do
           content = @descriptor['http_protocol']
           @descriptor.merge!({ 'ftp_protocol' => content })
         expect { capture(:stdout) { Crichton.Lint.validate(filename) } }.to raise_error
-        "Unknown protocol ftp defined in resource descriptor @descriptor DRDs."
+        "Unknown protocol ftp defined in resource descriptor document DRDs."
       end
     end
   end
