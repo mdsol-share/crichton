@@ -109,8 +109,6 @@ module Crichton
         YAML.load_file(file)
       when Hash
         file
-      else
-        raise ArgumentError, "Document #{resource_descriptor} must be a String or a Hash."
       end
       hash_descriptor['id']
     end
