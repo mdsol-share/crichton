@@ -146,13 +146,7 @@ module Crichton
 
     def get_external_deserialized_profile(uri)
       unless external_descriptor_documents[uri]
-        begin
-          external_descriptor_documents[uri] = external_document_store.get(uri) || external_document_cache.get(uri)
-        rescue => e
-          error_message = "Link #{uri} that was referenced in profile had an error: #{e.inspect}\n#{e.backtrace}"
-          logger.warn error_message
-          raise Crichton::ExternalProfileLoadError, error_message
-        end
+        external_descriptor_documents[uri] = external_document_store.get(uri) || external_document_cache.get(uri)
       end
       Crichton::ALPS::Deserialization.new(external_descriptor_documents[uri]).to_hash
     end
