@@ -50,7 +50,7 @@ describe Crichton::Registry do
     
   context '#load_resource_descriptor with errors' do
   
-    it 'raises error when the filename does not exist' do
+    it 'raises error when the file does not exist' do
       Crichton.stub(:descriptor_filenames).and_return(['invalid_file.yml'])
       expect { Crichton::Registry.new }.to raise_error(ArgumentError, "Filename invalid_file.yml is not valid.")
     end
@@ -67,6 +67,7 @@ describe Crichton::Registry do
     it 'registers single resource' do
       resources_registry = registry.register_single(descriptor_filename)
       expect(resources_registry['DRDs'].class).to eq(Crichton::Descriptor::ResourceDereferencer)
+      expect(resources_registry['Errors']).to be_nil
     end
     
     it 'registers multiple resources' do
