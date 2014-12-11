@@ -166,7 +166,7 @@ describe Crichton do
 
   describe '.register_drds_sample' do
     it 'initializes the registry with a sample resource descriptor document' do
-      Crichton.register_drds_sample
+      crichton_register_sample('spec/fixtures/resource_descriptors/drds_descriptor_v1.yml')
       expect(Crichton.raw_descriptor_registry.keys).to eq(["drds", "drd"])
     end
   end

@@ -156,6 +156,8 @@ module Crichton
   #   Crichton.config_directory #=> 'other_api_descriptors'
   #
   # @return [String] The descriptors directory. Default is root/api_descriptors.
+  #
+  # TODO: Return an appropriate error when not finding an appropriate descriptors yml file
   def self.descriptor_directory
     @descriptor_directory ||= 'api_descriptors'
   end
@@ -171,11 +173,6 @@ module Crichton
 
   def self.descriptor_filenames
     @descriptor_filenames ||= Dir.glob(File.join(descriptor_location, '*.{yml,yaml}'))
-  end
-
-  def self.register_drds_sample
-    drds_sample = 'spec/fixtures/resource_descriptors/drds_descriptor_v1.yml'
-    initialize_registry(File.join(File.expand_path('../../', __FILE__), drds_sample))
   end
 
   ##
