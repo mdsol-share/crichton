@@ -18,7 +18,10 @@ require 'simplecov'
 require 'json_spec'
 require 'timecop'
 
-SimpleCov.start
+SimpleCov.start do
+  add_filter 'spec/'
+end
+
 Debugger.start
 Bundler.setup
 

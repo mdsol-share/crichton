@@ -21,6 +21,11 @@ module Crichton
           semantics:
             name:
               href: http://alps.io/schema.org/Text
+          ext:
+            - id: extension
+            - href: http://alps.io/schema.org/Ext
+            - values:
+              a: b
           idempotent:
             update:
               rt: none
@@ -48,6 +53,8 @@ module Crichton
           expect(subject.alps_elements).to  eq({
             "doc"=>{
               "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
+              "ext" => [{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
+                {"a"=>"b", "value"=>"null", "href"=>"http://alps.io/extensions/serialized_options_list"}],
               "link"=>[
                 {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
                 {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}]})
@@ -62,6 +69,9 @@ module Crichton
               <alps>
                 <doc>
               Describes the semantics, states and state transitions associated with DRDs.  </doc>
+                <ext id="extension"/>
+                <ext href="http://alps.io/schema.org/Ext"/>
+                <ext a="b" value="null" href="http://alps.io/extensions/serialized_options_list"/>
                 <link rel="profile" href="http://localhost:3000/alps/DRDs"/>
                 <link rel="help" href="http://example.org/DRDs#help"/>
                 <descriptor id="name" type="semantic" href="http://alps.io/schema.org/Text">
@@ -85,6 +95,8 @@ module Crichton
               "alps" => {
                 "doc"=>{
                   "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
+                  "ext"=>[{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
+                    {"a"=>"b", "value"=>"null", "href"=>"http://alps.io/extensions/serialized_options_list"}],
                   "link"=>[
                     {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
                     {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}], 
@@ -98,6 +110,20 @@ module Crichton
                       "descriptor"=>[{"href"=>"name"}]}]}
             }
             expect(subject.to_alps_hash).to eq(expected_result)
+          end
+        end
+        
+        describe '#to_json' do
+          it 'prints the correct json' do
+            result = "{\"alps\":{\"doc\":{\"value\":\"Describes the semantics, states and state transitions associated with DRDs.\"},
+            \"ext\":[{\"id\":\"extension\"},{\"href\":\"http://alps.io/schema.org/Ext\"},
+            {\"a\":\"b\",\"value\":\"null\",\"href\":\"http://alps.io/extensions/serialized_options_list\"}],
+            \"link\":[{\"rel\":\"profile\",\"href\":\"http://localhost:3000/alps/DRDs\"},
+            {\"rel\":\"help\",\"href\":\"http://example.org/DRDs#help\"}],
+            \"descriptor\":[{\"id\":\"name\",\"type\":\"semantic\",\"href\":\"http://alps.io/schema.org/Text\"},
+            {\"link\":[{\"rel\":\"profile\",\"href\":\"http://localhost:3000/alps/DRDs#update\"}],
+            \"id\":\"update\",\"type\":\"idempotent\",\"rt\":\"none\",\"descriptor\":[{\"href\":\"name\"}]}]}}"
+            expect(subject.to_json).to be_json_eql(result)
           end
         end
 

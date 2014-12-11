@@ -167,8 +167,6 @@ module Crichton
             builder.doc(format) { |doc| doc << properties['value'] }
           when EXT_ELEMENT, LINK_ELEMENT
             properties.each { |element_attributes| builder.tag!(alps_element, element_attributes) }
-          when OPTIONS_ELEMENT
-            properties["ext"].each { |h| builder.tag!(:ext, h) }
           end
         end
       end
