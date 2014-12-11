@@ -34,7 +34,6 @@ describe Crichton::Registry do
     let(:registry) { Crichton::Registry.new }
     
     after do
-      expect(registry.class).to eq(Crichton::Registry)
       expect(registry.resources_registry['DRDs'].class).to eq(Crichton::Descriptor::ResourceDereferencer)
     end
 
