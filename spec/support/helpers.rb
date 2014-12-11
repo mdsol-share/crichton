@@ -224,5 +224,9 @@ module Support
     def validation_report(file)
       capture(:stdout) { validator.validate(file) }
     end
+    
+    def crichton_register_sample(sample_filename)
+      Crichton.initialize_registry(sample_filename)
+    end
   end
 end

@@ -175,10 +175,6 @@ module Crichton
     @descriptor_filenames ||= Dir.glob(File.join(descriptor_location, '*.{yml,yaml}'))
   end
 
-  def self.register_sample(sample_filename)
-    initialize_registry(File.join(File.expand_path('../../', __FILE__), sample_filename))
-  end
-
   ##
   # The root directory of parent project.
   #

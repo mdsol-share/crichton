@@ -7,7 +7,6 @@ describe Crichton::Registry do
   
   context 'correctly registers resource descriptors' do
     it 'correctly registers resources descriptors from the default directory path' do
-      expect(registry.class).to eq(Crichton::Registry)
       expect(registry.resources_registry['DRDs'].class).to eq(Crichton::Descriptor::ResourceDereferencer)
       expect(registry.resources_registry['Errors'].class).to eq(Crichton::Descriptor::ResourceDereferencer)
     end
@@ -18,15 +17,15 @@ describe Crichton::Registry do
       expect(@registry.resources_registry).to eq({})
     end
 
-    it 'returns registrations?' do
+    it 'returns true for #registrations? if resources are correctly registered' do
       expect(registry.registrations?).to be_true
     end
   
-    it 'returns non dereferenced descriptors' do
+    it 'returns correct #raw_descriptor_registry' do
       expect(registry.raw_descriptor_registry.keys).to eq(["drds", "drd", "errors"])
     end
   
-    it 'returns non dereferenced top level descriptors' do
+    it 'returns correct #raw_profile_registry' do
       expect(registry.raw_profile_registry.keys).to eq(["DRDs", "Errors"])
     end
   end
