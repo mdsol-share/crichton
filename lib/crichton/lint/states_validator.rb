@@ -9,8 +9,6 @@ module Crichton
       # standard lint validate method
       def validators
         [
-          #7, #8
-          :check_for_secondary_descriptor_states,
           #10, #11, #12, #13 check for the presence of required attributes for all transitions
           :check_for_required_state_transition_properties,
           :check_transition_equivalence,
@@ -42,16 +40,6 @@ module Crichton
                 add_error('states.name_duplicated_exception', state: state_descriptor_name, transition: transition)
               end
             end
-          end
-        end
-      end
-
-      # test to see if the state section has content
-      def check_for_secondary_descriptor_states
-        #7,8 Check for second level egregious errors
-        resource_descriptor.states.each do |secondary_descriptor_name, secondary_descriptor|
-          if secondary_descriptor.empty?
-            add_error('catastrophic.no_states', resource: secondary_descriptor_name)
           end
         end
       end

@@ -219,5 +219,10 @@ module Support
         stub_request(:get, url).to_return(:status => 200, :body => body, :headers => {})
       end
     end
+    
+    # Used in linter specs to run descriptor documents through lint
+    def validation_report(file)
+      capture(:stdout) { validator.validate(file) }
+    end
   end
 end

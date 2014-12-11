@@ -79,24 +79,13 @@ module Crichton
             decorator.value
           end
 
-          it 'returns the value of the attribute of the object' do
-            @target = nil
-            expect(logger).to receive(:warn)
-          end
-
           it 'returns the boolean value of the attribute of the object' do
             @target = Class.new do
               self.class.send(:define_method, :uuid) { false }
             end
             expect(logger).to_not receive(:warn)
           end
-
-          it 'returns nil value of the attribute of the object and logs warning message' do
-            @target = Class.new do
-              self.class.send(:define_method, :uuid) { nil }
-            end
-            expect(logger).to receive(:warn)
-          end
+          
         end
       end
     end
