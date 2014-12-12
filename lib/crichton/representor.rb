@@ -4,13 +4,13 @@ require 'crichton/descriptor/additional_transition'
 
 module Crichton
   ##
-  # Implements a generic ALPS-related interface that represents the semantics and transitions associated with 
+  # Implements a generic ALPS-related interface that represents the semantics and transitions associated with
   # the underlying resource data.
   #
   # @example
   #   class DRD
   #     include Crichton::Representor
-  #     
+  #
   #     represents :drd
   #   end
   #
@@ -18,7 +18,7 @@ module Crichton
     extend ActiveSupport::Concern
 
     included do
-      include Serialization::MediaType
+      include Serialization::MediaType #adds represents method
     end
 
     module ClassMethods
@@ -97,11 +97,11 @@ module Crichton
     ##
     # Returns a hash populated with the data related semantic keys and underlying descriptors for the represented
     # resource.
-    # 
+    #
     # @example
-    #  @drd_instance.each_data_semantic({except: :status}).to_a   
+    #  @drd_instance.each_data_semantic({except: :status}).to_a
     #  @drd_instance.each_data_semantic({only: [:uuid, 'name']}).to_a
-    # 
+    #
     # @param [Hash] options Optional conditions.
     # @option options [String, Symbol, Array] :except The semantic data descriptor names to filter out.
     # @option options [String, Symbol, Array] :only The semantic data descriptor names to limit.
@@ -114,11 +114,11 @@ module Crichton
 
     ##
     # Returns a hash populated with the related semantic keys and underlying descriptors for embedded resources.
-    # 
+    #
     # @example
-    #  @drds_instance.each_embedded_semantic({include: :items}).to_a   
+    #  @drds_instance.each_embedded_semantic({include: :items}).to_a
     #  @drds_instance.each_embedded_semantic({exclude: 'items'}).to_a
-    # 
+    #
     # @param [Hash] options Optional conditions.
     # @option options [String, Symbol, Array] :include The embedded semantic descriptor names to include.
     # @option options [String, Symbol, Array] :exclude The embedded semantic descriptor names to exclude.
@@ -201,7 +201,7 @@ module Crichton
         yield decorated_descriptor if decorated_descriptor.available?
       end
     end
-    
+
     def filtered_descriptors(type, descriptor, options)
       descriptors = self.class.send("#{type}_#{descriptor}_descriptors")
       filter_options = parsed_filtering_options(options || {})
@@ -239,11 +239,11 @@ module Crichton
       included do
         include Representor
       end
-      
+
       module ClassMethods
         ##
         # Sets the state method Crichton should use for the class.
-        # 
+        #
         # @example
         #   class DRD
         #     include Crichton::Representor::State
@@ -251,8 +251,8 @@ module Crichton
         #
         #   end
         #   DRD.respond_to?(:state) # => true
-        #   
-        #   
+        #
+        #
         #   class Address
         #     include Crichton::Representor::State
         #     represents   :address
@@ -269,7 +269,7 @@ module Crichton
         def state_method(method)
           @crichton_state_method = method.to_s if method
         end
-        
+
       private
         def crichton_state_method(representor)
           @crichton_state_method ||= if representor.respond_to?(:state)
@@ -296,24 +296,24 @@ module Crichton
           else
             target_state(state_method)
           end
-          
+
           state.tap do |state|
             unless [String, Symbol].include?(state.class)
               raise(Crichton::RepresentorError,
                 "The state method '#{state_method }' must return a string or a symbol. " <<
-                "Returned #{state.inspect}.") 
+                "Returned #{state.inspect}.")
             end
           end
         end
       end
-      
+
     private
       def instance_state(state_method)
         send(state_method) || raise(Crichton::RepresentorError,
           "The state was nil in the class '#{self.class.name}'. Please check " <<
           "the class properly implements a response associated with the state method '#{state_method}.'")
       end
-      
+
       def hash_state(state_method)
         unless state_key = target.keys.detect { |k| k.to_s == state_method }
           raise(Crichton::RepresentorError,
@@ -333,6 +333,6 @@ module Crichton
         end
       end
     end
-    
+
   end
 end
