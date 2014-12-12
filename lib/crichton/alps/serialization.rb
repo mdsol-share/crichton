@@ -190,7 +190,7 @@ module Crichton
       SERIALIZED_OPTIONS_LIST_URL = 'http://alps.io/extensions/serialized_options_list'
 
       def convert_ext_element_hrefs(ext_elem)
-        ext_elem['href'] = absolute_link(ext_elem['href'], nil) if ext_elem.include?('href') && if ext_elem.is_a?(Hash)
+        ext_elem['href'] = absolute_link(ext_elem['href'], nil) if ext_elem.include?('href') && ext_elem.is_a?(Hash)
       end
 
       def convert_options_element_to_alps(options_elem)
