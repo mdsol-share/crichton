@@ -7,13 +7,13 @@ module Crichton
       let(:descriptor_document) { drds_descriptor }
       let(:resource_descriptor) { double('resource_descriptor') }
       let(:descriptor) { Base.new(resource_descriptor, descriptor_document) }
-  
+
       describe '#descriptor_document' do
         it 'returns the descriptor passed to the constructor' do
           expect(descriptor.descriptor_document).to eq(descriptor_document)
         end
       end
-      
+
       describe '#doc' do
         it 'returns the descriptor return doc' do
           expect(descriptor.doc).to eq(descriptor_document['doc'])
@@ -69,7 +69,7 @@ module Crichton
           end
         end
       end
-      
+
       describe '#profile_link' do
         it 'returns the resource descriptor self link' do
           link = double('link')
@@ -78,19 +78,6 @@ module Crichton
         end
       end
 
-      describe '#inspect' do
-        it 'excludes the @descriptors ivar for readability' do
-          expect(descriptor.inspect).not_to match(/.*@descriptors=.*/)
-        end
-
-        it 'excludes the @descriptor_document ivar for readability' do
-          expect(descriptor.inspect).not_to match(/.*@descriptor_document=.*/)
-        end
-
-        it 'excludes the @resource_descriptor ivar for readability' do
-          expect(descriptor.inspect).not_to match(/.*@resource_descriptor=.*/)
-        end
-      end
     end
   end
 end

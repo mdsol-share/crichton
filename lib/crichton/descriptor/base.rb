@@ -5,7 +5,7 @@ module Crichton
     # Manage base functionality for all descriptors that encapsulate a section of a resource descriptor document.
     #
     # Adds a private class method <tt>descriptor_reader</tt> to descriptor classes to simplify generating
-    # class specific accessors encapsulating properties in an underlying descriptor document. 
+    # class specific accessors encapsulating properties in an underlying descriptor document.
     #
     # The following macro tags add the corresponding type to the generated documentation:
     #
@@ -40,7 +40,7 @@ module Crichton
       #
       # Subclasses MUST call <tt>super</tt> in their constructors.
       #
-      # @param [Hash] resource_descriptor The parent resource descriptor instance.                                                              # 
+      # @param [Hash] resource_descriptor The parent resource descriptor instance.                                                              #
       # @param [Hash] descriptor_document The section of the descriptor document representing this instance.
       # @param [Hash] id The id of the ALPS descriptor
       def initialize(resource_descriptor, descriptor_document, id = nil)
@@ -48,15 +48,15 @@ module Crichton
         @descriptor_document = descriptor_document.dup
         @descriptor_document['id'] = id.to_s if id
         @descriptors = {}
-        
+
       end
-  
+
       ##
       # The underlying descriptor document.
       #
       # @return [Hash] The descriptor document.
       attr_reader :descriptor_document
-  
+
       ##
       # The parent resource descriptor.
       #
@@ -71,17 +71,17 @@ module Crichton
 
       # @!macro string_reader
       descriptor_reader :href
-      
+
       # @!macro string_reader
       descriptor_reader :descriptor_type
-      
+
       ##
       # Accesses the child descriptor document hash so inheriting classes that implement parents set
       # it directly from the parent.
       #
       # @return [Hash] The descriptor document.
       def child_descriptor_document(id)
-        (descriptor_document['descriptors'] || {})[id.to_s] 
+        (descriptor_document['descriptors'] || {})[id.to_s]
       end
 
       ##
@@ -95,7 +95,7 @@ module Crichton
       def name
         descriptor_document['name'] || id
       end
-      
+
       ##
       # Returns the profile link for the resource descriptor.
       #
@@ -104,15 +104,8 @@ module Crichton
         resource_descriptor.profile_link
       end
 
-      # @private
-      # Overrides inspect to remove the descriptor document for readability
-      def inspect
-        ivars = (instance_variables - EXCLUDED_VARIABLES).map do |ivar|
-          "#{ivar}=#{instance_variable_get(ivar).inspect}"
-        end
-        '#<%s:0x%s %s %s>' % [self.class.name, self.hash.to_s(16), self.name, ivars.join(", ")]
-      end
-      
+
+
     end
   end
 end
