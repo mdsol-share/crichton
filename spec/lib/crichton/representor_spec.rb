@@ -401,6 +401,7 @@ module Crichton
             )
           end
         end
+
       end
 
       describe '#metadata_links' do
