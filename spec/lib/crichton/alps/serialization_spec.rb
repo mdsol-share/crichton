@@ -90,7 +90,6 @@ module Crichton
       describe '#to_alps_hash' do
         context 'without options' do
           it 'returns a hash in an ALPS profile structure' do
-            debugger
             expected_result =
             {
               "alps" => {
