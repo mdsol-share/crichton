@@ -73,7 +73,7 @@ module Crichton
                          when DOC_ELEMENT
                            serialize_doc_element(alps_value)
                          when EXT_ELEMENT
-                           convert_ext_element_hrefs(alps_value)
+                           convert_ext_element_arrays_and_hrefs(alps_value)
                          when OPTIONS_ELEMENT
                            convert_options_element_to_alps(alps_value)
                          when LINK_ELEMENT
@@ -167,8 +167,6 @@ module Crichton
             builder.doc(format) { |doc| doc << properties['value'] }
           when EXT_ELEMENT, LINK_ELEMENT
             properties.each { |element_attributes| builder.tag!(alps_element, element_attributes) }
-          when OPTIONS_ELEMENT
-            properties["ext"].each { |h| builder.tag!(:ext, h) }
           end
         end
       end
@@ -181,31 +179,23 @@ module Crichton
         end
       end
 
-      def convert_ext_element_hrefs(ext_elem)
+      def convert_ext_element_arrays_and_hrefs(ext_elem)
         if ext_elem.is_a?(Array)
-          ext_elem.each {|eae| convert_ext_element_hash_hrefs_and_values(eae) }
+          ext_elem.each {|eae| convert_ext_element_hrefs(eae) }
         end
-        convert_ext_element_hash_hrefs_and_values(ext_elem)
+        convert_ext_element_hrefs(ext_elem)
         ext_elem
       end
 
       SERIALIZED_OPTIONS_LIST_URL = 'http://alps.io/extensions/serialized_options_list'
 
-      def convert_ext_element_hash_hrefs_and_values(ext_elem)
-        if ext_elem.is_a?(Hash)
-          if ext_elem.include?('href')
-            ext_elem['href'] = absolute_link(ext_elem['href'], nil)
-          end
-          if ext_elem.include?('values')
-            ext_elem['value'] = ext_elem.delete('values').to_json
-            ext_elem['href'] = SERIALIZED_OPTIONS_LIST_URL unless ext_elem.include?('href')
-          end
-        end
+      def convert_ext_element_hrefs(ext_elem)
+        ext_elem['href'] = absolute_link(ext_elem['href'], nil) if ext_elem.include?('href') && if ext_elem.is_a?(Hash)
       end
 
       def convert_options_element_to_alps(options_elem)
         values = options_elem.is_a?(Hash) ? options_elem : options_elem.descriptor_document
-        values.empty? ? {} : {'ext' => convert_ext_element_hrefs([{'values' => values}])}
+        values.empty? ? {} : {'ext' => convert_ext_element_arrays_and_hrefs([{'values' => values}])}
       end
 
       def add_xml_descriptors(builder)
