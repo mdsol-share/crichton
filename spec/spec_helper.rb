@@ -20,6 +20,7 @@ require 'timecop'
 
 SimpleCov.start do
   add_filter 'spec/'
+  add_filter 'lib/crichton/rails/generators/'
 end
 
 Debugger.start
