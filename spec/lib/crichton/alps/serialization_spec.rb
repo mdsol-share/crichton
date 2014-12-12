@@ -24,8 +24,9 @@ module Crichton
           ext:
             - id: extension
             - href: http://alps.io/schema.org/Ext
-            - values:
-              a: b
+            - value:
+              - a
+              - b
           idempotent:
             update:
               rt: none
@@ -54,7 +55,7 @@ module Crichton
             "doc"=>{
               "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
               "ext" => [{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
-                {"a"=>"b", "value"=>"null", "href"=>"http://alps.io/extensions/serialized_options_list"}],
+                {"value"=>["a", "b"]}],
               "link"=>[
                 {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
                 {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}]})
@@ -71,7 +72,7 @@ module Crichton
               Describes the semantics, states and state transitions associated with DRDs.  </doc>
                 <ext id="extension"/>
                 <ext href="http://alps.io/schema.org/Ext"/>
-                <ext a="b" value="null" href="http://alps.io/extensions/serialized_options_list"/>
+                <ext value="[&quot;a&quot;, &quot;b&quot;]"/>
                 <link rel="profile" href="http://localhost:3000/alps/DRDs"/>
                 <link rel="help" href="http://example.org/DRDs#help"/>
                 <descriptor id="name" type="semantic" href="http://alps.io/schema.org/Text">
@@ -90,40 +91,43 @@ module Crichton
       describe '#to_alps_hash' do
         context 'without options' do
           it 'returns a hash in an ALPS profile structure' do
+            debugger
             expected_result =
             {
               "alps" => {
-                "doc"=>{
-                  "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
-                  "ext"=>[{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
-                    {"a"=>"b", "value"=>"null", "href"=>"http://alps.io/extensions/serialized_options_list"}],
-                  "link"=>[
-                    {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
-                    {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}], 
-                  "descriptor"=>[
-                    {"id"=>"name", "type"=>"semantic", "href"=>"http://alps.io/schema.org/Text"}, 
-                    {
-                      "link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs#update"}], 
-                      "id"=>"update", 
-                      "type"=>"idempotent", 
-                      "rt"=>"none", 
-                      "descriptor"=>[{"href"=>"name"}]}]}
-            }
+                "doc"=>{ "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
+                "ext"=>[{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
+                        {"value"=>["a", "b"]}],
+                "link"=>[
+                  {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
+                  {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}], 
+                "descriptor"=>[
+                  {"id"=>"name", "type"=>"semantic", "href"=>"http://alps.io/schema.org/Text"}, 
+                  {
+                    "link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs#update"}], 
+                    "id"=>"update", 
+                    "type"=>"idempotent", 
+                    "rt"=>"none", 
+                    "descriptor"=>[{"href"=>"name"}]}]}
+          }
             expect(subject.to_alps_hash).to eq(expected_result)
           end
         end
         
         describe '#to_json' do
           it 'prints the correct json' do
-            result = "{\"alps\":{\"doc\":{\"value\":\"Describes the semantics, states and state transitions associated with DRDs.\"},
-            \"ext\":[{\"id\":\"extension\"},{\"href\":\"http://alps.io/schema.org/Ext\"},
-            {\"a\":\"b\",\"value\":\"null\",\"href\":\"http://alps.io/extensions/serialized_options_list\"}],
-            \"link\":[{\"rel\":\"profile\",\"href\":\"http://localhost:3000/alps/DRDs\"},
-            {\"rel\":\"help\",\"href\":\"http://example.org/DRDs#help\"}],
-            \"descriptor\":[{\"id\":\"name\",\"type\":\"semantic\",\"href\":\"http://alps.io/schema.org/Text\"},
-            {\"link\":[{\"rel\":\"profile\",\"href\":\"http://localhost:3000/alps/DRDs#update\"}],
-            \"id\":\"update\",\"type\":\"idempotent\",\"rt\":\"none\",\"descriptor\":[{\"href\":\"name\"}]}]}}"
-            expect(subject.to_json).to be_json_eql(result)
+            result = {"alps"=>
+              {"doc"=>{"value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
+              "ext"=>[{"id"=>"extension"}, 
+                {"href"=>"http://alps.io/schema.org/Ext"}, 
+                {"value"=>["a", "b"]}],
+                "link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
+                  {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}], 
+                  "descriptor"=>[{"id"=>"name", "type"=>"semantic", "href"=>"http://alps.io/schema.org/Text"}, 
+                    {"link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs#update"}], 
+                    "id"=>"update", "type"=>"idempotent", "rt"=>"none", "descriptor"=>[{"href"=>"name"}]}
+                    ]}}
+            expect(subject.to_json).to be_json_eql(result.to_json)
           end
         end
 
