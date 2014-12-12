@@ -52,13 +52,12 @@ module Crichton
       describe '#alps_elements' do
         it 'returns a hash of alps descriptor elements' do
           expect(subject.alps_elements).to  eq({
-            "doc"=>{
-              "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
-              "ext" => [{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
-                {"value"=>["a", "b"]}],
-              "link"=>[
-                {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
-                {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}]})
+            "doc"=>{ "value"=>"Describes the semantics, states and state transitions associated with DRDs." }, 
+            "ext" => [{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
+                     {"value"=>["a", "b"]}],
+            "link"=>[
+              {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
+              {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}]})
         end
       end
 
