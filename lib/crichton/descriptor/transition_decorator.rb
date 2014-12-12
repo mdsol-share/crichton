@@ -99,7 +99,7 @@ module Crichton
           @_options[:override_links].delete(self.name)
         else
           protocol_descriptor ? protocol_descriptor.url_for(@target) : nil
-        end.tap { |url| logger.warn("Crichton::Descriptor::TransitionDecorator.url class (#{@target}) does have a known url") unless url }
+        end.tap { |url| logger.warn("Crichton::Descriptor::TransitionDecorator.url class (#{@target}) does not have a known url") unless url }
       end
 
       def response_headers
