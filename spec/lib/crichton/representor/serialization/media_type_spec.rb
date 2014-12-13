@@ -40,6 +40,7 @@ module Crichton
           end
           
           it 'delegates to a built serializer for xhtml media type' do
+            expect(simple_test_instance).to receive(:as_media_type).with(any_args, @options)
             simple_test_instance.to_media_type(:xhtml, @options)
           end
         end
@@ -60,7 +61,7 @@ module Crichton
           end
           
           it 'raises error if media type is not registered' do
-            expect{simple_test_instance.to_valid_type}.to raise_error(NameError)
+            expect{simple_test_instance.to_invalid_type}.to raise_error(NameError)
           end
         end
       end
