@@ -12,7 +12,7 @@ module Crichton
       FileUtils.mkdir_p(@document_store_path) unless Dir.exists?(@document_store_path)
     end
 
-    def compare_stored_documents_with_their_original_documents
+    def compare_stored_documents_with_original
       output = []
       stored_links.each do |link|
         new_code, new_data = download(link)

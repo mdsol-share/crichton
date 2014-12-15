@@ -23,7 +23,7 @@ begin
 
     desc "Compare ALPS profile documents to documents in the external document store"
     task :check_external_documents do |t|
-      puts Crichton::ExternalDocumentStore.new.compare_stored_documents_with_their_original_documents
+      puts Crichton::ExternalDocumentStore.new.compare_stored_documents_with_original
     end
 
     desc 'Store all external documents in external document store'
