@@ -23,15 +23,15 @@ module Crichton
       private
       def respond_to_method(method, options)
         result = @target.send(method, options)
-        raise_if_invalid(result.is_a?(Hash), throw("#{method} method on target must return Hash object"))
+        raise_if_invalid(result.is_a?(Hash), "#{method} method on target must return Hash object")
 
         [EXTERNAL, LIST, HASH].each do |x|
           if opts = result[x]
-            raise_if_invalid(conditions[x].call(opts), throw)
+            raise_if_invalid(conditions[x].call(opts))
             return result
           end
         end
-        throw("#{result} is invalid response type.").call
+        throw_response_error("#{result} is invalid response type.")
       end
 
       def conditions
@@ -42,12 +42,12 @@ module Crichton
         }
       end
 
-      def raise_if_invalid(condition, throw_function)
-        throw_function.call unless condition
+      def raise_if_invalid(condition, message = '')
+        throw_response_error(message) unless condition
       end
 
-      def throw(message = '')
-        ->(message){ raise Crichton::TargetMethodResponseError, message }
+      def throw_response_error(message)
+        raise Crichton::TargetMethodResponseError, message
       end
     end
   end

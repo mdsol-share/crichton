@@ -82,12 +82,19 @@ module Crichton
         @body = 'somebody'
         @link = 'http://hostname:80/path/to/somewhere'
         @request = stub_request(:get, @link).to_return(status: 200, body: @body, headers: {})
+        @doc_store = Crichton::ExternalDocumentStore.new('pathname')
       end
 
       it 'downloads the provided URL' do
-        @pathname = 'pathname'
-        Crichton::ExternalDocumentStore.new(@pahname).download_link_and_store_in_document_store(@link)
+        @doc_store.download_link_and_store_in_document_store(@link)
         expect(@request).to have_been_made
+      end
+      
+      it 'detects outdated documents and prompts for overwrite' do
+        expect(@doc_store).to receive(:get).and_return('another body')
+        expect(STDIN).to receive(:gets).and_return('y')
+        expect(@doc_store).to receive(:write_data_to_store)
+        @doc_store.download_link_and_store_in_document_store(@link)
       end
 
       context '.write_data_to_store' do
@@ -114,7 +121,7 @@ module Crichton
       end
     end
 
-    describe '.compare_stored_documents_with_their_original_documents' do
+    describe '.compare_stored_documents_with_original' do
       before do
         @pathname = File.join('spec', 'fixtures', 'external_documents_store')
         FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
@@ -125,6 +132,7 @@ module Crichton
           File.open(File.join(metafile_path(@pathname, link)), 'wb') { |f| f.write(link) }
           File.open(File.join(datafile_path(@pathname, link)), 'wb') { |f| f.write("#{fn}\n") }
         end
+        @eds = ExternalDocumentStore.new(@pathname)
       end
 
       after do
@@ -134,8 +142,7 @@ module Crichton
       it 'makes a request to every link it finds a file for' do
         request = stub_request(:get, /^http:\/\/www\.test.\.com\/test.$/).
             to_return(status: 200, body: "testX\n", headers: {})
-        eds = ExternalDocumentStore.new(@pathname)
-        eds.compare_stored_documents_with_their_original_documents
+        @eds.compare_stored_documents_with_original
         expect(request).to have_been_made.times(3)
       end
 
@@ -145,13 +152,20 @@ module Crichton
           link = "http://www.#{fn}.com/#{fn}"
           @requests[fn] = stub_request(:get, link).to_return(status: 200, body: "#{fn}\n", headers: {})
         end
-        eds = ExternalDocumentStore.new(@pathname)
         link = "http://www.#{@requests.keys.first}.com/#{@requests.keys.first}"
         File.open(File.join(datafile_path(@pathname, link)), 'wb') do |f|
           f.write("X#{@requests.keys.first}\n")
         end
-        expect(eds.compare_stored_documents_with_their_original_documents).to eq(
+        expect(@eds.compare_stored_documents_with_original).to eq(
             "Data of link http://www.test1.com/test1 has changed!\n-Xtest1\n+test1\n"
+        )
+      end
+      
+      it 'reports non 200 response status' do
+        request = stub_request(:get, /^http:\/\/www\.test.\.com\/test.$/).
+            to_return(status: 404, body: "Not found\n", headers: {})
+        expect(@eds.compare_stored_documents_with_original).to include(
+            "Retrieving link http://www.test1.com/test1 resulted in HTTP code 404\n"
         )
       end
     end
@@ -168,7 +182,6 @@ module Crichton
         FileUtils.mkdir_p(@pathname) unless Dir.exists?(@pathname)
         FileUtils.rm Dir.glob(File.join(@pathname, '*.meta'))
         FileUtils.rm Dir.glob(File.join(@pathname, '*.profile'))
-        
       end
 
       after do
@@ -179,7 +192,7 @@ module Crichton
       it 'loads external documents' do
         eds = ExternalDocumentStore.new(@pathname)
         eds.store_all_external_documents
-        expect(eds.compare_stored_documents_with_their_original_documents).to eq("")
+        expect(eds.compare_stored_documents_with_original).to eq("")
       end
     end
   end
