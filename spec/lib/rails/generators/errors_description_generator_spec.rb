@@ -8,13 +8,16 @@ module Crichton
   describe "ErrorsDescriptionGenerator" do
     let(:resource_name) { "DrdsErrors" }
     let(:path) { SPECS_TEMP_DIR }
-    let(:errors_class_path) { 'DrdsErrors' }
-    let(:filename) {File.join(path, errors_class_path).concat('.yaml')}
+    let(:errors_class_path) { SPECS_TEMP_DIR }
+    let(:yaml_filename) {File.join(path, resource_name).concat('.yaml')}
+    let(:rb_filename) {File.join(path, resource_name).concat('.rb')}
     
-    let(:options) { {force: true}}
+    
+    let(:options) { {force: true, skip: true} }
 
     after(:each) do
-      File.delete(filename) if File.exists?(filename)
+      File.delete(yaml_filename) if File.exists?(yaml_filename)
+      File.delete(rb_filename) if File.exists?(rb_filename)
     end
 
     after(:all) do
@@ -25,24 +28,25 @@ module Crichton
       ErrorsDescriptionGenerator.start([errors_class_path, resource_name, path],options)
     end
 
-    it "creates a yaml file in the specified location" do
-      expect(File.exists?(filename)).to be true
+    it "creates yaml and rb files in the specified location" do
+      expect(File.exists?(yaml_filename)).to be true
+      expect(File.exists?(rb_filename)).to be true
     end
 
     it "creates a file with references to the errors resource" do
-      assert_file(filename, /#{resource_name}/)
+      assert_file(yaml_filename, /#{resource_name}/)
     end
 
     it "creates a file with references to the errors class path" do
-      assert_file(filename, /#{errors_class_path}/)
+      assert_file(rb_filename, /represents :#{resource_name}/)
     end
 
     it "creates a file with all the sections" do
-      assert_file(filename, /links:/)
-      assert_file(filename, /semantics:/)
-      assert_file(filename, /safe:/)
-      assert_file(filename, /resources:/)
-      assert_file(filename, /http_protocol:/)
+      assert_file(yaml_filename, /links:/)
+      assert_file(yaml_filename, /semantics:/)
+      assert_file(yaml_filename, /safe:/)
+      assert_file(yaml_filename, /resources:/)
+      assert_file(yaml_filename, /http_protocol:/)
     end
   end
 end
