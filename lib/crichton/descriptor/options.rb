@@ -14,12 +14,7 @@ module Crichton
       end
 
       def options
-        @options ||= descriptor_document.dup.tap do |d|
-          if href = d[HREF]
-            d.merge!(Crichton::options_registry[href])
-            d.delete(HREF)
-          end
-        end
+        @options ||= descriptor_document.dup
       end
 
       def enumerable?
@@ -32,15 +27,7 @@ module Crichton
 
       #@deprecated
       def each #TODO: Remove when XHTML Serialization is handled by Representor
-        if opts =  options
-          if opts.include?(HASH)
-            opts[HASH].each { |k, v| yield k, v }
-          elsif opts.include?(LIST)
-            opts[LIST].each { |k| yield k, k }
-          else
-            Crichton::logger.warn("did not find list or hash key in options data: #{opts.to_s}")
-          end
-        end
+        options.include?(HASH) ? options[HASH].each { |k, v| yield k, v } : options[LIST].each { |k| yield k, k }
       end
 
       def values
