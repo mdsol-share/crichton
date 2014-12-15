@@ -34,19 +34,14 @@ module Crichton
             expect(rack_response.status).to eq(406)
           end
 
-          it 'responds to application/json request' do
+          it 'does not yet respond to an application/json request' do
             @media_type = 'application/json'
             response = Rack::MockResponse.new(200, { 'Content-Type' => @media_type }, '')
             proxy_responder.stub_chain(:connection, :get).and_return(response)
-            expect(rack_response.status).to eq(200)
+            expect { rack_response.status }.to raise_error(NotImplementedError)
           end
 
-          it 'accepts media-types with different cases' do
-            @media_type = 'Application/Json'
-            response = Rack::MockResponse.new(200, {'Content-Type' => @media_type}, '')
-            proxy_responder.stub_chain(:connection, :get).and_return(response)
-            expect(rack_response.status).to eq(200)
-          end
+          xit 'accepts media-types with different cases'
         end
 
         context 'when not a crichton proxy path' do
