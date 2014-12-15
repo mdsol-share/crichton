@@ -172,15 +172,10 @@ module Crichton
         end
         it 'can deserialize twice' do #TODO: Make Deserializer Non-Mutating
           deserializer = Deserialization.new(simple_xml_profile)
-          deserializer.to_hash
-          deserialized_hash = deserializer.to_hash
-          expected_hash = {
-            "links" => {
-              "profile" => "http://alps.example.org/DRDs",
-              "help" => "http://documentation.example.org/DRDs#help"
-            }
-          }
-          expect(deserialized_hash).to include(expected_hash)
+          hash_one = deserializer.to_hash
+          hash_two = deserializer.to_hash
+
+          expect(hash_one).to eq(hash_two)
         end
       end
 
