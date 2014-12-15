@@ -402,6 +402,19 @@ module Crichton
           end
         end
 
+        context 'with no explicit or default state method' do
+          it 'raises an error' do
+            @include_state = true
+            @state_method = nil
+            klass = simple_test_class
+            klass.send(:undef_method, :state)
+            expect { klass.new.each_transition.to_a }.to raise_error(
+              Crichton::RepresentorError,
+              /^No state method has been defined/
+            )
+          end
+        end
+
       end
 
       describe '#metadata_links' do
