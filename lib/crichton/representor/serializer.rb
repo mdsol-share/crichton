@@ -107,7 +107,7 @@ module Crichton
                   options.merge!(semantics: :styled_microdata) if media_type == :html
                   if obj.respond_to?("to_#{type}")
                     if [:html, :xhtml].include?(media_type)
-                      XHTMLSerializer.new(obj).to_media_type(options)
+                      XHTMLSerializer.new(obj).as_media_type(options)
                     # TODO: Handle response headers!
                     else
                       # before: serializer.response_headers(obj, request).each { |k, v| response.headers[k] = v }
