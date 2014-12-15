@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'crichton/alps/serialization'
 
 module Crichton
-  module ALPS 
+  module ALPS
     describe Serialization do
       let(:hash) { YAML.load(@resource_descriptor) }
       let(:registry) { Crichton::Registry.new(automatic_load: false) }
@@ -52,11 +52,11 @@ module Crichton
       describe '#alps_elements' do
         it 'returns a hash of alps descriptor elements' do
           expect(subject.alps_elements).to  eq({
-            "doc"=>{ "value"=>"Describes the semantics, states and state transitions associated with DRDs." }, 
-            "ext" => [{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
+            "doc"=>{ "value"=>"Describes the semantics, states and state transitions associated with DRDs." },
+            "ext" => [{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"},
                      {"value"=>["a", "b"]}],
             "link"=>[
-              {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
+              {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"},
               {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}]})
         end
       end
@@ -93,36 +93,36 @@ module Crichton
             expected_result =
             {
               "alps" => {
-                "doc"=>{ "value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
-                "ext"=>[{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"}, 
+                "doc"=>{ "value"=>"Describes the semantics, states and state transitions associated with DRDs."},
+                "ext"=>[{"id"=>"extension"}, {"href"=>"http://alps.io/schema.org/Ext"},
                         {"value"=>["a", "b"]}],
                 "link"=>[
-                  {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
-                  {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}], 
+                  {"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"},
+                  {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}],
                 "descriptor"=>[
-                  {"id"=>"name", "type"=>"semantic", "href"=>"http://alps.io/schema.org/Text"}, 
+                  {"id"=>"name", "type"=>"semantic", "href"=>"http://alps.io/schema.org/Text"},
                   {
-                    "link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs#update"}], 
-                    "id"=>"update", 
-                    "type"=>"idempotent", 
-                    "rt"=>"none", 
+                    "link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs#update"}],
+                    "id"=>"update",
+                    "type"=>"idempotent",
+                    "rt"=>"none",
                     "descriptor"=>[{"href"=>"name"}]}]}
           }
             expect(subject.to_alps_hash).to eq(expected_result)
           end
         end
-        
+
         describe '#to_json' do
           it 'prints the correct json' do
             result = {"alps"=>
-              {"doc"=>{"value"=>"Describes the semantics, states and state transitions associated with DRDs."}, 
-              "ext"=>[{"id"=>"extension"}, 
-                {"href"=>"http://alps.io/schema.org/Ext"}, 
+              {"doc"=>{"value"=>"Describes the semantics, states and state transitions associated with DRDs."},
+              "ext"=>[{"id"=>"extension"},
+                {"href"=>"http://alps.io/schema.org/Ext"},
                 {"value"=>["a", "b"]}],
-                "link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"}, 
-                  {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}], 
-                  "descriptor"=>[{"id"=>"name", "type"=>"semantic", "href"=>"http://alps.io/schema.org/Text"}, 
-                    {"link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs#update"}], 
+                "link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs"},
+                  {"rel"=>"help", "href"=>"http://example.org/DRDs#help"}],
+                  "descriptor"=>[{"id"=>"name", "type"=>"semantic", "href"=>"http://alps.io/schema.org/Text"},
+                    {"link"=>[{"rel"=>"profile", "href"=>"http://localhost:3000/alps/DRDs#update"}],
                     "id"=>"update", "type"=>"idempotent", "rt"=>"none", "descriptor"=>[{"href"=>"name"}]}
                     ]}}
             expect(subject.to_json).to be_json_eql(result.to_json)
