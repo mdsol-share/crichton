@@ -56,7 +56,7 @@ module Crichton
           it 'calls #to_media_type if media type is registered' do
             Crichton::Representor::Serializer.stub(:registered_serializers).and_return({ valid_type: @serializer })
             @serializer.stub(:as_media_type)
-            @serializer.stub(:to_media_type)
+            expect(@serializer).to receive(:to_media_type)
             expect(simple_test_instance.to_valid_type).to be_nil
           end
           
