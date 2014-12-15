@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'crichton/alps/deserialization'
 
 module Crichton
-  module ALPS 
+  module ALPS
     describe Deserialization do
       let (:simple_xml_profile) do
         profile = <<-XML
@@ -100,29 +100,36 @@ module Crichton
 
         it 'handles empty XML data' do
           deserializer = Deserialization.new('')
-          expect(deserializer.to_hash.keys).to be_empty
+          expect(deserializer.to_hash).to be_empty
         end
 
         it 'handles nil XML data' do
           deserializer = Deserialization.new(nil)
-          expect(deserializer.to_hash.keys).to be_empty
+          expect(deserializer.to_hash).to be_empty
         end
 
         it 'deserializes simple XML profile' do
           deserializer = Deserialization.new(simple_xml_profile)
-          expect(deserializer.to_hash.keys).to eq(['doc', 'links', 'descriptors'])
+          expect(deserializer.to_hash).to include('doc', 'links', 'descriptors')
+        end
+
+        it 'raises an error on an unknown element' do
+          profile = <<-XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <alps>
+            <doc>Describes the semantics, states and state transitions associated with DRDs.</doc>
+            <link rel="profile" href="http://alps.example.org/DRDs"/>
+            <descriptor id="name" type="semantic" href="http://alps.io/schema.org/Text"/>
+            <ninja boot="head"/>
+          </alps>
+          XML
+          deserializer = Deserialization.new(profile)
+
+          expect { deserializer.to_hash } .to raise_error(NameError)
         end
 
         context 'when schema.org airport profile' do
           let (:deserialized_hash) { Deserialization.new(schema_org_airport_profile).to_hash }
-
-          it 'deserializes complex profile' do
-            expect(deserialized_hash.to_hash.keys).to eq(['descriptors'])
-          end
-
-          it 'returns top level descriptor id' do
-            expect(deserialized_hash['descriptors'].keys).to eq(['Airport'])
-          end
 
           it 'returns type of top level descriptor' do
             expect(deserialized_hash['descriptors']['Airport']['type']).to eq('semantic')
@@ -137,17 +144,17 @@ module Crichton
           let (:deserialized_hash) { Deserialization.new(machine_xml_profile).to_hash }
 
           it 'deserializes machine profile' do
-            expect(deserialized_hash.keys).to eq(['doc', 'links', 'descriptors'])
+            expect(deserialized_hash).to include('doc', 'links', 'descriptors')
           end
 
           it 'returns nested descriptors' do
-            expect(deserialized_hash['descriptors'].keys.sort).to eq(['create', 'update'].sort)
+            expect(deserialized_hash['descriptors']).to include('create', 'update')
           end
         end
 
         it 'deserializes JSON data' do
           deserializer = Deserialization.new(json_profile)
-          expect(deserializer.to_hash.keys).to eq(['doc', 'links', 'descriptors'])
+          expect(deserializer.to_hash).to include('doc', 'links', 'descriptors')
         end
       end
 
@@ -162,6 +169,40 @@ module Crichton
               }
           }
           expect(deserialized_hash).to include(expected_hash)
+        end
+        it 'can deserialize twice' do #TODO: Make Deserializer Non-Mutating
+          deserializer = Deserialization.new(simple_xml_profile)
+          hash_one = deserializer.to_hash
+          hash_two = deserializer.to_hash
+
+          expect(hash_one).to eq(hash_two)
+        end
+      end
+
+      context 'when ALPS is a file' do
+        let (:xml_profile) { File.open(crichton_fixture_path('leviathans_alps.xml')) }
+        let (:json_profile) { File.open(crichton_fixture_path('leviathans_alps.json')) }
+        let (:unknown_alps_profile) { File.open(crichton_fixture_path('leviathans.alps')) }
+
+        describe '#alps_to_hash' do
+
+          it 'deserializes xml file' do
+            deserializer = Deserialization.new(xml_profile)
+            deserialized_hash = deserializer.to_hash
+            expect(deserialized_hash["descriptors"]["leviathan"]["descriptors"]).to include('uuid','size','name','status')
+          end
+
+          it 'deserializes json file' do
+            deserializer = Deserialization.new(json_profile)
+            deserialized_hash = deserializer.to_hash
+            expect(deserialized_hash).to include('doc', 'links', 'descriptors')
+          end
+
+          it 'guesses based on character recognition' do
+            deserializer = Deserialization.new(unknown_alps_profile)
+            deserialized_hash = deserializer.to_hash
+            expect(deserialized_hash).to include('doc', 'links', 'descriptors')
+          end
         end
       end
     end

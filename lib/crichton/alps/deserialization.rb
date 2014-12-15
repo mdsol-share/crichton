@@ -12,8 +12,8 @@ module Crichton
         @data_type = data_type || guess_alps_data_type(@alps_data)
       end
 
-      def to_hash
-        if @data_type == :no_data
+      def to_hash #HACK! : Memoization is a stupid substitute for not mutating
+        @to_hash ||= if @data_type == :no_data
           {}
         elsif @data_type == :xml
           alps_xml_to_hash(@alps_data)
@@ -35,42 +35,35 @@ module Crichton
 
       private
       def guess_alps_data_type(alps_data)
-        if alps_data.nil? || alps_data.respond_to?(:empty?) && alps_data.empty?
-          data_type = :no_data
-        elsif alps_data.is_a?(File)
-          # Guess based on file name first
-          if alps_data.path.ends_with?('json')
-            data_type = :json
-          elsif alps_data.path.ends_with?('xml')
-            data_type = :xml
-          else
-            # Guess based on content second
-            data_type = alps_data.read(1000).strip.first == '{' ? :json : :xml
-            alps_data.rewind
-          end
-        else
-          # Plain string - take content
-          data_type = alps_data.strip.first == '{' ? :json : :xml
+        data_type = nil
+        infer_json_from_text = ->(text) { text.strip.first == '{' ? :json : :xml }
+        if alps_data.is_a?(File)
+          [:json, :xml].map { |ext| data_type = ext if alps_data.path.ends_with?(ext.to_s) }
+
+          data_type = infer_json_from_text.call( alps_data.read(1000) ) unless data_type
+          alps_data.rewind
+        elsif alps_data.kind_of?(String)
+          data_type = infer_json_from_text.call( alps_data ) unless alps_data.empty?
         end
-        data_type
+        data_type || :no_data
       end
 
       def json_node_to_hash(node)
         return node unless node.is_a?(Hash)
         result_hash = {}
+
+        switch_map = {}
+        switch_map["ext"] = ->(k,n) { decode_json_ext(n) }
+        switch_map["doc"] = ->(k,n) { {k => json_node_to_hash_doc_element(n) } }
+        ["link", "descriptor"].map do |key|
+          switch_map[key] = ->(k,n) { {"#{k}s" => json_node_to_hash_array_element(n) } }
+        end
+        ["alps", "rel", "href", "type", "rt"].map do |key|
+          switch_map[key] = ->(k,n) { {k => json_node_to_hash(n) } }
+        end
+
         node.each do |k, node_element|
-          if k == 'ext'
-            result_hash.merge!(decode_json_ext(node_element))
-          elsif k == 'doc'
-            result_hash[k] = json_node_to_hash_doc_element(node_element)
-          elsif node_element.is_a?(Array)
-            # I'm not quite sure about these. Pluralize is in the ActiveSupport package - but that may be a little
-            # heavyweight for what we want here. And adding a linguistics Gem for these may be too heavyweight.
-            # So for the cases that I ran into, this seems to work.
-            result_hash["#{k}s"] = json_node_to_hash_array_element(node_element)
-          else
-            result_hash[k] = json_node_to_hash(node_element)
-          end
+          result_hash.merge!( switch_map[k].call(k, node_element ) )
         end
         result_hash
       end
@@ -82,31 +75,26 @@ module Crichton
         array_result_hash = {}
         array_result_array = []
         node_element.each do |array_element|
-          if array_element.is_a?(Hash) && array_element.include?('id')
+          if array_element.is_a?(Hash)
             array_result_hash[array_element.delete('id')] = json_node_to_hash(array_element)
           else
             array_result_array << json_node_to_hash(array_element)
           end
         end
-        return array_result_hash unless array_result_hash.empty?
-        array_result_array
+        array_result_hash.empty? ? array_result_array : array_result_hash
       end
 
       def json_node_to_hash_doc_element(node_element)
         value = node_element['value']
-        if node_element.include?('format') && node_element['format'] == 'html'
-          value = {"html" => value}
-        end
-        value
+        node_element.include?('format') && node_element['format'] == 'html' ? {"html" => value} : value
       end
 
       def decode_json_ext(node_element)
         result_hash = {}
         node_element.each do |ne|
+          # This seems crazy!
           if ne.include?('href') && ne['href'] == Crichton::ALPS::Serialization::SERIALIZED_OPTIONS_LIST_URL
-            if ne.include?('value')
-              result_hash['options'] = JSON.parse(ne['value'])
-            end
+            result_hash['options'] = JSON.parse(ne['value']) if ne.include?('value')
           else
             # This case should handle unknown ext elements somewhat sanely - but ideally it should never be used.
             result_hash['ext'] = [] unless result_hash.include?('ext')
@@ -117,52 +105,33 @@ module Crichton
       end
 
       def xml_node_to_hash(node)
-        # If we are at the root of the document, start the hash
-        if node.element?
-          result_hash = {}
-          xml_node_to_hash_node_attributes(node, result_hash)
-          node.children.each do |child|
-            result = xml_node_to_hash(child)
-            if child.name == 'link'
-              # Collect links correctly
-              result_hash['links'] ||= {}
-              result_hash['links'][child.attributes['rel'].value] = child.attributes['href'].value
-            elsif child.name == 'ext'
-              decode_xml_ext(result_hash, child)
-            elsif child.name == 'doc'
-              xml_node_to_hash_unpack_doc(child, result_hash)
-            elsif child.name == 'descriptor'
-              if child.attributes['id'].present?
-                result_hash['descriptors'] ||= {}
-                result_hash['descriptors'][child.attributes['id'].value] = result
-              else
-                result_hash['descriptors'] ||= []
-                result_hash['descriptors'] << result
-              end
-            elsif child.name == 'text'
-              # Intentionally do nothing
-            elsif result_hash[child.name]
-              # If we have duplicate elements, create an Array with them
-              xml_node_to_hash_add_to_result(result_hash, child.name, result)
+        result_hash = {}
+        xml_node_to_hash_node_attributes(node, result_hash)
+        node.children.each do |child|
+          if child.name == 'link'
+            # Collect links correctly
+            result_hash['links'] ||= {}
+            result_hash['links'][child.attributes['rel'].value] = child.attributes['href'].value
+          elsif child.name == 'ext'
+            decode_xml_ext(result_hash, child)
+          elsif child.name == 'doc'
+            xml_node_to_hash_unpack_doc(child, result_hash)
+          elsif child.name == 'descriptor'
+            decendent = xml_node_to_hash(child)
+            if child.attributes['id'].present?
+              result_hash['descriptors'] ||= {}
+              result_hash['descriptors'][child.attributes['id'].value] = decendent
             else
-              result_hash[child.name] = prepare(result)
+              result_hash['descriptors'] ||= []
+              result_hash['descriptors'] << decendent
             end
+          elsif child.name == 'text'
+            # Intentionally do nothing
+          else
+            raise NameError, "ALPS doesn't specify how to parse a #{child.name}"
           end
-          result_hash
-        else
-          return prepare(node.content.to_s)
         end
-      end
-
-      ##
-      # If we have duplicate elements with the same name, put the elements into an array/a list
-      # Probably a rather uncommon case
-      def xml_node_to_hash_add_to_result(result_hash, child_name, result)
-        if result_hash[child_name].is_a?(Array)
-          result_hash[child_name] << prepare(result)
-        else
-          result_hash[child_name] = [result_hash[child_name], prepare(result)]
-        end
+        result_hash
       end
 
       def xml_node_to_hash_unpack_doc(child, result_hash)
@@ -200,4 +169,3 @@ module Crichton
     end
   end
 end
-

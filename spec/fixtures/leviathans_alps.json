@@ -1,0 +1,23 @@
+{
+  "alps":{
+    "ext": [{
+      "href": "http://alps.example.com/Leviathans#alt",
+      "value": "Alternate."
+    },
+    {"value": "Unknown Extension"},
+    {"href": "http://alps.io/extensions/serialized_options_list", "value":"{\"id\":\"leviathan_status_options\",\"hash\":{\"old\":\"old\",\"new\":\"new\"}}"}
+    ],
+    "doc":{"format": "html", "value":"Describes the semantics, states and state transitions associated with DRDs."},
+    "link": [
+      {"rel":"profile","href":"http://alps.example.org/DRDs"},
+      {"rel":"help","href":"http://documentation.example.org/DRDs#help"}
+    ],
+    "descriptor":[
+      {"id":"name","type":"semantic","href":"http://alps.io/schema.org/Text"},
+      {
+        "link": [{"rel":"profile","href":"http://alps.example.org/DRDs#update"}],
+        "id":"update","type":"idempotent","rt":"none", "descriptor":[{"href":"name"}]
+      }
+    ]
+  }
+}
