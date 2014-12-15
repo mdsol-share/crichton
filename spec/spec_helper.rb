@@ -21,6 +21,8 @@ require 'timecop'
 
 SimpleCov.start do
   add_filter 'spec/'
+  # Effectively ignores a require in a railtie.  Rake tasks themselves are tested elsewhere.
+  add_filter 'lib/crichton/rake_lint.rb'
 end
 
 Debugger.start
