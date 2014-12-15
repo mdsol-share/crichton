@@ -24,7 +24,7 @@ module Crichton
       it 'self-registers as a serializer for the html media-type' do
         expect(Serializer.registered_serializers[:html]).to eq(XHTMLSerializer)
       end
-      
+
       describe('#as_media_type') do
         let (:serializer) { XHTMLSerializer.new(drds) }
 

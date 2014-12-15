@@ -30,10 +30,18 @@ module Crichton
         end
 
         describe '#to_media_type' do
+          before do
+            allow(simple_test_instance).to receive(:as_media_type).with(any_args)
+          end
+          
           it 'delegates to a built serializer for the media type' do
             expect(@serializer).to receive(:to_media_type).with(any_args, @options)
-            allow(simple_test_instance).to receive(:as_media_type).with(any_args)
             simple_test_instance.to_media_type(:media_type, @options)
+          end
+          
+          it 'delegates to a built serializer for xhtml media type' do
+            expect(simple_test_instance).to receive(:as_media_type).with(any_args, @options)
+            simple_test_instance.to_media_type(:xhtml, @options)
           end
         end
         
@@ -41,6 +49,19 @@ module Crichton
           it 'returns true if media type is registered' do
             Crichton::Representor::Serializer.stub(:registered_serializers).and_return({ hale_json: @serializer })
             expect(simple_test_instance).to respond_to(:to_hale_json)
+          end
+        end
+        
+        describe '#method_missing' do
+          it 'calls #to_media_type if media type is registered' do
+            Crichton::Representor::Serializer.stub(:registered_serializers).and_return({ valid_type: @serializer })
+            @serializer.stub(:as_media_type)
+            expect(@serializer).to receive(:to_media_type)
+            expect(simple_test_instance.to_valid_type).to be_nil
+          end
+          
+          it 'raises error if media type is not registered' do
+            expect{simple_test_instance.to_invalid_type}.to raise_error(NameError)
           end
         end
       end
