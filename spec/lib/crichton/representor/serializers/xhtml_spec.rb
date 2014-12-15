@@ -10,6 +10,8 @@ module Crichton
       let (:drds) do
         drd_klass.tap { |klass| klass.apply_methods }.all
       end
+      
+      let (:serializer) { XHTMLSerializer.new(drds) }
 
       before do
         # Can't apply methods without a stubbed configuration and registered descriptors
@@ -26,8 +28,6 @@ module Crichton
       end
       
       describe('#as_media_type') do
-        let (:serializer) { XHTMLSerializer.new(drds) }
-
         context 'without styled interface for API surfing' do
           it 'returns the resource represented as xhtml' do
             expect(serializer.as_media_type(conditions: 'can_do_anything')).to be_equivalent_to(drds_microdata_html)
@@ -45,6 +45,22 @@ module Crichton
             expect(serializer.as_media_type(options)).to be_equivalent_to(drds_styled_microdata_embed_html)
           end
         end
+      end
+      
+        describe '#raise_abstract' do        
+          let (:builder) { XHTMLSerializer::BaseSemanticBuilder.new(:xhtml, drds, nil, serializer) }
+        
+          it 'raises for #element_tag' do
+            expect {builder.send(:element_tag)}.to raise_error(RuntimeError, "#element_tag is an abstract method that must be implemented.")
+          end
+          
+          it 'raises for #add_form_transition' do
+            expect {builder.send(:add_form_transition, :transition)}.to raise_error(RuntimeError, "#add_form_transition is an abstract method that must be implemented.")
+          end
+          
+          it 'raises for #add_semantic' do
+            expect {builder.send(:add_semantic, :semantic, {})}.to raise_error(RuntimeError, "#add_semantic is an abstract method that must be implemented.")
+          end
       end
     end
   end
