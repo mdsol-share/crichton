@@ -167,6 +167,12 @@ module Crichton
         it 'returns the absolute self link' do
           expect(descriptor.type_link.href).to eq('http://localhost:3000/alps/DRDs#drds')
         end
+
+        it 'can be external' do
+          allow(descriptor.type_link).to receive(:href).and_return('http://example.com/alps/DRDs#drds')
+          expect(descriptor.type_link.absolute_href).to eq(descriptor.type_link.href)
+        end
+
       end
 
       describe '#parent_descriptor' do
