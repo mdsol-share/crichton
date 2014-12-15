@@ -16,7 +16,6 @@ describe Crichton do
     Crichton.reset
     Crichton.config_directory = CONF_DIR
 
-
   end
 
   describe '.descriptor_registry' do
@@ -128,14 +127,17 @@ describe Crichton do
       end
 
       context 'when Rails' do
+        before do
+          ::Rails = @app unless defined?(Rails)
+          ::Rails.stub(:logger).and_return(mock('Rails.logger'))
+        end
+        
         after do
           Object.send(:remove_const, :Rails) if Rails == @app
         end
 
         it 'returns the config directory under the Rails root' do
-          ::Rails = @app unless defined?(Rails)
           @root = 'rails_root'
-
           allow(::Rails).to receive(:root).and_return(@root)
           expect(Crichton.config_file).to eq(file_path)
         end
@@ -161,6 +163,16 @@ describe Crichton do
     it 'sets the descriptor directory' do
       Crichton.descriptor_directory = 'test_directory'
       expect(Crichton.descriptor_directory).to eq('test_directory')
+    end
+  end
+  
+  describe 'registry delegator methods' do
+    it 'calls the registry options_registry' do
+      expect(Crichton.options_registry).to eq(Crichton.instance_variable_get(:@registry).options_registry)
+    end
+    
+    it 'calls the registry raw_profile_registry' do
+      expect(Crichton.raw_profile_registry).to eq(Crichton.instance_variable_get(:@registry).raw_profile_registry)
     end
   end
 
