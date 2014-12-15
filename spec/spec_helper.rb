@@ -10,6 +10,7 @@ $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
 
 require 'rspec'
+require 'rspec/collection_matchers'
 require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
@@ -20,6 +21,8 @@ require 'timecop'
 
 SimpleCov.start do
   add_filter 'spec/'
+  # Effectively ignores a require in a railtie.  Rake tasks themselves are tested elsewhere.
+  add_filter 'lib/crichton/rake_lint.rb'
 end
 
 Debugger.start
@@ -58,9 +61,10 @@ RSpec.configure do |config|
   config.include Support::Helpers
   config.include Support::ALPS
   config.include Support::DRDHelpers
+  config.infer_spec_type_from_file_location!
 
   config.before(:each) do
-    if example.example_group.metadata[:integration]
+    if RSpec.current_example.example_group.metadata[:integration]
       Rails = CRICHTON_DEMO_SERVICE unless Object.const_defined?(:Rails)
     else
       Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)

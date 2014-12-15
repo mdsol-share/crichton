@@ -30,22 +30,22 @@ module Crichton
       end
 
       ##
-      # Whether the transition is available for inclusion in a response. 
+      # Whether the transition is available for inclusion in a response.
       #
       # A transition is not available if it is not defined for a particular state or if the conditions are not
       # met for the transition.
-      # 
+      #
       # @return [Boolean] <tt>true</tt> if available, <tt>false</tt> otherwise.
       def available?
         @available ||= state_transition ? state_transition.available?(@_options.slice(:conditions)) : state.nil?
       end
-      
+
       ##
       # Returns the uniform interface method associated with the protocol descriptor.
       def interface_method
         protocol_descriptor && protocol_descriptor.interface_method
       end
-      
+
       ##
       # Returns the protocol for the transition.
       #
@@ -73,7 +73,7 @@ module Crichton
         @descriptors[:protocol] ||= {}
         @descriptors[:protocol][protocol] ||= resource_descriptor.protocol_transition(protocol, id)
       end
-      
+
       ##
       # Whether the transition contains any nested semantics associated with a templated URL or a control.
       def templated?
@@ -81,7 +81,7 @@ module Crichton
       end
 
       ##
-      # The fully-qualified url for the transition, including a templated query, if any, per 
+      # The fully-qualified url for the transition, including a templated query, if any, per
       # {http://tools.ietf.org/html/rfc6570 RFC 6570}.
       # TODO: merge templated_url with url method and refactor serializers
       def templated_url
@@ -91,7 +91,7 @@ module Crichton
           url ? url << query : url
         end
       end
-      
+
       ##
       # The fully-qualified URL for the transition.
       def url
@@ -99,7 +99,7 @@ module Crichton
           @_options[:override_links].delete(self.name)
         else
           protocol_descriptor ? protocol_descriptor.url_for(@target) : nil
-        end.tap { |url| logger.warn("The URL for the transition is not defined for #{@target.inspect}!") unless url }
+        end.tap { |url| logger.warn("Crichton::Descriptor::TransitionDecorator.url class (#{@target}) does not have a known url") unless url }
       end
 
       def response_headers
@@ -113,7 +113,7 @@ module Crichton
         elsif @target.is_a?(Crichton::Representor::State)
           @target.crichton_state
         else
-          logger.warn("No state specified for #{@target.inspect}!")
+          logger.warn("No state specified for #{@target}")
           nil
         end
       end

@@ -20,7 +20,7 @@ module Crichton
 
           it 'specifies type attribute for all dealiased elements' do
             properties =  %w(total_count list update create drd)
-            expect(properties.all? { |property| subject['descriptors'][property].include?('type') }).to be_true
+            expect(properties.all? { |property| subject['descriptors'][property].include?('type') }).to be true
           end
 
           it 'sets valid element type for semantic elements' do

@@ -11,7 +11,7 @@ module Crichton
       
       before :all do
         list_descriptor = normalized_drds_descriptor['protocols']['http']['list']
-        expect(%w(headers method slt uri).all? { |type| list_descriptor[type] }).to be_true
+        expect(%w(headers method slt uri).all? { |type| list_descriptor[type] }).to be true
       end
 
       describe '#headers' do

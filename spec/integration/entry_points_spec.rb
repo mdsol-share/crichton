@@ -46,5 +46,5 @@ describe '/', :type => :controller, integration: true do
       end
     end
   end
-  
+
 end
