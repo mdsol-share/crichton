@@ -228,5 +228,11 @@ module Support
     def crichton_register_sample(sample_filename)
       Crichton.initialize_registry(sample_filename)
     end
+    
+    def assert_file(relative_path, regexp)
+      expect(File.exists?(relative_path)).to be true
+      read = File.read(relative_path)
+      expect(read).to match(regexp)
+    end
   end
 end
