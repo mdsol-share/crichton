@@ -116,8 +116,8 @@ describe '/drds', :type => :controller, integration: true do
       end
     end
 
-    context "when making an HTML requests" do
-      it 'hits the bloody code I want' do
+    context "when making an HTML or XHTML" do
+      it 'it responds with a 200' do
         expect(get 'drds', { conditions: 'can_do_anything' }, { 'HTTP_ACCEPT' => 'application/xhtml+xml' }).to eq(200)
         expect(get 'drds', { conditions: 'can_do_anything' }, { 'HTTP_ACCEPT' => 'text/html' }).to eq(200)
       end
