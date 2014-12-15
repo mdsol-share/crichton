@@ -47,12 +47,6 @@ module Crichton
         Addressable::URI.parse(File.join(Crichton.config.alps_base_uri,"#{@resource_id}##{@resource_name}")).to_s
       end
 
-      ##
-      #
-      # Equality operator for adding EntryPoints into a set collection
-      def ==(other_klass)
-        self.resource_name == other_klass.resource_name
-      end
     end
   end
 end
