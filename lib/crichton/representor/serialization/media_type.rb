@@ -11,7 +11,7 @@ module Crichton
       module MediaType
         ##
         # Returns the final, serialized media-type for the response. This method differs from #as_media_type, which
-        # returns a serialized object. It may be a hash or XML, for example. Serializers implement this method to 
+        # returns a serialized object. It may be a hash or XML, for example. Serializers implement this method to
         # convert the representation into the base media-type. For example, for a HAL JSON serializer, #as_media_type
         # would return a hash, but #to_media_type would return a JSON string.
         #
@@ -39,7 +39,7 @@ module Crichton
         end
 
         def as_media_type(media_type, options={})
-          if media_type == :xhtml #TODO: Remove when Representor serializer XHTML
+          if [:html, :xhtml].include?(media_type) #TODO: Remove when Representor serializer XHTML
             built_serializer(media_type, self, options).as_media_type(options)
           else
             serializer = Crichton::Representor::RepresentorSerializer.new(self, options)
@@ -48,13 +48,13 @@ module Crichton
         end
 
         def to_media_type(media_type, options={})
-          if media_type == :xhtml #TODO: Remove when Representor serializer XHTML
+          if [:html, :xhtml].include?(media_type) #TODO: Remove when Representor serializer XHTML
             as_media_type(media_type, options)
           else
             Representors::Representor.new(as_media_type(media_type, options)).to_media_type(media_type, options)
           end
         end
-        
+
         # @deprecated
         def as_link(media_type, options = {}) # TODO: remove when Representor serializer XHTML
           built_serializer(media_type, self, options).as_link(self_transition, options)
@@ -63,7 +63,7 @@ module Crichton
         # @deprecated
         def built_serializer(media_type, object, options) # TODO: remove when Representor serializer XHTML
           raise ArgumentError, 'The media_type argument cannot be blank.' if media_type.blank?
-          
+
           Crichton::Representor::Serializer.build(media_type.to_sym, object, options)
         end
 

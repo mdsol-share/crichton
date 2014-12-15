@@ -17,7 +17,7 @@ module Crichton
         # @return [Cricthon::Representor::Serializer] The built serializer.
         def build(type, representor, options = nil)
           options ||= {}
-          
+
           if serializer_class = registered_serializers[type.to_sym]
             serializer_class.new(representor, options)
           else
@@ -62,7 +62,7 @@ module Crichton
                 "Subclasses of Chrichton::Serializer must follow the naming convention " <<
                 "OptionalModule::MediaTypeSerializer. #{self.name} is an invalid subclass name.")
             end
-  
+
             name.demodulize.gsub(/Serializer$/, '').underscore.to_sym
           end
         end
@@ -106,9 +106,13 @@ module Crichton
                   options.merge!({ top_level: true, override_links: { 'self' => request.url } }) if request.get?
                   options.merge!(semantics: :styled_microdata) if media_type == :html
                   if obj.respond_to?("to_#{type}")
+                    if [:html, :xhtml].include?(media_type)
+                      XHTMLSerializer.new(obj).to_media_type(options)
                     # TODO: Handle response headers!
-                    # before: serializer.response_headers(obj, request).each { |k, v| response.headers[k] = v }
-                    Representors::Representor.new(obj.to_representor(options)).to_media_type(type, options)
+                    else
+                      # before: serializer.response_headers(obj, request).each { |k, v| response.headers[k] = v }
+                      Representors::Representor.new(obj.to_representor(options)).to_media_type(type, options)
+                    end
                   else
                     super
                   end
@@ -139,7 +143,7 @@ module Crichton
         unless object.is_a?(Crichton::Representor)
           raise ArgumentError, "The object #{object.inspect} is not a Crichton::Representor."
         end
-        
+
         @object, @options = object, options || {}
       end
 
