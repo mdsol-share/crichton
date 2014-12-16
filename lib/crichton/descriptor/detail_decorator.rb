@@ -1,5 +1,5 @@
 require 'crichton/descriptor/detail'
-require 'crichton/descriptor/options_decorator'
+require 'crichton/descriptor/semantic_decorator'
 
 module Crichton
   module Descriptor
@@ -15,18 +15,18 @@ module Crichton
         @target = target
         @_options = options || {}
       end
-      
+
       ##
       # Decorated semantics.
       def semantics
         @semantics ||= begin
-          require 'crichton/descriptor/semantic_decorator'
+
           super.inject({}) { |h, (k, v)| h[k] = SemanticDecorator.new(@target, v, @_options); h}
         end
       end
-      
+
       # TODO: An overriden transitions method was removed from this class, look into whether it was necessary
-      
+
     end
   end
 end

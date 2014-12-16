@@ -6,9 +6,9 @@ module Crichton
     ##
     # Manages retrieving the data values associated with semantic descriptors from a target object.
     class SemanticDecorator < DetailDecorator
-      
+
       ##
-      # Whether the source of the data exists in the hash or object. This is not a <tt>nil?</tt> check, but rather 
+      # Whether the source of the data exists in the hash or object. This is not a <tt>nil?</tt> check, but rather
       # determines if the related attribute is defined on the object.
       #
       # @return [Boolean] true, if the data source is defined.
@@ -24,7 +24,7 @@ module Crichton
       def value
         @target.is_a?(Hash) ? @target[source] : @target.try(source)
       end
-      
+
       ##
       # The decorated options.
       def options
