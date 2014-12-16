@@ -13,7 +13,6 @@ module Crichton
       def initialize(app, options = {})
         @app = app
         @options = options
-        yield connection if block_given?
       end
 
       def call(env)
@@ -30,19 +29,9 @@ module Crichton
 
       def process_request(req, env)
         if supported_media_type(SUPPORTED_MEDIA_TYPES, env)
-          response = connection.get do |request|
-            request.url Addressable::URI.parse(req['url'])
-          end
-          # ajax and transfer-encoding:chunked are not working very well together
-          [response.status, response.headers.to_hash.reject {|k, _| k == 'transfer-encoding' }, [response.body]]
+          raise NotImplementedError, "Valid proxy requests are not implemented"
         else
           unsupported_media_type(SUPPORTED_MEDIA_TYPES, env)
-        end
-      end
-
-      def connection
-        @connection ||= Faraday.new do |connection|
-          yield connection if block_given?
         end
       end
     end
