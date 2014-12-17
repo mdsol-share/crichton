@@ -115,12 +115,6 @@ describe Crichton::Lint::DescriptorsValidator do
       @message = "In file '#{filename}':\n#{I18n.t('aok').green}\n"
     end
 
-    it 'reports an error when external url has fragment' do
-      @descriptor['semantics']['total_count']['href'] = 'http://alps.io/schema.org/Integer#fragment'
-      @errors = expected_output(:error, 'descriptors.href_not_supported_value', id: 'total_count',
-        filename: filename, section: :descriptors, uri: 'http://alps.io/schema.org/Integer#fragment', sub_header: :error)
-    end
-
     context 'select options attributes' do
       it 'reports errors when an option name is not one of the supported names' do
         @descriptor['semantics']['total_count'].merge!({ 'options' => { 'listt' => [ '1', '2' ] } })

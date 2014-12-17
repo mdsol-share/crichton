@@ -120,12 +120,7 @@ module Crichton
       end
 
       def check_href_property(descriptor, options)
-        if uri = descriptor.href
-          link = Addressable::URI.parse(uri)
-          if link.absolute? && link.fragment
-            add_error('descriptors.href_not_supported_value', options.merge({ id: descriptor.id, uri: uri }))
-          end
-        else
+        unless descriptor.href
           add_warning('descriptors.property_missing', options.merge({prop: 'href'}))
         end
       end
