@@ -20,7 +20,7 @@ semantics:
     sample: DRDs#drds
   uuid:
     doc: The UUID of the DRD.
-    href: http://alps.io/schema.org/Text
+    href: http://alps.io/schema.org/Text#uuid
     sample: 007d8e12-babd-4f2c-b01e-8b5e2f749e1b
   name:
     doc: The name of the DRD.
