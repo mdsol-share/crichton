@@ -11,7 +11,6 @@ $LOAD_PATH.uniq!
 
 require 'rspec'
 require 'rspec/collection_matchers'
-require 'debugger'
 require 'bundler'
 require 'equivalent-xml'
 require 'webmock/rspec'
@@ -25,7 +24,6 @@ SimpleCov.start do
   add_filter 'lib/crichton/rake_lint.rb'
 end
 
-Debugger.start
 Bundler.setup
 
 # Delete the tmp specs directory and all its contents.
