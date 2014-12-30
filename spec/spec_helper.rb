@@ -37,13 +37,8 @@ Dir.mkdir SPECS_TEMP_DIR
 CONF_DIR = File.join('spec', 'fixtures', 'config')
 ROOT_DIR = SPEC_DIR
 
-#DIE require File.expand_path("../integration/crichton-demo-service/config/environment", __FILE__)
-#DIE require 'rspec/rails'
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
-#DIE CRICHTON_DEMO_SERVICE = Rails
 Crichton::config_directory = CONF_DIR
-#DIE #Crichton::root = ROOT_DIR
-#DIE #Crichton.instance_variable_set(:@root, Dir.pwd)
 Crichton.logger = ::Logger.new(STDOUT)
 Crichton.logger.level = Logger::ERROR # Avoid non-error to populate the terminal when running specs
 
@@ -62,7 +57,6 @@ RSpec.configure do |config|
   config.include Support::Helpers
   config.include Support::ALPS
   config.include Support::DRDHelpers
-  #DIE config.infer_spec_type_from_file_location!
 
   config.before(:each) do
     stub_configured_profiles
