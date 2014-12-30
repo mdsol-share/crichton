@@ -10,13 +10,16 @@ $LOAD_PATH.unshift(lib_dir)
 $LOAD_PATH.uniq!
 
 require 'rspec'
-require 'rspec/collection_matchers'
+#DIE require 'rspec/collection_matchers'
 require 'bundler'
 require 'equivalent-xml'
+require 'equivalent-xml/rspec_matchers'
 require 'webmock/rspec'
 require 'simplecov'
 require 'json_spec'
 require 'timecop'
+require 'crichton'
+
 
 SimpleCov.start do
   add_filter 'spec/'
@@ -34,13 +37,13 @@ Dir.mkdir SPECS_TEMP_DIR
 CONF_DIR = File.join('spec', 'fixtures', 'config')
 ROOT_DIR = SPEC_DIR
 
-require File.expand_path("../integration/crichton-demo-service/config/environment", __FILE__)
-require 'rspec/rails'
+#DIE require File.expand_path("../integration/crichton-demo-service/config/environment", __FILE__)
+#DIE require 'rspec/rails'
 Dir["#{SPEC_DIR}/support/*.rb"].each { |f| require f }
-CRICHTON_DEMO_SERVICE = Rails
+#DIE CRICHTON_DEMO_SERVICE = Rails
 Crichton::config_directory = CONF_DIR
-#Crichton::root = ROOT_DIR
-#Crichton.instance_variable_set(:@root, Dir.pwd)
+#DIE #Crichton::root = ROOT_DIR
+#DIE #Crichton.instance_variable_set(:@root, Dir.pwd)
 Crichton.logger = ::Logger.new(STDOUT)
 Crichton.logger.level = Logger::ERROR # Avoid non-error to populate the terminal when running specs
 
@@ -59,18 +62,19 @@ RSpec.configure do |config|
   config.include Support::Helpers
   config.include Support::ALPS
   config.include Support::DRDHelpers
-  config.infer_spec_type_from_file_location!
+  #DIE config.infer_spec_type_from_file_location!
 
   config.before(:each) do
-    if RSpec.current_example.example_group.metadata[:integration]
-      Rails = CRICHTON_DEMO_SERVICE unless Object.const_defined?(:Rails)
-    else
-      Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
-      Crichton.reset
-      Crichton.config_directory = CONF_DIR
-      Crichton.descriptor_registry
-    end
-    stub_alps_requests
+    stub_configured_profiles
+    Crichton.config_directory = CONF_DIR
+    Crichton.descriptor_registry
+  end
+
+  config.after(:each) do
+    # We shall never depend on Rails, so help me specs.
+    Object.send(:remove_const, :Rails) if Object.const_defined?(:Rails)
+    Crichton.reset
+    Crichton.clear_config
   end
 
   config.include JsonSpec::Helpers
