@@ -22,31 +22,33 @@ module Crichton
         @pathname = 'test/path'
       end
 
+      after do
+        Dir.rmdir(@pathname) if Dir.exists?(@pathname)
+      end
+
       it 'accepts a storage path' do
-        expect(Dir).to receive(:exists?).with(@pathname).and_return(true)
+        # I dont understand this test or this testing strategy, why tie so closely to the internals
+        # of the method?  Why are we not checking
         ExternalDocumentStore.new(@pathname)
+        expect(Dir.exists?(@pathname)).to be true
       end
 
       it 'uses the configured storage path if none is explicitly passed into the new call' do
         allow(Crichton.config).to receive(:external_documents_store_directory).and_return(@pathname)
-        expect(Dir).to receive(:exists?).with(@pathname).and_return(true)
         ExternalDocumentStore.new
-        Crichton.clear_config
+        expect(Dir.exists?(@pathname)).to be true
       end
 
       it 'uses the supplied storage path if it is explicitly passed into the new call' do
-        build_configuration_files({}, SPECS_TEMP_DIR)
-        overridden_pathname = 'overridden/path'
-        allow(Crichton.config).to receive(:external_documents_store_directory).and_return(@pathname)
-        expect(Dir).to receive(:exists?).with(overridden_pathname).and_return(true)
-        ExternalDocumentStore.new(overridden_pathname)
-        Crichton.clear_config
+        @pathname = 'overridden/path'
+        ExternalDocumentStore.new(@pathname)
+        expect(Dir.exists?(@pathname)).to be true
       end
 
       it 'creates the storage path if it does not exist' do
-        allow(Dir).to receive(:exists?).and_return(false)
-        expect(FileUtils).to receive(:mkdir_p).with(@pathname).and_return(true)
+        expect(Dir.exists?(@pathname)).to be false
         ExternalDocumentStore.new(@pathname)
+        expect(Dir.exists?(@pathname)).to be true
       end
     end
 
@@ -89,7 +91,7 @@ module Crichton
         @doc_store.download_link_and_store_in_document_store(@link)
         expect(@request).to have_been_made
       end
-      
+
       it 'detects outdated documents and prompts for overwrite' do
         expect(@doc_store).to receive(:get).and_return('another body')
         expect(STDIN).to receive(:gets).and_return('y')
@@ -160,7 +162,7 @@ module Crichton
             "Data of link http://www.test1.com/test1 has changed!\n-Xtest1\n+test1\n"
         )
       end
-      
+
       it 'reports non 200 response status' do
         request = stub_request(:get, /^http:\/\/www\.test.\.com\/test.$/).
             to_return(status: 404, body: "Not found\n", headers: {})
