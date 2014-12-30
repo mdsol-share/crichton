@@ -1,4 +1,8 @@
 require 'spec_helper'
+require 'rails/all'
+require 'rails/generators'
+require 'crichton'
+require 'crichton/rails/generators/resource_description_generator'
 
 def assert_file(relative_path, regexp)
  # absolute = File.expand_path(relative, destination_root)
@@ -16,13 +20,6 @@ module Crichton
     let(:path) { SPECS_TEMP_DIR }
     let(:filename) {File.join(path, collection_name).concat('.yaml')}
     let(:options) { {force: true}}
-
-    before(:all) do
-      require "rails/all"
-      require 'rails/generators'
-      require 'crichton'
-      require 'crichton/rails/generators/resource_description_generator'
-    end
 
     after(:each) do
       File.delete(filename) if File.exists?(filename)
