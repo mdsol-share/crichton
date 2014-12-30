@@ -8,16 +8,6 @@ describe Crichton do
     Crichton.clear_config
   end
 
-  # This restores the global setting - one of the tests sets this value to a generated value and that causes other
-  # tests to fail later on - depending on the order of the tests.
-  after do
-
-    Crichton.clear_config
-    Crichton.reset
-    Crichton.config_directory = CONF_DIR
-
-  end
-
   describe '.descriptor_registry' do
     it 'initializes the registry if the registry is not already initialized' do
       mock_registry = double('Registry')
@@ -131,7 +121,7 @@ describe Crichton do
           ::Rails = @app unless defined?(Rails)
           ::Rails.stub(:logger).and_return(mock('Rails.logger'))
         end
-        
+
         after do
           Object.send(:remove_const, :Rails) if Rails == @app
         end
@@ -165,12 +155,12 @@ describe Crichton do
       expect(Crichton.descriptor_directory).to eq('test_directory')
     end
   end
-  
+
   describe 'registry delegator methods' do
     it 'calls the registry options_registry' do
       expect(Crichton.options_registry).to eq(Crichton.instance_variable_get(:@registry).options_registry)
     end
-    
+
     it 'calls the registry raw_profile_registry' do
       expect(Crichton.raw_profile_registry).to eq(Crichton.instance_variable_get(:@registry).raw_profile_registry)
     end
@@ -183,4 +173,3 @@ describe Crichton do
     end
   end
 end
-
