@@ -3,7 +3,6 @@ lib_dir = File.expand_path("../lib", SPEC_DIR)
 LINT_DIR = File.expand_path("../lib/crichton/lint", SPEC_DIR)
 DISCOVERY_DIR = File.expand_path("../lib/crichton/discovery", SPEC_DIR)
 LINT_FILENAME = 'drds_lint.yml'
-# MOYA_GEMFILE_DIR = File.expand_path('./fixtures/')
 MOYA_INITIALIZERS_DIRECOTRY = File.expand_path("./fixtures/moya_initializers", __FILE__)
 
 SPECS_TEMP_DIR = 'tmp'
