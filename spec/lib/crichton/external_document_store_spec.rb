@@ -42,7 +42,7 @@ module Crichton
       it 'uses the supplied storage path if it is explicitly passed into the new call' do
         @pathname = 'overridden/path'
         ExternalDocumentStore.new(@pathname)
-        expect(Dir.exists?(@pathname)).to be true
+        expect(Dir).to exist(@pathname)
       end
 
       it 'creates the storage path if it does not exist' do
