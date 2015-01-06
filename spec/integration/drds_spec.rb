@@ -30,7 +30,7 @@ describe '/drds' do
   end
 
   it "has embedded resources" do
-    expect(drds.transitions.select { |el| el.rel == "items" }.count).to eq(drds.embedded["items"].count)
+    expect(drds.transitions.count { |el| el.rel == "items" }).to eq(drds.embedded["items"].count)
   end
 
   context 'with accept header application/vnd.hale+json' do
