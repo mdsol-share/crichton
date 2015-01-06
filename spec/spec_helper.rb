@@ -3,7 +3,6 @@ lib_dir = File.expand_path("../lib", SPEC_DIR)
 LINT_DIR = File.expand_path("../lib/crichton/lint", SPEC_DIR)
 DISCOVERY_DIR = File.expand_path("../lib/crichton/discovery", SPEC_DIR)
 LINT_FILENAME = 'drds_lint.yml'
-MOYA_INITIALIZERS_DIRECTORY = File.expand_path("./fixtures/moya_initializers", __FILE__)
 
 SPECS_TEMP_DIR = 'tmp'
 RAILS_PORT = 1234
@@ -69,7 +68,7 @@ RSpec.configure do |config|
     end
 
     WebMock.disable! # If you don't disable webmock, moya will falsely believe it is up and running.
-    $moya_rails_pid = Moya.spawn_rails_process!(RAILS_PORT, MOYA_INITIALIZERS_DIRECTORY)
+    $moya_rails_pid = Moya.spawn_rails_process!(RAILS_PORT)
     WebMock.enable!
   end
 
