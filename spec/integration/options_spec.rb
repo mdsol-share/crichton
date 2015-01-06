@@ -9,8 +9,8 @@ describe 'response options' do
   describe 'options behavior' do
     context 'with conditions options' do
       it 'includes transitions when conditions are met' do
-        # response = hale_request entry, 'drds', { conditions: ["can_create"] }
-        # expect(JSON.parse(response.body)["_links"]).to have_key("create")
+        response = get '/drds', { conditions: ["can_create"] }
+        expect(drds.transitions.any? { |t| t.rel == 'create' }).to be true
       end
 
       it 'filters out available transitions for unmet conditions' do
