@@ -43,7 +43,7 @@ module Support
     end
 
     def root_url
-      "http://localhost:1234"
+      "http://localhost:#{RAILS_PORT}"
     end
 
     # Given a representor and a transition, return the uri of that transition
