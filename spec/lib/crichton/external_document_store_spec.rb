@@ -48,7 +48,7 @@ module Crichton
       it 'creates the storage path if it does not exist' do
         expect(Dir.exists?(@pathname)).to be false
         ExternalDocumentStore.new(@pathname)
-        expect(Dir.exists?(@pathname)).to be true
+        expect(Dir).to exist(@pathname)
       end
     end
 
