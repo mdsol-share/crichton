@@ -4,17 +4,17 @@ require 'crichton/representor/serializer'
 module Crichton
   module Representor
     describe Serializer do
-      before(:all) do
+      before(:each) do
         @existing_serializers = Serializer.registered_serializers
+        @existing_media_types = Serializer.registered_media_types
       end
-      
-      after(:all) do
+
+      after(:each) do
         # Necessary since other specs load serializers so that randomization does not cause erroneous failures
         # since registered_serializers is a class method.
-        reset_serializers(@existing_serializers)
-        
+        reset_serializers(@existing_serializers, @existing_media_types)
       end
-      
+
       def create_media_type_serializer(serializer = nil)
         serializer ||= :MediaTypeSerializer
         Crichton::Representor.send(:remove_const, serializer) if Representor.const_defined?(serializer)
@@ -23,8 +23,9 @@ module Crichton
         eval(build_sample_serializer(serializer))
       end
 
-      def reset_serializers(value = {})
-        Serializer.instance_variable_set('@registered_serializers', value)
+      def reset_serializers(serializers = {}, media_types = {} )
+        Serializer.instance_variable_set('@registered_serializers', serializers)
+        Serializer.instance_variable_set('@registered_media_types', media_types)
       end
 
       let(:object) do

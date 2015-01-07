@@ -7,7 +7,7 @@
 source 'https://rubygems.org'
 gemspec
 
-gem 'rails',         '~> 3.2.14'
+gem 'rails'
 gem 'ruby-prof',     '~> 0.13'
 gem 'yard',          '~> 0.8.7'
 gem 'redcarpet',     '~> 3.0.0'
@@ -20,6 +20,7 @@ group :development, :test do
   gem 'pry'
   gem 'pry-remote'
   gem 'pry-nav'
+  gem 'moya', git: 'git@github.com:mdsol/moya.git', branch: 'develop'
 end
 
 group :test do
@@ -32,7 +33,6 @@ group :test do
   gem 'webmock',        '~> 1.13.0'
   gem 'equivalent-xml', '~> 0.5'
   gem 'rspec',          '~> 2.14'
-  gem 'rspec-rails',    '~> 2.14'
   gem 'simplecov',      '~> 0.8'
   gem 'json_spec',      '~> 1.1.1'
   gem 'timecop',        '~> 0.7.1'

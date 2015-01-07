@@ -93,7 +93,11 @@ module Crichton
   def self.clear_config
     @config = nil
     @root = nil
-    self.config_directory = nil
+    @config_file = nil
+    @config_directory = nil
+    @descriptor_directory = nil
+    @descriptor_location = nil
+    @descriptor_filenames = nil
   end
 
   ##
@@ -179,9 +183,9 @@ module Crichton
       Rails.root
     elsif const_defined?('Sinatra')
       Sinatra.settings.root
-    else
-      Dir.pwd
     end
+
+    @root ||= Dir.pwd
   end
 
   ##

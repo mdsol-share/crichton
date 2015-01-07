@@ -8,8 +8,8 @@ module Crichton
       let(:http_descriptor) { http_protocol[@protocol_transition || 'list'] }
       let(:resource_descriptor) { double('resource_descriptor') }
       let(:descriptor) { Http.new(resource_descriptor, http_descriptor, @protocol_transition) }
-      
-      before :all do
+
+      before :each do
         list_descriptor = normalized_drds_descriptor['protocols']['http']['list']
         expect(%w(headers method slt uri).all? { |type| list_descriptor[type] }).to be true
       end
@@ -19,7 +19,7 @@ module Crichton
           expect(descriptor.headers).to eq(http_descriptor['headers'])
         end
       end
-  
+
       describe '#interface_method' do
         context 'when uri_source is requested' do
           it 'returns GET as uniform interface method' do
@@ -32,7 +32,7 @@ module Crichton
           expect(descriptor.interface_method).to eq(http_descriptor['method'])
         end
       end
-  
+
       describe '#slt' do
         it 'returns the slt' do
           expect(descriptor.slt).to eq(http_descriptor['slt'])
@@ -65,14 +65,14 @@ module Crichton
           before do
             @protocol_transition = 'activate'
           end
-          
+
           it 'returns the uri populated from the target attributes' do
             allow(target).to receive(:uuid).and_return('some_uuid')
             expect(descriptor.url_for(target)).to match(/#{deployment_base_uri}\/drds\/some_uuid\/activate/)
           end
 
           it 'raises an error if the target does not implement a uri parameter' do
-            expect { descriptor.url_for(target) }.to raise_error(ArgumentError, 
+            expect { descriptor.url_for(target) }.to raise_error(ArgumentError,
               /^The target .* does not implement the template variable\(s\) 'uuid'.*/)
           end
         end

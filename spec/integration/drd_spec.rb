@@ -1,113 +1,170 @@
 require 'spec_helper'
-require_relative 'spec_helper'
-require "addressable/template"
-require 'rexml/document'
+require_relative 'shared_spec'
 
-describe '/drd/{item}', :type => :controller, integration: true do
+describe '/drd/{item}', integration: true do
 
-  before do
-    Crichton.reset
-    Crichton.clear_config
-  end
-  
-  render_views
-  
-  let(:entry) do
-    get '/', {}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-    JSON.load(response.body)
-  end
-  
-  let(:drds_item) do
-    response = hale_request entry, 'drds'
-    JSON.load(response.body)['_links']['items'][0]
-  end  
+  before(:all) { WebMock.disable! }
+  after(:all)  { WebMock.enable!  }
 
-  let(:drd_body) do
-    response = hale_request drds_item
-    JSON.load(response.body)
-  end  
-  
-  it "contains descriptors" do
-    expect(drd_body).to include("uuid","name","status","kind","leviathan_uuid","built_at")
+  before(:each) do
+    url = hale_url_for("self", drds.embedded["items"].sample)
+    response = get url, {conditions: 'can_do_anything'}
+    @drd = parse_hale(response.body)
   end
-  
-  it "returns itself as it's 'self' link" do
-    response = hale_request drd_body, 'self'
-    expect(JSON.load(response.body)).to eq(drd_body)
+  require 'pry'
+
+  #TODO less vague wording
+  it 'contains descriptors' do
+    expect(@drd.properties.keys).to include('name', 'status', 'kind', 'leviathan_uuid', 'created_at')
   end
-  
-  it "contains a profile link" do
-    response = _http_call drd_body['_links']['profile'], {}, {'HTTP_ACCEPT' => 'application/alps+xml'}
+
+  it "returns itself as a 'self'  link" do
+    self_drd = parse_hale(get(transition_uri_for('self', @drd)).body)
+    expect(self_drd.to_hash).to eq(@drd.to_hash)
+  end
+
+  it 'contains a profile link' do
+    response = get transition_uri_for('profile', @drd), {}, {'Accept' => 'application/alps+xml'}
     expect(response.status).to eq(200)
     doc = Nokogiri::XML(response.body)
-    semantic_descriptors = doc.xpath("//descriptor/@href").map {|elem| elem.to_s[0] == '#' ? elem.to_s[1..-1] : nil}
-    fields = drd_body.keys - %w[_links _meta _embedded]
-    expect(semantic_descriptors).to include(*fields)
+    semantic_descriptors = doc.xpath("//descriptor/@href").map { |elem| elem.to_s[0] == '#' ? elem.to_s[1..-1] : nil }
+    expect(semantic_descriptors).to include(*@drd.properties.keys)
   end
-  
-  it "contains a type link" do
-    response = _http_call drd_body['_links']['type'], {}, {'HTTP_ACCEPT' => 'application/alps+xml'}
+
+  it 'contains a type link' do
+    type_uri = transition_uri_for('type', @drd)
+    response = get type_uri, {}, {"Accept" => "application/alps+xml"}
     expect(response.status).to eq(200)
   end
-  
-  it "contains a help link" do
-    expect(URI.parse(drd_body['_links']['help']['href'])).to be_absolute
+
+  it 'contains a help link' do
+    expect(URI.parse(transition_uri_for('help', @drd))).to be_absolute
   end
 
   context 'the client can do anything' do
-    
-    let(:entry) do
-      get '/', {conditions: 'can_do_anything'}, {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      JSON.load(response.body)
-    end
-    
-    let(:drds_item) do
-      response = hale_request entry, 'drds', {conditions: 'can_do_anything'}
-      JSON.load(response.body)['_links']['items'][0]
-    end  
-    
-    let(:drd_body) do
-      response = hale_request drds_item, false, {conditions: 'can_do_anything'}
-      JSON.load(response.body)
-    end  
+    let(:can_do_hash) { {conditions: 'can_do_anything'} }
+    let(:create_url)  { hale_url_for('create', drds) }
+    let(:drd_hash) { { drd: { name: 'Pike',
+                              status: 'activated',
+                              old_status: 'activated',
+                              kind: 'standard',
+                              leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
+                              leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
+                            }
+                      }
+                    }
 
-    it "returns itself as it's 'self' link" do
-      response =  hale_request drd_body, 'self'
-      expect(JSON.load(response.body)).to eq(drd_body)
+    it "returns itself as its 'self' link" do
+      show_url = transition_uri_for('self', @drd)
+      response = get show_url, can_do_hash
+
+      self_url = transition_uri_for('self', parse_hale(response.body))
+      self_response = get self_url, can_do_hash
+
+      expect(parse_hale(response.body).to_hash).to eq(parse_hale(self_response.body).to_hash)
     end
-    
-    it "can toggle activation" do
-      link_toggle = ->(drd_doc) { drd_doc['_links']['activate'] ? 'activate' : 'deactivate' }
-      status = drd_body['status']
-      response =  hale_request drd_body, link_toggle.(drd_body)
+
+    it 'responds idempotently to an activate call' do
+      # Create deactivated drd
+      req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'standard'}}.merge(can_do_hash)
+      response = post(create_url, req_body)
+
+      # Get the activate URL
+      drd = parse_hale(response.body)
+      activate_url = hale_url_for("activate", drd)
+
+      # Activate twice.
+      put activate_url
+      response = put activate_url
       expect(response.status).to eq(204)
-      new_drd = hale_request drd_body, 'self'
-      new_drd = JSON.load(new_drd.body)
-      expect(new_drd['status']).not_to eq(status)
-      response =  hale_request new_drd, link_toggle.(new_drd)
-      new_drd = hale_request new_drd, 'self'
-      new_drd = JSON.load(new_drd.body)
-      expect(new_drd['status']).to eq(status)
+
+      # Verify
+      response = get hale_url_for("self", drd), can_do_hash
+      expect(parse_hale(response.body).properties['status']).to eq('activated')
+
+      # Destroy our drd
+      delete hale_url_for("delete", drd)
     end
-    
-    it "can update" do
-      form_data = drd_body['_links']['update']['data'].map { |key, datum| {key => random_by_datum(datum)} }.reduce({}, :merge)
-      media = {'HTTP_ACCEPT' => 'application/vnd.hale+json'}
-      hale_request drd_body, 'update', form_data
-      new_drd = hale_request drd_body, 'self'
-      new_drd = JSON.load(new_drd.body)
-      expect(new_drd['kind']).to eq(form_data['kind'])
+
+    it 'responds idempotently to a deactivate call' do
+      # Create deactivated drd
+      req_body = { drd: {name: 'activated drd', status: 'activated', kind: 'standard'}}.merge(can_do_hash)
+      response = post(create_url, req_body)
+
+      # Get the activate URL
+      drd = parse_hale(response.body)
+      deactivate_url = hale_url_for("deactivate", drd)
+
+      # Deactivate twice.
+      put deactivate_url
+      response = put deactivate_url
+      expect(response.status).to eq(204)
+
+      # Verify
+      response = get hale_url_for("self", drd), can_do_hash
+      expect(parse_hale(response.body).properties['status']).to eq('deactivated')
+
+      # Destroy our drd
+      delete hale_url_for("delete", drd)
     end
-    
-    it "can delete" do
-      hale_request drd_body, 'delete'
-      response = hale_request drd_body, 'self'
+
+    it 'can update' do
+      # Create a drd
+      response = post create_url, drd_hash.merge(can_do_hash)
+      drd = parse_hale(response.body)
+
+      # Update the drd with all permissible attributes
+      expect(drd.properties['name']).to eq('Pike')
+      properties = { 'status' => 'deactivated',
+        'old_status' => 'activated',
+        'kind' => 'sentinel',
+        'size' => 'medium',
+        'location' => 'Mars',
+        'location_detail' => 'Olympus Mons',
+        'destroyed_status' => true
+      }
+      response = put hale_url_for("update", drd), { drd: properties }
+      expect(response.status).to eq(303)
+
+      # Check that it is really updated
+      response = get hale_url_for("self", drd)
+      drd = parse_hale(response.body)
+
+      expect(drd.properties.slice(*properties.keys)).to eq(properties)
+    end
+
+    it 'can create' do
+      response = post(create_url, { drd: {name: 'Pike', status: 'activated'} })
+
+      expect(response.status).to eq(201)
+
+      drd = parse_hale(response.body)
+      self_url = hale_url_for("self", drd)
+      response = get self_url
+      expect(response.status).to eq(200)
+      drd = parse_hale(response.body)
+      expect(drd.properties['name']).to eq('Pike')
+      expect(drd.properties['status']).to eq('activated')
+    end
+
+    it 'can delete' do
+      # Create a drd
+      response = post create_url, drd_hash
+
+      #Make sure it is there
+      self_url = hale_url_for("self", parse_hale(response.body))
+      response = get self_url, can_do_hash
+      expect(response.status).to eq(200)
+
+      #blow it up
+      destroy_url = hale_url_for("delete", parse_hale(response.body))
+      response = delete destroy_url
+      expect(response.status).to eq(204)
+
+      # make sure it is gone
+      response = get self_url
       expect(response.status).to eq(404)
-      hale_response = JSON.load(response.body)
-      expect(hale_response['title']).to eq("Item not found")
-      expect(hale_response['_links']).to include('describes', 'profile', 'type', 'help')
     end
-    
+
   end
-  
 end
