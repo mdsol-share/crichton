@@ -44,13 +44,12 @@ describe '/drd/{item}', integration: true do
   context 'the client can do anything' do
     let(:can_do_hash) { {conditions: 'can_do_anything'} }
     let(:create_url)  { hale_url_for('create', drds) }
-    let(:drd_hash) { { drd: { name: 'Pike',
-                              status: 'activated',
-                              old_status: 'activated',
-                              kind: 'standard',
-                              leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
-                              leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
-                            }
+    let(:drd_hash) {{ name: 'Pike',
+                      status: 'activated',
+                      old_status: 'activated',
+                      kind: 'standard',
+                      leviathan_uuid: 'd34c78bd-583c-4eff-a66c-cd9b047417b4',
+                      leviathan_url: 'http://example.org/leviathan/d34c78bd-583c-4eff-a66c-cd9b047417b4'
                       }
                     }
 
@@ -66,7 +65,7 @@ describe '/drd/{item}', integration: true do
 
     it 'responds idempotently to an activate call' do
       # Create deactivated drd
-      req_body = { drd: {name: 'deactivated drd', status: 'deactivated', kind: 'standard'}}.merge(can_do_hash)
+      req_body = {name: 'deactivated drd', status: 'deactivated', kind: 'standard'}.merge(can_do_hash)
       response = post(create_url, req_body)
 
       # Get the activate URL
@@ -88,7 +87,7 @@ describe '/drd/{item}', integration: true do
 
     it 'responds idempotently to a deactivate call' do
       # Create deactivated drd
-      req_body = { drd: {name: 'activated drd', status: 'activated', kind: 'standard'}}.merge(can_do_hash)
+      req_body = {name: 'activated drd', status: 'activated', kind: 'standard'}.merge(can_do_hash)
       response = post(create_url, req_body)
 
       # Get the activate URL
@@ -123,7 +122,7 @@ describe '/drd/{item}', integration: true do
         'location_detail' => 'Olympus Mons',
         'destroyed_status' => true
       }
-      response = put hale_url_for("update", drd), { drd: properties }
+      response = put hale_url_for("update", drd), properties
       expect(response.status).to eq(303)
 
       # Check that it is really updated
@@ -134,7 +133,7 @@ describe '/drd/{item}', integration: true do
     end
 
     it 'can create' do
-      response = post(create_url, { drd: {name: 'Pike', status: 'activated'} })
+      response = post(create_url, {name: 'Pike', status: 'activated'})
 
       expect(response.status).to eq(201)
 
