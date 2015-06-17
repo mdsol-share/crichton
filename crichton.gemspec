@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency('rake')
   s.add_dependency('builder',       '>= 3.0.0')
   s.add_dependency('nokogiri',      '>= 1.6.0')
-  s.add_dependency('activesupport', ['>= 3.2.0', '< 4.1'])
+  s.add_dependency('activesupport', ['>= 3.2.0', '< 4.2'])
   s.add_dependency('addressable',   '~> 2.3.0')
   s.add_dependency('dice_bag',      '~> 0.8')
   s.add_dependency('diffy',         '~> 3.0.1')
