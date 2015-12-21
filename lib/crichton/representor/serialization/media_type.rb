@@ -73,7 +73,7 @@ module Crichton
             if registered?(type)
               to_media_type(type, *args, &block)
             else
-              raise NameError, "#{method} is not defined for #{self} and #{type} is not a registered media-type"
+              raise NameError, "#{method} is not defined for #{self.class} and #{type} is not a registered media-type"
             end
           else
             super
